@@ -45,9 +45,9 @@ def _(babiaAltair, data, mo):
 
 @app.cell
 def _(babiaAltair, data, mo):
-    # Bar chart
-    barChart = babiaAltair.Chart(data).mark_bar().encode(x='model', y='sales')
-    mo.iframe(barChart.html)
+    # Bars chart
+    barsChart = babiaAltair.Chart(data).mark_bar().encode(x='model', y='sales')
+    mo.iframe(barsChart.html)
     return
 
 
