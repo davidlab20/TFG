@@ -1,20 +1,36 @@
 """BabiaXR Vega-Altair library"""
 
 
+import marimo
+
+
 class Chart:
     """Simple chart class."""
 
-    def __init__(self, data):
-        self.data = data
+    def __init__(self, data: str | list[dict]):
+        """Init sample class.
+
+        Args:
+            data: string like JSON format or list of dictionaries with the data.
+        """
+
+        if type(data) == str:
+            self.data = data
+        else:  # Type of tada is list[dict]
+            self.data = str(data)[1:-1]  # Take the data as string and delete the brackets
+            self.data = self.data.replace("'", '"')  # Replace the character ' to " (sintaxis of charts)
         self.chart = ''  # Chart HTML (will be filled with the necessary HTML to view the chart)
         self.html = ''  # Scene HTML (will be filled when encode() is called)
 
     # Types of charts
-    def mark_arc(self):
-        """Pie chart."""
+    def mark_arc(self, inner_radius=0):
+        """Pie chart (default) and doughnut chart."""
 
-        self.chart = """
-            <a-entity babia-pie='legend: true; palette: blues; key: {key}; size: {size}; data:[{data}]'
+        chartType = 'pie'
+        if inner_radius > 0:  # The inner_radius must be positive
+            chartType = 'doughnut'
+        self.chart = f"""
+            <a-entity babia-{chartType}""""""='legend: true; palette: blues; key: {key}; size: {size}; data:[{data}]'
                 position="0 5 -5" rotation="90 0 0">
             </a-entity>"""
         return self
@@ -73,3 +89,9 @@ class Chart:
         with open(filename, 'w') as file:
             file.write(self.html)
             file.close()
+
+    # Showing the chart
+    def show(self):
+        """Shows the chart in the marimo notebook."""
+
+        return marimo.iframe(self.html)

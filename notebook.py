@@ -7,7 +7,7 @@ app = marimo.App()
 @app.cell
 def _():
     import babiaAltair
-    import marimo as mo
+    import json
 
 
     data = """
@@ -32,22 +32,41 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}
     """
-    return babiaAltair, data, mo
+
+    with open('./data.json') as file:
+        dataJSON = json.load(file)  # Data from JSON file to a list of dictionaries
+    return babiaAltair, data, dataJSON
 
 
 @app.cell
-def _(babiaAltair, data, mo):
-    # Pie chart
+def _(babiaAltair, data):
+    # Pie chart with data as string
     pieChart = babiaAltair.Chart(data).mark_arc().encode(theta='model', color='sales')
-    mo.iframe(pieChart.html)
+    pieChart.show()
     return
 
 
 @app.cell
-def _(babiaAltair, data, mo):
-    # Bars chart
+def _(babiaAltair, dataJSON):
+    # Pie chart with data as JSON file
+    pieChartJSON = babiaAltair.Chart(dataJSON).mark_arc().encode(theta='model', color='sales')
+    pieChartJSON.show()
+    return
+
+
+@app.cell
+def _(babiaAltair, data):
+    # Bars chart with data as string
     barsChart = babiaAltair.Chart(data).mark_bar().encode(x='model', y='sales')
-    mo.iframe(barsChart.html)
+    barsChart.show()
+    return
+
+
+@app.cell
+def _(babiaAltair, dataJSON):
+    # Bars chart with data as JSON file
+    barsChartJSON = babiaAltair.Chart(dataJSON).mark_bar().encode(x='model', y='sales')
+    barsChartJSON.show()
     return
 
 
