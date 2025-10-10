@@ -43,7 +43,7 @@ def _(babiaAltair, data):
     # Pie chart with data as string
     pieChart = babiaAltair.Chart(data).mark_arc().encode(theta='model', color='sales')
     pieChart.show()
-    return
+    return (pieChart,)
 
 
 @app.cell
@@ -59,7 +59,7 @@ def _(babiaAltair, data):
     # Bars chart with data as string
     barsChart = babiaAltair.Chart(data).mark_bar().encode(x='model', y='sales')
     barsChart.show()
-    return
+    return (barsChart,)
 
 
 @app.cell
