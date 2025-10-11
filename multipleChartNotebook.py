@@ -1,7 +1,7 @@
 import marimo
 
 __generated_with = "0.16.5"
-app = marimo.App()
+app = marimo.App(width="medium")
 
 
 @app.cell
@@ -65,6 +65,15 @@ def _(barsChart, pieChart):
 def _(barsChart):
     # The main chart does not change (the concatenation of charts stores copies of charts)
     barsChart.show()
+    return
+
+
+@app.cell
+def _(babiaAltair, barsChart, pieChart):
+    # Concatenation of charts
+    finalChart3 = babiaAltair.XConcatChart(topLeftChart=pieChart, topRightChart=barsChart, 
+                                          bottomLeftChart=barsChart, bottomRightChart=pieChart)
+    finalChart3.show()
     return
 
 
