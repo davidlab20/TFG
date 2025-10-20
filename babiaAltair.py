@@ -63,7 +63,6 @@ class TopLevelMixin:
             simple_chart.specifications.update(specs)
             return simple_chart
 
-
     @staticmethod
     def from_dict(specs: dict) -> 'TopLevelMixin':
         """
@@ -203,10 +202,10 @@ class Chart(TopLevelMixin):
             >>> import babiaAltair
             >>> data1 = '...'
             >>> data2 = '...'
-            >>> upperChart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> lowerChart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> finalChart = upperChart & lowerChart
-            >>> #finalChart.show()
+            >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
+            >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+            >>> final_chart = top_chart & bottom_chart
+            >>> #final_chart.show()
         """
 
         return VConcatChart(self, other)
@@ -220,94 +219,13 @@ class Chart(TopLevelMixin):
               >>> import babiaAltair
               >>> data1 = '...'
               >>> data2 = '...'
-              >>> leftChart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-              >>> rightChart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-              >>> finalChart = leftChart | rightChart
-              >>> #finalChart.show()
+              >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
+              >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+              >>> final_chart = left_chart | right_chart
+              >>> #final_chart.show()
         """
 
         return HConcatChart(self, other)
-
-    def concat(self, other):
-        """
-        Horizontal concatenation of charts.
-
-        Parameters
-        ----------
-        other : Chart
-            Chart to be concatenated (will be placed at the right of the main chart).
-
-        Raises
-        ------
-        TypeError
-            If other is not a Chart.
-
-        Examples
-        --------
-            >>> import babiaAltair
-            >>> data1 = '...'
-            >>> data2 = '...'
-            >>> leftChart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> rightChart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> finalChart = leftChart.concat(rightChart)
-            >>> #finalChart.show()
-        """
-
-        return HConcatChart(self, other)
-
-    def hconcat(self, other: 'Chart'):
-        """
-        Horizontal concatenation of charts.
-
-        Parameters
-        ----------
-        other : Chart
-            Chart to be concatenated (will be placed at the right of the main chart).
-
-        Raises
-        ------
-        TypeError
-            If other is not a Chart.
-
-        Examples
-        --------
-            >>> import babiaAltair
-            >>> data1 = '...'
-            >>> data2 = '...'
-            >>> leftChart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> rightChart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> finalChart = leftChart.hconcat(rightChart)
-            >>> #finalChart.show()
-        """
-
-        return HConcatChart(self, other)
-
-    def vconcat(self, other: 'Chart'):
-        """
-        Vertical concatenation of charts.
-
-        Parameters
-        ----------
-        other : Chart
-            Chart to be concatenated (will be placed at the bottom of the main chart).
-
-        Raises
-        ------
-        TypeError
-            If other is not a Chart.
-
-        Examples
-        --------
-            >>> import babiaAltair
-            >>> data1 = '...'
-            >>> data2 = '...'
-            >>> upperChart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> lowerChart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> finalChart = upperChart.vconcat(lowerChart)
-            >>> #finalChart.show()
-        """
-
-        return VConcatChart(self, other)
 
     # Types of charts
     def mark_arc(self, inner_radius: int = 0):
@@ -408,8 +326,8 @@ class HConcatChart(TopLevelMixin):
         >>> data2 = '...'
         >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> finalChart = babiaAltair.HConcatChart(left_chart, right_chart)
-        >>> #finalChart.show()
+        >>> final_chart = babiaAltair.HConcatChart(left_chart, right_chart)
+        >>> #final_chart.show()
     """
 
     def __init__(self, left: Chart, right: Chart):
@@ -430,6 +348,64 @@ class HConcatChart(TopLevelMixin):
 
         self.left.specifications['position']['x'] -= 5
         self.right.specifications['position']['x'] += 5
+
+def concat(left: Chart, right: Chart) -> HConcatChart:
+    """
+    Horizontal concatenation of charts.
+
+    Parameters
+    ----------
+    left : Chart
+        Left chart.
+    right : Chart
+        Right chart.
+
+    Raises
+    ------
+    TypeError
+        If left or right are not of type Chart.
+
+    Examples
+    --------
+        >>> import babiaAltair
+        >>> data1 = '...'
+        >>> data2 = '...'
+        >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaAltair.concat(left_chart, right_chart)
+        >>> #final_chart.show()
+    """
+
+    return HConcatChart(left, right)
+
+def hconcat(left: Chart, right: Chart) -> HConcatChart:
+    """
+    Horizontal concatenation of charts.
+
+    Parameters
+    ----------
+    left : Chart
+        Left chart.
+    right : Chart
+        Right chart.
+
+    Raises
+    ------
+    TypeError
+        If left or right are not of type Chart.
+
+    Examples
+    --------
+        >>> import babiaAltair
+        >>> data1 = '...'
+        >>> data2 = '...'
+        >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaAltair.concat(left_chart, right_chart)
+        >>> #final_chart.show()
+    """
+
+    return HConcatChart(left, right)
 
 
 class VConcatChart(TopLevelMixin):
@@ -455,8 +431,8 @@ class VConcatChart(TopLevelMixin):
         >>> data2 = '...'
         >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> finalChart = babiaAltair.VConcatChart(top_chart, bottom_chart)
-        >>> #finalChart.show()
+        >>> final_chart = babiaAltair.VConcatChart(top_chart, bottom_chart)
+        >>> #final_chart.show()
     """
 
     def __init__(self, top: Chart, bottom: Chart):
@@ -478,6 +454,35 @@ class VConcatChart(TopLevelMixin):
         self.top.specifications['position']['y'] += 5  # The top chart is moved in the Y axis
         self.top.specifications['position']['z'] -= 3  # The chart is placed farther for better visualization
         self.bottom.specifications['position']['z'] -= 3  # The chart is placed farther for better visualization
+
+def vconcat(top: Chart, bottom: Chart) -> VConcatChart:
+    """
+    Vertical concatenation of charts.
+
+    Parameters
+    ----------
+    top : Chart
+        Top chart.
+    bottom : Chart
+        Bottom chart.
+
+    Raises
+    ------
+    TypeError
+        If top or bottom are not of type Chart.
+
+    Examples
+    --------
+        >>> import babiaAltair
+        >>> data1 = '...'
+        >>> data2 = '...'
+        >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaAltair.vconcat(top_chart, bottom_chart)
+        >>> #final_chart.show()
+    """
+
+    return VConcatChart(top, bottom)
 
 
 class XConcatChart(TopLevelMixin):
@@ -511,8 +516,8 @@ class XConcatChart(TopLevelMixin):
         >>> top_right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> bottom_left = babiaAltair.Chart(data3).mark_bar().encode(x='xAxis3', y='yAxis3')
         >>> bottom_right = babiaAltair.Chart(data4).mark_bar().encode(x='xAxis4',y='yAxis4')
-        >>> finalChart = babiaAltair.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
-        >>> #finalChart.show()
+        >>> final_chart = babiaAltair.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
+        >>> #final_chart.show()
     """
 
     def __init__(self, top_left: Chart, top_right: Chart, bottom_left: Chart, bottom_right: Chart):
