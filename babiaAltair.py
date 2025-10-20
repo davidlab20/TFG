@@ -16,6 +16,55 @@ class TopLevelMixin:
 
     # Importing charts
     @staticmethod
+    def _create_chart_from_specs(specs: dict) -> 'TopLevelMixin':
+        """
+        Returns the chart from the received specifications in a JSON dictionary format.
+
+        Parameters
+        ----------
+        specs : dict
+            Specification dictionary in JSON format.
+
+        Notes
+        -----
+        Suppose that specs is a dictionary (as this function is called by from_dict and from_json).
+        """
+
+        if specs['data'].get('url'):
+            data = specs['data']['url']
+        elif specs['data'].get('values'):
+            data = specs['data']['values']
+        else:
+            raise KeyError('Specification must contain "data" key.')
+        if specs.get('concat'):  # XConcat chart
+            top_left_chart = Chart(data)
+            top_left_chart.specifications.update(specs['concat'][0])
+            top_right_chart = Chart(data)
+            top_right_chart.specifications.update(specs['concat'][1])
+            bottom_left_chart = Chart(data)
+            bottom_left_chart.specifications.update(specs['concat'][2])
+            bottom_right_chart = Chart(data)
+            bottom_right_chart.specifications.update(specs['concat'][3])
+            return XConcatChart(top_left_chart, top_right_chart, bottom_left_chart, bottom_right_chart)
+        elif specs.get('hconcat'):  # HConcat chart
+            left_chart = Chart(data)
+            left_chart.specifications.update(specs['hconcat'][0])
+            right_chart = Chart(data)
+            right_chart.specifications.update(specs['hconcat'][1])
+            return HConcatChart(left_chart, right_chart)
+        elif specs.get('vconcat'):  # VConcat chart
+            top_chart = Chart(data)
+            top_chart.specifications.update(specs['vconcat'][0])
+            bottom_chart = Chart(data)
+            bottom_chart.specifications.update(specs['vconcat'][1])
+            return VConcatChart(top_chart, bottom_chart)
+        else:  # Chart
+            simple_chart = Chart(data)
+            simple_chart.specifications.update(specs)
+            return simple_chart
+
+
+    @staticmethod
     def from_dict(specs: dict) -> 'TopLevelMixin':
         """
         Create the chart from the JSON dict specifications.
@@ -35,9 +84,7 @@ class TopLevelMixin:
             specifications = specs
         else:
             raise TypeError(f'Expected dict, got {type(specs).__name__} instead.')
-        chart = TopLevelMixin()  # Create the new chart
-        chart.specifications = specifications  # Add specifications to the created chart
-        return chart
+        return TopLevelMixin._create_chart_from_specs(specifications)
 
     @staticmethod
     def from_json(specs: str) -> 'TopLevelMixin':
@@ -59,9 +106,7 @@ class TopLevelMixin:
             specifications = json.loads(specs)
         else:
             raise TypeError(f'Expected str, got {type(specs).__name__} instead.')
-        chart = TopLevelMixin()  # Create the new chart
-        chart.specifications = specifications  # Add specifications to the created chart
-        return chart
+        return TopLevelMixin._create_chart_from_specs(specifications)
 
     # Exporting charts
     def save(self, fp: str, fileFormat: Literal["json", "html"] = None):
