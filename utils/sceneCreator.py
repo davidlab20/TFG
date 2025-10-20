@@ -78,7 +78,6 @@ class SceneCreator:
                     <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
                     <script src="https://unpkg.com/aframe-babia-components/dist/aframe-babia-components.min.js"></script>
                     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.2.0/dist/aframe-extras.min.js"></script>
-                    <script src="https://gitlab.com/babiaxr/aframe-babia-components/-/raw/master/dist/aframe-babia-components.js"></script>
                     <script src="https://unpkg.com/aframe-babia-components@1.3.4/dist/aframe-babia-components.min.js"></script>
                 </head>  
                 <body class="a-body">
