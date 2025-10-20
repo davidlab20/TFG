@@ -14,7 +14,34 @@ class TopLevelMixin:
     def __init__(self):
         self.specifications = {}  # Specifications of the chart(s), in JSON format
 
-    # Saving the chart
+    # Importing charts
+    @staticmethod
+    def from_json(specs: dict | str):
+        """
+        Create the chart from the JSON specifications.
+
+        Parameters
+        ----------
+        specs : dict | str
+            JSON specifications of the chart.
+
+        Raises
+        ------
+        TypeError
+            If specs is not a dict or a string.
+        """
+
+        if isinstance(specs, dict):
+            specifications = specs
+        elif isinstance(specs, str):
+            specifications = json.loads(specs)
+        else:
+            raise TypeError(f'Expected dict | str, got {type(specs).__name__} instead.')
+        chart = TopLevelMixin()  # Create the new chart
+        chart.specifications = specifications  # Add specifications to the created chart
+        return chart
+
+    # Exporting charts
     def save(self, fp: str, fileFormat: Literal["json", "html"] = None):
         """
         Saves the chart into a file, supported formats are JSON and HTML.
