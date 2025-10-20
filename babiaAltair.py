@@ -93,7 +93,7 @@ class TopLevelMixin:
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""
 
-        return str(self.specifications)
+        return str(self.specifications).replace("\'", "\"")  # Replace ' to " because of syntaxis
 
 
 class Chart(TopLevelMixin):
