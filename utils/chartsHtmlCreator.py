@@ -101,7 +101,7 @@ class SimpleChartHTMLCreator:
             else:  # Default arc chart (pie chart)
                 babia_chart = arc_possibilities[0]
         elif vega_type == 'bar':
-            babia_chart = valid_types[mark['type']]
+            babia_chart = valid_types[mark]
         else:  # Type not in valid_types
             raise ValueError(f'Invalid mark type. Expected {valid_types.keys()}, got {vega_type}.')
         return babia_chart
@@ -230,24 +230,28 @@ class SimpleChartHTMLCreator:
 
         # Create the HTML of the chart
         from utils.sceneCreator import DATA_QUERY_ID
-        if chart_type == 'arc' or 'doughnut':
+        if chart_type in ['pie', 'doughnut']:
             theta, color = SimpleChartHTMLCreator._get_pie_labels(specs['encoding'])
-            x = specs['position']['x']
-            y = specs['position']['y']
-            z = specs['position']['z']
+            if not specs.get('position'):  # No position set in specifications (specs from 2D charts)
+                specs['position'] = {'x': 0, 'y': 0, 'z': 0}  # Position is set to the coordinate origin
+            pos_x = specs['position']['x']
+            pos_y = specs['position']['y']
+            pos_z = specs['position']['z']
             chart_html = f"""
             <a-entity babia-{chart_type}='from: {DATA_QUERY_ID}; legend: true; palette: blues; key: {theta};
-                size: {color}' position="{x} {y} {z}" rotation="90 0 0">
+                size: {color}' position="{pos_x} {pos_y} {pos_z}" rotation="90 0 0">
             </a-entity>
             """
         elif chart_type == 'bar':
             x, y = SimpleChartHTMLCreator._get_bar_labels(specs['encoding'])
-            x = specs['position']['x']
-            y = specs['position']['y']
-            z = specs['position']['z']
+            if not specs.get('position'):  # No position set in specifications (specs from 2D charts)
+                specs['position'] = {'x': 0, 'y': 0, 'z': 0}  # Position is set to the coordinate origin
+            pos_x = specs['position']['x']
+            pos_y = specs['position']['y']
+            pos_z = specs['position']['z']
             chart_html = f"""
                 <a-entity babia-bars='from: {DATA_QUERY_ID}; legend: true; palette: ubuntu; x_axis: {x}; height: {y}'
-                    position="{x} {y} {z}" rotation="0 0 0">
+                    position="{pos_x} {pos_y} {pos_z}" rotation="0 0 0">
                 </a-entity>
             """
         else:  # Should never enter here; it the chart_type is incorrect en error should have raised before
