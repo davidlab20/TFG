@@ -16,27 +16,49 @@ class TopLevelMixin:
 
     # Importing charts
     @staticmethod
-    def from_json(specs: dict | str):
+    def from_dict(specs: dict) -> 'TopLevelMixin':
         """
-        Create the chart from the JSON specifications.
+        Create the chart from the JSON dict specifications.
 
         Parameters
         ----------
-        specs : dict | str
+        specs : dict
             JSON specifications of the chart.
 
         Raises
         ------
         TypeError
-            If specs is not a dict or a string.
+            If specs is not a dictionary.
         """
 
         if isinstance(specs, dict):
             specifications = specs
-        elif isinstance(specs, str):
+        else:
+            raise TypeError(f'Expected dict, got {type(specs).__name__} instead.')
+        chart = TopLevelMixin()  # Create the new chart
+        chart.specifications = specifications  # Add specifications to the created chart
+        return chart
+
+    @staticmethod
+    def from_json(specs: str) -> 'TopLevelMixin':
+        """
+        Create the chart from the JSON string specifications.
+
+        Parameters
+        ----------
+        specs : str
+            JSON specifications of the chart.
+
+        Raises
+        ------
+        TypeError
+            If specs is not a string.
+        """
+
+        if isinstance(specs, str):
             specifications = json.loads(specs)
         else:
-            raise TypeError(f'Expected dict | str, got {type(specs).__name__} instead.')
+            raise TypeError(f'Expected str, got {type(specs).__name__} instead.')
         chart = TopLevelMixin()  # Create the new chart
         chart.specifications = specifications  # Add specifications to the created chart
         return chart
