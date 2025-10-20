@@ -71,8 +71,8 @@ def _(barsChart):
 @app.cell
 def _(babiaAltair, barsChart, pieChart):
     # Concatenation of charts
-    finalChart3 = babiaAltair.XConcatChart(topLeftChart=pieChart, topRightChart=barsChart, 
-                                          bottomLeftChart=barsChart, bottomRightChart=pieChart)
+    finalChart3 = babiaAltair.XConcatChart(top_left=pieChart, top_right=barsChart, bottom_left=barsChart,
+                                           bottom_right=pieChart)
     finalChart3.show()
     return
 
