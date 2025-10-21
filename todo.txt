@@ -1,6 +1,0 @@
-Desplegar una forma de ver las páginas desde servidor HTTPS pycharm
-Implementar el describir visualizaciones con un diccionario JSON (como vega lite, función from_json de Altair), y
-que las funciones encadenadas modifiquen el diccionario (en vez de añadir parámetros en Chart.params)
-Añadir filtros y demás al esquema
-
-NO FUNCIONA EL SHOW() POR LO DEL SERVIDOR HTTPS (MIRAR)
