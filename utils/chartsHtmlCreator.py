@@ -90,7 +90,7 @@ class SimpleChartHTMLCreator:
         # Get the equivalence between the Vega chart and the BabiaXR chart
         valid_types = {'arc': ['pie', 'doughnut'], 'bar': 'bar'}  # Types of charts (Vega: BabiaXR)
         if vega_type == 'arc':
-            arc_possibilities = valid_types[mark['type']]
+            arc_possibilities = valid_types[vega_type]
             if mark.get('innerRadius'):
                 if mark['innerRadius'] == 0:
                     babia_chart = arc_possibilities[0]
@@ -101,7 +101,7 @@ class SimpleChartHTMLCreator:
             else:  # Default arc chart (pie chart)
                 babia_chart = arc_possibilities[0]
         elif vega_type == 'bar':
-            babia_chart = valid_types[mark]
+            babia_chart = valid_types[vega_type]
         else:  # Type not in valid_types
             raise ValueError(f'Invalid mark type. Expected {valid_types.keys()}, got {vega_type}.')
         return babia_chart
