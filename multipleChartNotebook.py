@@ -1,26 +1,25 @@
 import marimo
 
 __generated_with = "0.17.0"
-app = marimo.App(width="medium")
+app = marimo.App()
 
 
 @app.cell
 def _():
-    import babiaAltair
-    import json
-    return (babiaAltair,)
+    import babiaxr.components as babiaxr
+    return (babiaxr,)
 
 
 @app.cell
-def _(babiaAltair):
-    pieChart = babiaAltair.Chart('./data.json').mark_arc().encode(theta='model', color='sales')
+def _(babiaxr):
+    pieChart = babiaxr.Chart('./data.json').mark_arc().encode(theta='model', color='sales')
     pieChart.show()
     return (pieChart,)
 
 
 @app.cell
-def _(babiaAltair):
-    barsChart = babiaAltair.Chart('./data.json').mark_bar().encode(x='model', y='sales')
+def _(babiaxr):
+    barsChart = babiaxr.Chart('./data.json').mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return (barsChart,)
 
@@ -65,10 +64,10 @@ def _(barsChart):
 
 
 @app.cell
-def _(babiaAltair, barsChart, pieChart):
+def _(babiaxr, barsChart, pieChart):
     # Concatenation of charts
-    finalChart3 = babiaAltair.XConcatChart(top_left=pieChart, top_right=barsChart, bottom_left=barsChart,
-                                           bottom_right=pieChart)
+    finalChart3 = babiaxr.XConcatChart(top_left=pieChart, top_right=barsChart,
+                                       bottom_left=barsChart, bottom_right=pieChart)
     finalChart3.show()
     return
 

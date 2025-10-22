@@ -1,10 +1,11 @@
-"""BabiaXR like Vega-Altair library"""
-
+"""BabiaXR components"""
 
 import copy
 import json
 import marimo
 from typing import Literal
+
+from babiaxr.filters import Filter
 from utils.sceneCreator import SceneCreator
 
 
@@ -198,11 +199,10 @@ class Chart(TopLevelMixin):
 
         Examples
         --------
-            >>> import babiaAltair
-            >>> data1 = '...'
-            >>> data2 = '...'
-            >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+            >>> import babiaxr.components as babiaxr
+            >>> data = './data.json'
+            >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+            >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
             >>> final_chart = top_chart & bottom_chart
             >>> #final_chart.show()
         """
@@ -215,11 +215,10 @@ class Chart(TopLevelMixin):
 
         Examples
         --------
-              >>> import babiaAltair
-              >>> data1 = '...'
-              >>> data2 = '...'
-              >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-              >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
+            >>> import babiaxr.components as babiaxr
+              >>> data = './data.json'
+              >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+              >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
               >>> final_chart = left_chart | right_chart
               >>> #final_chart.show()
         """
@@ -300,6 +299,16 @@ class Chart(TopLevelMixin):
 
         return copy.deepcopy(self)  # Return a deep copy of the chart (changes in the copy do not affect the original)
 
+    # Filtering data
+    def transform_filter(self, filter_transform: Filter):
+        """Filters the chart with the given transformation."""
+
+        if not self.specifications.get('transform'):  # First time filtering the chart
+            self.specifications.update({'transform': [filter_transform.equation]})  # Create transform field in specs
+        else:  # Not the first filter of the chart
+            self.specifications['transform'].append(filter_transform.equation)  # Add the filter to the transform field
+        return self
+
 
 # Multiple charts in the same scene
 class HConcatChart(TopLevelMixin):
@@ -320,17 +329,15 @@ class HConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaAltair.HConcatChart(left_chart, right_chart)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaxr.HConcatChart(left_chart, right_chart)
         >>> #final_chart.show()
     """
 
     def __init__(self, left: Chart, right: Chart):
-
         super().__init__()
         if not isinstance(left, Chart) or not isinstance(right, Chart):
             raise TypeError('leftChart and rightChart must be of type Chart.')
@@ -347,6 +354,7 @@ class HConcatChart(TopLevelMixin):
 
         self.left.specifications['position']['x'] -= 5
         self.right.specifications['position']['x'] += 5
+
 
 def concat(left: Chart, right: Chart) -> HConcatChart:
     """
@@ -366,16 +374,16 @@ def concat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaAltair.concat(left_chart, right_chart)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaxr.concat(left_chart, right_chart)
         >>> #final_chart.show()
     """
 
     return HConcatChart(left, right)
+
 
 def hconcat(left: Chart, right: Chart) -> HConcatChart:
     """
@@ -395,12 +403,11 @@ def hconcat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaAltair.concat(left_chart, right_chart)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaxr.concat(left_chart, right_chart)
         >>> #final_chart.show()
     """
 
@@ -425,17 +432,15 @@ class VConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaAltair.VConcatChart(top_chart, bottom_chart)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaxr.VConcatChart(top_chart, bottom_chart)
         >>> #final_chart.show()
     """
 
     def __init__(self, top: Chart, bottom: Chart):
-
         super().__init__()
         if not isinstance(top, Chart) or not isinstance(bottom, Chart):
             raise TypeError('upperChart and lowerChart must be of type Chart.')
@@ -453,6 +458,7 @@ class VConcatChart(TopLevelMixin):
         self.top.specifications['position']['y'] += 5  # The top chart is moved in the Y axis
         self.top.specifications['position']['z'] -= 3  # The chart is placed farther for better visualization
         self.bottom.specifications['position']['z'] -= 3  # The chart is placed farther for better visualization
+
 
 def vconcat(top: Chart, bottom: Chart) -> VConcatChart:
     """
@@ -472,12 +478,11 @@ def vconcat(top: Chart, bottom: Chart) -> VConcatChart:
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> top_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> bottom_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaAltair.vconcat(top_chart, bottom_chart)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = babiaxr.vconcat(top_chart, bottom_chart)
         >>> #final_chart.show()
     """
 
@@ -506,16 +511,13 @@ class XConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaAltair
-        >>> data1 = '...'
-        >>> data2 = '...'
-        >>> data3 = '...'
-        >>> data4 = '...'
-        >>> top_left_chart = babiaAltair.Chart(data1).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> top_right_chart = babiaAltair.Chart(data2).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> bottom_left = babiaAltair.Chart(data3).mark_bar().encode(x='xAxis3', y='yAxis3')
-        >>> bottom_right = babiaAltair.Chart(data4).mark_bar().encode(x='xAxis4',y='yAxis4')
-        >>> final_chart = babiaAltair.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> top_left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> top_right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> bottom_left = babiaxr.Chart(data).mark_bar().encode(x='xAxis3', y='yAxis3')
+        >>> bottom_right = babiaxr.Chart(data).mark_bar().encode(x='xAxis4',y='yAxis4')
+        >>> final_chart = babiaxr.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
         >>> #final_chart.show()
     """
 
