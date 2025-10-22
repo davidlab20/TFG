@@ -8,23 +8,19 @@ app = marimo.App(width="medium")
 def _():
     import babiaAltair
     import json
-
-
-    with open('./data.json') as file:
-        dataJSON = json.load(file)  # Data from JSON file to a list of dictionaries
-    return babiaAltair, dataJSON
+    return (babiaAltair,)
 
 
 @app.cell
-def _(babiaAltair, dataJSON):
-    pieChart = babiaAltair.Chart(dataJSON).mark_arc().encode(theta='model', color='sales')
+def _(babiaAltair):
+    pieChart = babiaAltair.Chart('./data.json').mark_arc().encode(theta='model', color='sales')
     pieChart.show()
     return (pieChart,)
 
 
 @app.cell
-def _(babiaAltair, dataJSON):
-    barsChart = babiaAltair.Chart(dataJSON).mark_bar().encode(x='model', y='sales')
+def _(babiaAltair):
+    barsChart = babiaAltair.Chart('./data.json').mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return (barsChart,)
 
