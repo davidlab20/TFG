@@ -48,10 +48,10 @@ class SceneCreator:
                 raise KeyError('Specs must contain "data".')
             if 'url' in specs['data']:  # Data comes from a URL
                 url = specs['data']['url']
-                return f'<a-entity id="{DATA_QUERY_ID}" babia-queryjson="url: {url};"></a-entity>'
+                return f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='url: {url};'></a-entity>'''
             if 'values' in specs['data']:  # Data comes raw
-                data = specs['data']['values']
-                return f'<a-entity id="{DATA_QUERY_ID}" babia-queryjson="data: {data};"></a-entity>'
+                data = str(specs['data']['values']).replace("\'", "\"")  # Replace ' to " because of syntaxis
+                return f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='data: {data};'></a-entity>'''
             else:
                 raise KeyError('Error when decoding the data. Incorrect format.')
 

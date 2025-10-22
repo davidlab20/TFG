@@ -126,10 +126,9 @@ class TopLevelMixin:
             If fileFormat is invalid.
         """
 
-        html_iframe_scene = SceneCreator.create_iframe_scene(self.specifications)
         if fileFormat == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
-                file.write(html_iframe_scene)
+                file.write(self.to_html())
                 file.close()
         elif fileFormat == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
