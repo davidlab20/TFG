@@ -7,6 +7,7 @@ app = marimo.App()
 @app.cell
 def _():
     import babiaxr.components as babiaxr
+    import json
 
 
     data = """
@@ -31,7 +32,7 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    return babiaxr, data
+    return babiaxr, data, json
 
 
 @app.cell
@@ -63,6 +64,16 @@ def _(babiaxr):
     # Bars chart with data as JSON file
     barsChartJSON = babiaxr.Chart('./data.json').mark_bar().encode(x='model', y='sales')
     barsChartJSON.show()
+    return
+
+
+@app.cell
+def _(babiaxr, json):
+    with open('./chart2.json') as json_chart:
+        json_specs = json.load(json_chart)
+
+    imported_chart = babiaxr.Chart.from_dict(json_specs)
+    imported_chart.show()
     return
 
 
