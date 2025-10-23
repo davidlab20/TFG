@@ -204,8 +204,6 @@ class SimpleChartHTMLCreator:
         -------
         chart_html : str
             HTML of the chart.
-        position_delta : tuple[int, int, int], optional
-            Position delta of the chart.
 
         Raises
         ------

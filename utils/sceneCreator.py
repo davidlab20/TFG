@@ -94,6 +94,8 @@ class SceneCreator:
         # Main function
         if not isinstance(specs, dict):
             raise TypeError(f'Specs must be a dictionary, got {type(specs).__name__}.')
+        global FINAL_DATA_QUERY_ID
+        FINAL_DATA_QUERY_ID = DATA_QUERY_ID  # Set FINAL_QUERY_DATA_ID to the default id (in case it has been changed)
         html_iframe_scene = f"""
             <!DOCTYPE html>
             <html class="a-html" lang="en">
