@@ -229,7 +229,7 @@ class SimpleChartHTMLCreator:
         chart_type = SimpleChartHTMLCreator._get_chart_type(specs['mark'])
 
         # Create the HTML of the chart
-        from utils.sceneCreator import DATA_QUERY_ID
+        from utils.sceneCreator import FINAL_DATA_QUERY_ID  # Can change depending on if the data is transformed or raw
         if chart_type in ['pie', 'doughnut']:
             theta, color = SimpleChartHTMLCreator._get_pie_labels(specs['encoding'])
             if not specs.get('position'):  # No position set in specifications (specs from 2D charts)
@@ -238,7 +238,7 @@ class SimpleChartHTMLCreator:
             pos_y = specs['position']['y']
             pos_z = specs['position']['z']
             chart_html = f"""
-            <a-entity babia-{chart_type}='from: {DATA_QUERY_ID}; legend: true; palette: blues; key: {theta};
+            <a-entity babia-{chart_type}='from: {FINAL_DATA_QUERY_ID}; legend: true; palette: blues; key: {theta};
                 size: {color}' position="{pos_x} {pos_y} {pos_z}" rotation="90 0 0">
             </a-entity>
             """
@@ -250,7 +250,7 @@ class SimpleChartHTMLCreator:
             pos_y = specs['position']['y']
             pos_z = specs['position']['z']
             chart_html = f"""
-                <a-entity babia-bars='from: {DATA_QUERY_ID}; legend: true; palette: ubuntu; x_axis: {x}; height: {y}'
+                <a-entity babia-bars='from: {FINAL_DATA_QUERY_ID}; legend: true; palette: ubuntu; x_axis: {x}; height: {y}'
                     position="{pos_x} {pos_y} {pos_z}" rotation="0 0 0">
                 </a-entity>
             """

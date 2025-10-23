@@ -300,13 +300,58 @@ class Chart(TopLevelMixin):
         return copy.deepcopy(self)  # Return a deep copy of the chart (changes in the copy do not affect the original)
 
     # Filtering data
-    def transform_filter(self, filter_transform: Filter):
-        """Filters the chart with the given transformation."""
+    def transform_filter(self, equation_filter: str | Filter):
+        """
+        Filters the chart with the given transformation.
 
+        Parameters
+        ----------
+        equation_filter : str | Filter
+            The equation string of the filter transformation, or a Filter object (see Examples).
+
+        Raises
+        ------
+        TypeError
+            If equation is not a string or a Filter object.
+
+        Notes
+        -----
+        Can be concatenated with the rest of functions of the Chart, without needing an asignation.
+
+        Examples
+        --------
+        *Using transform_filter() giving the equation string:*
+
+        >>> import babiaxr.components as babiaxr
+        >>> data = './data.json'
+        >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> filtered_chart = filtered_chart.transform_filter('datum.motor=diesel')
+        >>> #filtered_chart.show()
+
+        *Using transform_filter() giving a Filter object*
+
+        >>> import babiaxr.components as babiaxr
+        >>> import babiaxr.filters as babiaxrfilters
+        >>> data = './data.json'
+        >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> filter_object = babiaxrfilters.FieldEqualPredicate(field='motor', equal='diesel')
+        >>> filtered_chart = filtered_chart.transform_filter(filter_object)
+        >>> #filtered_chart.show()
+        """
+
+        # Validate the type of equation_filter and get a filter object from the equation_filter
+        if isinstance(equation_filter, str):
+            filter_transform = Filter.create_filter(equation_filter)
+        elif isinstance(equation_filter, Filter):
+            filter_transform = equation_filter
+        else:
+            raise TypeError(f'Expected string or Filter object, got {type(equation_filter).__name__}.')
+
+        # Add the information of the filter object to the specifications
         if not self.specifications.get('transform'):  # First time filtering the chart
-            self.specifications.update({'transform': [filter_transform.equation]})  # Create transform field in specs
+            self.specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field in specs
         else:  # Not the first filter of the chart
-            self.specifications['transform'].append(filter_transform.equation)  # Add the filter to the transform field
+            self.specifications['transform'].append(filter_transform.equation_to_dict())  # Add the filter to the field
         return self
 
 

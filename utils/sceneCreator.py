@@ -1,10 +1,12 @@
 """BabiaXR scene creator"""
 
-
+from babiaxr.filters import Filter
 from utils.chartsHtmlCreator import ChartsHTMLCreator
 
 
 DATA_QUERY_ID = 'query'  # Data query id of the HTML entity of the data
+FILTERS_QUERY_ID = 'filter_query'  # Filtered data query id of the HTML entity of the data
+FINAL_DATA_QUERY_ID = DATA_QUERY_ID  # Will change if raw data is transformed (for example, if filtered)
 
 
 class SceneCreator:
@@ -44,16 +46,37 @@ class SceneCreator:
         def data_html() -> str:
             """Inner function to create the HTML of the data zone."""
 
+            data_field = ''
+
+            # Main data
             if not 'data' in specs:  # Verificate 'data' is on the specifications
                 raise KeyError('Specs must contain "data".')
             if 'url' in specs['data']:  # Data comes from a URL
                 url = specs['data']['url']
-                return f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='url: {url};'></a-entity>'''
+                data_field += f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='url: {url};'></a-entity>'''
             if 'values' in specs['data']:  # Data comes raw
                 data = str(specs['data']['values']).replace("\'", "\"")  # Replace ' to " because of syntaxis
-                return f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='data: {data};'></a-entity>'''
+                data_field += f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='data: {data};'></a-entity>'''
             else:
                 raise KeyError('Error when decoding the data. Incorrect format.')
+
+            # Filtered data (if existing)
+            if specs.get('transform'):  # There are transformations of the data
+                for transformation in specs['transform']:
+                    if transformation.get('filter'):  # Filter field
+                        filter_object = Filter.create_filter(transformation['filter'])  # Create filter from equation
+                        data_field += f'''
+                            <a-entity id="{FILTERS_QUERY_ID}" babia-filter="from: {DATA_QUERY_ID}; 
+                                filter: {filter_object.equation_to_string()}">
+                            </a-entity>
+                        '''
+
+                        # Change the id of the HTML field of the final data so charts get transformed data
+                        global FINAL_DATA_QUERY_ID
+                        FINAL_DATA_QUERY_ID = FILTERS_QUERY_ID
+                    else:
+                        pass  # Not implemented jet
+            return data_field
 
         def charts_html() -> str:
             """Inner function to create the HTML of the chart zone."""
