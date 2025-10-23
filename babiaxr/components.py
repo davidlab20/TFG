@@ -5,7 +5,7 @@ import json
 import marimo
 from typing import Literal
 
-from babiaxr.filters import Filter
+from babiaxr.filters import FilterTransform
 from utils.sceneCreator import SceneCreator
 
 
@@ -300,13 +300,13 @@ class Chart(TopLevelMixin):
         return copy.deepcopy(self)  # Return a deep copy of the chart (changes in the copy do not affect the original)
 
     # Filtering data
-    def transform_filter(self, equation_filter: str | Filter):
+    def transform_filter(self, equation_filter: str | FilterTransform):
         """
         Filters the chart with the given transformation.
 
         Parameters
         ----------
-        equation_filter : str | Filter
+        equation_filter : str | FilterTransform
             The equation string of the filter transformation, or a Filter object (see Examples).
 
         Raises
@@ -341,11 +341,11 @@ class Chart(TopLevelMixin):
 
         # Validate the type of equation_filter and get a filter object from the equation_filter
         if isinstance(equation_filter, str):
-            filter_transform = Filter.create_filter(equation_filter)
-        elif isinstance(equation_filter, Filter):
+            filter_transform = FilterTransform.from_string(equation_filter)
+        elif isinstance(equation_filter, FilterTransform):
             filter_transform = equation_filter
         else:
-            raise TypeError(f'Expected string or Filter object, got {type(equation_filter).__name__}.')
+            raise TypeError(f'Expected string or FilterTransform object, got {type(equation_filter).__name__}.')
 
         # Add the information of the filter object to the specifications
         if not self.specifications.get('transform'):  # First time filtering the chart

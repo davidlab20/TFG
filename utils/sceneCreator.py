@@ -1,6 +1,6 @@
 """BabiaXR scene creator"""
 
-from babiaxr.filters import Filter
+from babiaxr.filters import FilterTransform
 from utils.chartsHtmlCreator import ChartsHTMLCreator
 
 
@@ -63,8 +63,9 @@ class SceneCreator:
             # Filtered data (if existing)
             if specs.get('transform'):  # There are transformations of the data
                 for transformation in specs['transform']:
-                    if transformation.get('filter'):  # Filter field
-                        filter_object = Filter.create_filter(transformation['filter'])  # Create filter from equation
+                    if transformation.get('filter'):  # FilterTransform field
+                        filter_object = FilterTransform.from_string(
+                            transformation['filter'])  # Create filter from equation
                         data_field += f'''
                             <a-entity id="{FILTERS_QUERY_ID}" babia-filter="from: {DATA_QUERY_ID}; 
                                 filter: {filter_object.equation_to_string()}">

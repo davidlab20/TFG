@@ -1,16 +1,28 @@
 """BabiaXR filters"""
 
 
-class Filter:
-    """Filter base class."""
+class FilterTransform:
+    """FilterTransform base class."""
 
     def __init__(self, field: str, operator: str, value: str):
         self.field = field
         self.operator = operator
         self.value = value
 
+    # Exporting equation formats
+    def equation_to_dict(self):
+        """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
+
+        return {'filter': f'datum.{self.field}{self.operator}{self.value}'}
+
+    def equation_to_string(self):
+        """Returns a string representation about the equation of the filter."""
+
+        return f'{self.field}{self.operator}{self.value}'
+
+    # Creating filters
     @staticmethod
-    def create_filter(equation: str) -> 'Filter':
+    def from_string(equation: str) -> 'FilterTransform':
         """
         Creates a child filter object from the given equation.
 
@@ -36,19 +48,8 @@ class Filter:
         else:
             raise NotImplementedError(f'The filter for equation "{equation}" is not implemented yet.')
 
-    # Equation formats
-    def equation_to_dict(self):
-        """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
 
-        return {'filter': f'datum.{self.field}{self.operator}{self.value}'}
-
-    def equation_to_string(self):
-        """Returns a string representation about the equation of the filter."""
-
-        return f'{self.field}{self.operator}{self.value}'
-
-
-class FieldEqualPredicate(Filter):
+class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
 
     def __init__(self, field: str, equal: str):
@@ -72,7 +73,7 @@ class FieldEqualPredicate(Filter):
 
         Notes
         -----
-        Should receive equation as a string (as it has been called from Filter).
+        Should receive equation as a string (as it has been called from FilterTransform).
         """
 
         if len(equation.split('=')) != 2:  # The equation has more than 1 equal symbol
