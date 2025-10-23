@@ -54,7 +54,7 @@ class SceneCreator:
             if 'url' in specs['data']:  # Data comes from a URL
                 url = specs['data']['url']
                 data_field += f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='url: {url};'></a-entity>'''
-            if 'values' in specs['data']:  # Data comes raw
+            elif 'values' in specs['data']:  # Data comes raw
                 data = str(specs['data']['values']).replace("\'", "\"")  # Replace ' to " because of syntaxis
                 data_field += f'''<a-entity id="{DATA_QUERY_ID}" babia-queryjson='data: {data};'></a-entity>'''
             else:
