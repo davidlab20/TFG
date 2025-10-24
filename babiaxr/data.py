@@ -9,8 +9,15 @@ class Data:
 
     Examples
     --------
-    >>> data_format = [{"a": 1, "b": 2}, {"a": 2, "b": 4}, ...]
-    ...
+    # To instantiate Data using Data(data_format_as_list)
+
+    >>> data_format_as_list = [{"a": 1, "b": 2}, {"a": 2, "b": 4}]
+    >>> data = Data(data_format_as_list)
+
+    # To instantiate Data using Data.from_json(data_format_as_string)
+
+    >>> data_format_as_string = '[{"a": 1, "b": 2}, {"a": 2, "b": 4}]'
+    >>> data = Data.from_json(data_format_as_string)
     """
 
     def __init__(self, values: list[dict]):
