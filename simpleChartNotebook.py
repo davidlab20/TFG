@@ -7,10 +7,11 @@ app = marimo.App()
 @app.cell
 def _():
     import babiaxr.components as babiaxr
+    import babiaxr.data as babiaxr_data
     import json
 
 
-    data = """
+    data_str = """
         [{"model": "leon", "motor": "electric", "color": "red",
         "doors": 5, "sales": 10},
         {"model": "ibiza", "motor": "electric", "color": "white",
@@ -32,43 +33,46 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    return babiaxr, data, json
+    data = babiaxr_data.Data.from_json(data_str)  # Raw data
+    url_data = babiaxr_data.URLData('./data.json')  # URL of the data
+    return babiaxr, data, json, url_data
 
 
 @app.cell
 def _(babiaxr, data):
-    # Pie chart with data as string
+    # Pie chart with data as Data object
     pieChart = babiaxr.Chart(data).mark_arc().encode(theta='model', color='sales')
     pieChart.show()
     return
 
 
 @app.cell
-def _(babiaxr):
-    # Pie chart with data as JSON file
-    pieChartJSON = babiaxr.Chart('./data.json').mark_arc().encode(theta='model', color='sales')
+def _(babiaxr, url_data):
+    # Pie chart with data as URLData object
+    pieChartJSON = babiaxr.Chart(url_data).mark_arc().encode(theta='model', color='sales')
     pieChartJSON.show()
     return
 
 
 @app.cell
 def _(babiaxr, data):
-    # Bars chart with data as string
+    # Bars chart with data as Data object
     barsChart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return
 
 
 @app.cell
-def _(babiaxr):
-    # Bars chart with data as JSON file
-    barsChartJSON = babiaxr.Chart('./data.json').mark_bar().encode(x='model', y='sales')
+def _(babiaxr, url_data):
+    # Bars chart with data as URLData object
+    barsChartJSON = babiaxr.Chart(url_data).mark_bar().encode(x='model', y='sales')
     barsChartJSON.show()
     return
 
 
 @app.cell
 def _(babiaxr, json):
+    # Import a chart from a JSON file storing the specifications of the chart
     with open('./chart2.json') as json_chart:
         json_specs = json.load(json_chart)
 

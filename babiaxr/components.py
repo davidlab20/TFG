@@ -39,9 +39,9 @@ class TopLevelMixin:
         """
 
         if specs['data'].get('url'):
-            data = specs['data']['url']
+            data = URLData(specs['data']['url'])
         elif specs['data'].get('values'):
-            data = specs['data']['values']
+            data = Data(specs['data']['values'])
         else:
             raise KeyError('Specification must contain "data" key.')
         if specs.get('concat'):  # XConcat chart
