@@ -1,13 +1,12 @@
 import marimo
 
-__generated_with = "0.17.0"
+__generated_with = "0.17.2"
 app = marimo.App()
 
 
 @app.cell
 def _():
-    import babiaxr.components as babiaxr
-    import babiaxr.data as babiaxr_data
+    import babiaxr
 
 
     data_str = """
@@ -32,7 +31,7 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    data = babiaxr_data.Data.from_json(data_str)
+    data = babiaxr.Data.from_json(data_str)
     return babiaxr, data
 
 

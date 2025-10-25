@@ -1,13 +1,12 @@
 import marimo
 
-__generated_with = "0.17.0"
+__generated_with = "0.17.2"
 app = marimo.App()
 
 
 @app.cell
 def _():
-    import babiaxr.components as babiaxr
-    import babiaxr.data as babiaxr_data
+    import babiaxr
     import json
 
     data_str = """
@@ -33,7 +32,7 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = babiaxr.Data.from_json(data_str)
-    return babiaxr, babiaxr_data, data, json
+    return babiaxr, data, json
 
 
 @app.cell
@@ -58,10 +57,10 @@ def _(babiaxr, data):
 
 
 @app.cell
-def _(babiaxr, babiaxr_data, json):
+def _(babiaxr, json):
     with open('./data.json') as file_data:
         data_json = json.load(file_data)
-        data2 = babiaxr_data.Data(data_json)
+        data2 = babiaxr.Data(data_json)
 
     bars = babiaxr.Chart(data2).mark_bar().encode(x='model', y='sales')
     bars.show()
