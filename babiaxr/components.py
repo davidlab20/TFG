@@ -201,9 +201,10 @@ class Chart(TopLevelMixin):
 
         Examples
         --------
-            >>> import babiaxr.components as babiaxr
-            >>> import babiaxr.data as babiaxrdata
-            >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+            >>> import babiaxr
+            >>> data = babiaxr.URLData('./data.json')
             >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
             >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
             >>> final_chart = top_chart & bottom_chart
@@ -218,9 +219,10 @@ class Chart(TopLevelMixin):
 
         Examples
         --------
-            >>> import babiaxr.components as babiaxr
-            >>> import babiaxr.data as babiaxrdata
-            >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+            >>> import babiaxr
+            >>> data = babiaxr.URLData('./data.json')
             >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
             >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
             >>> final_chart = left_chart | right_chart
@@ -326,21 +328,22 @@ class Chart(TopLevelMixin):
         --------
         *Using transform_filter() giving the equation string:*
 
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
         >>> filtered_chart = filtered_chart.transform_filter('datum.motor=diesel')
         >>> #filtered_chart.show()
 
         *Using transform_filter() giving a Filter object*
 
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.filters as babiaxrfilters
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
-        >>> filter_object = babiaxrfilters.FieldEqualPredicate(field='motor', equal='diesel')
+        >>> filter_object = babiaxr.FieldEqualPredicate(field='motor', equal='diesel')
         >>> filtered_chart = filtered_chart.transform_filter(filter_object)
         >>> #filtered_chart.show()
         """
@@ -380,9 +383,10 @@ class HConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> final_chart = babiaxr.HConcatChart(left_chart, right_chart)
@@ -426,9 +430,10 @@ def concat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> final_chart = babiaxr.concat(left_chart, right_chart)
@@ -456,9 +461,10 @@ def hconcat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> final_chart = babiaxr.concat(left_chart, right_chart)
@@ -486,9 +492,10 @@ class VConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> final_chart = babiaxr.VConcatChart(top_chart, bottom_chart)
@@ -533,9 +540,10 @@ def vconcat(top: Chart, bottom: Chart) -> VConcatChart:
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> final_chart = babiaxr.vconcat(top_chart, bottom_chart)
@@ -567,9 +575,10 @@ class XConcatChart(TopLevelMixin):
 
     Examples
     --------
-        >>> import babiaxr.components as babiaxr
-        >>> import babiaxr.data as babiaxrdata
-        >>> data = babiaxrdata.URLData('./data.json')
+
+import babiaxr as babiaxr
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
         >>> top_left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
         >>> top_right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
         >>> bottom_left = babiaxr.Chart(data).mark_bar().encode(x='xAxis3', y='yAxis3')
