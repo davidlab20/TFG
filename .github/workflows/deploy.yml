@@ -1,0 +1,43 @@
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+          # Checkout and install dependencies
+
+          - name: Change to directory examples
+            run: cd examples/
+
+          - name: 📄 Export notebooks
+            run: |
+                marimo export html-wasm examples/simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
+                marimo export html-wasm examples/multiple_chart_notebook.py -o multiple_chart_notebook.html --mode edit
+                marimo export html-wasm examples/filtered_chart_notebook.py -o filtered_chart_notebook.html --mode edit
+
+          - name: 📦 Upload Pages Artifact
+            uses: actions/upload-pages-artifact@v3
+            with:
+                path: .  # As we are in examples/
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+
+        permissions:
+            pages: write
+            id-token: write
+
+        steps:
+            - name: 🌐 Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
+              with:
+                  artifact_name: github-pages
