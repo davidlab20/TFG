@@ -10,6 +10,9 @@ jobs:
         steps:
           # Checkout and install dependencies
 
+          - name: Install marimo
+            run: pip install marimo
+
           - name: 📄 Export notebooks
             run: |
                 marimo export html-wasm examples/simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
