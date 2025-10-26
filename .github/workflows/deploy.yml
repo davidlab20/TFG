@@ -10,9 +10,6 @@ jobs:
         steps:
           # Checkout and install dependencies
 
-          - name: Change to directory examples
-            run: cd examples
-
           - name: 📄 Export notebooks
             run: |
                 marimo export html-wasm examples/simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
