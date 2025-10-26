@@ -37,7 +37,7 @@ def _():
 
 @app.cell
 def _(babiaxr, json):
-    with open('./chart.json') as file:
+    with open('../chart.json') as file:
         json_specs = json.load(file)
 
     chart = babiaxr.Chart.from_dict(json_specs)
@@ -58,7 +58,7 @@ def _(babiaxr, data):
 
 @app.cell
 def _(babiaxr, json):
-    with open('./data.json') as file_data:
+    with open('../data.json') as file_data:
         data_json = json.load(file_data)
         data2 = babiaxr.Data(data_json)
 
