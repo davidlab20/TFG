@@ -5,9 +5,9 @@ import json
 import marimo
 from typing import Literal
 
-from babiaxr.data import Data, URLData
-from babiaxr.filters import FilterTransform
-from utils.sceneCreator import SceneCreator
+from babiaxr.babia.data import Data, URLData
+from babiaxr.babia.filters import FilterTransform
+from babiaxr.utils.sceneCreator import SceneCreator
 
 
 class TopLevelMixin:

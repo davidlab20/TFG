@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: babiaxr
+Version: 0.0.1
+Summary: Biblioteca Python para mostrar datos en realidad extendida utilizando BabiaXR.
+Author: David Díaz
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown

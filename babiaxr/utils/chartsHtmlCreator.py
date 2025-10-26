@@ -227,7 +227,7 @@ class SimpleChartHTMLCreator:
         chart_type = SimpleChartHTMLCreator._get_chart_type(specs['mark'])
 
         # Create the HTML of the chart
-        from utils.sceneCreator import FINAL_DATA_QUERY_ID  # Can change depending on if the data is transformed or raw
+        from babiaxr.utils.sceneCreator import FINAL_DATA_QUERY_ID  # Can change depending on if the data is transformed or raw
         if chart_type in ['pie', 'doughnut']:
             theta, color = SimpleChartHTMLCreator._get_pie_labels(specs['encoding'])
             if not specs.get('position'):  # No position set in specifications (specs from 2D charts)

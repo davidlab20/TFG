@@ -1,5 +1,4 @@
 """BabiaXR like Vega-Altair library"""
 
-from babiaxr.data import *
-from babiaxr.components import *
-from babiaxr.filters import *
+from babiaxr.babia import *
+from babiaxr.utils import *
