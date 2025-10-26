@@ -1,7 +1,7 @@
 """BabiaXR scene creator"""
 
-from babiaxr.filters import FilterTransform
-from utils.chartsHtmlCreator import ChartsHTMLCreator
+from babiaxr.babia.filters import FilterTransform
+from babiaxr.utils.chartsHtmlCreator import ChartsHTMLCreator
 
 
 DATA_QUERY_ID = 'query'  # Data query id of the HTML entity of the data
