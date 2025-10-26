@@ -201,14 +201,12 @@ class Chart(TopLevelMixin):
 
         Examples
         --------
-
-import babiaxr as babiaxr
-            >>> import babiaxr
-            >>> data = babiaxr.URLData('./data.json')
-            >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> final_chart = top_chart & bottom_chart
-            >>> #final_chart.show()
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
+        >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = top_chart & bottom_chart
+        >>> #final_chart.show()
         """
 
         return VConcatChart(self, other)
@@ -219,14 +217,12 @@ import babiaxr as babiaxr
 
         Examples
         --------
-
-import babiaxr as babiaxr
-            >>> import babiaxr
-            >>> data = babiaxr.URLData('./data.json')
-            >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-            >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-            >>> final_chart = left_chart | right_chart
-            >>> #final_chart.show()
+        >>> import babiaxr
+        >>> data = babiaxr.URLData('./data.json')
+        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+        >>> final_chart = left_chart | right_chart
+        >>> #final_chart.show()
         """
 
         return HConcatChart(self, other)
@@ -328,8 +324,6 @@ import babiaxr as babiaxr
         --------
         *Using transform_filter() giving the equation string:*
 
-
-import babiaxr as babiaxr
         >>> import babiaxr
         >>> data = babiaxr.URLData('./data.json')
         >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
@@ -338,8 +332,6 @@ import babiaxr as babiaxr
 
         *Using transform_filter() giving a Filter object*
 
-
-import babiaxr as babiaxr
         >>> import babiaxr
         >>> data = babiaxr.URLData('./data.json')
         >>> filtered_chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
@@ -383,14 +375,12 @@ class HConcatChart(TopLevelMixin):
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaxr.HConcatChart(left_chart, right_chart)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> final_chart = babiaxr.HConcatChart(left_chart, right_chart)
+    >>> #final_chart.show()
     """
 
     def __init__(self, left: Chart, right: Chart):
@@ -403,9 +393,9 @@ import babiaxr as babiaxr
         del self.left.specifications['data']  # Delete the data field of the left chart
         del self.right.specifications['data']  # Delete the data field of the right chart
         self.specifications.update({'hconcat': [self.left.specifications, self.right.specifications]})
-        self.__reposition_charts()  # Change the position of the charts
+        self._reposition_charts()  # Change the position of the charts
 
-    def __reposition_charts(self):
+    def _reposition_charts(self):
         """Repositions the charts in the scene (for horizontal concatenation)."""
 
         self.left.specifications['position']['x'] -= 5
@@ -430,14 +420,12 @@ def concat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaxr.concat(left_chart, right_chart)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> final_chart = babiaxr.concat(left_chart, right_chart)
+    >>> #final_chart.show()
     """
 
     return HConcatChart(left, right)
@@ -461,14 +449,12 @@ def hconcat(left: Chart, right: Chart) -> HConcatChart:
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaxr.concat(left_chart, right_chart)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> final_chart = babiaxr.concat(left_chart, right_chart)
+    >>> #final_chart.show()
     """
 
     return HConcatChart(left, right)
@@ -492,14 +478,12 @@ class VConcatChart(TopLevelMixin):
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaxr.VConcatChart(top_chart, bottom_chart)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> final_chart = babiaxr.VConcatChart(top_chart, bottom_chart)
+    >>> #final_chart.show()
     """
 
     def __init__(self, top: Chart, bottom: Chart):
@@ -512,9 +496,9 @@ import babiaxr as babiaxr
         del self.top.specifications['data']  # Delete the data field of the top chart
         del self.bottom.specifications['data']  # Delete the data field of the bottom chart
         self.specifications.update({'vconcat': [self.top.specifications, self.bottom.specifications]})
-        self.__repositionCharts()
+        self._repositionCharts()
 
-    def __repositionCharts(self):
+    def _repositionCharts(self):
         """Repositions the charts in the scene (for vertical concatenation)."""
 
         self.top.specifications['position']['y'] += 5  # The top chart is moved in the Y axis
@@ -540,14 +524,12 @@ def vconcat(top: Chart, bottom: Chart) -> VConcatChart:
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> final_chart = babiaxr.vconcat(top_chart, bottom_chart)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> top_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> bottom_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> final_chart = babiaxr.vconcat(top_chart, bottom_chart)
+    >>> #final_chart.show()
     """
 
     return VConcatChart(top, bottom)
@@ -575,16 +557,14 @@ class XConcatChart(TopLevelMixin):
 
     Examples
     --------
-
-import babiaxr as babiaxr
-        >>> import babiaxr
-        >>> data = babiaxr.URLData('./data.json')
-        >>> top_left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
-        >>> top_right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
-        >>> bottom_left = babiaxr.Chart(data).mark_bar().encode(x='xAxis3', y='yAxis3')
-        >>> bottom_right = babiaxr.Chart(data).mark_bar().encode(x='xAxis4',y='yAxis4')
-        >>> final_chart = babiaxr.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
-        >>> #final_chart.show()
+    >>> import babiaxr
+    >>> data = babiaxr.URLData('./data.json')
+    >>> top_left_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis1', y='yAxis1')
+    >>> top_right_chart = babiaxr.Chart(data).mark_bar().encode(x='xAxis2', y='yAxis2')
+    >>> bottom_left = babiaxr.Chart(data).mark_bar().encode(x='xAxis3', y='yAxis3')
+    >>> bottom_right = babiaxr.Chart(data).mark_bar().encode(x='xAxis4',y='yAxis4')
+    >>> final_chart = babiaxr.XConcatChart(top_left_chart, top_right_chart, bottom_left, bottom_right)
+    >>> #final_chart.show()
     """
 
     def __init__(self, top_left: Chart, top_right: Chart, bottom_left: Chart, bottom_right: Chart):
@@ -601,9 +581,9 @@ import babiaxr as babiaxr
             del chart.specifications['data']
             concat_specs.append(chart.specifications)
         self.specifications.update({'concat': concat_specs})
-        self.__repositionCharts()
+        self._repositionCharts()
 
-    def __repositionCharts(self):
+    def _repositionCharts(self):
         """Repositions the charts in the scene (for concatenation)."""
 
         # Top left chart

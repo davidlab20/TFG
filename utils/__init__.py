@@ -1,4 +1,4 @@
 """BabiaXR utils"""
 
-from chartsHtmlCreator import *
-from sceneCreator import *
+from utils.chartsHtmlCreator import *
+from utils.sceneCreator import *
