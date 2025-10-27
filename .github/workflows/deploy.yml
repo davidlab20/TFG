@@ -23,7 +23,8 @@ jobs:
               marimo export html-wasm filtered_chart_notebook.py -o filtered_chart_notebook.html --mode edit
 
           - name: Make sure notebooks are created
-            run: | 
+            run: |
+              cd examples
               pwd
               ls -la
 
