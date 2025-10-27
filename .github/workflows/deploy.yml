@@ -44,5 +44,3 @@ jobs:
               uses: actions/deploy-pages@v4
               with:
                   artifact_name: github-pages
-            - name: Show page URL
-              run: echo ${{ steps.deployment.outputs.page_url }}
