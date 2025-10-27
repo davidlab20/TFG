@@ -4,6 +4,15 @@ __generated_with = "0.17.2"
 app = marimo.App()
 
 
+@app.cell(hide_code=True)
+async def _():
+    # Import the package from GitHub
+    # IMPORTANT: do not change this cell code
+    import micropip
+    await micropip.install("https://davidlab20.github.io/TFG/dist/babiaxr-2025.10.27-py3-none-any.whl")
+    return
+
+
 @app.cell
 def _():
     import babiaxr
