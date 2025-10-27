@@ -17,6 +17,8 @@ async def _():
 def _():
     import babiaxr
     import json
+    import urllib.request
+
 
     data_str = """
         [{"model": "leon", "motor": "electric", "color": "red",
@@ -41,16 +43,17 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = babiaxr.Data.from_json(data_str)
-    return babiaxr, data, json
+    return babiaxr, data, json, urllib
 
 
 @app.cell
-def _(babiaxr, json):
-    with open('https://davidlab20.github.io/TFG/examples/chart.json') as file:
-        json_specs = json.load(file)
+def _(babiaxr, json, urllib):
+    # Import a filtered chart from a JSON file storing the specifications of the chart
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/filt_chart.json") as json_chart:
+        json_specs = json.load(json_chart)
 
-    chart = babiaxr.Chart.from_dict(json_specs)
-    chart.show()
+    imported_chart = babiaxr.Chart.from_dict(json_specs)
+    imported_chart.show()
     return
 
 

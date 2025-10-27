@@ -17,6 +17,7 @@ async def _():
 def _():
     import babiaxr
     import json
+    import urllib.request  # To import files from web
 
 
     data_str = """
@@ -43,7 +44,7 @@ def _():
     """
     data = babiaxr.Data.from_json(data_str)  # Raw data
     url_data = babiaxr.URLData('./data.json')  # URL of the data
-    return babiaxr, data, json, url_data
+    return babiaxr, data, json, url_data, urllib
 
 
 @app.cell
@@ -79,9 +80,9 @@ def _(babiaxr, url_data):
 
 
 @app.cell
-def _(babiaxr, json):
+def _(babiaxr, json, urllib):
     # Import a chart from a JSON file storing the specifications of the chart
-    with open('https://davidlab20.github.io/TFG/examples/chart.json') as json_chart:
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/chart.json") as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = babiaxr.Chart.from_dict(json_specs)
