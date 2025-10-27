@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "babiaxr"
+version = "2025.10.27"
+authors = [{name = "David Díaz"}]
+description = "Biblioteca Python para mostrar datos en realidad extendida utilizando BabiaXR."
+readme = "README.md"
+requires-python = ">=3.12"
+
+[project.urls]
+Documentation = "https://davidlab20.github.io/TFG/"
+Source = "https://github.com/davidlab20/TFG/"
