@@ -81,7 +81,7 @@ def _(babiaxr, url_data):
 @app.cell
 def _(babiaxr, json):
     # Import a chart from a JSON file storing the specifications of the chart
-    with open('../chart2.json') as json_chart:
+    with open('https://davidlab20.github.io/TFG/examples/chart.json') as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = babiaxr.Chart.from_dict(json_specs)

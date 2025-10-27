@@ -46,7 +46,7 @@ def _():
 
 @app.cell
 def _(babiaxr, json):
-    with open('../chart.json') as file:
+    with open('https://davidlab20.github.io/TFG/examples/chart.json') as file:
         json_specs = json.load(file)
 
     chart = babiaxr.Chart.from_dict(json_specs)
