@@ -26,6 +26,10 @@ jobs:
             with:
                 path: .
 
+          - name: Show page URL
+            run: echo ${{ steps.deployment.outputs.page_url }}
+
+
     deploy:
         needs: build
         runs-on: ubuntu-latest
