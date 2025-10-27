@@ -15,12 +15,9 @@ jobs:
           - name: Install marimo
             run: pip install marimo
 
-          - name: Change to directory examples  # Where the notebooks are stored
-            run: cd examples
-
           - name: 📄 Export notebooks
             run: |
-              pwd
+              cd examples
               marimo export html-wasm simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
               marimo export html-wasm multiple_chart_notebook.py -o multiple_chart_notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered_chart_notebook.html --mode edit
