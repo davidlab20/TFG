@@ -15,10 +15,8 @@ jobs:
           - name: Install marimo
             run: pip install marimo
 
-          - name: Show current directory
-            run: |
-              pwd
-              ls -la
+          - name: Change to directory examples  # Where the notebooks are stored
+            run: cd examples
 
           - name: 📄 Export notebooks
             run: |
