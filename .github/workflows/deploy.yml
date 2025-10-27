@@ -20,6 +20,7 @@ jobs:
 
           - name: 📄 Export notebooks
             run: |
+              pwd
               marimo export html-wasm simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
               marimo export html-wasm multiple_chart_notebook.py -o multiple_chart_notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered_chart_notebook.html --mode edit
