@@ -15,6 +15,11 @@ jobs:
           - name: Install marimo
             run: pip install marimo
 
+          - name: Show current directory
+            run: |
+              pwd
+              ls -la
+
           - name: 📄 Export notebooks
             run: |
               marimo export html-wasm simple_chart_notebook.py -o simple_chart_notebook.html --mode edit
