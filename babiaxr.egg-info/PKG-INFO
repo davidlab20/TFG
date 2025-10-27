@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: babiaxr
+Version: 2025.10.27
+Summary: Biblioteca Python para mostrar datos en realidad extendida utilizando BabiaXR.
+Author: David Díaz
+Project-URL: Documentation, https://davidlab20.github.io/TFG/
+Project-URL: Source, https://github.com/davidlab20/TFG/
+Requires-Python: >=3.12
+Description-Content-Type: text/markdown
