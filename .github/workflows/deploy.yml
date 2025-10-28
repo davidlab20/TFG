@@ -22,11 +22,6 @@ jobs:
               marimo export html-wasm multiple_chart_notebook.py -o multiple_chart_notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered_chart_notebook.html --mode edit
 
-          - name: Comprobar que están los notebooks
-            run: |
-              cd examples
-              ls
-
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
