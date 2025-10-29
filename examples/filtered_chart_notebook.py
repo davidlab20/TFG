@@ -69,8 +69,8 @@ def _(babiaxr, data):
 
 
 @app.cell
-def _(babiaxr, json):
-    with open('../data.json') as file_data:
+def _(babiaxr, json, urllib):
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data.json") as file_data:
         data_json = json.load(file_data)
         data2 = babiaxr.Data(data_json)
 
