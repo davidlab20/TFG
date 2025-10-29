@@ -21,11 +21,13 @@ jobs:
               marimo export html-wasm examples/multiple_chart_notebook.py -o examples/multiple-chart-notebook.html --mode edit
               marimo export html-wasm examples/filtered_chart_notebook.py -o examples/filtered-chart-notebook.html --mode edit
 
+          - name: 📝 Add .nojekyll file
+            run: touch .nojekyll
+
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
                 path: .
-
 
     deploy:
         needs: build
