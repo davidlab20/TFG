@@ -17,10 +17,9 @@ jobs:
 
           - name: 📄 Export notebooks
             run: |
-              cd examples
-              marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
-              marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
-              marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
+              marimo export html-wasm examples/simple_chart_notebook.py -o examples/simple-chart-notebook.html --mode edit
+              marimo export html-wasm examples/multiple_chart_notebook.py -o examples/multiple-chart-notebook.html --mode edit
+              marimo export html-wasm examples/filtered_chart_notebook.py -o examples/filtered-chart-notebook.html --mode edit
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
