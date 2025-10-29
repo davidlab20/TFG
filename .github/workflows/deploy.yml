@@ -22,15 +22,10 @@ jobs:
               marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
 
-          - name: Verify that the notebooks are created in html-wasm format
-            run: |
-              cd examples
-              ls
-
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
-                path: .
+                path: examples
 
 
     deploy:
