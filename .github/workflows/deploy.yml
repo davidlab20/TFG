@@ -12,17 +12,14 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Install marimo
-            run: pip install marimo
+          - name: Install requirements
+            run: pip install -r requirements.txt
 
           - name: 📄 Export notebooks
             run: |
               marimo export html-wasm examples/simple_chart_notebook.py -o examples/simple-chart-notebook.html --mode edit
               marimo export html-wasm examples/multiple_chart_notebook.py -o examples/multiple-chart-notebook.html --mode edit
               marimo export html-wasm examples/filtered_chart_notebook.py -o examples/filtered-chart-notebook.html --mode edit
-
-          - name: 📝 Add .nojekyll file
-            run: touch .nojekyll
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
