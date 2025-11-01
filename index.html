@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>BabiaXR Python library</title>
 
     <!-- Bootstrap -->
@@ -9,52 +10,213 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-    <!-- Menu -->
-    <div class="container-fluid">
-        <div class="row flex-nowrap">
-            <div style="background-color: lightGreen;" class="col-auto col-md-3 col-xl-2 px-sm-2 px-0">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
 
-                    <!-- Menu options -->
-                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
-                        <li class="nav-item">
-                            <a href="docs/home.html" class="nav-link align-middle px-0" target="iframe">
-                                <i class="fs-4 bi-house"></i>
-                                <span class="ms-1 d-none d-sm-inline">Home</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="docs/examples.html" class="nav-link px-0 align-middle" target="iframe">
-                                <i class="fs-4 bi-file-earmark-text"></i>
-                                <span class="ms-1 d-none d-sm-inline">Examples</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="docs/about.html" class="nav-link px-0 align-middle" target="iframe">
-                                <i class="fs-4 bi-people"></i>
-                                <span class="ms-1 d-none d-sm-inline">About</span>
-                            </a>
-                        </li>
-                    </ul>
+    <!-- Heading -->
+    <section class="bg-dark bg-gradient">
+        <div class="container-fluid">
+            <div class="row">
 
-                    <!-- Icons -->
-                    <div class="row">
-                        <p class="col">
-                            <a href="https://github.com/davidlab20/TFG">
-                                <i class="bi-github h3 my-4"></i>
-                            </a>
-                        </p>
+                <!-- Logo -->
+                <a class="col-auto text-light ms-4" href="index.html">
+                    <img style="width: 100px; height: auto" src="docs/imgs/logo.png" alt="Logo">
+                </a>
+
+                <!-- Menu options -->
+                <div class="col m-auto mt-4 text-light text-center h5">
+                    <div class="row justify-content-center">
+
+                        <div class="col-auto">
+                            <p><a href="docs/get-started.html" class="link-body-emphasis link-offset-2
+                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
+                                Get started
+                            </a></p>
+                        </div>
+
+                        <div class="col-auto">
+                            <p><a href="docs/examples.html" class="link-body-emphasis link-offset-2
+                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
+                                Examples
+                            </a></p>
+                        </div>
+
+                        <div class="col-auto">
+                            <p><a href="docs/about.html" class="link-body-emphasis link-offset-2
+                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
+                                About
+                            </a></p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Link icons -->
+                <div class="col m-auto text-light text-center">
+
+                    <div>
+                        <a href="https://github.com/davidlab20/TFG">
+                            <i class="bi-github h2 text-light"></i>
+                        </a>
                     </div>
 
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Iframe content -->
-            <div class="col p-0">
-                <iframe id="iframe" name="iframe" class="w-100 h-100 vh-100 d-block" src="docs/home.html"></iframe>
+    <!-- Package summary -->
+    <section>
+        <div class="container pt-6 mb-4">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <!-- Title -->
+                    <div class="my-3">
+                        <div>
+                            <p class="fw-bold display-5">BabiaXR Python: 3D visualization in Python</p>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mb-5">
+                        <h5 class="fst-normal"><b>BabiaXR Python</b> is a 3D visualization library in Python using
+                            Marimo notebooks. With very similar sintaxis to Vega-Altair library and Vega-lite
+                            grammar, so you can import your graphics and display them in 3D.</h5>
+                    </div>
+
+                </div>
+
+                <!-- Import code -->
+                <div class="col-md-6 m-auto">
+                    <div class="card bg-dark">
+                        <div class="card-body text-white">
+                            <span style="color: orange;">import</span> babiaxr
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Page button links -->
+        <div class="container-fluid bg-light pt-8 pb-7">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-lg-2">
+
+                    <a href="docs/get-started.html" class="btn">
+                        <div class="card text-start btn btn-light">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Getting started</h5>
+                                <p class="card-text">Get started with the BabiaXR Python's library with an easy example
+                                    of how to create a simple chart.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="docs/examples.html" class="btn">
+                        <div class="card text-start btn btn-light">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">Examples</h5>
+                                <p class="card-text">Review more examples about the different usages and visualizations
+                                    that you can create in 3D using BabiaXR Python library in Marimo editable notebooks.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="docs/user-guide.html" class="col btn">
+                        <div class="card text-start btn btn-light">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">User guide</h5>
+                                <p class="card-text">See more information about the different possibilities and
+                                    functions that BabiaXR Python library has.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="docs/api.html" class="col btn">
+                        <div class="card text-start btn btn-light">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">API</h5>
+                                <p class="card-text">More detailed information about the different methods and classes
+                                    that have BabiaXR Python library.</p>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usages section -->
+    <section>
+        <div class="container py-8 my-3">
+            <!-- Title -->
+            <div class="row mb-6">
+                <div class="col-12">
+                    <div class="lc-block text-center text-lg-start mb-4 mb-lg-0">
+                        <h2 class="fw-bold display-5">Usages</h2>
+                    </div>
+                </div>
             </div>
 
+            <!-- Different usages -->
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 pb-xl-3 text-center">
+
+                <div class="col mb-3 border-end border-2 border-dark-subtle">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div>
+                                <i class="bi-vr display-1 text-dark my-3"></i>
+                                <p class="h2 mt-4">VR Visualization</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col mb-3 border-end border-2 border-dark-subtle">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div>
+                                <i class="bi-file-text display-1 text-dark my-3"></i>
+                                <p class="h2 mt-4">Marimo notebooks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col mb-3 border-end border-2 border-dark-subtle">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div>
+                                <i class="bi-badge-3d display-1 text-dark my-3"></i>
+                                <p class="h2 mt-4">3D browser visualization</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col mb-3">
+                    <div class="card border-0">
+                        <div class="card-body">
+                            <div>
+                                <i class="bi-hand-index display-1 text-dark my-3"></i>
+                                <p class="h2 mt-4">Chart interaction</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Copyright footer -->
+    <section class="bg-dark text-white py-3">
+        <div class="col-auto ms-5">
+            <p class="text-start fw-bold">
+                <i>&copy</i> Copyright 2025-2026, David Díaz.
+            </p>
+        </div>
+    </section>
 </body>
 </html>
