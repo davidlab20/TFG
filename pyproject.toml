@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "babiaxr"
-version = "2025.11.1"
+version = "2025.11.03"
 authors = [{name = "David Díaz"}]
 description = "Python library to visualize data in Virtual and Extended Reality using BabiaXR."
 readme = "README.md"
