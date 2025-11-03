@@ -15,7 +15,12 @@ jobs:
           - name: Install requirements
             run: pip install -r requirements.txt
 
-          - name: 📄 Export notebooks
+          - name: 📄 Export Get Started notebooks
+            run: |
+              cd docs
+              marimo export html-wasm get-started-notebook.py -o get-started-notebook.html --mode run
+
+          - name: 📄 Export Example notebooks
             run: |
               cd examples
               marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
