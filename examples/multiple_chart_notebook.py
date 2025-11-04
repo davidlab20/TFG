@@ -9,7 +9,7 @@ async def _():
     # Import the package from GitHub
     # IMPORTANT: do not change this cell code
     import micropip
-    await micropip.install("https://github.com/davidlab20/TFG/blob/main/dist/babiaxr-2025.11.4-py3-none-any.whl")
+    await micropip.install("https://github.com/davidlab20/TFG/raw/main/dist/babiaxr-2025.11.4-py3-none-any.whl")
     return
 
 
