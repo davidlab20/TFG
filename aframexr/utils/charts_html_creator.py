@@ -6,9 +6,6 @@ from aframexr.utils.chart_creator import BarChartCreator, PointChartCreator
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def _create_simple_chart_html(chart_specs: dict):
         """

@@ -27,9 +27,6 @@ def _get_raw_data(data_field: dict):
 class BarChartCreator:
     """Bar chart creator class."""
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def _set_bar_width(data: list, max_width: float) -> float:
         return max_width / len(data)
@@ -117,9 +114,6 @@ class BarChartCreator:
 
 class PointChartCreator:
     """Point chart creator class."""
-
-    def __init__(self):
-        pass
 
     @staticmethod
     def get_chart_specs(raw_data: list[dict], encoding: dict, base_position: str) -> list[dict]:

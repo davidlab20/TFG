@@ -20,8 +20,6 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 
 
 class SceneCreator:
-    def __init__(self):
-        pass
 
     @staticmethod
     def create_scene(specs: dict):
