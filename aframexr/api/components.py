@@ -5,6 +5,7 @@ import marimo
 from typing import Literal
 
 from aframexr.api.data import Data, URLData
+from aframexr.utils.defaults import *
 from aframexr.utils.scene_creator import SceneCreator
 
 
@@ -143,7 +144,7 @@ class Chart(TopLevelMixin):
         If data is not a Data or URLData object.
     """
 
-    def __init__(self, data: Data | URLData, position: str = '0 0 0'):
+    def __init__(self, data: Data | URLData, position: str = DEFAULT_CHART_POS):
         super().__init__()
 
         # Data
@@ -155,6 +156,7 @@ class Chart(TopLevelMixin):
             raise TypeError(f'Expected Data | URLData, got {type(data).__name__} instead.')
 
         # Position
+        _, default_y, default_z = DEFAULT_CHART_POS.split()  # Default value of axis Y and Z
         all_axis = position.strip().split()  # Split axis by spaces
         for axis in all_axis:
             try:
@@ -164,25 +166,26 @@ class Chart(TopLevelMixin):
         if len(all_axis) == 3:  # Position is 'x y z'
                 self._specifications.update({'position': f'{all_axis[0]} {all_axis[1]} {all_axis[2]}'})
         elif len(all_axis) == 2:  # Position is 'x y'
-                self._specifications.update({'position': f'{all_axis[0]} {all_axis[1]} 0'})  # Set z coordinate to 0
+                self._specifications.update({'position': f'{all_axis[0]} {all_axis[1]} {default_z}'})
         elif len(all_axis) == 1:  # Position is 'x'
-                self._specifications.update({'position': f'{all_axis[0]} 0 0'})  # Set y and z coordinate to 0
+                self._specifications.update({'position': f'{all_axis[0]} {default_y} {default_z}'})
         else:
             raise ValueError(f'The position: {position} is not correct.')
 
     # Types of charts
-    def mark_bar(self, width: float = 10, height: float = 10, depth: float = 1):
+    def mark_bar(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_BAR_CHART_HEIGHT,
+                 depth: float = DEFAULT_BAR_CHART_DEPTH):
         """
         Bars chart.
 
         Parameters
         ----------
         width : float (optional)
-            Maximum width of the bar chart. If not specified, the default is 10. Must be greater than 0.
+            Maximum width of the bar chart. If not specified, using default. Must be greater than 0.
         height : float (optional)
-            Maximum height of the bar (the highest bar). If not specified, the default is 10. Must be greater than 0.
+            Maximum height of the bar (the highest bar). If not specified, using default. Must be greater than 0.
         depth : float (optional)
-            Maximym depth of the bar chart. If not specified, the default is 10. Must be greater than 0.
+            Maximum depth of the bar chart. If not specified, using default. Must be greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'bar'}})

@@ -1,6 +1,7 @@
 """AframeXR charts HTML creator"""
 
-from aframexr.utils.chart_creator import BarChartCreator, PointChartCreator
+from aframexr.utils.axis_html_creator import AxisHTMLCreator
+from aframexr.utils.chart_creator import ChartCreator
 
 
 class ChartsHTMLCreator:
@@ -31,18 +32,22 @@ class ChartsHTMLCreator:
 
         # Create the HTML of the chart
         chart_html = ''
+        elements_specs = ChartCreator.get_elements_specs(chart_type, chart_specs)
         if chart_type == 'bar':
-            elements_specs = BarChartCreator.get_chart_specs(chart_specs)
             base_html = '<a-box position="{pos}" width="{width}" height="{height}" depth="{depth}" color="{color}"></a-box>'
-            for element in elements_specs:
-                chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
-        if chart_type == 'point':
-            elements_specs = PointChartCreator.get_chart_specs(chart_specs)
+        elif chart_type == 'point':
             base_html = '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
-            for element in elements_specs:
-                chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
+        else:  # Should never enter here, should have raised error before
+            raise RuntimeError('Something went wrong. Should never happen.')
+        # Elements HTML
+        for element in elements_specs:
+            chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
 
-        # Create HTML of the axis
+        # Axis HTML
+        start, end_x, end_y, end_z = ChartCreator.get_axis_specs(chart_type, chart_specs)
+        chart_html += AxisHTMLCreator.create_axis_html(start, end_x, end_y, end_z)
+
+        chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
 
         return chart_html
 
