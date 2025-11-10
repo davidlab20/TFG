@@ -173,8 +173,7 @@ class Chart(TopLevelMixin):
             raise ValueError(f'The position: {position} is not correct.')
 
     # Types of charts
-    def mark_bar(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_BAR_CHART_HEIGHT,
-                 depth: float = DEFAULT_BAR_CHART_DEPTH):
+    def mark_bar(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
         """
         Bars chart.
 
@@ -184,29 +183,40 @@ class Chart(TopLevelMixin):
             Maximum width of the bar chart. If not specified, using default. Must be greater than 0.
         height : float (optional)
             Maximum height of the bar (the highest bar). If not specified, using default. Must be greater than 0.
-        depth : float (optional)
-            Maximum depth of the bar chart. If not specified, using default. Must be greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'bar'}})
-        if width > 0 or not width:
+        if width > 0:
             self._specifications.update({'width': width})
         else:
             raise ValueError('width must be greater than 0.')
-        if height > 0 or not height:
+        if height > 0:
             self._specifications.update({'height': height})
         else:
             raise ValueError('height must be greater than 0.')
-        if depth > 0 or not depth:
-            self._specifications.update({'depth': depth})
-        else:
-            raise ValueError('depth must be greater than 0.')
         return self
 
-    def mark_point(self):
-        """Scatter plot."""
+    def mark_point(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
+        """
+        Scatter plot and bubble chart.
+
+        Parameters
+        ----------
+        width : float (optional)
+            Maximum width of the chart. If not specified, using default. Must be greater than 0.
+        height : float (optional)
+            Maximum height of the chart. If not specified, using default. Must be greater than 0.
+        """
 
         self._specifications.update({'mark': {'type': 'point'}})
+        if width > 0:
+            self._specifications.update({'width': width})
+        else:
+            raise ValueError('width must be greater than 0.')
+        if height > 0:
+            self._specifications.update({'height': height})
+        else:
+            raise ValueError('height must be greater than 0.')
         return self
 
     # Parameters of the chart
@@ -284,6 +294,17 @@ class Chart(TopLevelMixin):
             if not isinstance(y, str):
                 raise TypeError(f'Expected y as str, got {type(y).__name__} instead.')
             filled_params.update({'y': y})
+
+        # Verify the argument combinations
+        if not x or not y:
+            raise ValueError('x and y must be specified.')
+        if color and size:
+            raise ValueError('color and size cannot be specified at the same time.')
+        if self._specifications.get('type') == 'bar' and (color or size):
+            if color: raise ValueError('bar chart does not support color.')
+            if size: raise ValueError('bar chart does not support size.')
+        if self._specifications.get('type') == 'point' and (not color and not size):
+            raise ValueError('point chart has to receive "color" or "size".')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})

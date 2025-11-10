@@ -5,7 +5,7 @@ class AxisHTMLCreator:
     """Axis HTML creator class."""
 
     @staticmethod
-    def create_axis_html(start: str, end_x: float, end_y: float, end_z: float):
+    def create_axis_html(start: str, end_x: float, end_y: float):
         """
         Create a line for each axis and returns the HTML of the axis.
 
@@ -17,8 +17,6 @@ class AxisHTMLCreator:
             The end position of x-axis.
         end_y : float
             The end position of y-axis.
-        end_z : float
-            The end position of z-axis.
         """
 
         html = ''
@@ -30,8 +28,5 @@ class AxisHTMLCreator:
 
         # Y-axis
         html += f'<a-entity line="start: {start}; end: {base_x} {end_y} {base_z}; color: black"></a-entity>\n\t\t'
-
-        # Z-axis
-        html += f'<a-entity line="start: {start}; end: {base_x} {base_y} {end_z}; color: black"></a-entity>\n\t\t'
 
         return html

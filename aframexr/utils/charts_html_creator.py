@@ -21,7 +21,7 @@ class ChartsHTMLCreator:
         -----
         Supposing that chart_specs is a dictionary (at this method has been called from self.create_charts_html).
 
-        Suppose that the parameters are correct for get_chart_specs() method calls.
+        Suppose that the parameters are correct for method calls of ChartCreator and AxisHTMLCreator.
         """
 
         # Validate chart type
@@ -44,11 +44,10 @@ class ChartsHTMLCreator:
             chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
 
         # Axis HTML
-        start, end_x, end_y, end_z = ChartCreator.get_axis_specs(chart_type, chart_specs)
-        chart_html += AxisHTMLCreator.create_axis_html(start, end_x, end_y, end_z)
+        start, end_x, end_y = ChartCreator.get_axis_specs(chart_type, chart_specs)
+        chart_html += AxisHTMLCreator.create_axis_html(start, end_x, end_y)
 
         chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
-
         return chart_html
 
     @staticmethod
