@@ -395,6 +395,9 @@ class Chart(TopLevelMixin):
         >>> #filtered_chart.show()
         """
 
+        # Create a copy of the chart (in case of assignation, to preserve the main chart)
+        filt_chart = self.copy()
+
         # Validate the type of equation_filter and get a filter object from the equation_filter
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_string(equation_filter)
@@ -404,8 +407,8 @@ class Chart(TopLevelMixin):
             raise TypeError(f'Expected string or FilterTransform object, got {type(equation_filter).__name__}.')
 
         # Add the information of the filter object to the specifications
-        if not self._specifications.get('transform'):  # First time filtering the chart
-            self._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field in specs
+        if not filt_chart._specifications.get('transform'):  # First time filtering the chart
+            filt_chart._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field in specs
         else:  # Not the first filter of the chart
-            self._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
-        return self.copy()  # Returns a copy
+            filt_chart._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
+        return filt_chart  # Returns the copy of the chart
