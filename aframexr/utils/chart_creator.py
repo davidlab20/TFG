@@ -1,7 +1,7 @@
 """AframeXR chart creator"""
 
 import json
-import urllib.request
+import urllib.request, urllib.error
 
 from aframexr.utils.defaults import *
 
@@ -11,8 +11,11 @@ def _get_raw_data(data_field: dict):
 
     # Get the raw data of the chart
     if data_field.get('url'):  # Data is stored in a file
-        with urllib.request.urlopen(data_field['url']) as response:  # Load the data
-            data = response.read().decode()
+        try:
+            with urllib.request.urlopen(data_field['url']) as response:  # Load the data
+                data = response.read().decode()
+        except urllib.error.URLError:
+            raise IOError(f"Could not load data from URL: {data_field['url']}")
     elif data_field.get('values'):  # Data is stored as the raw data
         data = data_field['values']
     else:  # Should never enter here
@@ -29,11 +32,19 @@ def _get_raw_data(data_field: dict):
 class ChartCreator:
     """Chart creator base class"""
 
+    def __init__(self, chart_specs: dict):
+        base_position = chart_specs.get('position', DEFAULT_CHART_POS)
+        [self.base_x, self.base_y, self.base_z] = [float(pos) for pos in base_position.split()]  # Base position
+        self.encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
+        self.raw_data = _get_raw_data(chart_specs.get('data'))  # Raw data
+
     @staticmethod
     def get_elements_specs(chart_type: str, chart_specs: dict) -> list[dict]:
         """Return the chart specifications of the chart type."""
 
-        if chart_type == 'bar':
+        if chart_type == 'arc':
+            return ArcChartCreator(chart_specs).get_chart_specs()
+        elif chart_type == 'bar':
             return BarChartCreator(chart_specs).get_chart_specs()
         elif chart_type == 'point':
             return PointChartCreator(chart_specs).get_chart_specs()
@@ -41,25 +52,90 @@ class ChartCreator:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
     @staticmethod
-    def get_axis_specs(chart_type: str, chart_specs: dict) -> tuple[str, float, float]:
+    def get_axis_specs(chart_type: str, chart_specs: dict) -> tuple[None, None, None] | tuple[str, float, float]:
         """Return the axis specifications of the chart type."""
 
-        if chart_type == 'bar':
-            return BarChartCreator(chart_specs).get_axis_specs()
+        if chart_type == 'arc':
+            return None, None, None  # Pie chart and doughnut chart has no axis
+        elif chart_type == 'bar':
+            return BarChartCreator(chart_specs).axis_specs()
         elif chart_type == 'point':
-            return PointChartCreator(chart_specs).get_axis_specs()
+            return PointChartCreator(chart_specs).axis_specs()
         else:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
 
-class BarChartCreator:
+class ArcChartCreator(ChartCreator):
+    """Arc chart creator class."""
+
+    def __init__(self, chart_specs: dict):
+        super().__init__(chart_specs)
+        self.radius = chart_specs['mark'].get('outerRadius', DEFAULT_PIE_RADIUS)  # Outer radius of the chart
+        self.inner_radius = chart_specs['mark'].get('innerRadius', DEFAULT_PIE_INNER_RADIUS)  # Inner radius of the chart
+
+    @staticmethod
+    def _set_elements_theta(data: list) -> tuple[list, list]:
+        """Returns a tuple with a list storing the theta start of each element, and another storing the theta length."""
+
+        theta_start = []
+        theta_length = []
+        for i in range(len(data)):
+            if i == 0:
+                theta_start.append(0)  # The first element starts in theta = 0
+            else:
+                theta_start.append(theta_start[i - 1] + theta_length[i - 1])  # Start where the previous ended
+            theta_length.append((data[i] / sum(data)) * 360)  # Theta length in degrees
+        return theta_start, theta_length
+
+    @staticmethod
+    def _set_elements_colors(data: list) -> list:
+        """Returns a list of the color for each element composing the chart."""
+
+        colors = ["red", "green", "blue", "yellow", "magenta", "cyan"]
+        element_colors = [colors[c % len(colors)] for c in range(len(data))]
+        return element_colors
+
+    def get_chart_specs(self) -> list[dict]:
+        """Returns a list of dictionaries with the specifications for each element of the chart."""
+
+        elements_specs = []
+
+        # Axis
+        x_coordinates = [self.base_x for _ in range(len(self.raw_data))]
+        y_coordinates = [self.base_y for _ in range(len(self.raw_data))]
+        z_coordinates = [self.base_z for _ in range(len(self.raw_data))]
+
+        # Radius
+        inners_radius = [self.inner_radius for _ in range(len(self.raw_data))]
+        outers_radius = [self.radius for _ in range(len(self.raw_data))]
+
+        # Theta
+        field = self.encoding['theta']['field']
+        theta_data = [d[field] for d in self.raw_data]
+        theta_starts, theta_lengths = self._set_elements_theta(theta_data)
+
+        # Color
+        field = self.encoding['color']['field']
+        color_data = [d[field] for d in self.raw_data]
+        colors = self._set_elements_colors(color_data)
+
+        for elem in range(len(self.raw_data)):
+            specs = {}  # Specifications of the single element
+            specs.update({'pos': f'{x_coordinates[elem]} {y_coordinates[elem]} {z_coordinates[elem]}'})
+            specs.update({'inner_radius': inners_radius[elem]})
+            specs.update({'outer_radius': outers_radius[elem]})
+            specs.update({'theta_start': theta_starts[elem]})
+            specs.update({'theta_length': theta_lengths[elem]})
+            specs.update({'color': colors[elem]})
+            elements_specs.append(specs)
+        return elements_specs
+
+
+class BarChartCreator(ChartCreator):
     """Bar chart creator class."""
 
     def __init__(self, chart_specs: dict):
-        base_position = chart_specs.get('position', DEFAULT_CHART_POS)
-        [self.base_x, self.base_y, self.base_z] = [float(pos) for pos in base_position.split()]  # Base position
-        self.encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
-        self.raw_data = _get_raw_data(chart_specs.get('data'))  # Raw data
+        super().__init__(chart_specs)
         self.max_width = chart_specs.get('width', DEFAULT_BAR_CHART_WIDTH)  # Maximum width of the bar chart
         self.max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
 
@@ -102,7 +178,7 @@ class BarChartCreator:
     def get_chart_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the bar chart."""
 
-        elements_specs = []  # Will store the specifications for each element of the chart
+        elements_specs = []
 
         # X-axis
         field = self.encoding['x']['field']  # Field of the x-axis
@@ -133,21 +209,18 @@ class BarChartCreator:
             elements_specs.append(specs)
         return elements_specs
 
-    def get_axis_specs(self) -> tuple[str, float, float]:
+    def axis_specs(self) -> tuple[str, float, float]:
         start = f'{self.base_x} {self.base_y} {self.base_z}'
         end_x = self.base_x + self.max_width
         end_y = self.base_y + self.max_height
         return start, end_x, end_y
 
 
-class PointChartCreator:
+class PointChartCreator(ChartCreator):
     """Point chart creator class."""
 
     def __init__(self, chart_specs: dict):
-        base_position = chart_specs.get('position', DEFAULT_CHART_POS)
-        [self.base_x, self.base_y, self.base_z] = [float(pos) for pos in base_position.split()]  # Base position
-        self.encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
-        self.raw_data = _get_raw_data(chart_specs.get('data'))  # Raw data
+        super().__init__(chart_specs)
         self.max_radius = chart_specs.get('max_radius', DEFAULT_POINT_RADIUS)
 
     def _set_point_radius(self, data: list) -> list:
@@ -251,7 +324,7 @@ class PointChartCreator:
             elements_specs.append(specs)
         return elements_specs
 
-    def get_axis_specs(self) -> tuple[str, float, float]:
+    def axis_specs(self) -> tuple[str, float, float]:
         start = f'{self.base_x} {self.base_y} {self.base_z}'
         end_x = self.base_x + (len(self.raw_data) * DEFAULT_POINT_X_SEPARATION)
         end_y = self.base_y + DEFAULT_MAX_HEIGHT

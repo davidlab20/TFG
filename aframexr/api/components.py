@@ -93,11 +93,9 @@ class TopLevelMixin:
         if fileFormat == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
                 file.write(self.to_html())
-                file.close()
         elif fileFormat == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
-                json.dump(self._specifications, file)
-                file.close()
+                json.dump(self._specifications, file, indent=4)
         else:
             raise NotImplementedError('That format is not supported.')
 
@@ -173,6 +171,31 @@ class Chart(TopLevelMixin):
             raise ValueError(f'The position: {position} is not correct.')
 
     # Types of charts
+    def mark_arc(self, outer_radius: float = DEFAULT_PIE_RADIUS, inner_radius: float = DEFAULT_PIE_INNER_RADIUS):
+        """
+        Pie chart and doughnut chart.
+
+        Parameters
+        ----------
+        outer_radius : float (optional)
+            Outer radius of the pie chart. If not specified, using default. Must be greater than 0.
+        inner_radius : float (optional)
+            Inner radius of the pie chart. If not specified, using default. Must be greater than 0.
+        """
+
+        self._specifications.update({'mark': {'type': 'arc'}})
+        if outer_radius >= 0:
+            self._specifications['mark'].update({'outerRadius': outer_radius})
+        else:
+            raise ValueError('radius must be greater than 0.')
+        if inner_radius >= 0:
+            self._specifications['mark'].update({'innerRadius': inner_radius})
+        else:
+            raise ValueError('inner_radius must be greater than 0.')
+        if inner_radius > outer_radius:
+            raise ValueError('inner_radius must be smaller than outer_radius.')
+        return self
+
     def mark_bar(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
         """
         Bars chart.
@@ -186,11 +209,11 @@ class Chart(TopLevelMixin):
         """
 
         self._specifications.update({'mark': {'type': 'bar'}})
-        if width > 0:
+        if width >= 0:
             self._specifications.update({'width': width})
         else:
             raise ValueError('width must be greater than 0.')
-        if height > 0:
+        if height >= 0:
             self._specifications.update({'height': height})
         else:
             raise ValueError('height must be greater than 0.')
@@ -209,11 +232,11 @@ class Chart(TopLevelMixin):
         """
 
         self._specifications.update({'mark': {'type': 'point'}})
-        if width > 0:
+        if width >= 0:
             self._specifications.update({'width': width})
         else:
             raise ValueError('width must be greater than 0.')
-        if height > 0:
+        if height >= 0:
             self._specifications.update({'height': height})
         else:
             raise ValueError('height must be greater than 0.')
@@ -248,7 +271,7 @@ class Chart(TopLevelMixin):
         else:
             raise ValueError(f'Invalid encoding type: {param}.')
 
-    def encode(self, color: str = '', size: str = '', x: str = '', y: str = ''):
+    def encode(self, color: str = '', size: str = '', theta: str = '', x: str = '', y: str = ''):
         """
         Add properties to the chart.
 
@@ -264,13 +287,17 @@ class Chart(TopLevelMixin):
             Field of the data that will determine the color of sphere in the scatter plot (must be nominal).
         size : str (optional)
             Field of the data that will determine the size of the sphere in the bubble chart (must be quantitative).
+        theta : str (optional)
+            Field of the data that will determine the arcs of the pie and doughnut chart (must be quantitative).
         x : str (optional)
-            Field of the data what will determine the x-axis of the chart.
+            Field of the data that will determine the x-axis of the chart.
         y : str (optional)
             Field of the data what will determine the y-axis of the chart.
 
         Raises
         ------
+        TypeError
+            If the encoding type is incorrect.
         ValueError
             If no encoding data type is specified.
         """
@@ -286,6 +313,10 @@ class Chart(TopLevelMixin):
             if not isinstance(size, str):
                 raise TypeError(f'Expected size as str, got {type(size).__name__} instead.')
             filled_params.update({'size': size})
+        if theta:
+            if not isinstance(theta, str):
+                raise TypeError(f'Expected theta as str, got {type(theta).__name__} instead.')
+            filled_params.update({'theta': theta})
         if x:
             if not isinstance(x, str):
                 raise TypeError(f'Expected x as str, got {type(x).__name__} instead.')
@@ -296,14 +327,17 @@ class Chart(TopLevelMixin):
             filled_params.update({'y': y})
 
         # Verify the argument combinations
-        if not x or not y:
+        if self._specifications['mark']['type'] != 'arc' and (not x or not y):
             raise ValueError('x and y must be specified.')
         if color and size:
             raise ValueError('color and size cannot be specified at the same time.')
-        if self._specifications.get('type') == 'bar' and (color or size):
+        if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
+            if not theta: raise ValueError('theta must be specified in arc chart.')
+            if not color: raise ValueError('color must be specified in arc chart.')
+        if self._specifications['mark']['type'] == 'bar' and (color or size):
             if color: raise ValueError('bar chart does not support color.')
             if size: raise ValueError('bar chart does not support size.')
-        if self._specifications.get('type') == 'point' and (not color and not size):
+        if self._specifications['mark']['type'] == 'point' and (not color and not size):
             raise ValueError('point chart has to receive "color" or "size".')
 
         # Do the encoding

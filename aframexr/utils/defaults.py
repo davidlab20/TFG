@@ -8,6 +8,10 @@ DEFAULT_MAX_HEIGHT = 10  # Default maximum height of the chart
 DEFAULT_BAR_CHART_WIDTH = 10  # Default bar chart total width
 DEFAULT_BAR_CHART_HEIGHT = 10  # Default bar chart maximum height
 
+# Pie chart
+DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
+DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
+
 # Point chart
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
 DEFAULT_MAX_POINT_RADIUS = 1  # Default maximum point radius
