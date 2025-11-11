@@ -5,6 +5,8 @@ import urllib.request, urllib.error
 
 from aframexr.utils.defaults import *
 
+AVAILABLE_COLORS = ["red", "green", "blue", "yellow", "magenta", "cyan"]
+
 
 def _get_raw_data(data_field: dict):
     """Returns the raw data from the data field specifications."""
@@ -91,8 +93,7 @@ class ArcChartCreator(ChartCreator):
     def _set_elements_colors(data: list) -> list:
         """Returns a list of the color for each element composing the chart."""
 
-        colors = ["red", "green", "blue", "yellow", "magenta", "cyan"]
-        element_colors = [colors[c % len(colors)] for c in range(len(data))]
+        element_colors = [AVAILABLE_COLORS[c % len(AVAILABLE_COLORS)] for c in range(len(data))]
         return element_colors
 
     def get_chart_specs(self) -> list[dict]:
@@ -136,20 +137,15 @@ class BarChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self.max_width = chart_specs.get('width', DEFAULT_BAR_CHART_WIDTH)  # Maximum width of the bar chart
+        self.bar_width = chart_specs.get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
         self.max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
 
-    def _set_bar_widths(self, data: list) -> list:
-        """Sets the width of the bar chart."""
-
-        return [self.max_width / len(data) for _ in range(len(data))]
-
-    def _set_x_coordinates(self, data: list, bar_widths: list) -> list:
+    def _set_x_coordinates(self, data: list) -> list:
         """Returns a list of the x coordinates for each bar composing the bar chart."""
 
         x_coordinates = []
         for i in range(len(data)):
-            x_coordinates.append((self.base_x + (bar_widths[i] / 2)) + (i * bar_widths[i]))
+            x_coordinates.append((self.base_x + (self.bar_width / 2)) + (i * self.bar_width))
         return x_coordinates
 
     def _set_heights_of_bars(self, data: list) -> list:
@@ -171,8 +167,7 @@ class BarChartCreator(ChartCreator):
     def _set_bars_colors(data: list) -> list:
         """Returns a list of the color for each bar composing the bar chart."""
 
-        colors = ["red", "green", "blue", "yellow", "magenta", "cyan"]
-        bar_colors = [colors[c % len(colors)] for c in range(len(data))]
+        bar_colors = [AVAILABLE_COLORS[c % len(AVAILABLE_COLORS)] for c in range(len(data))]
         return bar_colors
 
     def get_chart_specs(self) -> list[dict]:
@@ -184,8 +179,8 @@ class BarChartCreator(ChartCreator):
         field = self.encoding['x']['field']  # Field of the x-axis
         x_data = [d[field] for d in self.raw_data]
 
-        bar_widths = self._set_bar_widths(x_data)  # Widths for each bar
-        x_coordinates = self._set_x_coordinates(x_data, bar_widths)  # X-axis value for each bar
+        bar_widths = [self.bar_width for _ in range(len(self.raw_data))]  # Widths for each bar
+        x_coordinates = self._set_x_coordinates(x_data)  # X-axis value for each bar
 
         # Y-axis
         field = self.encoding['y']['field']  # Field of the y-axis
@@ -211,7 +206,7 @@ class BarChartCreator(ChartCreator):
 
     def axis_specs(self) -> tuple[str, float, float]:
         start = f'{self.base_x} {self.base_y} {self.base_z}'
-        end_x = self.base_x + self.max_width
+        end_x = self.base_x + (self.bar_width * len(self.raw_data))
         end_y = self.base_y + self.max_height
         return start, end_x, end_y
 
@@ -268,13 +263,12 @@ class PointChartCreator(ChartCreator):
     def _set_points_colors(self, data: list) -> list:
         """Returns a list of the color for each point composing the scatter plot."""
 
-        colors = ["red", "green", "blue", "yellow", "magenta", "cyan"]
         points_colors = []
         if self.encoding.get('color'):  # Scatter plot (same color for each type of point)
             types = list(set(data))  # Remove the duplicated values and convert into a list
             for t in data:
                 index = types.index(t)  # Get the index of the type in types
-                points_colors.append(colors[index % len(colors)])  # Add the color of the type
+                points_colors.append(AVAILABLE_COLORS[index % len(AVAILABLE_COLORS)])  # Add the color of the type
         return points_colors
 
 

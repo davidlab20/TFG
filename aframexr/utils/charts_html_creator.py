@@ -7,7 +7,7 @@ from aframexr.utils.chart_creator import ChartCreator
 CHART_TEMPLATES = {
     'arc': ('<a-ring position="{pos}" radius-inner="{inner_radius}" radius-outer="{outer_radius}" '
             'theta-start="{theta_start}" theta-length="{theta_length}" color="{color}"></a-ring>'),
-    'bar': '<a-box position="{pos}" width="{width}" height="{height}" depth="{depth}" color="{color}"></a-box>',
+    'bar': '<a-box position="{pos}" width="{width}" height="{height}" color="{color}"></a-box>',
     'point': '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
 }
 

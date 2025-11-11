@@ -140,6 +140,8 @@ class Chart(TopLevelMixin):
     ------
     TypeError
         If data is not a Data or URLData object.
+    ValueError
+        If position is invalid.
     """
 
     def __init__(self, data: Data | URLData, position: str = DEFAULT_CHART_POS):
@@ -196,46 +198,46 @@ class Chart(TopLevelMixin):
             raise ValueError('inner_radius must be smaller than outer_radius.')
         return self
 
-    def mark_bar(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
+    def mark_bar(self, size: float = DEFAULT_BAR_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
         """
         Bars chart.
 
         Parameters
         ----------
-        width : float (optional)
-            Maximum width of the bar chart. If not specified, using default. Must be greater than 0.
+        size : float (optional)
+            Width of the bars. If not specified, using default. Must be greater than 0.
         height : float (optional)
-            Maximum height of the bar (the highest bar). If not specified, using default. Must be greater than 0.
+            Maximum height of the chart (the highest bar). If not specified, using default. Must be greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'bar'}})
-        if width >= 0:
-            self._specifications.update({'width': width})
+        if size >= 0:
+            self._specifications.update({'width': size})
         else:
-            raise ValueError('width must be greater than 0.')
+            raise ValueError('size must be greater than 0.')
         if height >= 0:
             self._specifications.update({'height': height})
         else:
             raise ValueError('height must be greater than 0.')
         return self
 
-    def mark_point(self, width: float = DEFAULT_BAR_CHART_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
+    def mark_point(self, size: float = DEFAULT_POINT_RADIUS, height: float = DEFAULT_MAX_HEIGHT):
         """
         Scatter plot and bubble chart.
 
         Parameters
         ----------
-        width : float (optional)
-            Maximum width of the chart. If not specified, using default. Must be greater than 0.
+        size : float (optional)
+            Maximum radius of the point. If not specified, using default. Must be greater than 0.
         height : float (optional)
             Maximum height of the chart. If not specified, using default. Must be greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'point'}})
-        if width >= 0:
-            self._specifications.update({'width': width})
+        if size >= 0:
+            self._specifications['mark'].update({'width': size})
         else:
-            raise ValueError('width must be greater than 0.')
+            raise ValueError('size must be greater than 0.')
         if height >= 0:
             self._specifications.update({'height': height})
         else:
@@ -284,7 +286,7 @@ class Chart(TopLevelMixin):
         Parameters
         ----------
         color : str (optional)
-            Field of the data that will determine the color of sphere in the scatter plot (must be nominal).
+            Field of the data that will determine the color of the sphere in the scatter plot.
         size : str (optional)
             Field of the data that will determine the size of the sphere in the bubble chart (must be quantitative).
         theta : str (optional)
@@ -329,16 +331,12 @@ class Chart(TopLevelMixin):
         # Verify the argument combinations
         if self._specifications['mark']['type'] != 'arc' and (not x or not y):
             raise ValueError('x and y must be specified.')
-        if color and size:
-            raise ValueError('color and size cannot be specified at the same time.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
             if not theta: raise ValueError('theta must be specified in arc chart.')
             if not color: raise ValueError('color must be specified in arc chart.')
         if self._specifications['mark']['type'] == 'bar' and (color or size):
             if color: raise ValueError('bar chart does not support color.')
             if size: raise ValueError('bar chart does not support size.')
-        if self._specifications['mark']['type'] == 'point' and (not color and not size):
-            raise ValueError('point chart has to receive "color" or "size".')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})
