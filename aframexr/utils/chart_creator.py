@@ -3,13 +3,14 @@
 import json
 import urllib.request, urllib.error
 
+from aframexr.api.filters import FilterTransform
 from aframexr.utils.defaults import *
 
 AVAILABLE_COLORS = ["red", "green", "blue", "yellow", "magenta", "cyan"]
 
 
-def _get_raw_data(data_field: dict):
-    """Returns the raw data from the data field specifications."""
+def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
+    """Returns the raw data from the data field specifications, transformed if necessary."""
 
     # Get the raw data of the chart
     if data_field.get('url'):  # Data is stored in a file
@@ -28,6 +29,17 @@ def _get_raw_data(data_field: dict):
         raw_data = json.loads(str(data).replace('\'', '\"'))  # Replace ' with " for syntaxis
     except json.decoder.JSONDecodeError:
         raise TypeError('Data is not a valid JSON string.')
+
+    # Transform data (if necessary)
+    if transform_field:
+        for transformation in transform_field:
+            if transformation.get('filter'):
+                filter_object = FilterTransform.from_string(transformation['filter'])
+                filtered_data = filter_object.filter_data(raw_data)
+                raw_data = filtered_data
+            else:
+                raise NotImplementedError(f'The transformation {transformation} has not been implemented yet.')
+
     return raw_data
 
 
@@ -38,7 +50,7 @@ class ChartCreator:
         base_position = chart_specs.get('position', DEFAULT_CHART_POS)
         [self.base_x, self.base_y, self.base_z] = [float(pos) for pos in base_position.split()]  # Base position
         self.encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
-        self.raw_data = _get_raw_data(chart_specs.get('data'))  # Raw data
+        self.raw_data = _get_raw_data(chart_specs.get('data'), chart_specs.get('transform'))  # Raw data
 
     @staticmethod
     def get_elements_specs(chart_type: str, chart_specs: dict) -> list[dict]:
@@ -308,6 +320,6 @@ class PointChartCreator(ChartCreator):
 
     def axis_specs(self) -> tuple[str, float, float]:
         start = f'{self.base_x} {self.base_y} {self.base_z}'
-        end_x = self.base_x + (len(self.raw_data) * DEFAULT_POINT_X_SEPARATION)
+        end_x = self.base_x + (len(self.raw_data) * DEFAULT_POINT_X_SEPARATION) + self.max_radius
         end_y = self.base_y + DEFAULT_MAX_HEIGHT
         return start, end_x, end_y

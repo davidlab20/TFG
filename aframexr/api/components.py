@@ -1,10 +1,12 @@
 """AframeXR components"""
 
+import copy
 import json
 import marimo
 from typing import Literal
 
 from aframexr.api.data import Data, URLData
+from aframexr.api.filters import *
 from aframexr.utils.defaults import *
 from aframexr.utils.scene_creator import SceneCreator
 
@@ -29,6 +31,12 @@ class TopLevelMixin:
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}")
         concatenated_chart = TopLevelMixin({'concat': [self._specifications, other._specifications]})
         return concatenated_chart
+
+    # Copy of the chart
+    def copy(self):
+        """Returns a deep copy of the chart."""
+
+        return copy.deepcopy(self)
 
     # Importing charts
     @staticmethod
@@ -347,3 +355,57 @@ class Chart(TopLevelMixin):
             if encoding_type:
                 self._specifications['encoding'][param_key]['type'] = encoding_type
         return self
+
+    # Filtering data
+    def transform_filter(self, equation_filter: str | FilterTransform):
+        """
+        Filters the chart with the given transformation.
+
+        Parameters
+        ----------
+        equation_filter : str | FilterTransform
+            The equation string of the filter transformation, or a Filter object (see Examples).
+
+        Raises
+        ------
+        TypeError
+            If equation is not a string or a Filter object.
+
+        Notes
+        -----
+        Can be concatenated with the rest of functions of the Chart, without needing an asignation.
+
+        Examples
+        --------
+        *Using transform_filter() giving the equation string:*
+
+        >>> import aframexr
+        >>> data = aframexr.URLData('./data.json')
+        >>> filtered_chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> filtered_chart = filtered_chart.transform_filter('datum.motor=diesel')
+        >>> #filtered_chart.show()
+
+        *Using transform_filter() giving a Filter object*
+
+        >>> import aframexr
+        >>> data = aframexr.URLData('./data.json')
+        >>> filtered_chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> filter_object = aframexr.FieldEqualPredicate(field='motor', equal='diesel')
+        >>> filtered_chart = filtered_chart.transform_filter(filter_object)
+        >>> #filtered_chart.show()
+        """
+
+        # Validate the type of equation_filter and get a filter object from the equation_filter
+        if isinstance(equation_filter, str):
+            filter_transform = FilterTransform.from_string(equation_filter)
+        elif isinstance(equation_filter, FilterTransform):
+            filter_transform = equation_filter
+        else:
+            raise TypeError(f'Expected string or FilterTransform object, got {type(equation_filter).__name__}.')
+
+        # Add the information of the filter object to the specifications
+        if not self._specifications.get('transform'):  # First time filtering the chart
+            self._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field in specs
+        else:  # Not the first filter of the chart
+            self._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
+        return self.copy()  # Returns a copy
