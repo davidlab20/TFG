@@ -12,7 +12,6 @@ DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
 DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
 
 # Point chart
-DEFAULT_POINT_RADIUS = 0.5  # Default point radius
-DEFAULT_MAX_POINT_RADIUS = 1  # Default maximum point radius
+DEFAULT_POINT_RADIUS = 1  # Default point radius
 DEFAULT_POINT_X_SEPARATION = 1  # Default horizontal separation between points
 DEFAULT_POINT_COLOR = "blue"  # Default point color

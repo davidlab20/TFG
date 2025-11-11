@@ -137,7 +137,7 @@ class BarChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self.bar_width = chart_specs.get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
+        self.bar_width = chart_specs['mark'].get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
         self.max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
 
     def _set_x_coordinates(self, data: list) -> list:
@@ -216,18 +216,7 @@ class PointChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self.max_radius = chart_specs.get('max_radius', DEFAULT_POINT_RADIUS)
-
-    def _set_point_radius(self, data: list) -> list:
-        """Returns a list of the radius for each point composing the bar chart."""
-
-        points_radius = []
-        if self.encoding.get('color'):  # Scatter plot (all points same size)
-            points_radius = [DEFAULT_POINT_RADIUS for _ in range(len(data))]
-        if self.encoding.get('size'):  # Bubbles plot (each point size is proportional to the data value)
-            max_value = max(data)
-            points_radius = [(r / max_value) * self.max_radius for r in data]
-        return points_radius
+        self.max_radius = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
 
     def _set_x_coordinates(self, data: list, points_radius: list) -> list:
         """Returns a list of the x coordinates for each point composing the bar chart."""
@@ -252,12 +241,11 @@ class PointChartCreator(ChartCreator):
             y_coordinates.append(base_y + (heights[i] / 2))
         return y_coordinates
 
-    @staticmethod
-    def _set_points_radius(data: list) -> list:
+    def _set_points_radius(self, data: list) -> list:
         """Returns a list of the radius for each point composing the bubble chart."""
 
         max_value = max(data)
-        points_radius = [(r / max_value) * DEFAULT_MAX_POINT_RADIUS for r in data]
+        points_radius = [(r / max_value) * self.max_radius for r in data]
         return points_radius
 
     def _set_points_colors(self, data: list) -> list:

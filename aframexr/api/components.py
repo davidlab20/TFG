@@ -212,7 +212,7 @@ class Chart(TopLevelMixin):
 
         self._specifications.update({'mark': {'type': 'bar'}})
         if size >= 0:
-            self._specifications.update({'width': size})
+            self._specifications['mark'].update({'width': size})
         else:
             raise ValueError('size must be greater than 0.')
         if height >= 0:
@@ -235,7 +235,7 @@ class Chart(TopLevelMixin):
 
         self._specifications.update({'mark': {'type': 'point'}})
         if size >= 0:
-            self._specifications['mark'].update({'width': size})
+            self._specifications['mark'].update({'max_radius': size})
         else:
             raise ValueError('size must be greater than 0.')
         if height >= 0:
