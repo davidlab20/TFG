@@ -9,6 +9,9 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <a-scene>
+        <!-- Camera -->
+        <a-camera position="0 4 0"></a-camera>
+    
         <!-- Environment -->
         <a-entity environment="preset: forest"></a-entity>
         
