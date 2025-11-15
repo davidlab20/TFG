@@ -6,6 +6,7 @@ import marimo
 from typing import Literal
 
 from aframexr.api.data import Data, URLData
+from aframexr.api.encoding import *
 from aframexr.api.filters import *
 from aframexr.utils.defaults import *
 from aframexr.utils.scene_creator import SceneCreator
@@ -253,34 +254,6 @@ class Chart(TopLevelMixin):
         return self
 
     # Parameters of the chart
-    @staticmethod
-    def _split_pram_and_encoding(param: str) -> tuple[str, str | None]:
-        """
-        Splits and returns the parameter and the encoding data type of the parameter.
-
-        Raises
-        ------
-        TypeError
-            If the encoding type is incorrect.
-
-        Notes
-        -----
-        Supposing that param is a string, as it has been called from encode() method.
-        """
-
-        valid_encoding_types = {'Q': 'quantitative', 'O': 'ordinal', 'N': 'nominal', 'T': 'temporal'}
-        param_parts = param.split(':')  # Split parameter in field:encoding_type
-        if len(param_parts) == 1:  # No encoding data type is specified
-            return param, None
-        if len(param_parts) == 2:
-            field = param_parts[0]
-            encoding_type = param_parts[1].upper()  # Convert to upper case (to accept lower case also)
-            if encoding_type not in valid_encoding_types:
-                raise ValueError(f'Invalid encoding type: {encoding_type}')
-            return field, valid_encoding_types[encoding_type]
-        else:
-            raise ValueError(f'Invalid encoding type: {param}.')
-
     def encode(self, color: str = '', size: str = '', theta: str = '', x: str = '', y: str = ''):
         """
         Add properties to the chart.
@@ -328,12 +301,12 @@ class Chart(TopLevelMixin):
                 raise TypeError(f'Expected theta as str, got {type(theta).__name__} instead.')
             filled_params.update({'theta': theta})
         if x:
-            if not isinstance(x, str):
-                raise TypeError(f'Expected x as str, got {type(x).__name__} instead.')
+            if not isinstance(x, str | X):
+                raise TypeError(f'Expected x as str | aframexr.X, got {type(x).__name__} instead.')
             filled_params.update({'x': x})
         if y:
-            if not isinstance(y, str):
-                raise TypeError(f'Expected y as str, got {type(y).__name__} instead.')
+            if not isinstance(y, str | Y):
+                raise TypeError(f'Expected y as str | aframexr.Y, got {type(y).__name__} instead.')
             filled_params.update({'y': y})
 
         # Verify the argument combinations
@@ -350,10 +323,10 @@ class Chart(TopLevelMixin):
         self._specifications.update({'encoding': {}})
         for param_key in filled_params:
             param_value = filled_params[param_key]
-            field, encoding_type = self._split_pram_and_encoding(param_value)
-            self._specifications['encoding'].update({param_key: {'field': field}})
-            if encoding_type:
-                self._specifications['encoding'][param_key]['type'] = encoding_type
+            if isinstance(param_value, Encoding):
+                self._specifications['encoding'].update(param_value.to_dict())
+            else:
+                self._specifications['encoding'].update({param_key: {'field': param_value}})
         return self
 
     # Filtering data
