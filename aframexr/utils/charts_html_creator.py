@@ -1,15 +1,8 @@
 """AframeXR charts HTML creator"""
 
 from aframexr.utils.axis_html_creator import AxisHTMLCreator
+from aframexr.utils.constants import CHART_TEMPLATES
 from aframexr.utils.chart_creator import ChartCreator
-
-# Templates
-CHART_TEMPLATES = {
-    'arc': ('<a-ring position="{pos}" radius-inner="{inner_radius}" radius-outer="{outer_radius}" '
-            'theta-start="{theta_start}" theta-length="{theta_length}" color="{color}"></a-ring>'),
-    'bar': '<a-box position="{pos}" width="{width}" height="{height}" color="{color}"></a-box>',
-    'point': '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
-}
 
 
 class ChartsHTMLCreator:
@@ -37,20 +30,22 @@ class ChartsHTMLCreator:
         if chart_type not in CHART_TEMPLATES.keys():
             raise NotImplementedError('That chart type is not supported.')
 
-        # Create the HTML of the chart
+        # Chart HTML
         chart_html = ''
         base_html = CHART_TEMPLATES[chart_type]
         elements_specs = ChartCreator.get_elements_specs(chart_type, chart_specs)
-
-        # Elements HTML
         for element in elements_specs:
             chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
 
         # Axis HTML
-        start, end_x, end_y = ChartCreator.get_axis_specs(chart_type, chart_specs)
-        if start and end_x and end_y:
-            chart_html += AxisHTMLCreator.create_axis_html(start, end_x, end_y)
-            chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
+        starts, ends = [], []
+        starts.append(ChartCreator.get_x_axis_specs(chart_type, chart_specs)[0])  # X-axis start
+        ends.append(ChartCreator.get_x_axis_specs(chart_type, chart_specs)[1])  # X-axis end
+        starts.append(ChartCreator.get_y_axis_specs(chart_type, chart_specs)[0])  # Y-axis start
+        ends.append(ChartCreator.get_y_axis_specs(chart_type, chart_specs)[1])  # Y-axis end
+        for axis in range(len(starts)):  # Starts and ends has the same number of elements
+            chart_html += AxisHTMLCreator.create_axis_html(starts[axis], ends[axis])
+        chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
         return chart_html
 
     @staticmethod

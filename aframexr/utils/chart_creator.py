@@ -4,9 +4,7 @@ import json
 import urllib.request, urllib.error
 
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.defaults import *
-
-AVAILABLE_COLORS = ["red", "green", "blue", "yellow", "magenta", "cyan"]
+from aframexr.utils.constants import *
 
 
 def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
@@ -18,7 +16,7 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
             with urllib.request.urlopen(data_field['url']) as response:  # Load the data
                 data = response.read().decode()
         except urllib.error.URLError:
-            raise IOError(f"Could not load data from URL: {data_field['url']}")
+            raise IOError(f'Could not load data from URL: {data_field['url']}')
     elif data_field.get('values'):  # Data is stored as the raw data
         data = data_field['values']
     else:  # Should never enter here
@@ -66,15 +64,28 @@ class ChartCreator:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
     @staticmethod
-    def get_axis_specs(chart_type: str, chart_specs: dict) -> tuple[None, None, None] | tuple[str, float, float]:
-        """Return the axis specifications of the chart type."""
+    def get_x_axis_specs(chart_type: str, chart_specs: dict) -> tuple[None, None] | tuple[str, str]:
+        """Return the x-axis specifications of the chart type."""
 
         if chart_type == 'arc':
-            return None, None, None  # Pie chart and doughnut chart has no axis
+            return None, None  # Pie chart and doughnut chart have no axis
         elif chart_type == 'bar':
-            return BarChartCreator(chart_specs).axis_specs()
+            return BarChartCreator(chart_specs).x_axis_specs()
         elif chart_type == 'point':
-            return PointChartCreator(chart_specs).axis_specs()
+            return PointChartCreator(chart_specs).x_axis_specs()
+        else:
+            raise NotImplementedError(f'{chart_type} is not supported.')
+
+    @staticmethod
+    def get_y_axis_specs(chart_type: str, chart_specs: dict) -> tuple[None, None] | tuple[str, str]:
+        """Return the y-axis specifications of the chart type."""
+
+        if chart_type == 'arc':
+            return None, None  # Pie chart and doughnut chart have no axis
+        elif chart_type == 'bar':
+            return BarChartCreator(chart_specs).y_axis_specs()
+        elif chart_type == 'point':
+            return PointChartCreator(chart_specs).y_axis_specs()
         else:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
@@ -216,11 +227,29 @@ class BarChartCreator(ChartCreator):
             elements_specs.append(specs)
         return elements_specs
 
-    def axis_specs(self) -> tuple[str, float, float]:
-        start = f'{self.base_x} {self.base_y} {self.base_z}'
-        end_x = self.base_x + (self.bar_width * len(self.raw_data))
-        end_y = self.base_y + self.max_height
-        return start, end_x, end_y
+    def x_axis_specs(self) -> tuple[str, str]:
+        start = None
+        end = None
+        display_axis = True
+        try:
+            display_axis = self.encoding['x']['axis']
+        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+            start = f'{self.base_x} {self.base_y} {self.base_z}'
+            end_x = self.base_x + (self.bar_width * len(self.raw_data))
+            end = f'{end_x} {self.base_y} {self.base_z}'
+        return start, end
+
+    def y_axis_specs(self) -> tuple[str, str]:
+        start = None
+        end = None
+        display_axis = True
+        try:
+            display_axis = self.encoding['y']['axis']
+        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+            start = f'{self.base_x} {self.base_y} {self.base_z}'
+            end_y = self.base_y + self.max_height
+            end = f'{self.base_x} {end_y} {self.base_z}'
+        return start, end
 
 
 class PointChartCreator(ChartCreator):
@@ -318,8 +347,26 @@ class PointChartCreator(ChartCreator):
             elements_specs.append(specs)
         return elements_specs
 
-    def axis_specs(self) -> tuple[str, float, float]:
-        start = f'{self.base_x} {self.base_y} {self.base_z}'
-        end_x = self.base_x + (len(self.raw_data) * DEFAULT_POINT_X_SEPARATION) + self.max_radius
-        end_y = self.base_y + DEFAULT_MAX_HEIGHT
-        return start, end_x, end_y
+    def x_axis_specs(self) -> tuple[str, str]:
+        start = None
+        end = None
+        display_axis = True
+        try:
+            display_axis = self.encoding['x']['axis']
+        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+            start = f'{self.base_x} {self.base_y} {self.base_z}'
+            end_x = self.base_x + (len(self.raw_data) * DEFAULT_POINT_X_SEPARATION) + self.max_radius
+            end = f'{end_x} {self.base_y} {self.base_z}'
+        return start, end
+
+    def y_axis_specs(self) -> tuple[str, str]:
+        start = None
+        end = None
+        display_axis = True
+        try:
+            display_axis = self.encoding['y']['axis']
+        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+            start = f'{self.base_x} {self.base_y} {self.base_z}'
+            end_y = self.base_y + DEFAULT_MAX_HEIGHT
+            end = f'{self.base_x} {end_y} {self.base_z}'
+        return start, end

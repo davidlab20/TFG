@@ -3,19 +3,6 @@
 from abc import ABC, abstractmethod
 
 
-class Axis:
-    """Axis class."""
-
-    def __init__(self):
-        self.start = None
-        self.end = None
-
-    def to_html(self):
-        """Returns the HTML if the axis."""
-
-        return f'<a-entity line="start: {self.start}; end: {self.end}; color: black"></a-entity>\n\t\t'
-
-
 class Encoding(ABC):
     """Encoding base class."""
 

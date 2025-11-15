@@ -8,7 +8,7 @@ from typing import Literal
 from aframexr.api.data import Data, URLData
 from aframexr.api.encoding import *
 from aframexr.api.filters import *
-from aframexr.utils.defaults import *
+from aframexr.utils.constants import *
 from aframexr.utils.scene_creator import SceneCreator
 
 
