@@ -3,8 +3,9 @@
 # ----- CONSTANTS -----
 AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']
 CHART_TEMPLATES = {
-    'arc': ('<a-ring position="{pos}" radius-inner="{inner_radius}" radius-outer="{outer_radius}" '
-            'theta-start="{theta_start}" theta-length="{theta_length}" color="{color}"></a-ring>'),
+    'arc': ('<a-cylinder position="{pos}" rotation="-90 0 0" height="0.5" radius-inner="{inner_radius}" '
+            'radius-outer="{outer_radius}" theta-start="{theta_start}" theta-length="{theta_length}" '
+            'color="{color}"></a-cylinder>'),
     'bar': '<a-box position="{pos}" width="{width}" height="{height}" color="{color}"></a-box>',
     'point': '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
 }
