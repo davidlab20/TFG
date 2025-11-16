@@ -1,0 +1,80 @@
+{
+    "concat": [
+        {
+            "data": {
+                "url": "https://github.com/davidlab20/TFG/raw/main/examples/data.json"
+            },
+            "position": "-5 10 -8",
+            "mark": {
+                "type": "arc",
+                "outerRadius": 2,
+                "innerRadius": 0
+            },
+            "encoding": {
+                "color": {
+                    "field": "model"
+                },
+                "theta": {
+                    "field": "sales"
+                }
+            }
+        },
+        {
+            "data": {
+                "url": "https://github.com/davidlab20/TFG/raw/main/examples/data.json"
+            },
+            "position": "5 10 -8",
+            "mark": {
+                "type": "arc",
+                "outerRadius": 2,
+                "innerRadius": 0
+            },
+            "encoding": {
+                "color": {
+                    "field": "model"
+                },
+                "theta": {
+                    "field": "sales"
+                }
+            }
+        },
+        {
+            "data": {
+                "url": "https://github.com/davidlab20/TFG/raw/main/examples/data.json"
+            },
+            "position": "-5 5 -8",
+            "mark": {
+                "type": "arc",
+                "outerRadius": 2,
+                "innerRadius": 0
+            },
+            "encoding": {
+                "color": {
+                    "field": "model"
+                },
+                "theta": {
+                    "field": "sales"
+                }
+            }
+        },
+        {
+            "data": {
+                "url": "https://github.com/davidlab20/TFG/raw/main/examples/data.json"
+            },
+            "position": "5 5 -8",
+            "mark": {
+                "type": "arc",
+                "outerRadius": 2,
+                "innerRadius": 0
+            },
+            "encoding": {
+                "color": {
+                    "field": "model"
+                },
+                "theta": {
+                    "field": "sales"
+                }
+            }
+        }
+    ]
+}
