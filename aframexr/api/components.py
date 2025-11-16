@@ -30,7 +30,24 @@ class TopLevelMixin:
 
         if not isinstance(other, TopLevelMixin):
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}")
-        concatenated_chart = TopLevelMixin({'concat': [self._specifications, other._specifications]})
+
+        # Create the new concatenation specifications
+        concat_specs = {'concat': []}
+
+        # Look if there is concatenation of concatenated charts (to join all in one concat field)
+        if self._specifications.get('concat'):
+            for chart in self._specifications['concat']:
+                concat_specs['concat'].append(chart)
+        else:
+            concat_specs['concat'].append(self._specifications)
+
+        if other._specifications.get('concat'):
+            for chart in other._specifications['concat']:
+                concat_specs['concat'].append(chart)
+        else:
+            concat_specs['concat'].append(other._specifications)
+
+        concatenated_chart = TopLevelMixin(concat_specs)  # Create a new 'scene' to preserve the original charts
         return concatenated_chart
 
     # Copy of the chart
