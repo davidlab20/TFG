@@ -1,37 +1,42 @@
 import marimo
 
-__generated_with = "0.17.2"
-app = marimo.App()
+__generated_with = "0.17.8"
+app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-async def _():
-    # Import the package from GitHub
-    # IMPORTANT: do not change this cell code
-    import micropip
-    await micropip.install("https://davidlab20.github.io/TFG/dist/babiaxr-2025.11.4-py3-none-any.whl")
+def _(mo):
+    mo.md("""
+    # **Get started**
+    """)
     return
 
 
 @app.cell
 def _():
     # Import BabiaXR Python library in a separate cell
-    import babiaxr
-    return (babiaxr,)
+    import aframexr
+    return (aframexr,)
 
 
 @app.cell
-def _(babiaxr):
+def _(aframexr):
     # Load the data having the URL of the JSON file
     url = "https://davidlab20.github.io/TFG/examples/data.json"
-    data = babiaxr.URLData(url)  # Create an URLData object
+    data = aframexr.URLData(url)  # Create an URLData object
 
     # Create the chart
-    chart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
+    chart = aframexr.Chart(data, position="-4 0 -8").mark_bar().encode(x='model', y='sales')
 
     # Display the chart in the notebook
     chart.show()
     return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    return (mo,)
 
 
 if __name__ == "__main__":
