@@ -1,21 +1,20 @@
 import marimo
 
-__generated_with = "0.17.2"
-app = marimo.App()
+__generated_with = "0.17.8"
+app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-async def _():
-    # Import the package from GitHub
-    # IMPORTANT: do not change this cell code
-    import micropip
-    await micropip.install("https://davidlab20.github.io/TFG/dist/babiaxr-2025.11.4-py3-none-any.whl")
+def _(mo):
+    mo.md("""
+    # **Simple charts notebook**
+    """)
     return
 
 
 @app.cell
 def _():
-    import babiaxr
+    import aframexr
     import json
     import urllib.request  # To import files from web
 
@@ -42,52 +41,58 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    data = babiaxr.Data.from_json(data_str)  # Raw data
-    url_data = babiaxr.URLData('./data.json')  # URL of the data
-    return babiaxr, data, json, url_data, urllib
+    data = aframexr.Data.from_json(data_str)  # Raw data
+    url_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data.json')
+    return aframexr, data, json, url_data, urllib
 
 
 @app.cell
-def _(babiaxr, data):
+def _(aframexr, data):
     # Pie chart with data as Data object
-    pieChart = babiaxr.Chart(data).mark_arc().encode(theta='model', color='sales')
+    pieChart = aframexr.Chart(data, position="0 5 -5").mark_arc().encode(color='model', theta='sales')
     pieChart.show()
     return
 
 
 @app.cell
-def _(babiaxr, url_data):
+def _(aframexr, url_data):
     # Pie chart with data as URLData object
-    pieChartJSON = babiaxr.Chart(url_data).mark_arc().encode(theta='model', color='sales')
+    pieChartJSON = aframexr.Chart(url_data, position="0 5 -5").mark_arc().encode(color='model', theta='sales')
     pieChartJSON.show()
     return
 
 
 @app.cell
-def _(babiaxr, data):
+def _(aframexr, data):
     # Bars chart with data as Data object
-    barsChart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
+    barsChart = aframexr.Chart(data, position="-3 0 -8").mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return
 
 
 @app.cell
-def _(babiaxr, url_data):
+def _(aframexr, url_data):
     # Bars chart with data as URLData object
-    barsChartJSON = babiaxr.Chart(url_data).mark_bar().encode(x='model', y='sales')
+    barsChartJSON = aframexr.Chart(url_data, position="-3 0 -8").mark_bar().encode(x='model', y='sales')
     barsChartJSON.show()
     return
 
 
 @app.cell
-def _(babiaxr, json, urllib):
+def _(aframexr, json, urllib):
     # Import a chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/chart.json") as json_chart:
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/simple_chart.json") as json_chart:
         json_specs = json.load(json_chart)
 
-    imported_chart = babiaxr.Chart.from_dict(json_specs)
+    imported_chart = aframexr.Chart.from_dict(json_specs)
     imported_chart.show()
     return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    return (mo,)
 
 
 if __name__ == "__main__":

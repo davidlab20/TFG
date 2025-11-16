@@ -1,21 +1,20 @@
 import marimo
 
-__generated_with = "0.17.2"
+__generated_with = "0.17.8"
 app = marimo.App()
 
 
 @app.cell(hide_code=True)
-async def _():
-    # Import the package from GitHub
-    # IMPORTANT: do not change this cell code
-    import micropip
-    await micropip.install("https://davidlab20.github.io/TFG/dist/babiaxr-2025.11.4-py3-none-any.whl")
+def _(mo):
+    mo.md("""
+    # **Multiple charts notebook**
+    """)
     return
 
 
 @app.cell
 def _():
-    import babiaxr
+    import aframexr
 
 
     data_str = """
@@ -40,70 +39,48 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    data = babiaxr.Data.from_json(data_str)
-    return babiaxr, data
+    data = aframexr.Data.from_json(data_str)
+    return aframexr, data
 
 
 @app.cell
-def _(babiaxr, data):
-    pieChart = babiaxr.Chart(data).mark_arc().encode(theta='model', color='sales')
+def _(aframexr, data):
+    pieChart = aframexr.Chart(data, position="-3 5 -5").mark_arc().encode(color='model', theta='sales')
     pieChart.show()
     return (pieChart,)
 
 
 @app.cell
-def _(babiaxr, data):
-    barsChart = babiaxr.Chart(data).mark_bar().encode(x='model', y='sales')
+def _(aframexr, data):
+    barsChart = aframexr.Chart(data, position="0 0 -8").mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return (barsChart,)
 
 
 @app.cell
 def _(barsChart, pieChart):
-    # Vertical concatenation of charts
-    # Can use:
-        # finalChart = pieChart & barsChart
-        # finalChart = pieChart.vconcat(barsChart)
-        # finalChart = babiaAltair.VConcatChart(pieChart, barsChart)
-    finalChart = pieChart & barsChart
+    # Concatenation of charts (add charts to the same scene)
+    finalChart = pieChart + barsChart
     finalChart.show()
     return
 
 
 @app.cell
-def _(pieChart):
-    # The main chart does not change (the concatenation of charts stores copies of charts)
-    pieChart.show()
-    return
-
-
-@app.cell
-def _(barsChart, pieChart):
-    # Horizontal concatenation of charts
-    # Can use:
-        # finalChart2 = pieChart | barsChart
-        # finalChart2 = pieChart.concat(barsChart)
-        # finalChart2 = pieChart.hconcat(barsChart)
-        # finalChart2 = babiaAltair.HConcatChart(pieChart, barsChart)
-    finalChart2 = pieChart | barsChart
-    finalChart2.show()
-    return
-
-
-@app.cell
-def _(barsChart):
-    # The main chart does not change (the concatenation of charts stores copies of charts)
-    barsChart.show()
-    return
-
-
-@app.cell
-def _(babiaxr, barsChart, pieChart):
+def _(aframexr, data):
     # Concatenation of charts
-    finalChart3 = babiaxr.XConcatChart(top_left=pieChart, top_right=barsChart,
-                                       bottom_left=barsChart, bottom_right=pieChart)
-    finalChart3.show()
+    chart1 = aframexr.Chart(data, position='-5 10 -8').mark_arc().encode(color='model', theta='sales')
+    chart2 = aframexr.Chart(data, position='5 10 -8').mark_arc().encode(color='model', theta='sales')
+    chart3 = aframexr.Chart(data, position='-5 5 -8').mark_arc().encode(color='model', theta='sales')
+    chart4 = aframexr.Chart(data, position='5 5 -8').mark_arc().encode(color='model', theta='sales')
+    final_chart = chart1 + chart2 + chart3 + chart4
+    final_chart.show()
     return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    return (mo,)
 
 
 if __name__ == "__main__":

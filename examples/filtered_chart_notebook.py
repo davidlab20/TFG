@@ -1,21 +1,20 @@
 import marimo
 
-__generated_with = "0.17.2"
-app = marimo.App()
+__generated_with = "0.17.8"
+app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-async def _():
-    # Import the package from GitHub
-    # IMPORTANT: do not change this cell code
-    import micropip
-    await micropip.install("https://davidlab20.github.io/TFG/dist/babiaxr-2025.11.4-py3-none-any.whl")
+def _(mo):
+    mo.md("""
+    # **Filtered charts notebook**
+    """)
     return
 
 
 @app.cell
 def _():
-    import babiaxr
+    import aframexr
     import json
     import urllib.request
 
@@ -42,26 +41,25 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    data = babiaxr.Data.from_json(data_str)
-    return babiaxr, data, json, urllib
+    data = aframexr.Data.from_json(data_str)
+    return aframexr, data, json, urllib
 
 
 @app.cell
-def _(babiaxr, json, urllib):
+def _(aframexr, json, urllib):
     # Import a filtered chart from a JSON file storing the specifications of the chart
     with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/filt_chart.json") as json_chart:
         json_specs = json.load(json_chart)
 
-    imported_chart = babiaxr.Chart.from_dict(json_specs)
+    imported_chart = aframexr.Chart.from_dict(json_specs)
     imported_chart.show()
     return
 
 
 @app.cell
-def _(babiaxr, data):
-    chart1 = babiaxr.Chart(data).mark_arc().encode(theta='model', color='sales')
-    chart2 = babiaxr.Chart.from_json(chart1.to_json())
-    assert chart1.__class__ == chart2.__class__
+def _(aframexr, data):
+    chart1 = aframexr.Chart(data).mark_arc().encode(color='model', theta='sales')
+    chart2 = aframexr.Chart.from_json(chart1.to_json())
     assert chart1.to_dict() == chart2.to_dict()
     assert chart1.to_html() == chart2.to_html()
     assert chart1.to_json() == chart2.to_json()
@@ -69,12 +67,12 @@ def _(babiaxr, data):
 
 
 @app.cell
-def _(babiaxr, json, urllib):
+def _(aframexr, json, urllib):
     with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data.json") as file_data:
         data_json = json.load(file_data)
-        data2 = babiaxr.Data(data_json)
+        data2 = aframexr.Data(data_json)
 
-    bars = babiaxr.Chart(data2).mark_bar().encode(x='model', y='sales')
+    bars = aframexr.Chart(data2, position="-4 0 -8").mark_bar().encode(x='model', y='sales')
     bars.show()
     return (bars,)
 
@@ -84,6 +82,12 @@ def _(bars):
     filtered_bar = bars.transform_filter('datum.motor=diesel')
     filtered_bar.show()
     return
+
+
+@app.cell
+def _():
+    import marimo as mo
+    return (mo,)
 
 
 if __name__ == "__main__":
