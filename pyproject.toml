@@ -9,6 +9,9 @@ authors = [{name = "David Díaz"}]
 description = "Python library to visualize data in Virtual and Extended Reality using Aframe components."
 readme = "README.md"
 requires-python = ">=3.12"
+dependencies = [
+    "marimo>=0.17.8",
+]
 
 [project.urls]
 Documentation = "https://davidlab20.github.io/TFG/"
