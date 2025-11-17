@@ -14,7 +14,7 @@ def _(mo):
 
 @app.cell
 def _():
-    # Import BabiaXR Python library in a separate cell
+    # Import the library in a separate cell
     import aframexr
     return (aframexr,)
 
