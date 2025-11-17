@@ -5,7 +5,7 @@ from aframexr.utils.charts_html_creator import ChartsHTMLCreator
 HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <head>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.3.3/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
 </head>
 <body>
     <a-scene>
