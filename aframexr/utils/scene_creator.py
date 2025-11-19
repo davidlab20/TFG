@@ -10,10 +10,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <body>
     <a-scene>
         <!-- Camera -->
-        <a-camera position="0 4 0"></a-camera>
-        
-        <!-- Movement controls -->
-        <a-entity camera look-controls wasd-controls="acceleration:80"></a-entity>
+        <a-camera position="0 4 0" active="true"></a-camera>
     
         <!-- Environment -->
         <a-entity environment="preset: forest"></a-entity>

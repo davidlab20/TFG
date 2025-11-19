@@ -9,6 +9,7 @@ CHART_TEMPLATES = {
     'bar': '<a-box position="{pos}" width="{width}" height="{height}" color="{color}"></a-box>',
     'point': '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
 }
+Y_NUMBER_OF_TICKS = 5  # Number of ticks in the y-axis
 
 # ----- DEFAULTS -----
 # General
