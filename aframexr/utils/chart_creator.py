@@ -385,9 +385,7 @@ class PointChartCreator(ChartCreator):
         x_coordinates = self._set_x_coordinates(x_data, radius)
 
         for label in range(len(self._raw_data)):
-            label_x_pos = x_coordinates[label]
-            label_z_pos = self._base_z - 0.25
-            label_pos = f'{label_x_pos} {self._base_y + 0.01} {label_z_pos + 1}'
+            label_pos = f'{x_coordinates[label]} {self._base_y + 0.01} {self._base_z + 1}'
             label_value = self._raw_data[label][self._encoding['x']['field']]
             axis_specs['x']['labels_pos'].append(label_pos)
             axis_specs['x']['labels_values'].append(label_value)
