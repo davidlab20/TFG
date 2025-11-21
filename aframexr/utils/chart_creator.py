@@ -184,15 +184,15 @@ class BarChartCreator(ChartCreator):
         elements_specs = []
 
         # X-axis
-        field = self._encoding['x']['field']  # Field of the x-axis
-        x_data = [d[field] for d in self._raw_data]
+        x_field = self._encoding['x']['field']  # Field of the x-axis
+        x_data = [d[x_field] for d in self._raw_data]
 
         bar_widths = [self.bar_width for _ in range(len(self._raw_data))]  # Widths for each bar
         x_coordinates = self._set_x_coordinates(x_data)  # X-axis value for each bar
 
         # Y-axis
-        field = self._encoding['y']['field']  # Field of the y-axis
-        y_data = [d[field] for d in self._raw_data]
+        y_field = self._encoding['y']['field']  # Field of the y-axis
+        y_data = [d[y_field] for d in self._raw_data]
 
         bar_heights = self._set_heights_of_bars(y_data)
         y_coordinates = self._set_y_coordinates(y_data, bar_heights)
@@ -230,8 +230,8 @@ class BarChartCreator(ChartCreator):
         axis_specs['x']['start'] = start
         axis_specs['x']['end'] = end
 
-        field = self._encoding['x']['field']  # Field of the x-axis
-        x_data = [d[field] for d in self._raw_data]
+        x_field = self._encoding['x']['field']  # Field of the x-axis
+        x_data = [d[x_field] for d in self._raw_data]
         x_coordinates = self._set_x_coordinates(x_data)  # X-axis value for each bar
 
         for label in range(len(self._raw_data)):
@@ -253,8 +253,8 @@ class BarChartCreator(ChartCreator):
         axis_specs['y']['start'] = start
         axis_specs['y']['end'] = end
 
-        field = self._encoding['y']['field']  # Field of the y-axis
-        y_data = [d[field] for d in self._raw_data]
+        y_field = self._encoding['y']['field']  # Field of the y-axis
+        y_data = [d[y_field] for d in self._raw_data]
 
         for label in range(1, Y_NUMBER_OF_TICKS + 1):
             label_pos = f'{self._base_x - self.bar_width} {self.max_height * label / Y_NUMBER_OF_TICKS} {self._base_z}'
@@ -318,12 +318,12 @@ class PointChartCreator(ChartCreator):
         elements_specs = []
 
         # X-axis
-        field = self._encoding['x']['field']
-        x_data = [d[field] for d in self._raw_data]
+        x_field = self._encoding['x']['field']
+        x_data = [d[x_field] for d in self._raw_data]
 
         if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
-            field = self._encoding['size']['field']
-            size_data = [s[field] for s in self._raw_data]
+            size_field = self._encoding['size']['field']
+            size_data = [s[size_field] for s in self._raw_data]
             radius = self._set_points_radius(size_data)
         else:  # Scatter plot (same radius for all points)
             radius = [DEFAULT_POINT_RADIUS for _ in range(len(self._raw_data))]
@@ -331,8 +331,8 @@ class PointChartCreator(ChartCreator):
         x_coordinates = self._set_x_coordinates(x_data, radius)
 
         # Y-axis
-        field = self._encoding['y']['field']  # Field of the y-axis
-        y_data = [d[field] for d in self._raw_data]
+        y_field = self._encoding['y']['field']  # Field of the y-axis
+        y_data = [d[y_field] for d in self._raw_data]
 
         y_coordinates = self._set_y_coordinates(y_data, radius)
 
@@ -341,8 +341,8 @@ class PointChartCreator(ChartCreator):
 
         # Color
         if self._encoding.get('color'):  # Scatter plot (same color for each type of point)
-            field = self._encoding['color']['field']
-            color_data = [c[field] for c in self._raw_data]
+            color_field = self._encoding['color']['field']
+            color_data = [c[color_field] for c in self._raw_data]
             colors = self._set_points_colors(color_data)
         else:  # Bubbles plot (same color for all points)
             colors = [DEFAULT_POINT_COLOR for _ in range(len(self._raw_data))]
@@ -373,12 +373,12 @@ class PointChartCreator(ChartCreator):
         axis_specs['x']['start'] = start
         axis_specs['x']['end'] = end
 
-        field = self._encoding['x']['field']
-        x_data = [d[field] for d in self._raw_data]
+        x_field = self._encoding['x']['field']
+        x_data = [d[x_field] for d in self._raw_data]
 
         if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
-            field = self._encoding['size']['field']
-            size_data = [s[field] for s in self._raw_data]
+            size_field = self._encoding['size']['field']
+            size_data = [s[size_field] for s in self._raw_data]
             radius = self._set_points_radius(size_data)
         else:  # Scatter plot (same radius for all points)
             radius = [DEFAULT_POINT_RADIUS for _ in range(len(self._raw_data))]
@@ -403,8 +403,8 @@ class PointChartCreator(ChartCreator):
         axis_specs['y']['start'] = start
         axis_specs['y']['end'] = end
 
-        field = self._encoding['y']['field']  # Field of the y-axis
-        y_data = [d[field] for d in self._raw_data]
+        y_field = self._encoding['y']['field']  # Field of the y-axis
+        y_data = [d[y_field] for d in self._raw_data]
 
         for label in range(1, Y_NUMBER_OF_TICKS + 1):
             label_pos = f'{self._base_x - self._max_radius * 2} {DEFAULT_MAX_HEIGHT * label / Y_NUMBER_OF_TICKS} {self._base_z}'
