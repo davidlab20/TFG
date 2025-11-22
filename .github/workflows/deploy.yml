@@ -17,12 +17,12 @@ jobs:
 
           - name: 📄 Export Get Started notebooks
             run: |
-              cd docs/web
+              cd docs/get_started
               marimo export html-wasm --show-code get-started-notebook.py -o get-started-notebook.html --mode run
 
           - name: 📄 Export Example notebooks
             run: |
-              cd examples/notebooks
+              cd docs/examples/notebooks
               marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
               marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
@@ -30,7 +30,7 @@ jobs:
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
-                path: .
+                path: docs/
 
     deploy:
         needs: build
