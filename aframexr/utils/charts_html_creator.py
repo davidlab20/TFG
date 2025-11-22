@@ -38,22 +38,17 @@ class ChartsHTMLCreator:
         for element in elements_specs:
             chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
 
-        # X-axis HTML
+        # Axis HTML
         axis_specs = chart_object.get_axis_specs()
-        chart_html += AxisHTMLCreator.create_axis_html(axis_specs['x']['start'], axis_specs['x']['end']) + '\n\t\t'
-        for label in range(len(axis_specs['x']['labels_pos'])):
-            label_pos = axis_specs['x']['labels_pos'][label]
-            label_rotation = '-90 0 -90'
-            label_value = axis_specs['x']['labels_values'][label]
-            chart_html += AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n\t\t'
 
-        # Y-axis HTML
-        chart_html += AxisHTMLCreator.create_axis_html(axis_specs['y']['start'], axis_specs['y']['end']) + '\n\t\t'
-        for label in range(len(axis_specs['y']['labels_pos'])):
-            label_pos = axis_specs['y']['labels_pos'][label]
-            label_rotation = '0 0 0'
-            label_value = axis_specs['y']['labels_values'][label]
-            chart_html += AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n\t\t'
+        for ax in axis_specs:
+            chart_html += f'\n\t\t<!-- {ax}-axis -->\n\t\t'  # Added HTML comment for better visualization
+            chart_html += AxisHTMLCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n\t\t'
+            for label in range(len(axis_specs[ax]['labels_pos'])):
+                label_pos = axis_specs[ax]['labels_pos'][label]
+                label_rotation = axis_specs[ax]['labels_rotation']
+                label_value = axis_specs[ax]['labels_values'][label]
+                chart_html += AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n\t\t'
 
         chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
         return chart_html

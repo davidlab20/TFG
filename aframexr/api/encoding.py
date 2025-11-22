@@ -102,3 +102,46 @@ class Y(Encoding):
         if not self.axis:  # Add if it is not True (as True is the default)
             spec_dict['y']['axis'] = self.axis
         return spec_dict
+
+
+class Z(Encoding):
+    """
+    Z-axis encoding class.
+
+    Parameters
+    ----------
+    shorthand : str
+        The data field of the axis.
+    axis : bool | None (optional)
+        If the axis line is visible or not. Default is True (visible).
+    """
+
+    def __init__(self, shorthand: str, axis: bool | None = True):
+        if not isinstance(shorthand, str):
+            raise TypeError(f'Expected str, got {type(shorthand).__name__} instead.')
+        self.shorthand = shorthand
+        if not isinstance(axis, bool | None):
+            raise TypeError(f'Expected bool | None, got {type(axis).__name__} instead.')
+        self.axis = axis
+
+    # Import
+    @staticmethod
+    def from_dict(spec_dict: dict):
+        """Returns the Z object from the specification dictionary."""
+
+        if not isinstance(spec_dict, dict):
+            raise TypeError(f'Expected dict, got {type(spec_dict).__name__} instead.')
+        field = spec_dict['z'].get('field')
+        axis = spec_dict['z'].get('axis')
+        return Z(field, axis)
+
+    # Export
+    def to_dict(self):
+        """Returns the dictionary specifications expression."""
+
+        spec_dict = {'z': {}}
+        if self.shorthand:
+            spec_dict['z']['field'] = self.shorthand
+        if not self.axis:  # Add if it is not True (as True is the default)
+            spec_dict['z']['axis'] = self.axis
+        return spec_dict

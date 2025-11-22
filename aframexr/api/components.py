@@ -271,15 +271,10 @@ class Chart(TopLevelMixin):
         return self
 
     # Parameters of the chart
-    def encode(self, color: str = '', size: str = '', theta: str = '', x: str = '', y: str = ''):
+    def encode(self, color: str = '', size: str = '', theta: str = '', x: str | X = '', y: str | Y = '',
+               z: str | Z = ''):
         """
         Add properties to the chart.
-
-        Encoding data types (must be specified):
-            * Q --> quantitative --> real value number.
-            * O --> ordinal --> discrete ordered value.
-            * N --> nominal --> discrete unordered category.
-            * T --> temporal --> time value or date value.
 
         Parameters
         ----------
@@ -289,17 +284,19 @@ class Chart(TopLevelMixin):
             Field of the data that will determine the size of the sphere in the bubble chart (must be quantitative).
         theta : str (optional)
             Field of the data that will determine the arcs of the pie and doughnut chart (must be quantitative).
-        x : str (optional)
+        x : str | X (optional)
             Field of the data that will determine the x-axis of the chart.
-        y : str (optional)
+        y : str | Y (optional)
             Field of the data what will determine the y-axis of the chart.
+        z : str | Z (optional)
+            Field of the data what will determine the z-axis of the chart.
 
         Raises
         ------
         TypeError
             If the encoding type is incorrect.
         ValueError
-            If no encoding data type is specified.
+            If the encoding values are incorrect.
         """
 
         filled_params = {}  # Dictionary that will store the parameters that have been filled
@@ -325,10 +322,14 @@ class Chart(TopLevelMixin):
             if not isinstance(y, str | Y):
                 raise TypeError(f'Expected y as str | aframexr.Y, got {type(y).__name__} instead.')
             filled_params.update({'y': y})
+        if z:
+            if not isinstance(z, str | Z):
+                raise TypeError(f'Expected z as str | aframe.Z, got {type(z).__name__} instead.')
+            filled_params.update({'z': z})
 
         # Verify the argument combinations
-        if self._specifications['mark']['type'] != 'arc' and (not x or not y):
-            raise ValueError('x and y must be specified.')
+        if self._specifications['mark']['type'] != 'arc' and sum([x != '', y != '', z != '']) < 2:
+            raise ValueError('at least 2 of (x, y, z) must be specified.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
             if not theta: raise ValueError('theta must be specified in arc chart.')
             if not color: raise ValueError('color must be specified in arc chart.')

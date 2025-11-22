@@ -9,14 +9,20 @@ CHART_TEMPLATES = {
     'bar': '<a-box position="{pos}" width="{width}" height="{height}" color="{color}"></a-box>',
     'point': '<a-sphere position="{pos}" radius="{radius}" color="{color}"></a-sphere>'
 }
-Y_NUMBER_OF_TICKS = 5  # Number of ticks in the y-axis
+LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
+LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
+LABELS_Z_DELTA = 1  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
+Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
 
 # ----- DEFAULTS -----
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
+DEFAULT_MAX_DEPTH = 10  # Default maximum depth of the chart
 DEFAULT_MAX_HEIGHT = 10  # Default maximum height of the chart
 
 # Bar chart
+DEFAULT_BAR_DEPTH = 1  # Default bar depth
+DEFAULT_BAR_HEIGHT = 1  # Default bar height (if not field for y-axis specified)
 DEFAULT_BAR_WIDTH = 1  # Default bar width
 
 # Pie chart
