@@ -7,7 +7,7 @@ app = marimo.App(width="medium")
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    # **Filtered charts notebook**
+    # **Simple charts notebook**
     """)
     return
 
@@ -16,7 +16,7 @@ def _(mo):
 def _():
     import aframexr
     import json
-    import urllib.request
+    import urllib.request  # To import files from web
 
 
     data_str = """
@@ -41,46 +41,51 @@ def _():
         {"model": "panda", "motor": "gasoline", "color": "black",
         "doors": 3, "sales": 13}]
     """
-    data = aframexr.Data.from_json(data_str)
-    return aframexr, data, json, urllib
+    data = aframexr.Data.from_json(data_str)  # Raw data
+    url_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json')
+    return aframexr, data, json, url_data, urllib
 
 
 @app.cell
-def _(aframexr, json, urllib):
-    # Import a filtered chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/filt_chart.json") as json_chart:
-        json_specs = json.load(json_chart)
+def _(aframexr, data):
+    # Pie chart with data as Data object
+    pieChart = aframexr.Chart(data, position="0 5 -5").mark_arc().encode(color='model', theta='sales')
+    pieChart.show()
+    return
 
-    imported_chart = aframexr.Chart.from_dict(json_specs)
-    imported_chart.show()
+
+@app.cell
+def _(aframexr, url_data):
+    # Pie chart with data as URLData object
+    pieChartJSON = aframexr.Chart(url_data, position="0 5 -5").mark_arc().encode(color='model', theta='sales')
+    pieChartJSON.show()
     return
 
 
 @app.cell
 def _(aframexr, data):
-    chart1 = aframexr.Chart(data).mark_arc().encode(color='model', theta='sales')
-    chart2 = aframexr.Chart.from_json(chart1.to_json())
-    assert chart1.to_dict() == chart2.to_dict()
-    assert chart1.to_html() == chart2.to_html()
-    assert chart1.to_json() == chart2.to_json()
+    # Bars chart with data as Data object
+    barsChart = aframexr.Chart(data, position="-3 0 -8").mark_bar().encode(x='model', y='sales')
+    barsChart.show()
+    return
+
+
+@app.cell
+def _(aframexr, url_data):
+    # Bars chart with data as URLData object
+    barsChartJSON = aframexr.Chart(url_data, position="-3 0 -8").mark_bar().encode(x='model', y='sales')
+    barsChartJSON.show()
     return
 
 
 @app.cell
 def _(aframexr, json, urllib):
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data.json") as file_data:
-        data_json = json.load(file_data)
-        data2 = aframexr.Data(data_json)
+    # Import a chart from a JSON file storing the specifications of the chart
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/simple_chart.json") as json_chart:
+        json_specs = json.load(json_chart)
 
-    bars = aframexr.Chart(data2, position="-4 0 -8").mark_bar().encode(x='model', y='sales')
-    bars.show()
-    return (bars,)
-
-
-@app.cell
-def _(bars):
-    filtered_bar = bars.transform_filter('datum.motor=diesel')
-    filtered_bar.show()
+    imported_chart = aframexr.Chart.from_dict(json_specs)
+    imported_chart.show()
     return
 
 
