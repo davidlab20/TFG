@@ -17,7 +17,7 @@ jobs:
 
           - name: 📄 Export Get Started notebooks
             run: |
-              cd docs
+              cd docs/web
               marimo export html-wasm --show-code get-started-notebook.py -o get-started-notebook.html --mode run
 
           - name: 📄 Export Example notebooks
