@@ -9,7 +9,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     <script src="https://davidlab20.github.io/TFG/docs/scripts/main.js"></script>
 </head>
 <body>
-    <a-scene cursor="rayOrigin: mouse">
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
         <!-- Camera -->
         <a-camera position="0 4 0" active="true"></a-camera>
     
