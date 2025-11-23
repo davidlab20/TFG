@@ -159,18 +159,19 @@ class Chart(TopLevelMixin):
         Data or URLData object of the data.
 
     position : str (optional)
-        Position of the chart. The format is: 'x y z', 'x y' or 'x'.
-        The not given axis position will be set to 0. For example, 'x y' is equal to 'x y 0'
+        Position of the chart. The format is: 'x y z'. Refers to the position for the origin of coordinate system.
+    rotation : str (optional)
+        Rotation of the chart in degrees. The format is: 'x y z'. The rotation axis is the coordinate system.
 
     Raises
     ------
     TypeError
         If data is not a Data or URLData object.
     ValueError
-        If position is invalid.
+        If position or rotation are invalid.
     """
 
-    def __init__(self, data: Data | URLData, position: str = DEFAULT_CHART_POS):
+    def __init__(self, data: Data | URLData, position: str = DEFAULT_CHART_POS, rotation: str = DEFAULT_CHART_ROTATION):
         super().__init__()
 
         # Data
@@ -182,46 +183,43 @@ class Chart(TopLevelMixin):
             raise TypeError(f'Expected Data | URLData, got {type(data).__name__} instead.')
 
         # Position
-        _, default_y, default_z = DEFAULT_CHART_POS.split()  # Default value of axis Y and Z
-        all_axis = position.strip().split()  # Split axis by spaces
-        for axis in all_axis:
+        pos_axes = position.strip().split()
+        if len(pos_axes) != 3:
+            raise ValueError(f'The position: {position} is not correct. Must be "x y z".')
+        for axis in pos_axes:
             try:
-                float(axis)  # Verify if the axis is correct (if it is numeric)
+                float(axis)
             except ValueError:
-                raise ValueError(f'The position: {position} is not correct.')
-        if len(all_axis) == 3:  # Position is 'x y z'
-                self._specifications.update({'position': f'{all_axis[0]} {all_axis[1]} {all_axis[2]}'})
-        elif len(all_axis) == 2:  # Position is 'x y'
-                self._specifications.update({'position': f'{all_axis[0]} {all_axis[1]} {default_z}'})
-        elif len(all_axis) == 1:  # Position is 'x'
-                self._specifications.update({'position': f'{all_axis[0]} {default_y} {default_z}'})
-        else:
-            raise ValueError(f'The position: {position} is not correct.')
+                raise ValueError(f'The position values must be numeric.')
+        self._specifications.update({'position': f'{pos_axes[0]} {pos_axes[1]} {pos_axes[2]}'})
+
+        # Rotation
+        rot_axes = rotation.strip().split()
+        if len(rot_axes) != 3:
+            raise ValueError(f'The rotation: {rotation} is not correct. Must be "x y z".')
+        for axis in rot_axes:
+            try:
+                float(axis)
+            except ValueError:
+                raise ValueError(f'The rotation values must be numeric.')
+        self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
 
     # Types of charts
-    def mark_arc(self, outer_radius: float = DEFAULT_PIE_RADIUS, inner_radius: float = DEFAULT_PIE_INNER_RADIUS):
+    def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
         """
         Pie chart and doughnut chart.
 
         Parameters
         ----------
-        outer_radius : float (optional)
+        radius : float (optional)
             Outer radius of the pie chart. If not specified, using default. Must be greater than 0.
-        inner_radius : float (optional)
-            Inner radius of the pie chart. If not specified, using default. Must be greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'arc'}})
-        if outer_radius >= 0:
-            self._specifications['mark'].update({'outerRadius': outer_radius})
+        if radius >= 0:
+            self._specifications['mark'].update({'radius': radius})
         else:
             raise ValueError('radius must be greater than 0.')
-        if inner_radius >= 0:
-            self._specifications['mark'].update({'innerRadius': inner_radius})
-        else:
-            raise ValueError('inner_radius must be greater than 0.')
-        if inner_radius > outer_radius:
-            raise ValueError('inner_radius must be smaller than outer_radius.')
         return self
 
     def mark_bar(self, size: float = DEFAULT_BAR_WIDTH, height: float = DEFAULT_MAX_HEIGHT):

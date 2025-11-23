@@ -11,6 +11,9 @@ from aframexr.utils.constants import *
 AXIS_DICT_TEMPLATE = {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': ''}
 """Axis dictionary template for chart creation."""
 
+GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}
+"""Group dictionary template for group base specifications creation."""
+
 
 def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
     """Returns the raw data from the data field specifications, transformed if necessary."""
@@ -54,6 +57,8 @@ class ChartCreator:
         [self._base_x, self._base_y, self._base_z] = [float(pos) for pos in base_position.split()]  # Base position
         self._encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
         self._raw_data = _get_raw_data(chart_specs.get('data'), chart_specs.get('transform'))  # Raw data
+        rotation = chart_specs.get('rotation', DEFAULT_CHART_ROTATION)  # Rotation of the chart
+        [self._x_rotation, self._y_rotation, self._z_rotation] = [float(rot) for rot in rotation.split()]
 
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
@@ -74,8 +79,24 @@ class ArcChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._radius = chart_specs['mark'].get('outerRadius', DEFAULT_PIE_RADIUS)  # Outer radius of the chart
-        self._inner_radius = chart_specs['mark'].get('innerRadius', DEFAULT_PIE_INNER_RADIUS)  # Inner radius of the chart
+        self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS)  # Radius
+        self._set_rotation()
+
+    def _set_rotation(self):
+        """Sets the rotation of the pie chart."""
+
+        pie_rotation = DEFAULT_PIE_ROTATION.split()
+        final_pie_rotation_x = float(self._x_rotation) + float(pie_rotation[0])
+        final_pie_rotation_y = float(self._y_rotation) + float(pie_rotation[1])
+        final_pie_rotation_z = float(self._z_rotation) + float(pie_rotation[2])
+        self._rotation = f'{final_pie_rotation_x} {final_pie_rotation_y} {final_pie_rotation_z}'
+
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+
+        group_specs = copy.deepcopy(GROUP_DICT_TEMPLATE)
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}', 'rotation': self._rotation})
+        return group_specs
 
     @staticmethod
     def _set_elements_theta(data: list) -> tuple[list, list]:
@@ -104,13 +125,12 @@ class ArcChartCreator(ChartCreator):
         elements_specs = []
 
         # Axis
-        x_coordinates = [self._base_x for _ in range(len(self._raw_data))]
-        y_coordinates = [self._base_y for _ in range(len(self._raw_data))]
-        z_coordinates = [self._base_z for _ in range(len(self._raw_data))]
+        x_coordinates = [0 for _ in range(len(self._raw_data))]
+        y_coordinates = [0 for _ in range(len(self._raw_data))]
+        z_coordinates = [0 for _ in range(len(self._raw_data))]
 
         # Radius
-        inners_radius = [self._inner_radius for _ in range(len(self._raw_data))]
-        outers_radius = [self._radius for _ in range(len(self._raw_data))]
+        radius = [self._radius for _ in range(len(self._raw_data))]
 
         # Theta
         field = self._encoding['theta']['field']
@@ -133,8 +153,7 @@ class ArcChartCreator(ChartCreator):
             specs = {}  # Specifications of the single element
             specs.update({'id': ids[elem]})
             specs.update({'pos': f'{x_coordinates[elem]} {y_coordinates[elem]} {z_coordinates[elem]}'})
-            specs.update({'inner_radius': inners_radius[elem]})
-            specs.update({'outer_radius': outers_radius[elem]})
+            specs.update({'radius': radius[elem]})
             specs.update({'theta_start': theta_starts[elem]})
             specs.update({'theta_length': theta_lengths[elem]})
             specs.update({'color': colors[elem]})
@@ -157,16 +176,25 @@ class BarChartCreator(ChartCreator):
         self.bar_width = chart_specs['mark'].get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
         self.max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
 
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+
+        group_specs = copy.deepcopy(GROUP_DICT_TEMPLATE)
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
+                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
+        return group_specs
+
     def _set_x_coordinates(self, data: list | None) -> list:
         """Returns a list of the x coordinates for each bar composing the bar chart."""
 
         x_coordinates = []
+        relative_x_start = self.bar_width / 2
 
         if data is None:  # No field for x-axis
-            x_coordinates = [self._base_x for _ in range(len(self._raw_data))]
+            x_coordinates = [relative_x_start for _ in range(len(self._raw_data))]
         else:  # Field for x-axis
-            for i in range(len(data)):
-                x_coordinates.append((self._base_x + (self.bar_width / 2)) + (i * self.bar_width))
+            for element in range(len(data)):
+                x_coordinates.append(relative_x_start + element * self.bar_width)
         return x_coordinates
 
     def _set_heights_of_bars(self, data: list | None) -> list:
@@ -184,21 +212,22 @@ class BarChartCreator(ChartCreator):
 
         y_coordinates = []
         for i in range(len(self._raw_data)):
-            y_coordinates.append(self._base_y + (bar_heights[i] / 2))
+            y_coordinates.append(bar_heights[i] / 2)
         return y_coordinates
 
     def _set_z_coordinates(self, data: list | None) -> list:
         """Returns a list of the z coordinates for each bar composing the bar chart."""
 
         z_coordinates = []
+        relative_z_start = - DEFAULT_BAR_DEPTH / 2
 
         if data is None:
-            z_coordinates = [self._base_z for _ in range(len(self._raw_data))]
+            z_coordinates = [relative_z_start for _ in range(len(self._raw_data))]
         else:
             types = list(set(data))  # Remove the duplicated values and convert into a list
             for t in data:
                 index = types.index(t)  # Get the index of the type in types
-                elem_z = self._base_z - (DEFAULT_BAR_DEPTH / 2) - (index * DEFAULT_MAX_DEPTH / len(types))
+                elem_z = relative_z_start - (index * DEFAULT_MAX_DEPTH / len(types))
                 z_coordinates.append(elem_z)  # Add the z_coordinate
         return z_coordinates
 
@@ -276,9 +305,8 @@ class BarChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['x']['axis'] if self._encoding.get('x') else False
         except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_x = self._base_x + (self.bar_width * len(self._raw_data))
-            end = f'{end_x} {self._base_y} {self._base_z}'
+            start = '0 0 0'
+            end = f'{self.bar_width * len(self._raw_data)} 0 0'
 
             axis_specs['x']['start'] = start
             axis_specs['x']['end'] = end
@@ -289,7 +317,7 @@ class BarChartCreator(ChartCreator):
             x_coordinates = self._set_x_coordinates(x_data)  # X-axis value for each bar
 
             for label in range(len(self._raw_data)):
-                label_pos = f'{x_coordinates[label]} {self._base_y + LABELS_Y_DELTA} {self._base_z + LABELS_Z_DELTA}'
+                label_pos = f'{x_coordinates[label]} {LABELS_Y_DELTA} {LABELS_Z_DELTA}'
                 label_value = x_data[label]
                 axis_specs['x']['labels_pos'].append(label_pos)
                 axis_specs['x']['labels_values'].append(label_value)
@@ -301,9 +329,8 @@ class BarChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['y']['axis'] if self._encoding.get('y') else False
         except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_y = self._base_y + self.max_height
-            end = f'{self._base_x} {end_y} {self._base_z}'
+            start = '0 0 0'
+            end = f'0 {self.max_height} 0'
 
             axis_specs['y']['start'] = start
             axis_specs['y']['end'] = end
@@ -313,7 +340,7 @@ class BarChartCreator(ChartCreator):
             y_data = [d[y_field] for d in self._raw_data]
 
             for label in range(1, Y_NUM_OF_TICKS + 1):
-                label_pos = f'{self._base_x + LABELS_X_DELTA} {self.max_height * label / Y_NUM_OF_TICKS} {self._base_z}'
+                label_pos = f'{Y_LABELS_X_DELTA} {self.max_height * label / Y_NUM_OF_TICKS} 0'
                 label_value = max(y_data) * label / Y_NUM_OF_TICKS
                 axis_specs['y']['labels_pos'].append(label_pos)
                 axis_specs['y']['labels_values'].append(label_value)
@@ -325,9 +352,8 @@ class BarChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['z']['axis'] if self._encoding.get('z') else False
         except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_z = self._base_z - DEFAULT_MAX_DEPTH
-            end = f'{self._base_x} {self._base_y} {end_z}'
+            start = f'0 0 0'
+            end = f'0 0 {-DEFAULT_MAX_DEPTH}'
 
             axis_specs['z']['start'] = start
             axis_specs['z']['end'] = end
@@ -338,8 +364,8 @@ class BarChartCreator(ChartCreator):
             types = list(set(z_data))  # Remove the duplicated values and convert into a list
 
             for label in types:
-                label_z_pos = self._base_z - (DEFAULT_BAR_DEPTH / 2) - (types.index(label) * DEFAULT_MAX_DEPTH / len(types))
-                label_pos = f'{self._base_x + LABELS_X_DELTA} {self._base_y + LABELS_Y_DELTA} {label_z_pos}'
+                label_z_pos = - (DEFAULT_BAR_DEPTH / 2) - (types.index(label) * DEFAULT_MAX_DEPTH / len(types))
+                label_pos = f'{Z_LABELS_X_DELTA} {LABELS_Y_DELTA} {label_z_pos}'
                 label_value = label
                 axis_specs['z']['labels_pos'].append(label_pos)
                 axis_specs['z']['labels_values'].append(label_value)
@@ -355,11 +381,19 @@ class PointChartCreator(ChartCreator):
         super().__init__(chart_specs)
         self._max_radius = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
 
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+
+        group_specs = copy.deepcopy(GROUP_DICT_TEMPLATE)
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
+                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
+        return group_specs
+
     def _set_x_coordinates(self, data: list | None, points_radius: list) -> list:
         """Returns a list of the x coordinates for each point composing the bar chart."""
 
         x_coordinates = []
-        base_x = self._base_x + points_radius[0]  # Correct the position so the chart starts in the base position
+        base_x = points_radius[0]  # Correct the position so the chart starts in the base position
         if data is None:
             x_coordinates = [base_x for _ in range(len(self._raw_data))]
         for i in range(len(self._raw_data)):
@@ -370,7 +404,7 @@ class PointChartCreator(ChartCreator):
         """Returns a list of the y coordinates for each point composing the bar chart."""
 
         y_coordinates = []
-        base_y = self._base_y + max(points_radius)  # The lower point starts in the base position
+        base_y = max(points_radius)  # The lower point starts in the base position
 
         if data is None:
             y_coordinates = [base_y for _ in range(len(self._raw_data))]
@@ -388,12 +422,13 @@ class PointChartCreator(ChartCreator):
         z_coordinates = []
 
         if data is None:
-            z_coordinates = [self._base_z for _ in range(len(self._raw_data))]
+            z_coordinates = [0 for _ in range(len(self._raw_data))]
         else:
             types = list(set(data))  # Remove the duplicated values and convert into a list
+            base_z = DEFAULT_POINT_RADIUS
             for t in data:
                 index = types.index(t)  # Get the index of the type in types
-                elem_z = self._base_z - (DEFAULT_POINT_RADIUS / 2) - (index * DEFAULT_MAX_DEPTH / len(types))
+                elem_z = -base_z - (index * DEFAULT_MAX_DEPTH / len(types))
                 z_coordinates.append(elem_z)  # Add the z_coordinate
         return z_coordinates
 
@@ -491,9 +526,8 @@ class PointChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['x']['axis'] if self._encoding.get('x') else False
         except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_x = self._base_x + (DEFAULT_POINT_X_SEPARATION * len(self._raw_data)) + self._max_radius
-            end = f'{end_x} {self._base_y} {self._base_z}'
+            start = '0 0 0'
+            end = f'{DEFAULT_POINT_X_SEPARATION * len(self._raw_data) + self._max_radius} 0 0'
 
             axis_specs['x']['start'] = start
             axis_specs['x']['end'] = end
@@ -511,7 +545,7 @@ class PointChartCreator(ChartCreator):
             x_coordinates = self._set_x_coordinates(x_data, radius)
 
             for label in range(len(self._raw_data)):
-                label_pos = f'{x_coordinates[label]} {self._base_y + LABELS_Y_DELTA} {self._base_z + LABELS_Z_DELTA}'
+                label_pos = f'{x_coordinates[label]} {LABELS_Y_DELTA} {LABELS_Z_DELTA}'
                 label_value = self._raw_data[label][self._encoding['x']['field']]
                 axis_specs['x']['labels_pos'].append(label_pos)
                 axis_specs['x']['labels_values'].append(label_value)
@@ -523,9 +557,8 @@ class PointChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['y']['axis'] if self._encoding.get('y') else False
         except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_y = self._base_y + DEFAULT_MAX_HEIGHT
-            end = f'{self._base_x} {end_y} {self._base_z}'
+            start = '0 0 0'
+            end = f'0 {DEFAULT_MAX_HEIGHT} 0'
 
             axis_specs['y']['start'] = start
             axis_specs['y']['end'] = end
@@ -535,7 +568,7 @@ class PointChartCreator(ChartCreator):
             y_data = [d[y_field] for d in self._raw_data]
 
             for label in range(1, Y_NUM_OF_TICKS + 1):
-                label_pos = f'{self._base_x + LABELS_X_DELTA} {DEFAULT_MAX_HEIGHT * label / Y_NUM_OF_TICKS} {self._base_z}'
+                label_pos = f'{Y_LABELS_X_DELTA} {DEFAULT_MAX_HEIGHT * label / Y_NUM_OF_TICKS} 0'
                 label_value = max(y_data) * label / Y_NUM_OF_TICKS
                 axis_specs['y']['labels_pos'].append(label_pos)
                 axis_specs['y']['labels_values'].append(label_value)
@@ -547,9 +580,8 @@ class PointChartCreator(ChartCreator):
         try:
             display_axis = self._encoding['z']['axis'] if self._encoding.get('z') else False
         except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
-            start = f'{self._base_x} {self._base_y} {self._base_z}'
-            end_z = self._base_z - DEFAULT_MAX_DEPTH
-            end = f'{self._base_x} {self._base_y} {end_z}'
+            start = '0 0 0'
+            end = f'0 0 {-DEFAULT_MAX_DEPTH}'
 
             axis_specs['z']['start'] = start
             axis_specs['z']['end'] = end
@@ -560,8 +592,8 @@ class PointChartCreator(ChartCreator):
             types = list(set(z_data))  # Remove the duplicated values and convert into a list
 
             for label in types:
-                label_z_pos = self._base_z - (DEFAULT_POINT_RADIUS / 2) - (types.index(label) * DEFAULT_MAX_DEPTH / len(types))
-                label_pos = f'{self._base_x + LABELS_X_DELTA} {self._base_y + LABELS_Y_DELTA} {label_z_pos}'
+                label_z_pos = - (DEFAULT_POINT_RADIUS / 2) - (types.index(label) * DEFAULT_MAX_DEPTH / len(types))
+                label_pos = f'{Z_LABELS_X_DELTA} {LABELS_Y_DELTA} {label_z_pos}'
                 label_value = label
                 axis_specs['z']['labels_pos'].append(label_pos)
                 axis_specs['z']['labels_values'].append(label_value)

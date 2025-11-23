@@ -34,9 +34,12 @@ class ChartsHTMLCreator:
         chart_html = ''
         base_html = CHART_TEMPLATES[chart_type]
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
+
+        group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
+        chart_html += '<a-entity position="{pos}" rotation="{rotation}">\n'.format(**group_specs)
         elements_specs = chart_object.get_elements_specs()  # Get the specifications for each element of the chart
         for element in elements_specs:
-            chart_html += base_html.format(**element) + '\n\t\t'  # Tabulate the lines (better visualization)
+            chart_html += '\t\t\t' + base_html.format(**element) + '\n'  # Tabulate the lines (better visualization)
 
         # Axis HTML
         axis_specs = chart_object.get_axis_specs()
@@ -44,15 +47,16 @@ class ChartsHTMLCreator:
         for ax in axis_specs:
             if axis_specs[ax]['start'] is None:
                 continue  # If the axis is not displayed, continue with the next
-            chart_html += f'\n\t\t<!-- {ax}-axis -->\n\t\t'  # Added HTML comment for better visualization
-            chart_html += AxisHTMLCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n\t\t'
+            chart_html += f'\n\t\t\t<!-- {ax}-axis -->\n'  # Added HTML comment for better visualization
+            chart_html += '\t\t\t' + AxisHTMLCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
             for label in range(len(axis_specs[ax]['labels_pos'])):
                 label_pos = axis_specs[ax]['labels_pos'][label]
                 label_rotation = axis_specs[ax]['labels_rotation']
                 label_value = axis_specs[ax]['labels_values'][label]
-                chart_html += AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n\t\t'
+                chart_html += '\t\t\t' + AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n'
 
-        chart_html.removesuffix('\n\t\t')  # Remove the last tabulation
+        # Close the group
+        chart_html += '\t\t</a-entity>'
         return chart_html
 
     @staticmethod

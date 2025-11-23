@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	function displayInfo(event) {
 		const targetElement = event.target;
 
-	    const objectPosition = targetElement.getAttribute('position');
+	    const objectPosition = new THREE.Vector3();
+		objectPosition.setFromMatrixPosition(targetElement.object3D.matrixWorld);
 
 	    event.target.setAttribute('scale', '1.1 1.1 1.1');  // Size the scale up
 

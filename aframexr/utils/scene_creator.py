@@ -15,13 +15,13 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         <a-camera position="0 4 0" active="true"></a-camera>
     
         <!-- Environment -->
-        <a-entity environment="preset: forest"></a-entity>
+        <a-entity environment="preset: default"></a-entity>
         
         <!-- Elements -->
         {elements}
         
         <!-- Variable label -->
-        <a-plane id="plainLabel" position="" height="1.75" width="3.75" visible="true"></a-plane>
+        <a-plane id="plainLabel" position="" height="1.75" width="3.75" visible="false"></a-plane>
         <a-text id="label" position="" value="" scale="2 2 2" visible="false"></a-text>
     </a-scene>
 </body>
