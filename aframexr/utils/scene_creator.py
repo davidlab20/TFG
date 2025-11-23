@@ -6,7 +6,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <head>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-    <script src="https://davidlab20.github.io/TFG/docs/scripts/main.js"></script>
+    <script src="https://davidlab20.github.io/TFG/scripts/main.js"></script>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
