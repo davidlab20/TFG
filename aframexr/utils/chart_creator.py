@@ -122,8 +122,16 @@ class ArcChartCreator(ChartCreator):
         color_data = [d[field] for d in self._raw_data]
         colors = self._set_elements_colors(color_data)
 
+        # Id
+        ids = []
+        for i in range(len(self._raw_data)):
+            label = color_data[i]
+            value = int(theta_data[i]) if str(theta_data[i]).endswith('.0') else theta_data[i]
+            ids.append(f'{label}: {value}')
+
         for elem in range(len(self._raw_data)):
             specs = {}  # Specifications of the single element
+            specs.update({'id': ids[elem]})
             specs.update({'pos': f'{x_coordinates[elem]} {y_coordinates[elem]} {z_coordinates[elem]}'})
             specs.update({'inner_radius': inners_radius[elem]})
             specs.update({'outer_radius': outers_radius[elem]})
@@ -239,8 +247,16 @@ class BarChartCreator(ChartCreator):
         # Color
         colors = self._set_bars_colors()
 
+        # Id
+        ids = []
+        for i in range(len(x_data)):
+            label = x_data[i]
+            value = int(y_data[i]) if str(y_data[i]).endswith('.0') else y_data[i]
+            ids.append(f'{label}: {value}')
+
         for elem in range(len(self._raw_data)):
             specs = {}  # Specifications of the single element
+            specs.update({'id': ids[elem]})
             specs.update({'pos': f'{x_coordinates[elem]} {y_coordinates[elem]} {z_coordinates[elem]}'})
             specs.update({'width': bar_widths[elem]})
             specs.update({'height': bar_heights[elem]})
@@ -447,8 +463,16 @@ class PointChartCreator(ChartCreator):
         else:  # Bubbles plot (same color for all points)
             colors = [DEFAULT_POINT_COLOR for _ in range(len(self._raw_data))]
 
+        # Id
+        ids = []
+        for i in range(len(x_data)):
+            label = x_data[i]
+            value = int(y_data[i]) if str(y_data[i]).endswith('.0') else y_data[i]
+            ids.append(f'{label}: {value}')
+
         for elem in range(len(self._raw_data)):
             specs = {}  # Specifications of the single element
+            specs.update({'id': ids[elem]})
             specs.update({'pos': f'{x_coordinates[elem]} {y_coordinates[elem]} {z_coordinates[elem]}'})
             specs.update({'radius': radius[elem]})
             specs.update({'color': colors[elem]})

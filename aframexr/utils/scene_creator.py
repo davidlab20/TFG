@@ -10,6 +10,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
+    
         <!-- Camera -->
         <a-camera position="0 4 0" active="true"></a-camera>
     
@@ -18,6 +19,10 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         
         <!-- Elements -->
         {elements}
+        
+        <!-- Variable label -->
+        <a-plane id="plainLabel" position="" height="1.75" width="3.75" visible="true"></a-plane>
+        <a-text id="label" position="" value="" scale="2 2 2" visible="false"></a-text>
     </a-scene>
 </body>
 """

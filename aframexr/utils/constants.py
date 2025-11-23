@@ -3,14 +3,15 @@
 # ----- CONSTANTS -----
 AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']
 CHART_TEMPLATES = {
-    'arc': ('<a-cylinder position="{pos}" rotation="-90 0 0" height="0.5" radius-inner="{inner_radius}" '
+    'arc': ('<a-cylinder id="{id}" position="{pos}" rotation="-90 0 0" height="0.5" radius-inner="{inner_radius}" '
             'radius-outer="{outer_radius}" theta-start="{theta_start}" theta-length="{theta_length}" '
             'material="color: {color}" data-raycastable></a-cylinder>'),
-    'bar': ('<a-box position="{pos}" width="{width}" height="{height}" material="color: {color}" data-raycastable>'
-           '</a-box>'),
-    'point': '<a-sphere position="{pos}" radius="{radius}" material="color: {color}" data-raycastable></a-sphere>'
+    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" material="color: {color}" '
+            'data-raycastable></a-box>'),
+    'point': ('<a-sphere id="{id}" position="{pos}" radius="{radius}" material="color: {color}" data-raycastable>'
+             '</a-sphere>')
 }
-LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
+LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 LABELS_Z_DELTA = 1  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
 Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
