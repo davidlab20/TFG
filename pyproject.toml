@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aframexr"
-version = "0.2.2"
-authors = [{name = "David Díaz G"}]
+version = "0.2.3"
+authors = [{name = "David Díaz"}]
 description = "Python library to visualize data in Virtual and Extended Reality using Aframe components."
 readme = "README.md"
 requires-python = ">=3.12"
