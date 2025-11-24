@@ -56,7 +56,7 @@ class ChartsHTMLCreator:
                 chart_html += '\t\t\t' + AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n'
 
         # Close the group
-        chart_html += '\t\t</a-entity>'
+        chart_html += '\t\t</a-entity>\n\t\t'
         return chart_html
 
     @staticmethod
