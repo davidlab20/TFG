@@ -397,7 +397,7 @@ class Chart(TopLevelMixin):
 
         # Add the information of the filter object to the specifications
         if not filt_chart._specifications.get('transform'):  # First time filtering the chart
-            filt_chart._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field in specs
+            filt_chart._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field
         else:  # Not the first filter of the chart
             filt_chart._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
         return filt_chart  # Returns the copy of the chart

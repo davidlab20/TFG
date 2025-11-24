@@ -42,6 +42,8 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
             if transformation.get('filter'):
                 filter_object = FilterTransform.from_string(transformation['filter'])
                 filtered_data = filter_object.filter_data(raw_data)
+                if len(filtered_data) == 0:  # Data does not contain any value for the filter
+                    raise ValueError(f'Data does not contain any value for the filter: {transformation["filter"]}.')
                 raw_data = filtered_data
             else:
                 raise NotImplementedError(f'The transformation {transformation} has not been implemented yet.')
