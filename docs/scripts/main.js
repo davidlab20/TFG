@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	    textLabel.setAttribute('visible', 'false');  // Hide text
 	}
 
-	// Seleccionar todos los elementos relevantes en una sola consulta CSS
     const interactiveElements = document.querySelectorAll('a-box, a-cylinder, a-sphere');
 
     // Asignar eventos en un solo bucle

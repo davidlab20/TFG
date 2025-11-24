@@ -1,6 +1,11 @@
 on:
   push:
     branches: ['main']
+    paths:  # Deploy when they are changes on...
+      - '.github/workflows/deploy.yml'  # This file
+      - 'docs/**'  # Any file in docs/
+      - '!docs/scripts/**'  # Except directory scripts in docs/
+      - 'pyproject.toml'  # A new version of aframexr is released (to update notebooks)
   workflow_dispatch:
 
 jobs:
@@ -16,13 +21,12 @@ jobs:
             run: pip install -r requirements.txt
 
           - name: 📄 Export Get Started notebooks
-            run: |
-              cd docs/get_started
-              marimo export html-wasm --show-code get-started-notebook.py -o get-started-notebook.html --mode run
+            working-directory: docs/get_started
+            run:  marimo export html-wasm --show-code get-started-notebook.py -o get-started-notebook.html --mode run
 
           - name: 📄 Export Example notebooks
+            working-directory: docs/examples/notebooks
             run: |
-              cd docs/examples/notebooks
               marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
               marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
