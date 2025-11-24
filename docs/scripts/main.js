@@ -53,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
     const interactiveElements = document.querySelectorAll('a-box, a-cylinder, a-sphere');
-
-    // Asignar eventos en un solo bucle
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', displayInfo);
         element.addEventListener('mouseleave', returnToOriginal);
