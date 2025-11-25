@@ -377,7 +377,7 @@ class Chart(TopLevelMixin):
             filled_params.update({'z': z})
 
         # Verify the argument combinations
-        if self._specifications['mark']['type'] in ['arc', 'bar'] and sum([x != '', y != '', z != '']) < 2:
+        if self._specifications['mark']['type'] in ['bar', 'point'] and sum([x != '', y != '', z != '']) < 2:
             raise ValueError('at least 2 of (x, y, z) must be specified.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
             if not theta: raise ValueError('theta must be specified in arc chart.')
