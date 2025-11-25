@@ -79,7 +79,7 @@ class ChartsHTMLCreator:
         charts_html = ''
         if specs.get('concat'):  # The scene has more than one chart
             for chart in specs.get('concat'):
-                charts_html += ChartsHTMLCreator._create_simple_chart_html(chart)
+                charts_html += ChartsHTMLCreator._create_simple_chart_html(chart) + '\n\t\t'  # Tabulate (visualization)
         else:  # The scene has only one chart
             charts_html = ChartsHTMLCreator._create_simple_chart_html(specs)
         charts_html = charts_html.removesuffix('\n\t\t')  # Delete the last tabulation
