@@ -58,7 +58,10 @@ class ChartCreator:
         base_position = chart_specs.get('position', DEFAULT_CHART_POS)
         [self._base_x, self._base_y, self._base_z] = [float(pos) for pos in base_position.split()]  # Base position
         self._encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
-        self._raw_data = _get_raw_data(chart_specs.get('data'), chart_specs.get('transform'))  # Raw data
+        if chart_specs['mark']['type'] in CHART_TEMPLATES:
+            self._raw_data = _get_raw_data(chart_specs['data'], chart_specs.get('transform'))  # Raw data
+        if chart_specs['mark']['type'] in IMAGES_TEMPLATES:
+            self._url = chart_specs['data']['url']  # URL of the image model
         rotation = chart_specs.get('rotation', DEFAULT_CHART_ROTATION)  # Rotation of the chart
         [self._x_rotation, self._y_rotation, self._z_rotation] = [float(rot) for rot in rotation.split()]
 
@@ -72,6 +75,8 @@ class ChartCreator:
             return BarChartCreator(chart_specs)
         elif chart_type == 'point':
             return PointChartCreator(chart_specs)
+        elif chart_type == 'image':
+            return ImageCreator(chart_specs)
         else:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
@@ -374,6 +379,36 @@ class BarChartCreator(ChartCreator):
             axis_specs['z']['labels_rotation'] = '-90 0 0'
 
         return axis_specs
+
+
+class ImageCreator(ChartCreator):
+    """Image creator class."""
+
+    def __init__(self, chart_specs: dict):
+        super().__init__(chart_specs)
+        self._height = chart_specs.get('height', DEFAULT_IMAGE_HEIGHT)
+        self._width = chart_specs.get('width', DEFAULT_IMAGE_WIDTH)
+
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+
+        group_specs = copy.deepcopy(GROUP_DICT_TEMPLATE)
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
+                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
+        return group_specs
+
+    def get_elements_specs(self) -> list[dict]:
+        """Returns a list of dictionaries with the specifications for each element of the chart."""
+
+        return [{'src': self._url, 'width': self._width, 'height': self._height}]
+
+    def get_axis_specs(self) -> dict:
+        """Returns a dictionary with the specifications for each axis of the chart."""
+
+        axis_specs = {'x': copy.deepcopy(AXIS_DICT_TEMPLATE), 'y': copy.deepcopy(AXIS_DICT_TEMPLATE),
+                      'z': copy.deepcopy(AXIS_DICT_TEMPLATE)}
+        return axis_specs  # Arc chart have no axis
+
 
 
 class PointChartCreator(ChartCreator):

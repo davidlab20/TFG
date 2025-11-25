@@ -2,6 +2,13 @@
 
 # ----- CONSTANTS -----
 AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']
+Y_LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y-axis pos for label pos)
+Z_LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to z-axis pos for label pos)
+LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
+LABELS_Z_DELTA = 1  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
+Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
+
+# ----- TEMPLATES -----
 CHART_TEMPLATES = {
     'arc': ('<a-cylinder id="{id}" position="{pos}" height="0.5" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}" data-raycastable></a-cylinder>'),
@@ -10,11 +17,10 @@ CHART_TEMPLATES = {
     'point': ('<a-sphere id="{id}" position="{pos}" radius="{radius}" material="color: {color}" data-raycastable>'
              '</a-sphere>')
 }
-Y_LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y-axis pos for label pos)
-Z_LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to z-axis pos for label pos)
-LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
-LABELS_Z_DELTA = 1  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
-Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
+IMAGES_TEMPLATES = {
+    'image': '<a-image src="{src}" width="{width}" height="{height}"></a-image>',
+}
+ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary with all templates
 
 # ----- DEFAULTS -----
 # General
@@ -32,6 +38,10 @@ DEFAULT_BAR_WIDTH = 1  # Default bar width
 DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
+
+# Image
+DEFAULT_IMAGE_HEIGHT = 1  # Default height of the image
+DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 
 # Point chart
 DEFAULT_POINT_RADIUS = 1  # Default point radius

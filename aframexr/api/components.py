@@ -245,6 +245,29 @@ class Chart(TopLevelMixin):
             raise ValueError('height must be greater than 0.')
         return self
 
+    def mark_image(self, width: int = DEFAULT_IMAGE_WIDTH, height: int = DEFAULT_IMAGE_HEIGHT):
+        """
+        Image.
+
+        Parameters
+        ----------
+        width : int (optional)
+            Width of the image. If not specified, using default. Must be greater than 0.
+        height : int (optional)
+            Height of the image. If not specified, using default. Must be greater than 0.
+        """
+
+        self._specifications.update({'mark': {'type': 'image'}})
+        if width > 0:
+            self._specifications.update({'width': width})
+        else:
+            raise ValueError('width must be greater than 0.')
+        if height > 0:
+            self._specifications.update({'height': height})
+        else:
+            raise ValueError('height must be greater than 0.')
+        return self
+
     def mark_point(self, size: float = DEFAULT_POINT_RADIUS, height: float = DEFAULT_MAX_HEIGHT):
         """
         Scatter plot and bubble chart.
@@ -326,7 +349,7 @@ class Chart(TopLevelMixin):
             filled_params.update({'z': z})
 
         # Verify the argument combinations
-        if self._specifications['mark']['type'] != 'arc' and sum([x != '', y != '', z != '']) < 2:
+        if self._specifications['mark']['type'] in ['arc', 'bar'] and sum([x != '', y != '', z != '']) < 2:
             raise ValueError('at least 2 of (x, y, z) must be specified.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
             if not theta: raise ValueError('theta must be specified in arc chart.')

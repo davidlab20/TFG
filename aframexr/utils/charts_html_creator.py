@@ -1,7 +1,7 @@
 """AframeXR charts HTML creator"""
 
 from aframexr.utils.axis_html_creator import AxisHTMLCreator
-from aframexr.utils.constants import CHART_TEMPLATES
+from aframexr.utils.constants import ALL_TEMPLATES
 from aframexr.utils.chart_creator import ChartCreator
 
 
@@ -27,12 +27,12 @@ class ChartsHTMLCreator:
 
         # Validate chart type
         chart_type = chart_specs['mark']['type']
-        if chart_type not in CHART_TEMPLATES.keys():
-            raise NotImplementedError('That chart type is not supported.')
+        if chart_type not in ALL_TEMPLATES:
+            raise NotImplementedError(f'That chart type is not supported: {chart_type}.')
 
         # Chart HTML
         chart_html = ''
-        base_html = CHART_TEMPLATES[chart_type]
+        base_html = ALL_TEMPLATES[chart_type]
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
