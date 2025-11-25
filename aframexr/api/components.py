@@ -245,6 +245,24 @@ class Chart(TopLevelMixin):
             raise ValueError('height must be greater than 0.')
         return self
 
+    def mark_gltf(self, scale: str = DEFAULT_GLTF_SCALE):
+        """
+        GLTF model.
+
+        Parameters
+        ----------
+        scale : str (optional)
+            Scale of the GLTF model (from its original scale).
+
+            **Format: 'x y z'** (values can be negative, works like a mirror).
+
+            If an axis value is not specified, that value will be 1 (for example, '2 2' is the same as '2 2 1').
+        """
+
+        self._specifications.update({'mark': {'type': 'gltf'}})
+        self._specifications['mark'].update({'scale': scale})
+        return self
+
     def mark_image(self, width: int = DEFAULT_IMAGE_WIDTH, height: int = DEFAULT_IMAGE_HEIGHT):
         """
         Image.
@@ -255,15 +273,20 @@ class Chart(TopLevelMixin):
             Width of the image. If not specified, using default. Must be greater than 0.
         height : int (optional)
             Height of the image. If not specified, using default. Must be greater than 0.
+
+        Raises
+        ------
+        ValueError
+            If width or height are not greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'image'}})
         if width > 0:
-            self._specifications.update({'width': width})
+            self._specifications['mark'].update({'width': width})
         else:
             raise ValueError('width must be greater than 0.')
         if height > 0:
-            self._specifications.update({'height': height})
+            self._specifications['mark'].update({'height': height})
         else:
             raise ValueError('height must be greater than 0.')
         return self
@@ -278,6 +301,11 @@ class Chart(TopLevelMixin):
             Maximum radius of the point. If not specified, using default. Must be greater than 0.
         height : float (optional)
             Maximum height of the chart. If not specified, using default. Must be greater than 0.
+
+        Raises
+        ------
+        ValueError
+            If size or height are not greater than 0.
         """
 
         self._specifications.update({'mark': {'type': 'point'}})

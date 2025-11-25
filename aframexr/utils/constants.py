@@ -18,7 +18,8 @@ CHART_TEMPLATES = {
              '</a-sphere>')
 }
 IMAGES_TEMPLATES = {
-    'image': '<a-image src="{src}" width="{width}" height="{height}"></a-image>',
+    'gltf': '<a-gltf-model src="{src}" scale="{scale}"></a-gltf-model>',
+    'image': '<a-image src="{src}" width="{width}" height="{height}"></a-image>'
 }
 ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary with all templates
 
@@ -38,6 +39,9 @@ DEFAULT_BAR_WIDTH = 1  # Default bar width
 DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
+
+# GLTF model
+DEFAULT_GLTF_SCALE = '1 1 1'  # Default scale of the GLTF model
 
 # Image
 DEFAULT_IMAGE_HEIGHT = 1  # Default height of the image

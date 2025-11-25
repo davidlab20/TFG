@@ -77,6 +77,8 @@ class ChartCreator:
             return PointChartCreator(chart_specs)
         elif chart_type == 'image':
             return ImageCreator(chart_specs)
+        elif chart_type == 'gltf':
+            return GLTFModelCreator(chart_specs)
         else:
             raise NotImplementedError(f'{chart_type} is not supported.')
 
@@ -381,13 +383,41 @@ class BarChartCreator(ChartCreator):
         return axis_specs
 
 
+class GLTFModelCreator(ChartCreator):
+    """GLTF model creator class."""
+
+    def __init__(self, chart_specs: dict):
+        super().__init__(chart_specs)
+        self._scale = chart_specs['mark'].get('scale', DEFAULT_GLTF_SCALE)
+
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+
+        group_specs = copy.deepcopy(GROUP_DICT_TEMPLATE)
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
+                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
+        return group_specs
+
+    def get_elements_specs(self) -> list[dict]:
+        """Returns a list of dictionaries with the specifications for each element of the chart."""
+
+        return [{'src': self._url, 'scale': self._scale}]
+
+    def get_axis_specs(self) -> dict:
+        """Returns a dictionary with the specifications for each axis of the chart."""
+
+        axis_specs = {'x': copy.deepcopy(AXIS_DICT_TEMPLATE), 'y': copy.deepcopy(AXIS_DICT_TEMPLATE),
+                      'z': copy.deepcopy(AXIS_DICT_TEMPLATE)}
+        return axis_specs  # GLTF models have no axis
+
+
 class ImageCreator(ChartCreator):
     """Image creator class."""
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._height = chart_specs.get('height', DEFAULT_IMAGE_HEIGHT)
-        self._width = chart_specs.get('width', DEFAULT_IMAGE_WIDTH)
+        self._height = chart_specs['mark'].get('height', DEFAULT_IMAGE_HEIGHT)
+        self._width = chart_specs['mark'].get('width', DEFAULT_IMAGE_WIDTH)
 
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
@@ -407,7 +437,7 @@ class ImageCreator(ChartCreator):
 
         axis_specs = {'x': copy.deepcopy(AXIS_DICT_TEMPLATE), 'y': copy.deepcopy(AXIS_DICT_TEMPLATE),
                       'z': copy.deepcopy(AXIS_DICT_TEMPLATE)}
-        return axis_specs  # Arc chart have no axis
+        return axis_specs  # Images have no axis
 
 
 
