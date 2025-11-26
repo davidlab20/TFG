@@ -190,7 +190,7 @@ class Chart(TopLevelMixin):
             try:
                 float(axis)
             except ValueError:
-                raise ValueError(f'The position values must be numeric.')
+                raise ValueError('The position values must be numeric.')
         self._specifications.update({'position': f'{pos_axes[0]} {pos_axes[1]} {pos_axes[2]}'})
 
         # Rotation
@@ -201,7 +201,7 @@ class Chart(TopLevelMixin):
             try:
                 float(axis)
             except ValueError:
-                raise ValueError(f'The rotation values must be numeric.')
+                raise ValueError('The rotation values must be numeric.')
         self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
 
     # Types of charts
@@ -336,7 +336,7 @@ class Chart(TopLevelMixin):
         x : str | X (optional)
             Field of the data that will determine the x-axis of the chart.
         y : str | Y (optional)
-            Field of the data what will determine the y-axis of the chart.
+            Field of the data what will determine the y-axis of the chart (must be quantitative).
         z : str | Z (optional)
             Field of the data what will determine the z-axis of the chart.
 
