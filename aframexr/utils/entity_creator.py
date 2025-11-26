@@ -1,4 +1,4 @@
-"""AframeXR chart creator"""
+"""AframeXR entity creator"""
 
 import copy
 import json

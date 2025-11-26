@@ -1,8 +1,8 @@
-"""AframeXR charts HTML creator"""
+"""AframeXR entities HTML creator"""
 
 from aframexr.utils.axis_html_creator import AxisHTMLCreator
 from aframexr.utils.constants import ALL_TEMPLATES
-from aframexr.utils.chart_creator import ChartCreator
+from aframexr.utils.entity_creator import ChartCreator
 
 
 class ChartsHTMLCreator:
@@ -47,7 +47,7 @@ class ChartsHTMLCreator:
         for ax in axis_specs:
             if axis_specs[ax]['start'] is None:
                 continue  # If the axis is not displayed, continue with the next
-            chart_html += f'\n\t\t\t<!-- {ax}-axis -->\n'  # Added HTML comment for better visualization
+            chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
             chart_html += '\t\t\t' + AxisHTMLCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
             for label in range(len(axis_specs[ax]['labels_pos'])):
                 label_pos = axis_specs[ax]['labels_pos'][label]
