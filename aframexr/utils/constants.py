@@ -10,7 +10,7 @@ Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
 
 # ----- TEMPLATES -----
 CHART_TEMPLATES = {
-    'arc': ('<a-cylinder id="{id}" position="{pos}" height="0.5" radius="{radius}" theta-start="{theta_start}" '
+    'arc': ('<a-cylinder id="{id}" position="{pos}" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}" data-raycastable></a-cylinder>'),
     'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" '
             'material="color: {color}" data-raycastable></a-box>'),
