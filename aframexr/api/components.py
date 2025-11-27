@@ -382,9 +382,6 @@ class Chart(TopLevelMixin):
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
             if not theta: raise ValueError('Parameter theta must be specified in arc chart.')
             if not color: raise ValueError('Parameter color must be specified in arc chart.')
-        if self._specifications['mark']['type'] != 'point' and (color or size):
-            if color: raise Warning(f'The entity {self._specifications['mark']['type']} chart does not support color.')
-            if size: raise Warning(f'The entity {self._specifications['mark']['type']} chart does not support size.')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})
