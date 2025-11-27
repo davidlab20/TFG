@@ -219,7 +219,7 @@ class Chart(TopLevelMixin):
         if radius > 0:
             self._specifications['mark'].update({'radius': radius})
         else:
-            raise ValueError('radius must be greater than 0.')
+            raise ValueError('The radius must be greater than 0.')
         return self
 
     def mark_bar(self, size: float = DEFAULT_BAR_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
@@ -238,11 +238,11 @@ class Chart(TopLevelMixin):
         if size > 0:
             self._specifications['mark'].update({'width': size})
         else:
-            raise ValueError('size must be greater than 0.')
+            raise ValueError('The size must be greater than 0.')
         if height > 0:
             self._specifications.update({'height': height})
         else:
-            raise ValueError('height must be greater than 0.')
+            raise ValueError('The height must be greater than 0.')
         return self
 
     def mark_gltf(self, scale: str = DEFAULT_GLTF_SCALE):
@@ -284,11 +284,11 @@ class Chart(TopLevelMixin):
         if width > 0:
             self._specifications['mark'].update({'width': width})
         else:
-            raise ValueError('width must be greater than 0.')
+            raise ValueError('The width must be greater than 0.')
         if height > 0:
             self._specifications['mark'].update({'height': height})
         else:
-            raise ValueError('height must be greater than 0.')
+            raise ValueError('The height must be greater than 0.')
         return self
 
     def mark_point(self, size: float = DEFAULT_POINT_RADIUS, height: float = DEFAULT_MAX_HEIGHT):
@@ -312,11 +312,11 @@ class Chart(TopLevelMixin):
         if size > 0:
             self._specifications['mark'].update({'max_radius': size})
         else:
-            raise ValueError('size must be greater than 0.')
+            raise ValueError('The size must be greater than 0.')
         if height > 0:
             self._specifications.update({'height': height})
         else:
-            raise ValueError('height must be greater than 0.')
+            raise ValueError('The height must be greater than 0.')
         return self
 
     # Parameters of the chart
@@ -378,13 +378,13 @@ class Chart(TopLevelMixin):
 
         # Verify the argument combinations
         if self._specifications['mark']['type'] in ['bar', 'point'] and sum([x != '', y != '', z != '']) < 2:
-            raise ValueError('at least 2 of (x, y, z) must be specified.')
+            raise ValueError('At least 2 of (x, y, z) must be specified.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
-            if not theta: raise ValueError('theta must be specified in arc chart.')
-            if not color: raise ValueError('color must be specified in arc chart.')
+            if not theta: raise ValueError('Parameter theta must be specified in arc chart.')
+            if not color: raise ValueError('Parameter color must be specified in arc chart.')
         if self._specifications['mark']['type'] == 'bar' and (color or size):
-            if color: raise ValueError('bar chart does not support color.')
-            if size: raise ValueError('bar chart does not support size.')
+            if color: raise ValueError('Bar chart does not support color.')
+            if size: raise ValueError('Bar chart does not support size.')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})

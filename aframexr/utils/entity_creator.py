@@ -80,7 +80,7 @@ class ChartCreator:
         elif chart_type == 'gltf':
             return GLTFModelCreator(chart_specs)
         else:
-            raise NotImplementedError(f'{chart_type} is not supported.')
+            raise NotImplementedError(f'That chart type is not supported: {chart_type}.')
 
 
 class ArcChartCreator(ChartCreator):
