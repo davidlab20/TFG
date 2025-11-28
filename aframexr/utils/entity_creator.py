@@ -531,7 +531,7 @@ class PointChartCreator(ChartCreator):
 
         # X-axis
         x_data = None
-        radius = [DEFAULT_POINT_RADIUS for _ in range(len(self._raw_data))]
+        radius = [self._max_radius for _ in range(len(self._raw_data))]
 
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']
