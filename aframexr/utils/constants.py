@@ -32,7 +32,7 @@ DEFAULT_MAX_HEIGHT = 10  # Default maximum height of the chart
 
 # Bar chart
 DEFAULT_BAR_DEPTH = 1  # Default bar depth
-DEFAULT_BAR_HEIGHT = 1  # Default bar height (if not field for y-axis specified)
+DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS = 1  # Default bar height (if not field for y-axis specified)
 DEFAULT_BAR_WIDTH = 1  # Default bar width
 
 # Pie chart
