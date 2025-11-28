@@ -288,10 +288,15 @@ class BarChartCreator(ChartCreator):
         # Id
         ids = []
         for i in range(len(self._raw_data)):
-            elem_id = ''
-            elem_id += f'{x_data[i]} : ' if x_data else ''
-            elem_id += f'{y_data[i]} : ' if y_data else ''
-            elem_id += z_data[i] if z_data else ''
+            values = []
+            if x_data:
+                values.append(str(x_data[i]))
+            if y_data:
+                values.append(str(y_data[i]))
+            if z_data:
+                values.append(str(z_data[i]))
+
+            elem_id = ' : '.join(values)
             ids.append(elem_id)
 
         for elem in range(len(self._raw_data)):
@@ -570,10 +575,15 @@ class PointChartCreator(ChartCreator):
         # Id
         ids = []
         for i in range(len(self._raw_data)):
-            elem_id = ''
-            elem_id += f'{x_data[i]} : ' if x_data else ''
-            elem_id += f'{y_data[i]} : ' if y_data else ''
-            elem_id += z_data[i] if z_data else ''
+            values = []
+            if x_data:
+                values.append(str(x_data[i]))
+            if y_data:
+                values.append(str(y_data[i]))
+            if z_data:
+                values.append(str(z_data[i]))
+
+            elem_id = ' : '.join(values)
             ids.append(elem_id)
 
         for elem in range(len(self._raw_data)):
