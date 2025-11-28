@@ -210,7 +210,7 @@ class BarChartCreator(ChartCreator):
         """Returns a list of the height for each bar composing the bar chart."""
 
         if data is None:
-            heights = [DEFAULT_BAR_HEIGHT for _ in range(len(self._raw_data))]
+            heights = [DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS for _ in range(len(self._raw_data))]
         else:
             max_value = max(data)
             heights = [(h / max_value) * self.max_height for h in data]
