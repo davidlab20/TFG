@@ -257,6 +257,8 @@ class Chart(TopLevelMixin):
             **Format: 'x y z'** (values can be negative, works like a mirror).
 
             If an axis value is not specified, that value will be 1 (for example, '2 2' is the same as '2 2 1').
+
+            If more than 3 axes are specified, then the first 3 axes will be used.
         """
 
         self._specifications.update({'mark': {'type': 'gltf'}})
