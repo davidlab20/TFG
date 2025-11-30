@@ -12,12 +12,12 @@ class FilterTransform:
     def equation_to_dict(self):
         """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
 
-        return {'filter': f'datum.{self.field}{self.operator}{self.value}'}
+        return {'filter': f'datum.{self.field} {self.operator} {self.value}'}
 
     def equation_to_string(self):
         """Returns a string representation about the equation of the filter."""
 
-        return f'{self.field}{self.operator}{self.value}'
+        return f'{self.field} {self.operator} {self.value}'
 
     # Creating filters
     @staticmethod
@@ -42,11 +42,11 @@ class FilterTransform:
 
         if not isinstance(equation, str):
             raise TypeError(f'The equation must be a string, got {type(equation).__name__}')
-        if '=' in equation:  # Equation is of type field=value
+        if '=' in equation:  # Equation is of type field = value
             return FieldEqualPredicate.from_string(equation)
-        if '>' in equation:  # Equation is of type field>value
+        if '>' in equation:  # Equation is of type field > value
             return FieldGTPredicate.from_string(equation)
-        if '<' in equation:  # Equation is of type field<value
+        if '<' in equation:  # Equation is of type field < value
             return FieldLTPredicate.from_string(equation)
         else:
             raise NotImplementedError(f'The filter for equation "{equation}" is not implemented yet.')
@@ -55,7 +55,7 @@ class FilterTransform:
 class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
 
-    def __init__(self, field: str, equal: str):
+    def __init__(self, field: str, equal: str | float):
         operator = '='
         super().__init__(field, operator, equal)
 
@@ -80,13 +80,17 @@ class FieldEqualPredicate(FilterTransform):
         """
 
         if len(equation.split('=')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field}={value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} = {value}')
         field = equation.split('=')[0].strip()
 
         if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field}={value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} = {value}')
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
         value = equation.split('=')[1].strip()
+        try:
+            value = int(value) if value.endswith('.0') else float(value)  # Try to convert value into a number
+        except ValueError:
+            pass  # Remain value as string
 
         return FieldEqualPredicate(field, value)
 
@@ -131,13 +135,15 @@ class FieldGTPredicate(FilterTransform):
         """
 
         if len(equation.split('>')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field}>{value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} > {value}')
         field = equation.split('>')[0].strip()
 
         if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field}>{value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} > {value}')
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
         value = float(equation.split('>')[1].strip())
+        if int(value) == float(value):
+            value = int(value)
 
         return FieldGTPredicate(field, value)
 
@@ -182,13 +188,15 @@ class FieldLTPredicate(FilterTransform):
         """
 
         if len(equation.split('<')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field}<{value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} < {value}')
         field = equation.split('<')[0].strip()
 
         if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field}<{value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} < {value}')
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
         value = float(equation.split('<')[1].strip())
+        if int(value) == float(value):
+            value = int(value)
 
         return FieldLTPredicate(field, value)
 
