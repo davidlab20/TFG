@@ -3,6 +3,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import DEFAULT_POINT_RADIUS
 from tests.constants import *  # Constants used for testing
 
@@ -92,10 +93,11 @@ class TestMarkPointOK(unittest.TestCase):
     def test_filter(self):
         """Mark point changing filter creation."""
 
-        for f in FILTER_EQUATIONS:
-            point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
-            point_chart.show()
-            assert _every_radius_does_not_exceed_max_radius(point_chart)
+        for eq in FILTER_EQUATIONS:
+            for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
+                point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
+                point_chart.show()
+                assert _every_radius_does_not_exceed_max_radius(point_chart)
 
     def test_position_rotation_size_height_encoding_filter(self):
         """Mark point changing position, rotation size, height, encoding and filter creation."""
@@ -170,3 +172,23 @@ class TestMarkPointError(unittest.TestCase):
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_point().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
+
+    def test_filter_warning(self):
+        """Mark point filter warning."""
+
+        for f in WARNING_FILTER_EQUATIONS:
+            with self.assertWarns(UserWarning) as warning:
+                filt_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(warning.warning) == f'Data does not contain any value for the filter: {f}.'
+
+    def test_filter_error(self):
+        """Mark point filter error."""
+
+        for f in ERROR_FILTER_EQUATIONS:
+            with self.assertRaises(SyntaxError) as error:
+                filt_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} = {value}',
+                                            'Incorrect syntax, must be datum.{field} > {value}',
+                                            'Incorrect syntax, must be datum.{field} < {value}']

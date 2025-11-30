@@ -19,6 +19,12 @@ NOT_NUMERIC_POSITIONS_ROTATIONS = ['1 1 a', '1 a 1', '1 a a', 'a 1 1', 'a 1 a', 
 # Filters OK
 FILTER_EQUATIONS = ['datum.motor = diesel', 'datum.doors > 4', 'datum.doors < 4']
 
+# Filters WARNING
+WARNING_FILTER_EQUATIONS = ['datum.motor = bad_value', 'datum.doors > 100', 'datum.doors < 0']
+
+# Filters ERROR
+ERROR_FILTER_EQUATIONS = ['motor = diesel', 'doors > 100', 'doors < 0']
+
 # ----- MARK ARC -----
 # Radius OK
 MARK_ARC_RADIUS = [0.5, 1, 1.5]

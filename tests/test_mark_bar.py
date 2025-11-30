@@ -4,6 +4,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import DEFAULT_MAX_HEIGHT, DEFAULT_BAR_WIDTH
 from tests.constants import *  # Constants used for testing
 
@@ -134,12 +135,13 @@ class TestMarkBarOK(unittest.TestCase):
     def test_filter(self):
         """Bars chart changing filter creation."""
 
-        for f in FILTER_EQUATIONS:
-            bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
-            bars_chart.show()
-            assert _all_bars_have_same_width(bars_chart)
-            assert _bars_bases_are_on_x_axis(bars_chart)
-            assert _bars_height_does_not_exceed_max_height(bars_chart)
+        for eq in FILTER_EQUATIONS:
+            for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
+                bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
+                bars_chart.show()
+                assert _all_bars_have_same_width(bars_chart)
+                assert _bars_bases_are_on_x_axis(bars_chart)
+                assert _bars_height_does_not_exceed_max_height(bars_chart)
 
     def test_position_rotation_size_height_encoding_filter(self):
         """Bars chart changing position, rotation size, height, encoding and filter creation."""
@@ -206,3 +208,23 @@ class TestMarkBarError(unittest.TestCase):
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
+
+    def test_filter_warning(self):
+        """Bars chart filter warning."""
+
+        for f in WARNING_FILTER_EQUATIONS:
+            with self.assertWarns(UserWarning) as warning:
+                filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(warning.warning) == f'Data does not contain any value for the filter: {f}.'
+
+    def test_filter_error(self):
+        """Bars chart filter error."""
+
+        for f in ERROR_FILTER_EQUATIONS:
+            with self.assertRaises(SyntaxError) as error:
+                filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} = {value}',
+                                            'Incorrect syntax, must be datum.{field} > {value}',
+                                            'Incorrect syntax, must be datum.{field} < {value}']

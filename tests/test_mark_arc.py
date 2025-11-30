@@ -4,6 +4,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr.api.filters import FilterTransform
 from tests.constants import *  # Constants used for testing
 
 DATA = aframexr.URLData(URL_DATA)
@@ -92,11 +93,12 @@ class TestMarkArcOK(unittest.TestCase):
     def test_filter(self):
         """Pie chart changing filter creation."""
 
-        for f in FILTER_EQUATIONS:
-            pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+        for eq in FILTER_EQUATIONS:
+            for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
+                pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
+                pie_chart.show()
+                assert _all_theta_sum_is_360_degrees(pie_chart)
+                assert _slices_are_well_placed(pie_chart)
 
     def test_position_rotation_radius_filter(self):
         """Pie chart changing position, rotation, radius and filter creation."""
@@ -154,3 +156,23 @@ class TestMarkArcError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_arc().encode(**e)
             assert str(error.exception) in ['Parameter theta must be specified in arc chart.',
                                             'Parameter color must be specified in arc chart.']
+
+    def test_filter_warning(self):
+        """Pie chart filter warning."""
+
+        for f in WARNING_FILTER_EQUATIONS:
+            with self.assertWarns(UserWarning) as warning:
+                filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(warning.warning) == f'Data does not contain any value for the filter: {f}.'
+
+    def test_filter_error(self):
+        """Pie chart filter error."""
+
+        for f in ERROR_FILTER_EQUATIONS:
+            with self.assertRaises(SyntaxError) as error:
+                filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
+                filt_chart.show()
+            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} = {value}',
+                                            'Incorrect syntax, must be datum.{field} > {value}',
+                                            'Incorrect syntax, must be datum.{field} < {value}']
