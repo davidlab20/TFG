@@ -48,13 +48,13 @@ class FilterTransform:
             raise NotImplementedError(f'The filter for equation "{equation}" is not implemented yet.')
 
     # Filtering data
-    def filter_data(self, raw_data: list[dict]) -> list[dict]:
+    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
         """Returns the filtered data."""
 
         if not isinstance(raw_data, list):
             raise TypeError(f'The raw_data must be a list[dict], got {type(raw_data).__name__}')
         if self.operator == '=':
-            return FieldEqualPredicate.filter_data(FieldEqualPredicate(self.field, self.value), raw_data)
+            return FieldEqualPredicate.get_filtered_data(FieldEqualPredicate(self.field, self.value), raw_data)
         else:
             raise NotImplementedError(f'The filter for equation "{self.equation_to_string()}" is not implemented yet.')
 
@@ -96,7 +96,7 @@ class FieldEqualPredicate(FilterTransform):
         return FieldEqualPredicate(field, equal)
 
     # Filtering data
-    def filter_data(self, raw_data: list[dict]) -> list[dict]:
+    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
         """
         Returns the filtered data.
 
