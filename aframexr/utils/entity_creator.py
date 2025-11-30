@@ -132,6 +132,9 @@ class ArcChartCreator(ChartCreator):
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
+        if len(self._raw_data) == 0:  # There is no data to display
+            return []
+
         elements_specs = []
 
         # Axis
@@ -251,6 +254,9 @@ class BarChartCreator(ChartCreator):
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
+        if len(self._raw_data) == 0:  # There is no data to display
+            return []
+
         elements_specs = []
 
         # X-axis
@@ -310,11 +316,13 @@ class BarChartCreator(ChartCreator):
             elements_specs.append(specs)
         return elements_specs
 
-    def get_axis_specs(self):
+    def get_axis_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
 
         axis_specs = {'x': copy.deepcopy(AXIS_DICT_TEMPLATE), 'y': copy.deepcopy(AXIS_DICT_TEMPLATE),
                       'z': copy.deepcopy(AXIS_DICT_TEMPLATE)}
+        if len(self._raw_data) == 0:  # There is no data to display
+            return axis_specs
 
         # ---- X-axis ----
         # Axis line
@@ -528,6 +536,9 @@ class PointChartCreator(ChartCreator):
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
+        if len(self._raw_data) == 0:  # There is no data to display
+            return []
+
         elements_specs = []
 
         # X-axis
@@ -596,11 +607,13 @@ class PointChartCreator(ChartCreator):
             elements_specs.append(specs)
         return elements_specs
 
-    def get_axis_specs(self):
+    def get_axis_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
 
         axis_specs = {'x': copy.deepcopy(AXIS_DICT_TEMPLATE), 'y': copy.deepcopy(AXIS_DICT_TEMPLATE),
                       'z': copy.deepcopy(AXIS_DICT_TEMPLATE)}
+        if len(self._raw_data) == 0:  # There is no data to display
+            return axis_specs
 
         # ---- X-axis ----
         # Axis line
