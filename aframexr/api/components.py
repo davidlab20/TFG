@@ -265,15 +265,15 @@ class Chart(TopLevelMixin):
         self._specifications['mark'].update({'scale': scale})
         return self
 
-    def mark_image(self, width: int = DEFAULT_IMAGE_WIDTH, height: int = DEFAULT_IMAGE_HEIGHT):
+    def mark_image(self, width: float = DEFAULT_IMAGE_WIDTH, height: float = DEFAULT_IMAGE_HEIGHT):
         """
         Image.
 
         Parameters
         ----------
-        width : int (optional)
+        width : float (optional)
             Width of the image. If not specified, using default. Must be greater than 0.
-        height : int (optional)
+        height : float (optional)
             Height of the image. If not specified, using default. Must be greater than 0.
 
         Raises
