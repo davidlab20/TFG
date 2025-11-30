@@ -3,7 +3,7 @@
 class FilterTransform:
     """FilterTransform base class."""
 
-    def __init__(self, field: str, operator: str, value: str):
+    def __init__(self, field: str, operator: str, value: str | float):
         self.field = field
         self.operator = operator
         self.value = value
@@ -21,7 +21,7 @@ class FilterTransform:
 
     # Creating filters
     @staticmethod
-    def from_string(equation: str) -> 'FilterTransform':
+    def from_string(equation: str):
         """
         Creates a child filter object from the given equation.
 
@@ -42,21 +42,14 @@ class FilterTransform:
 
         if not isinstance(equation, str):
             raise TypeError(f'The equation must be a string, got {type(equation).__name__}')
-        if equation.find('=') != -1:  # Equation is of type field=value
+        if '=' in equation:  # Equation is of type field=value
             return FieldEqualPredicate.from_string(equation)
+        if '>' in equation:  # Equation is of type field>value
+            return FieldGTPredicate.from_string(equation)
+        if '<' in equation:  # Equation is of type field<value
+            return FieldLTPredicate.from_string(equation)
         else:
             raise NotImplementedError(f'The filter for equation "{equation}" is not implemented yet.')
-
-    # Filtering data
-    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
-        """Returns the filtered data."""
-
-        if not isinstance(raw_data, list):
-            raise TypeError(f'The raw_data must be a list[dict], got {type(raw_data).__name__}')
-        if self.operator == '=':
-            return FieldEqualPredicate.get_filtered_data(FieldEqualPredicate(self.field, self.value), raw_data)
-        else:
-            raise NotImplementedError(f'The filter for equation "{self.equation_to_string()}" is not implemented yet.')
 
 
 class FieldEqualPredicate(FilterTransform):
@@ -86,14 +79,16 @@ class FieldEqualPredicate(FilterTransform):
         Should receive equation as a string (as it has been called from FilterTransform).
         """
 
-        if len(equation.split('=')) != 2:  # The equation has more than 1 equal symbol
+        if len(equation.split('=')) != 2:
             raise SyntaxError('Incorrect syntax, must be datum.{field}={value}')
         field = equation.split('=')[0].strip()
-        if field.find('datum.') == -1:  # The word 'datum.' is not in the field
+
+        if not 'datum.' in field:  # The word 'datum.' is not in the field
             raise SyntaxError('Incorrect syntax, must be datum.{field}={value}')
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
-        equal = equation.split('=')[1].strip()
-        return FieldEqualPredicate(field, equal)
+        value = equation.split('=')[1].strip()
+
+        return FieldEqualPredicate(field, value)
 
     # Filtering data
     def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
@@ -106,3 +101,105 @@ class FieldEqualPredicate(FilterTransform):
         """
 
         return [d for d in raw_data if d[self.field] == self.value]
+
+
+class FieldGTPredicate(FilterTransform):
+    """Greater than predicate filter class."""
+
+    def __init__(self, field: str, gt: float):
+        operator = '>'
+        super().__init__(field, operator, gt)
+
+    @staticmethod
+    def from_string(equation: str):
+        """
+        Creates a FieldGTPredicate from the equation string receiving.
+
+        Parameters
+        ----------
+        equation : str
+            Equation to parse.
+
+        Raises
+        ------
+        SyntaxError
+            If equation has an incorrect syntax.
+
+        Notes
+        -----
+        Should receive equation as a string (as it has been called from FilterTransform).
+        """
+
+        if len(equation.split('>')) != 2:
+            raise SyntaxError('Incorrect syntax, must be datum.{field}>{value}')
+        field = equation.split('>')[0].strip()
+
+        if not 'datum.' in field:  # The word 'datum.' is not in the field
+            raise SyntaxError('Incorrect syntax, must be datum.{field}>{value}')
+        field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
+        value = float(equation.split('>')[1].strip())
+
+        return FieldGTPredicate(field, value)
+
+    # Filtering data
+    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
+        """
+        Returns the filtered data.
+
+        Notes
+        -----
+        Supposing that raw_data is a dict (as it has been called from FilterTransform).
+        """
+
+        return [d for d in raw_data if d[self.field] > self.value]
+
+
+class FieldLTPredicate(FilterTransform):
+    """Lower than predicate filter class."""
+
+    def __init__(self, field: str, lt: float):
+        operator = '<'
+        super().__init__(field, operator, lt)
+
+    @staticmethod
+    def from_string(equation: str):
+        """
+        Creates a FieldLTPredicate from the equation string receiving.
+
+        Parameters
+        ----------
+        equation : str
+            Equation to parse.
+
+        Raises
+        ------
+        SyntaxError
+            If equation has an incorrect syntax.
+
+        Notes
+        -----
+        Should receive equation as a string (as it has been called from FilterTransform).
+        """
+
+        if len(equation.split('<')) != 2:
+            raise SyntaxError('Incorrect syntax, must be datum.{field}<{value}')
+        field = equation.split('<')[0].strip()
+
+        if not 'datum.' in field:  # The word 'datum.' is not in the field
+            raise SyntaxError('Incorrect syntax, must be datum.{field}<{value}')
+        field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
+        value = float(equation.split('<')[1].strip())
+
+        return FieldLTPredicate(field, value)
+
+    # Filtering data
+    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
+        """
+        Returns the filtered data.
+
+        Notes
+        -----
+        Supposing that raw_data is a dict (as it has been called from FilterTransform).
+        """
+
+        return [d for d in raw_data if d[self.field] < self.value]
