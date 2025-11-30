@@ -3,6 +3,7 @@
 import copy
 import json
 import urllib.request, urllib.error
+import warnings
 
 from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import *
@@ -43,7 +44,7 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
                 filter_object = FilterTransform.from_string(transformation['filter'])
                 filtered_data = filter_object.get_filtered_data(raw_data)
                 if len(filtered_data) == 0:  # Data does not contain any value for the filter
-                    raise ValueError(f'Data does not contain any value for the filter: {transformation["filter"]}.')
+                    warnings.warn(f'Data does not contain any value for the filter: {transformation["filter"]}.')
                 raw_data = filtered_data
             else:
                 raise NotImplementedError(f'The transformation {transformation} has not been implemented yet.')
