@@ -5,7 +5,12 @@ import json
 import marimo
 from typing import Literal
 
-from pandas import DataFrame
+try:
+    from pandas import DataFrame
+    PANDAS_INSTALLED = True
+except ImportError:
+    PANDAS_INSTALLED = False
+    DataFrame = object
 
 from aframexr.api.data import Data, URLData
 from aframexr.api.encoding import *
@@ -182,7 +187,7 @@ class Chart(TopLevelMixin):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
-        elif isinstance(data, DataFrame):
+        elif PANDAS_INSTALLED and isinstance(data, DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:
             raise TypeError(f'Expected Data | URLData | DataFrame, got {type(data).__name__} instead.')
