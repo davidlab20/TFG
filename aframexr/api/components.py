@@ -5,6 +5,8 @@ import json
 import marimo
 from typing import Literal
 
+from pandas import DataFrame
+
 from aframexr.api.data import Data, URLData
 from aframexr.api.encoding import *
 from aframexr.api.filters import *
@@ -171,7 +173,8 @@ class Chart(TopLevelMixin):
         If position or rotation are invalid.
     """
 
-    def __init__(self, data: Data | URLData, position: str = DEFAULT_CHART_POS, rotation: str = DEFAULT_CHART_ROTATION):
+    def __init__(self, data: Data | URLData | DataFrame, position: str = DEFAULT_CHART_POS,
+                 rotation: str = DEFAULT_CHART_ROTATION):
         super().__init__()
 
         # Data
@@ -179,8 +182,10 @@ class Chart(TopLevelMixin):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
+        elif isinstance(data, DataFrame):
+            self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:
-            raise TypeError(f'Expected Data | URLData, got {type(data).__name__} instead.')
+            raise TypeError(f'Expected Data | URLData | DataFrame, got {type(data).__name__} instead.')
 
         # Position
         pos_axes = position.strip().split()
