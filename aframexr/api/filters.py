@@ -88,7 +88,7 @@ class FieldEqualPredicate(FilterTransform):
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
         value = equation.split('=')[1].strip()
         try:
-            value = int(value) if value.endswith('.0') else float(value)  # Try to convert value into a number
+            value = int(value) if int(value) == float(value) else float(value)  # Try to convert value into a number
         except ValueError:
             pass  # Remain value as string
 
