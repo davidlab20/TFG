@@ -11,13 +11,15 @@ class Data:
     --------
     # To instantiate Data using Data(data_format_as_list)
 
+    >>> import aframexr
     >>> data_format_as_list = [{"a": 1, "b": 2}, {"a": 2, "b": 4}]
-    >>> data = Data(data_format_as_list)
+    >>> data = aframexr.Data(data_format_as_list)
 
     # To instantiate Data using Data.from_json(data_format_as_string)
 
+    >>> import aframexr
     >>> data_format_as_string = '[{"a": 1, "b": 2}, {"a": 2, "b": 4}]'
-    >>> data = Data.from_json(data_format_as_string)
+    >>> data = aframexr.Data.from_json(data_format_as_string)
     """
 
     def __init__(self, values: list[dict]):
@@ -50,8 +52,9 @@ class URLData:
 
     Examples
     --------
+    >>> import aframexr
     >>> url = '...'  # The URL of the file storing the data
-    >>> data = URLData(url)
+    >>> data = aframexr.URLData(url)
     """
 
     def __init__(self, url: str):
