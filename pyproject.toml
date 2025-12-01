@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aframexr"
-version = "0.3.3"
+version = "0.3.4"
 authors = [{name = "David Díaz"}]
 description = "Python library to visualize data in Virtual and Extended Reality using Aframe components."
 readme = "README.md"
@@ -18,6 +18,9 @@ Documentation = "https://davidlab20.github.io/TFG/"
 Source = "https://github.com/davidlab20/TFG/"
 
 [project.optional-dependencies]
+pandas = [
+    "pandas>=2.3.3",
+]
 tests = [
     "beautifulsoup4>=4.14.2",
     "pytest>=9.0.1",
