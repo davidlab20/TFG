@@ -30,10 +30,13 @@ class X(Encoding):
         If the axis line is visible or not. Default is True (visible).
     """
 
-    def __init__(self, shorthand: str, axis: bool | None = True):
+    def __init__(self, shorthand: str, aggregate: str | None = None, axis: bool | None = True):
         if not isinstance(shorthand, str):
             raise TypeError(f'Expected str, got {type(shorthand).__name__} instead.')
         self.shorthand = shorthand
+        if not isinstance(aggregate, str | None):
+            raise TypeError(f'Expected str, got {type(aggregate).__name__} instead.')
+        self.aggregate = aggregate
         if not isinstance(axis, bool | None):
             raise TypeError(f'Expected bool | None, got {type(axis).__name__} instead.')
         self.axis = axis
@@ -46,8 +49,9 @@ class X(Encoding):
         if not isinstance(spec_dict, dict):
             raise TypeError(f'Expected dict, got {type(spec_dict).__name__} instead.')
         field = spec_dict['x'].get('field')
+        aggregate = spec_dict['x'].get('aggregate')
         axis = spec_dict['x'].get('axis')
-        return X(field, axis)
+        return X(field, aggregate, axis)
 
     # Export
     def to_dict(self):
@@ -56,6 +60,8 @@ class X(Encoding):
         spec_dict = {'x': {}}
         if self.shorthand:
             spec_dict['x']['field'] = self.shorthand
+        if self.aggregate:
+            spec_dict['x']['aggregate'] = self.aggregate
         if not self.axis:  # Add if it is not True (as True is the default)
             spec_dict['x']['axis'] = self.axis
         return spec_dict
