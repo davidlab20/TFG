@@ -197,6 +197,22 @@ class BarChartCreator(ChartCreator):
                             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
         return group_specs
 
+    def _set_bars_colors(self) -> list:
+        """Returns a list of the color for each bar composing the bar chart."""
+
+        bar_colors = [AVAILABLE_COLORS[c % len(AVAILABLE_COLORS)] for c in range(len(self._raw_data))]
+        return bar_colors
+
+    def _set_bars_heights(self, data: list | None) -> list:
+        """Returns a list of the height for each bar composing the bar chart."""
+
+        if data is None:
+            heights = [DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS for _ in range(len(self._raw_data))]
+        else:
+            max_value = max(data)
+            heights = [(h / max_value) * self.max_height for h in data]
+        return heights
+
     def _set_x_coordinates(self, data: list | None) -> list:
         """Returns a list of the x coordinates for each bar composing the bar chart."""
 
@@ -209,16 +225,6 @@ class BarChartCreator(ChartCreator):
             for element in range(len(data)):
                 x_coordinates.append(relative_x_start + element * self.bar_width)
         return x_coordinates
-
-    def _set_heights_of_bars(self, data: list | None) -> list:
-        """Returns a list of the height for each bar composing the bar chart."""
-
-        if data is None:
-            heights = [DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS for _ in range(len(self._raw_data))]
-        else:
-            max_value = max(data)
-            heights = [(h / max_value) * self.max_height for h in data]
-        return heights
 
     def _set_y_coordinates(self, bar_heights: list) -> list:
         """Returns a list of the y coordinates for each bar composing the bar chart."""
@@ -243,13 +249,6 @@ class BarChartCreator(ChartCreator):
                 elem_z = relative_z_start - (index * DEFAULT_MAX_DEPTH / len(types))
                 z_coordinates.append(elem_z)  # Add the z_coordinate
         return z_coordinates
-
-
-    def _set_bars_colors(self) -> list:
-        """Returns a list of the color for each bar composing the bar chart."""
-
-        bar_colors = [AVAILABLE_COLORS[c % len(AVAILABLE_COLORS)] for c in range(len(self._raw_data))]
-        return bar_colors
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
@@ -277,7 +276,7 @@ class BarChartCreator(ChartCreator):
             y_field = self._encoding['y']['field']  # Field of the y-axis
             y_data = [d[y_field] for d in self._raw_data]
 
-        bar_heights = self._set_heights_of_bars(y_data)
+        bar_heights = self._set_bars_heights(y_data)
         y_coordinates = self._set_y_coordinates(bar_heights)
 
         # Z-axis
@@ -472,6 +471,24 @@ class PointChartCreator(ChartCreator):
                             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
         return group_specs
 
+    def _set_points_colors(self, data: list) -> list:
+        """Returns a list of the color for each point composing the scatter plot."""
+
+        points_colors = []
+        if self._encoding.get('color'):  # Scatter plot (same color for each type of point)
+            types = list(set(data))  # Remove the duplicated values and convert into a list
+            for t in data:
+                index = types.index(t)  # Get the index of the type in types
+                points_colors.append(AVAILABLE_COLORS[index % len(AVAILABLE_COLORS)])  # Add the color of the type
+        return points_colors
+
+    def _set_points_radius(self, data: list) -> list:
+        """Returns a list of the radius for each point composing the bubble chart."""
+
+        max_value = max(data)
+        points_radius = [(r / max_value) * self._max_radius for r in data]
+        return points_radius
+
     def _set_x_coordinates(self, data: list | None, points_radius: list) -> list:
         """Returns a list of the x coordinates for each point composing the bar chart."""
 
@@ -514,24 +531,6 @@ class PointChartCreator(ChartCreator):
                 elem_z = -base_z - (index * DEFAULT_MAX_DEPTH / len(types))
                 z_coordinates.append(elem_z)  # Add the z_coordinate
         return z_coordinates
-
-    def _set_points_radius(self, data: list) -> list:
-        """Returns a list of the radius for each point composing the bubble chart."""
-
-        max_value = max(data)
-        points_radius = [(r / max_value) * self._max_radius for r in data]
-        return points_radius
-
-    def _set_points_colors(self, data: list) -> list:
-        """Returns a list of the color for each point composing the scatter plot."""
-
-        points_colors = []
-        if self._encoding.get('color'):  # Scatter plot (same color for each type of point)
-            types = list(set(data))  # Remove the duplicated values and convert into a list
-            for t in data:
-                index = types.index(t)  # Get the index of the type in types
-                points_colors.append(AVAILABLE_COLORS[index % len(AVAILABLE_COLORS)])  # Add the color of the type
-        return points_colors
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
