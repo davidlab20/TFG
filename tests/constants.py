@@ -1,8 +1,14 @@
 """Constants for testing."""
 
+import pandas as pd
+
+from aframexr import URLData
+
 # ----- GENERAL -----
 # Data
-URL_DATA = 'https://davidlab20.github.io/TFG/examples/data/data.json'
+DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
+DATAFRAME_DATA = pd.read_json(DATA.url)  # Data as pandas.DataFrame
+DATA_FORMATS = [DATA, DATAFRAME_DATA]
 
 # Positions OK
 POSITIONS = ['0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2']

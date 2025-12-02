@@ -21,7 +21,8 @@ Source = "https://github.com/davidlab20/TFG/"
 pandas = [
     "pandas>=2.3.3",
 ]
-tests = [
+dev = [
     "beautifulsoup4>=4.14.2",
+    "pandas>=2.3.3",
     "pytest>=9.0.1",
 ]

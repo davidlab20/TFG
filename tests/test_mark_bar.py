@@ -8,8 +8,6 @@ from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import DEFAULT_MAX_HEIGHT, DEFAULT_BAR_WIDTH
 from tests.constants import *  # Constants used for testing
 
-DATA = aframexr.URLData(URL_DATA)
-
 
 def _all_bars_have_same_width(bars_chart: aframexr.Chart) -> bool:
     """Verify that every bar has the same width."""
@@ -61,6 +59,16 @@ class TestMarkBarOK(unittest.TestCase):
         assert _all_bars_have_same_width(bars_chart)
         assert _bars_bases_are_on_x_axis(bars_chart)
         assert _bars_height_does_not_exceed_max_height(bars_chart)
+
+    def test_data_format(self):
+        """Bars chart changing data format creation."""
+
+        for d in DATA_FORMATS:
+            bars_chart = aframexr.Chart(d).mark_bar().encode(x='model', y='sales')
+            bars_chart.show()
+            assert _all_bars_have_same_width(bars_chart)
+            assert _bars_bases_are_on_x_axis(bars_chart)
+            assert _bars_height_does_not_exceed_max_height(bars_chart)
 
     def test_position(self):
         """Bars chart changing position creation."""

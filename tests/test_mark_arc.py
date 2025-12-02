@@ -7,8 +7,6 @@ from bs4 import BeautifulSoup
 from aframexr.api.filters import FilterTransform
 from tests.constants import *  # Constants used for testing
 
-DATA = aframexr.URLData(URL_DATA)
-
 
 def _all_theta_sum_is_360_degrees(pie_chart: aframexr.Chart) -> bool:
     """Verify that the sum for the theta length of every slice is 360 degrees."""
@@ -44,6 +42,15 @@ class TestMarkArcOK(unittest.TestCase):
         pie_chart.show()
         assert _all_theta_sum_is_360_degrees(pie_chart)
         assert _slices_are_well_placed(pie_chart)
+
+    def test_data_format(self):
+        """Pie chart changing data format creation."""
+
+        for d in DATA_FORMATS:
+            pie_chart = aframexr.Chart(d).mark_arc().encode(color='model', theta='sales')
+            pie_chart.show()
+            assert _all_theta_sum_is_360_degrees(pie_chart)
+            assert _slices_are_well_placed(pie_chart)
 
     def test_position(self):
         """Pie chart changing position creation."""

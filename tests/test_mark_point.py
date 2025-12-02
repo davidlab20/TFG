@@ -7,8 +7,6 @@ from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import DEFAULT_POINT_RADIUS
 from tests.constants import *  # Constants used for testing
 
-DATA = aframexr.URLData(URL_DATA)
-
 
 def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> bool:
     """Verify that every point radius does not exceed the maximum radius."""
@@ -33,6 +31,14 @@ class TestMarkPointOK(unittest.TestCase):
         point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
         point_chart.show()
         assert _every_radius_does_not_exceed_max_radius(point_chart)
+
+    def test_data_format(self):
+        """Mark point changing data format creation."""
+
+        for d in DATA_FORMATS:
+            point_chart = aframexr.Chart(d).mark_point().encode(x='model', y='sales')
+            point_chart.show()
+            assert _every_radius_does_not_exceed_max_radius(point_chart)
 
     def test_position(self):
         """Mark point changing position creation."""
