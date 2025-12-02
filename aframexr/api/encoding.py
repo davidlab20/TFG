@@ -24,16 +24,16 @@ class X(Encoding):
 
     Parameters
     ----------
-    shorthand : str
+    field : str
         The data field of the axis.
     axis : bool | None (optional)
         If the axis line is visible or not. Default is True (visible).
     """
 
-    def __init__(self, shorthand: str, aggregate: str | None = None, axis: bool | None = True):
-        if not isinstance(shorthand, str):
-            raise TypeError(f'Expected str, got {type(shorthand).__name__} instead.')
-        self.shorthand = shorthand
+    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True):
+        if not isinstance(field, str):
+            raise TypeError(f'Expected str, got {type(field).__name__} instead.')
+        self.shorthand = field
         if not isinstance(aggregate, str | None):
             raise TypeError(f'Expected str, got {type(aggregate).__name__} instead.')
         self.aggregate = aggregate
@@ -73,16 +73,16 @@ class Y(Encoding):
 
     Parameters
     ----------
-    shorthand : str
+    field : str
         The data field of the axis.
     axis : bool | None (optional)
         If the axis line is visible or not. Default is True (visible).
     """
 
-    def __init__(self, shorthand: str, axis: bool | None = True):
-        if not isinstance(shorthand, str):
-            raise TypeError(f'Expected str, got {type(shorthand).__name__} instead.')
-        self.shorthand = shorthand
+    def __init__(self, field: str, axis: bool | None = True):
+        if not isinstance(field, str):
+            raise TypeError(f'Expected str, got {type(field).__name__} instead.')
+        self.shorthand = field
         if not isinstance(axis, bool | None):
             raise TypeError(f'Expected bool | None, got {type(axis).__name__} instead.')
         self.axis = axis
@@ -116,16 +116,16 @@ class Z(Encoding):
 
     Parameters
     ----------
-    shorthand : str
+    field : str
         The data field of the axis.
     axis : bool | None (optional)
         If the axis line is visible or not. Default is True (visible).
     """
 
-    def __init__(self, shorthand: str, axis: bool | None = True):
-        if not isinstance(shorthand, str):
-            raise TypeError(f'Expected str, got {type(shorthand).__name__} instead.')
-        self.shorthand = shorthand
+    def __init__(self, field: str, axis: bool | None = True):
+        if not isinstance(field, str):
+            raise TypeError(f'Expected str, got {type(field).__name__} instead.')
+        self.shorthand = field
         if not isinstance(axis, bool | None):
             raise TypeError(f'Expected bool | None, got {type(axis).__name__} instead.')
         self.axis = axis
