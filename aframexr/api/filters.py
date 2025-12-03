@@ -51,7 +51,7 @@ class FilterTransform:
         if '<' in equation:  # Equation is of type field < value
             return FieldLTPredicate.from_string(equation)
         else:
-            raise ValueError(f'There is no filter for equation: {equation}')
+            raise ValueError(f'There is no filter for equation: {equation}.')
 
 
 class FieldEqualPredicate(FilterTransform):
