@@ -5,6 +5,7 @@ import json
 import urllib.request, urllib.error
 import warnings
 
+from aframexr.api.aggregate import *
 from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import *
 
@@ -47,7 +48,7 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
                     warnings.warn(f'Data does not contain any value for the filter: {transformation["filter"]}.')
                 raw_data = filtered_data
             else:
-                raise NotImplementedError(f'The transformation {transformation} has not been implemented yet.')
+                raise ValueError(f'Invalid transformation filter: {transformation["filter"]}.')
 
     return raw_data
 
@@ -81,7 +82,7 @@ class ChartCreator:
         elif chart_type == 'gltf':
             return GLTFModelCreator(chart_specs)
         else:
-            raise NotImplementedError(f'That chart type is not supported: {chart_type}.')
+            raise ValueError(f'Invalid chart type: {chart_type}.')
 
 
 class ArcChartCreator(ChartCreator):
@@ -197,6 +198,13 @@ class BarChartCreator(ChartCreator):
                             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
         return group_specs
 
+    def _recalculate_x_coordinates(self, aggregate_function: str, x_field: str) -> list:
+        """Recalculate the x coordinates for each bar composing the bar chart."""
+
+        if not x_field:
+            raise ValueError('Aggregate can only be used having data for the x-axis.')
+        aggregate_object = AggregatedFieldDef.from_string()
+
     def _set_bars_colors(self) -> list:
         """Returns a list of the color for each bar composing the bar chart."""
 
@@ -260,6 +268,7 @@ class BarChartCreator(ChartCreator):
 
         # X-axis
         x_data = None
+        x_field = None
 
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']  # Field of the x-axis
@@ -274,6 +283,9 @@ class BarChartCreator(ChartCreator):
 
         if self._encoding.get('y'):
             y_field = self._encoding['y']['field']  # Field of the y-axis
+            y_aggregate = self._encoding['y'].get('aggregate')
+            if y_aggregate:
+                x_coordinates = self._recalculate_x_coordinates(y_aggregate, x_field)
             y_data = [d[y_field] for d in self._raw_data]
 
         bar_heights = self._set_bars_heights(y_data)

@@ -28,7 +28,7 @@ class ChartsHTMLCreator:
         # Validate chart type
         chart_type = chart_specs['mark']['type']
         if chart_type not in ALL_TEMPLATES:
-            raise NotImplementedError(f'That chart type is not supported: {chart_type}.')
+            raise ValueError(f'Invalid chart type: {chart_type}.')
 
         # Chart HTML
         chart_html = ''
