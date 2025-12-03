@@ -34,6 +34,8 @@ class FilterTransform:
         ------
         TypeError
             If equation is not a string.
+        ValueError
+            If the equation of the filter is not correct.
 
         Notes
         -----
@@ -49,7 +51,7 @@ class FilterTransform:
         if '<' in equation:  # Equation is of type field < value
             return FieldLTPredicate.from_string(equation)
         else:
-            raise NotImplementedError(f'The filter for equation "{equation}" is not implemented yet.')
+            raise ValueError(f'There is no filter for equation: {equation}')
 
 
 class FieldEqualPredicate(FilterTransform):
