@@ -6,9 +6,9 @@ from aframexr import URLData
 
 # ----- GENERAL -----
 # Data
-DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
-DATAFRAME_DATA = pd.read_json(DATA.url)  # Data as pandas.DataFrame
-DATA_FORMATS = [DATA, DATAFRAME_DATA]
+URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
+DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
+DATA_FORMATS = [DATA, URL_DATA]
 
 # Positions OK
 POSITIONS = ['0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2']
