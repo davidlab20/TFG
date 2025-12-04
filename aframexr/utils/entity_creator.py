@@ -23,8 +23,13 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
     # Get the raw data of the chart
     if data_field.get('url'):  # Data is stored in a file
         try:
-            with urllib.request.urlopen(data_field['url']) as response:  # Load the data
-                data = response.read().decode()
+            if data_field['url'].startswith('http'):  # Load data as URL
+                with urllib.request.urlopen(data_field['url']) as response:
+                    data = response.read().decode()
+            else:
+                absolute_path = os.path.normpath(data_field['url'])
+                with open(absolute_path, 'r') as f:
+                    data = f.read()
         except urllib.error.URLError:
             raise IOError(f'Could not load data from URL: {data_field['url']}')
     elif data_field.get('values'):  # Data is stored as the raw data
