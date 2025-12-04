@@ -7,8 +7,9 @@ from aframexr import URLData
 # ----- GENERAL -----
 # Data
 URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
+LOCAL_PATH_DATA = URLData('../docs/examples/data/data.json')
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
-DATA_FORMATS = [DATA, URL_DATA]
+DATA_FORMATS = [DATA, LOCAL_PATH_DATA, URL_DATA]
 
 # Positions OK
 POSITIONS = ['0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2']
