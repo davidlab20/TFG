@@ -31,7 +31,11 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> list[dict]:
                 with open(absolute_path, 'r') as f:
                     data = f.read()
         except urllib.error.URLError:
-            raise IOError(f'Could not load data from URL: {data_field['url']}')
+            raise IOError(f'Could not load data from URL: {data_field['url']}.')
+        except FileNotFoundError:
+            raise IOError(f'Could not find local file: {data_field['url']}.')
+        except IOError as e:
+            raise IOError(f'Could not load data from local file: {data_field['url']}. Error: {e}.')
     elif data_field.get('values'):  # Data is stored as the raw data
         data = data_field['values']
     else:  # Should never enter here
