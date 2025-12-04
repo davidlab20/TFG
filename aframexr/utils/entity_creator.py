@@ -2,6 +2,7 @@
 
 import copy
 import json
+import os
 import urllib.request, urllib.error
 import warnings
 
