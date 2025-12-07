@@ -1,5 +1,10 @@
 """AframeXR filters"""
 
+from pandas import DataFrame
+
+from aframexr.utils.validators import AframeXRValidator
+
+
 class FilterTransform:
     """FilterTransform base class."""
 
@@ -42,9 +47,8 @@ class FilterTransform:
         Suppose equation is a string for posterior calls of from_string of child filters.
         """
 
-        if not isinstance(equation, str):
-            raise TypeError(f'The equation must be a string, got {type(equation).__name__}')
-        if '=' in equation:  # Equation is of type field = value
+        AframeXRValidator.validate_type(equation, str)
+        if '==' in equation:  # Equation is of type field == value
             return FieldEqualPredicate.from_string(equation)
         if '>' in equation:  # Equation is of type field > value
             return FieldGTPredicate.from_string(equation)
@@ -58,7 +62,7 @@ class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
 
     def __init__(self, field: str, equal: str | float):
-        operator = '='
+        operator = '=='
         super().__init__(field, operator, equal)
 
     @staticmethod
@@ -81,14 +85,14 @@ class FieldEqualPredicate(FilterTransform):
         Should receive equation as a string (as it has been called from FilterTransform).
         """
 
-        if len(equation.split('=')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field} = {value}')
-        field = equation.split('=')[0].strip()
+        if len(equation.split('==')) != 2:
+            raise SyntaxError('Incorrect syntax, must be datum.{field} == {value}')
+        field = equation.split('==')[0].strip()
 
         if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field} = {value}')
+            raise SyntaxError('Incorrect syntax, must be datum.{field} == {value}')
         field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
-        value = equation.split('=')[1].strip()
+        value = equation.split('==')[1].strip()
         try:
             value = int(value) if int(value) == float(value) else float(value)  # Try to convert value into a number
         except ValueError:
@@ -97,7 +101,7 @@ class FieldEqualPredicate(FilterTransform):
         return FieldEqualPredicate(field, value)
 
     # Filtering data
-    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
+    def get_filtered_data(self, raw_data: DataFrame) -> DataFrame:
         """
         Returns the filtered data.
 
@@ -106,7 +110,7 @@ class FieldEqualPredicate(FilterTransform):
         Supposing that raw_data is a dict (as it has been called from FilterTransform).
         """
 
-        return [d for d in raw_data if d[self.field] == self.value]
+        return raw_data.query(f'{self.field} {self.operator} {self.value}')
 
 
 class FieldGTPredicate(FilterTransform):

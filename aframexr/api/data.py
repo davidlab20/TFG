@@ -2,6 +2,8 @@
 
 import json
 
+from aframexr.utils.validators import AframeXRValidator
+
 
 class Data:
     """
@@ -23,8 +25,7 @@ class Data:
     """
 
     def __init__(self, values: list[dict]):
-        if not isinstance(values, list):
-            raise TypeError(f'Expected list[dict], got {type(values).__name__} instead. See documentation.')
+        AframeXRValidator.validate_type(values, list)
         self.values = values
 
 
@@ -34,8 +35,7 @@ class Data:
     def from_json(data: str):
         """Create a Data object from JSON string."""
 
-        if not isinstance(data, str):
-            raise TypeError(f'Expected dict, got {type(data).__name__} instead.')
+        AframeXRValidator.validate_type(data, str)
         data = json.loads(data)
         return Data(data)
 
@@ -58,6 +58,5 @@ class URLData:
     """
 
     def __init__(self, url: str):
-        if not isinstance(url, str):
-            raise TypeError(f'Expected str, got {type(url).__name__} instead.')
+        AframeXRValidator.validate_type(url, str)
         self.url = url

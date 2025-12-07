@@ -3,6 +3,7 @@
 from aframexr.utils.axis_html_creator import AxisHTMLCreator
 from aframexr.utils.constants import ALL_TEMPLATES
 from aframexr.utils.entity_creator import ChartCreator
+from aframexr.utils.validators import AframeXRValidator
 
 
 class ChartsHTMLCreator:
@@ -27,8 +28,7 @@ class ChartsHTMLCreator:
 
         # Validate chart type
         chart_type = chart_specs['mark']['type']
-        if chart_type not in ALL_TEMPLATES:
-            raise ValueError(f'Invalid chart type: {chart_type}.')
+        AframeXRValidator.validate_chart_type(chart_type)
 
         # Chart HTML
         chart_html = ''

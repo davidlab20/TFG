@@ -171,7 +171,7 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.show()
-            assert str(warning.warning) == f'Data does not contain any value for the filter: {f}.'
+            assert str(warning.warning) == f'Data does not contain values for the filter: {f}.'
 
     def test_filter_error(self):
         """Pie chart filter error."""
@@ -180,6 +180,6 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.show()
-            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} = {value}',
+            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
                                             'Incorrect syntax, must be datum.{field} < {value}']

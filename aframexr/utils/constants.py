@@ -1,7 +1,9 @@
 """Constant / default values utils file"""
 
 # ----- CONSTANTS -----
+AVAILABLE_AGGREGATES = ['mean']
 AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']
+AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'O': 'ordinal', 'N': 'nominal'}
 Y_LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y-axis pos for label pos)
 Z_LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to z-axis pos for label pos)
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)

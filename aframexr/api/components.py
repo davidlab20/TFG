@@ -3,20 +3,17 @@
 import copy
 import json
 import marimo
-from typing import Literal
 
-try:
-    from pandas import DataFrame
-    PANDAS_INSTALLED = True
-except ImportError:
-    PANDAS_INSTALLED = False
-    DataFrame = object
+from pandas import DataFrame
+from typing import Literal, Union
 
+from aframexr.api.aggregate import AggregatedFieldDef
 from aframexr.api.data import Data, URLData
-from aframexr.api.encoding import *
-from aframexr.api.filters import *
+from aframexr.api.encoding import Encoding, X, Y, Z
+from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import *
 from aframexr.utils.scene_creator import SceneCreator
+from aframexr.utils.validators import AframeXRValidator
 
 
 class TopLevelMixin:
@@ -36,7 +33,7 @@ class TopLevelMixin:
         """
 
         if not isinstance(other, TopLevelMixin):
-            raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}")
+            raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}.")
 
         # Create the new concatenation specifications
         concat_specs = {'concat': []}
@@ -80,8 +77,7 @@ class TopLevelMixin:
             If specs is not a dictionary.
         """
 
-        if not isinstance(specs, dict):
-            raise TypeError(f'Expected dict, got {type(specs).__name__} instead.')
+        AframeXRValidator.validate_type(specs, dict)
         return TopLevelMixin(specs)
 
     @staticmethod
@@ -100,8 +96,7 @@ class TopLevelMixin:
             If specs is not a string.
         """
 
-        if not isinstance(specs, str):
-            raise TypeError(f'Expected str, got {type(specs).__name__} instead.')
+        AframeXRValidator.validate_type(specs, str)
         return TopLevelMixin(json.loads(specs))
 
     # Exporting charts
@@ -119,10 +114,11 @@ class TopLevelMixin:
 
         Raises
         ------
-        NotImplementedError
+        ValueError
             If fileFormat is invalid.
         """
 
+        AframeXRValidator.validate_type(fp, str)
         if fileFormat == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
                 file.write(self.to_html())
@@ -130,7 +126,7 @@ class TopLevelMixin:
             with open(fp, 'w') as file:
                 json.dump(self._specifications, file, indent=4)
         else:
-            raise NotImplementedError('That format is not supported.')
+            raise ValueError('Invalid file format.')
 
     # Showing the scene
     def show(self):
@@ -187,7 +183,7 @@ class Chart(TopLevelMixin):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
-        elif PANDAS_INSTALLED and isinstance(data, DataFrame):
+        elif isinstance(data, DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:
             raise TypeError(f'Expected Data | URLData | DataFrame, got {type(data).__name__} instead.')
@@ -225,6 +221,8 @@ class Chart(TopLevelMixin):
             Outer radius of the pie chart. If not specified, using default. Must be greater than 0.
         """
 
+        AframeXRValidator.validate_type(radius, Union[float | int])
+
         self._specifications.update({'mark': {'type': 'arc'}})
         if radius > 0:
             self._specifications['mark'].update({'radius': radius})
@@ -243,6 +241,9 @@ class Chart(TopLevelMixin):
         height : float (optional)
             Maximum height of the chart (the highest bar). If not specified, using default. Must be greater than 0.
         """
+
+        AframeXRValidator.validate_type(size, Union[float | int])
+        AframeXRValidator.validate_type(height, Union[float | int])
 
         self._specifications.update({'mark': {'type': 'bar'}})
         if size > 0:
@@ -271,6 +272,8 @@ class Chart(TopLevelMixin):
             If more than 3 axes are specified, then the first 3 axes will be used.
         """
 
+        AframeXRValidator.validate_type(scale, str)
+
         self._specifications.update({'mark': {'type': 'gltf'}})
         self._specifications['mark'].update({'scale': scale})
         return self
@@ -291,6 +294,9 @@ class Chart(TopLevelMixin):
         ValueError
             If width or height are not greater than 0.
         """
+
+        AframeXRValidator.validate_type(width, Union[float | int])
+        AframeXRValidator.validate_type(height, Union[float | int])
 
         self._specifications.update({'mark': {'type': 'image'}})
         if width > 0:
@@ -319,6 +325,9 @@ class Chart(TopLevelMixin):
         ValueError
             If size or height are not greater than 0.
         """
+
+        AframeXRValidator.validate_type(size, Union[float | int])
+        AframeXRValidator.validate_type(height, Union[float | int])
 
         self._specifications.update({'mark': {'type': 'point'}})
         if size > 0:
@@ -364,28 +373,22 @@ class Chart(TopLevelMixin):
 
         # Verify the type of the arguments and store the filled parameters
         if color:
-            if not isinstance(color, str):
-                raise TypeError(f'Expected color as str, got {type(color).__name__} instead.')
+            AframeXRValidator.validate_type(color, str)
             filled_params.update({'color': color})
         if size:
-            if not isinstance(size, str):
-                raise TypeError(f'Expected size as str, got {type(size).__name__} instead.')
+            AframeXRValidator.validate_type(size, str)
             filled_params.update({'size': size})
         if theta:
-            if not isinstance(theta, str):
-                raise TypeError(f'Expected theta as str, got {type(theta).__name__} instead.')
+            AframeXRValidator.validate_type(theta, str)
             filled_params.update({'theta': theta})
         if x:
-            if not isinstance(x, str | X):
-                raise TypeError(f'Expected x as str | aframexr.X, got {type(x).__name__} instead.')
+            AframeXRValidator.validate_type(x, Union[str | X])
             filled_params.update({'x': x})
         if y:
-            if not isinstance(y, str | Y):
-                raise TypeError(f'Expected y as str | aframexr.Y, got {type(y).__name__} instead.')
+            AframeXRValidator.validate_type(y, Union[str | Y])
             filled_params.update({'y': y})
         if z:
-            if not isinstance(z, str | Z):
-                raise TypeError(f'Expected z as str | aframe.Z, got {type(z).__name__} instead.')
+            AframeXRValidator.validate_type(z, Union[str | Z])
             filled_params.update({'z': z})
 
         # Verify the argument combinations
@@ -402,10 +405,44 @@ class Chart(TopLevelMixin):
             if isinstance(param_value, Encoding):
                 self._specifications['encoding'].update(param_value.to_dict())
             else:
-                self._specifications['encoding'].update({param_key: {'field': param_value}})
+                formula, encoding_type = Encoding.split_field_and_encoding(param_value)
+                field, aggregate_op, group_by = AggregatedFieldDef.split_operator_field_groupby(formula)
+
+                self._specifications['encoding'].update({param_key: {'field': field}})
+                if aggregate_op:
+                    self._specifications['encoding'][param_key].update({'aggregate': aggregate_op})
+                if group_by:
+                    self._specifications['encoding'][param_key].update({'group_by': group_by})
+                if encoding_type:
+                    self._specifications['encoding'][param_key].update({'encoding': encoding_type})
         return self
 
-    # Filtering data
+    # Modifying data
+    def transform_aggregate(self, aggregate: str | AggregatedFieldDef, group_by: str | None = None):
+        """Aggregates the data with the specified aggregate function, grouped by the specified group_by."""
+
+        AframeXRValidator.validate_type(aggregate, Union[str | AggregatedFieldDef])
+        AframeXRValidator.validate_type(group_by, Union[str | None])
+
+        # Create a copy of the chart (in case of assignation, to preserve the main chart)
+        aggreg_chart = self.copy()
+
+        if isinstance(aggregate, str):
+            aggregate_op, field, group_by2 = AggregatedFieldDef.split_operator_field_groupby(aggregate)
+            if group_by is None and group_by2 is not None:
+                group_by = group_by2  # The field to group by is in the aggregate formula
+            elif group_by is None and group_by2 is None and group_by != group_by2:  # Have 2 different group_by
+                raise ValueError(f'Incongruent aggregate, aggregate formula says to group by {group_by2}, but group_by'
+                                 f' says to group by {group_by} instead.')
+            aggregate = AggregatedFieldDef(aggregate_op, field, None, group_by)
+
+        # Now aggregate is AggregateFieldDef object
+        if not aggreg_chart._specifications.get('transform'):  # First time filtering the chart
+            aggreg_chart._specifications.update({'transform': [{'aggregate': aggregate.to_dict()}]})  # Create field
+        else:  # Not the first filter of the chart
+            aggreg_chart._specifications['transform'].append({'aggregate': aggregate.to_dict()})  # Add filter to field
+        return aggreg_chart
+
     def transform_filter(self, equation_filter: str | FilterTransform):
         """
         Filters the chart with the given transformation.
@@ -444,16 +481,16 @@ class Chart(TopLevelMixin):
         >>> #filtered_chart.show()
         """
 
-        # Create a copy of the chart (in case of assignation, to preserve the main chart)
-        filt_chart = self.copy()
-
         # Validate the type of equation_filter and get a filter object from the equation_filter
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_string(equation_filter)
         elif isinstance(equation_filter, FilterTransform):
             filter_transform = equation_filter
         else:
-            raise TypeError(f'Expected string or FilterTransform object, got {type(equation_filter).__name__}.')
+            raise TypeError(f'Expected str | FilterTransform, got {type(equation_filter).__name__} instead.')
+
+        # Create a copy of the chart (in case of assignation, to preserve the main chart)
+        filt_chart = self.copy()
 
         # Add the information of the filter object to the specifications
         if not filt_chart._specifications.get('transform'):  # First time filtering the chart

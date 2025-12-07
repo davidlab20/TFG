@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from aframexr import URLData
+from aframexr.api.data import URLData
 
 # ----- GENERAL -----
 # Data
@@ -24,13 +24,13 @@ NOT_3AXIS_POSITIONS_ROTATIONS = [' ', '1', '1 1', '1 1 1 1']
 NOT_NUMERIC_POSITIONS_ROTATIONS = ['1 1 a', '1 a 1', '1 a a', 'a 1 1', 'a 1 a', 'a a 1', 'a a a']
 
 # Filters OK
-FILTER_EQUATIONS = ['datum.motor = diesel', 'datum.doors = 3', 'datum.doors > 4', 'datum.doors < 4']
+FILTER_EQUATIONS = ['datum.motor == diesel', 'datum.doors == 3', 'datum.doors > 4', 'datum.doors < 4']
 
 # Filters WARNING
-WARNING_FILTER_EQUATIONS = ['datum.motor = bad_value', 'datum.doors = 0', 'datum.doors > 100', 'datum.doors < 0']
+WARNING_FILTER_EQUATIONS = ['datum.motor == bad_value', 'datum.doors == 0', 'datum.doors > 100', 'datum.doors < 0']
 
 # Filters ERROR
-ERROR_FILTER_EQUATIONS = ['motor = diesel', 'doors = 0', 'doors > 100', 'doors < 0']
+ERROR_FILTER_EQUATIONS = ['motor == diesel', 'doors == 0', 'doors > 100', 'doors < 0']
 
 # ----- MARK ARC -----
 # Radius OK
