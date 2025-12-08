@@ -1,7 +1,7 @@
 on:
   push:
     branches: ['main']
-    paths:  # Deploy when they are changes on...
+    paths:  # Deploy when they are changes on ...
       - '.github/workflows/deploy.yml'  # This file
       - 'docs/**'  # Any file in docs/
       - '!docs/scripts/**'  # Except directory scripts in docs/
