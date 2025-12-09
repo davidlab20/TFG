@@ -1,4 +1,4 @@
-"""AframeXR encoding clases"""
+"""AframeXR encoding classes"""
 
 from abc import ABC, abstractmethod
 from typing import Union

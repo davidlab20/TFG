@@ -211,6 +211,11 @@ class Chart(TopLevelMixin):
         self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
 
     # Types of charts
+    def _there_is_one_chart_defined(self):
+        """Returns True if there is a chart defined in the specifications, False otherwise."""
+
+        return self._specifications.get('mark') is not None
+
     def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
         """
         Pie chart and doughnut chart.
@@ -222,6 +227,7 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(radius, Union[float | int])
+        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'arc'}})
         if radius > 0:
@@ -244,6 +250,7 @@ class Chart(TopLevelMixin):
 
         AframeXRValidator.validate_type(size, Union[float | int])
         AframeXRValidator.validate_type(height, Union[float | int])
+        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'bar'}})
         if size > 0:
@@ -273,6 +280,7 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(scale, str)
+        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'gltf'}})
         self._specifications['mark'].update({'scale': scale})
@@ -297,6 +305,7 @@ class Chart(TopLevelMixin):
 
         AframeXRValidator.validate_type(width, Union[float | int])
         AframeXRValidator.validate_type(height, Union[float | int])
+        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'image'}})
         if width > 0:
@@ -328,6 +337,7 @@ class Chart(TopLevelMixin):
 
         AframeXRValidator.validate_type(size, Union[float | int])
         AframeXRValidator.validate_type(height, Union[float | int])
+        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'point'}})
         if size > 0:
@@ -406,41 +416,50 @@ class Chart(TopLevelMixin):
                 self._specifications['encoding'].update(param_value.to_dict())
             else:
                 formula, encoding_type = Encoding.split_field_and_encoding(param_value)
-                field, aggregate_op, group_by = AggregatedFieldDef.split_operator_field_groupby(formula)
+                field, aggregate_op = AggregatedFieldDef.split_operator_field(formula)
 
                 self._specifications['encoding'].update({param_key: {'field': field}})
                 if aggregate_op:
                     self._specifications['encoding'][param_key].update({'aggregate': aggregate_op})
-                if group_by:
-                    self._specifications['encoding'][param_key].update({'group_by': group_by})
                 if encoding_type:
-                    self._specifications['encoding'][param_key].update({'encoding': encoding_type})
+                    self._specifications['encoding'][param_key].update({'type': encoding_type})
         return self
 
     # Modifying data
-    def transform_aggregate(self, aggregate: str | AggregatedFieldDef, group_by: str | None = None):
-        """Aggregates the data with the specified aggregate function, grouped by the specified group_by."""
+    def transform_aggregate(self, groupby: list | None = None, **kwargs):
+        """
+        Aggregates the data with the specified aggregate function, grouped by the specified groupby.
 
-        AframeXRValidator.validate_type(aggregate, Union[str | AggregatedFieldDef])
-        AframeXRValidator.validate_type(group_by, Union[str | None])
+        Parameters
+        ----------
+        groupby : list | None
+            Data fields that will be grouped, optional. If not set, the defined fields in encode() method will be taken.
+        kwargs : dict
+            Format is: <new_field>=<aggregate_op>(<data_field>).
+        """
+
+        AframeXRValidator.validate_type(groupby, Union[list | None])
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         aggreg_chart = self.copy()
 
-        if isinstance(aggregate, str):
-            aggregate_op, field, group_by2 = AggregatedFieldDef.split_operator_field_groupby(aggregate)
-            if group_by is None and group_by2 is not None:
-                group_by = group_by2  # The field to group by is in the aggregate formula
-            elif group_by is None and group_by2 is None and group_by != group_by2:  # Have 2 different group_by
-                raise ValueError(f'Incongruent aggregate, aggregate formula says to group by {group_by2}, but group_by'
-                                 f' says to group by {group_by} instead.')
-            aggregate = AggregatedFieldDef(aggregate_op, field, None, group_by)
+        if len(kwargs) == 0:  # At least one aggregation needs to be defined in kwargs
+            raise TypeError('transform_aggregate() missing required aggregate fields.')
 
-        # Now aggregate is AggregateFieldDef object
-        if not aggreg_chart._specifications.get('transform'):  # First time filtering the chart
-            aggreg_chart._specifications.update({'transform': [{'aggregate': aggregate.to_dict()}]})  # Create field
-        else:  # Not the first filter of the chart
-            aggreg_chart._specifications['transform'].append({'aggregate': aggregate.to_dict()})  # Add filter to field
+        aggregates_to_dict = []
+        for as_field, aggregate_formula in kwargs.items():
+            field, aggregate_op = AggregatedFieldDef.split_operator_field(str(aggregate_formula))
+            aggregate_object = AggregatedFieldDef(aggregate_op, field, as_field)
+            aggregates_to_dict.append(aggregate_object.to_dict())
+
+        aggregate_specs = {'aggregate': aggregates_to_dict}
+        if groupby:
+            aggregate_specs['groupby'] = groupby
+
+        if not aggreg_chart._specifications.get('transform'):  # First time filtering the chart (create field)
+            aggreg_chart._specifications.update({'transform': [aggregate_specs]})
+        else:  # Not the first filter of the chart (add to aggregates)
+            aggreg_chart._specifications['transform'].append(aggregate_specs)
         return aggreg_chart
 
     def transform_filter(self, equation_filter: str | FilterTransform):
@@ -459,7 +478,10 @@ class Chart(TopLevelMixin):
 
         Notes
         -----
-        Can be concatenated with the rest of functions of the Chart, without needing an asignation.
+        Can be concatenated with the rest of functions of the Chart, without needing an asignation. It can also be
+        concatenated several times (the result will be an addition of the filters, in order of assignation).
+
+        If the result of the filters is empty data, a warning is raised.
 
         Examples
         --------
@@ -467,17 +489,17 @@ class Chart(TopLevelMixin):
 
         >>> import aframexr
         >>> data = aframexr.URLData('./data.json')
-        >>> filtered_chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
-        >>> filtered_chart = filtered_chart.transform_filter('datum.motor=diesel')
+        >>> chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> filtered_chart = chart.transform_filter('datum.motor == diesel')
         >>> #filtered_chart.show()
 
         *Using transform_filter() giving a Filter object*
 
         >>> import aframexr
         >>> data = aframexr.URLData('./data.json')
-        >>> filtered_chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
+        >>> chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
         >>> filter_object = aframexr.FieldEqualPredicate(field='motor', equal='diesel')
-        >>> filtered_chart = filtered_chart.transform_filter(filter_object)
+        >>> filtered_chart = chart.transform_filter(filter_object)
         >>> #filtered_chart.show()
         """
 

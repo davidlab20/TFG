@@ -1,5 +1,5 @@
 """AframeXR filters"""
-
+import pandas as pd
 from pandas import DataFrame
 
 from aframexr.utils.validators import AframeXRValidator
@@ -57,6 +57,15 @@ class FilterTransform:
         else:
             raise ValueError(f'There is no filter for equation: {equation}.')
 
+    def get_filtered_data(self, data: DataFrame) -> DataFrame:
+        """Filters and returns the data"""
+
+        try:
+            raw_data = data.query(f'{self.field} {self.operator} {self.value}').reset_index(drop=True)
+        except pd.errors.UndefinedVariableError:
+            raise KeyError(f'Data has no field "{self.field}".')
+        return raw_data
+
 
 class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
@@ -100,18 +109,6 @@ class FieldEqualPredicate(FilterTransform):
 
         return FieldEqualPredicate(field, value)
 
-    # Filtering data
-    def get_filtered_data(self, raw_data: DataFrame) -> DataFrame:
-        """
-        Returns the filtered data.
-
-        Notes
-        -----
-        Supposing that raw_data is a dict (as it has been called from FilterTransform).
-        """
-
-        return raw_data.query(f'{self.field} {self.operator} {self.value}')
-
 
 class FieldGTPredicate(FilterTransform):
     """Greater than predicate filter class."""
@@ -153,18 +150,6 @@ class FieldGTPredicate(FilterTransform):
 
         return FieldGTPredicate(field, value)
 
-    # Filtering data
-    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
-        """
-        Returns the filtered data.
-
-        Notes
-        -----
-        Supposing that raw_data is a dict (as it has been called from FilterTransform).
-        """
-
-        return [d for d in raw_data if d[self.field] > self.value]
-
 
 class FieldLTPredicate(FilterTransform):
     """Lower than predicate filter class."""
@@ -205,15 +190,3 @@ class FieldLTPredicate(FilterTransform):
             value = int(value)
 
         return FieldLTPredicate(field, value)
-
-    # Filtering data
-    def get_filtered_data(self, raw_data: list[dict]) -> list[dict]:
-        """
-        Returns the filtered data.
-
-        Notes
-        -----
-        Supposing that raw_data is a dict (as it has been called from FilterTransform).
-        """
-
-        return [d for d in raw_data if d[self.field] < self.value]

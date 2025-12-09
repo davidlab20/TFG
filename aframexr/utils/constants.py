@@ -1,7 +1,7 @@
 """Constant / default values utils file"""
 
 # ----- CONSTANTS -----
-AVAILABLE_AGGREGATES = ['mean']
+AVAILABLE_AGGREGATES = ['max', 'mean', 'min', 'sum']
 AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'O': 'ordinal', 'N': 'nominal'}
 Y_LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y-axis pos for label pos)
@@ -51,5 +51,5 @@ DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 
 # Point chart
 DEFAULT_POINT_RADIUS = 1  # Default point radius
-DEFAULT_POINT_X_SEPARATION = 1  # Default horizontal separation between points
+DEFAULT_POINT_X_SEPARATION = 2  # Default horizontal separation between points
 DEFAULT_POINT_COLOR = "blue"  # Default point color

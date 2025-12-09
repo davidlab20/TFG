@@ -2,12 +2,10 @@
 
 import copy
 import numpy as np
-import os
 import pandas as pd
 import urllib.request, urllib.error
 import warnings
 
-from io import StringIO  # To delete FutureWarning pandas read_json() deprecation
 from itertools import cycle, islice
 from pandas import DataFrame, Series
 
@@ -26,27 +24,25 @@ GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}
 """Group dictionary template for group base specifications creation."""
 
 
-def _get_raw_data(data_field: dict, transform_field: dict | None) -> DataFrame:
-    """Returns the raw data from the data field specifications, transformed if necessary."""
+def _get_raw_data(chart_specs: dict) -> DataFrame:
+    """Returns the raw data from the chart specifications, transformed if necessary."""
 
     # Get the raw data of the chart
+    data_field = chart_specs['data']
     if data_field.get('url'):  # Data is stored in a file
         try:
-            if data_field['url'].startswith(('http://', 'https://')):  # Load data as URL
-                with urllib.request.urlopen(data_field['url']) as response:
-                    json_data = response.read().decode()
-            else:
-                path = os.path.normpath(data_field['url'])
-                with open(path, 'r') as f:
-                    json_data = f.read()
-            raw_data = pd.read_json(StringIO(json_data))  # Convert JSON data into DataFrame
-
-        except urllib.error.URLError:
-            raise IOError(f'Could not load data from URL: {data_field['url']}.')
-        except FileNotFoundError:
-            raise IOError(f'Could not find local file: {data_field['url']}.')
-        except IOError as e:
-            raise IOError(f'Could not load data from local file: {data_field['url']}. Error: {e}.')
+            raw_data = pd.read_json(data_field['url'])
+        except ValueError:  # Not a JSON file
+            try:
+                raw_data = pd.read_csv(data_field['url'])
+            except pd.errors.ParserError:  # File is not JSON neither CSV
+                raise ValueError(f'Error reading {data_field["url"]}. File is not JSON nor CSV.')
+            except urllib.error.URLError:
+                raise IOError(f'Could not load data from URL: {data_field['url']}.')
+            except FileNotFoundError:
+                raise IOError(f'Could not find local file: {data_field['url']}.')
+            except IOError as e:
+                raise IOError(f'Could not load data from local file: {data_field['url']}. Error: {e}.')
 
     elif data_field.get('values'):  # Data is stored as the raw data
         json_data = data_field['values']
@@ -55,28 +51,52 @@ def _get_raw_data(data_field: dict, transform_field: dict | None) -> DataFrame:
         raise ValueError('Data specifications has no correct syntaxis, must have field "url" or "values".')
 
     # Transform data (if necessary)
+    from aframexr.api.aggregate import AggregatedFieldDef  # To avoid circular import error
+    transform_field = chart_specs.get('transform')
     if transform_field:
 
         for filter_transformation in transform_field:  # The first transformations are the filters
             if filter_transformation.get('filter'):
                 filter_object = FilterTransform.from_string(filter_transformation['filter'])
-                try:
-                    if isinstance(filter_object.value, str):
-                        filter_object.value = f'"{filter_object.value}"'  # Add quotes to the value for query search
-                    raw_data = raw_data.query(f'{filter_object.field} {filter_object.operator} {filter_object.value}')
-                except KeyError:  # There is no field of the filter in data
-                    raise ValueError(f'Data has no key "{filter_object.field}".')
+
+                if isinstance(filter_object.value, str):
+                    filter_object.value = f'"{filter_object.value}"'  # Add quotes to the value for query search
+                raw_data = filter_object.get_filtered_data(raw_data)
                 if raw_data.empty:  # Data does not contain any value for the filter
                     warnings.warn(f'Data does not contain values for the filter: {filter_transformation["filter"]}.')
-            raw_data = raw_data.reset_index(drop=True)  # Reset the indices of the new data
 
-        for non_filter_transformation in transform_field:  # Non-filter transformations
-            if non_filter_transformation.get('aggregate'):
-                from aframexr.api.aggregate import AggregatedFieldDef  # To avoid circular import error
+        for non_filter_transf in transform_field:  # Non-filter transformations
+            groupby = set(non_filter_transf.get('groupby')) if non_filter_transf.get('groupby') else set()
+            if non_filter_transf.get('aggregate'):
 
-                aggregate_object = AggregatedFieldDef.from_dict(non_filter_transformation['aggregate'])
-                raw_data = aggregate_object.aggregate_data(raw_data)
-            raw_data = raw_data.reset_index(drop=True)  # Reset the indices of the new data
+                for aggregate in non_filter_transf.get('aggregate'):
+                    aggregate_object = AggregatedFieldDef.from_dict(aggregate)
+
+                    encoding_channels = {  # Using a set to have the possibility of getting differences
+                        ch_spec['field'] for ch_spec in chart_specs['encoding'].values()  # Take the encoding channels
+                        if ch_spec['field'] != aggregate_object.as_field  # Except the aggregate field channel
+                    }
+
+                    if groupby:
+                        not_defined_channels = encoding_channels - set(groupby)  # Difference between sets
+                        if not_defined_channels:  # There are channels in encoding_channels not defined in groupby
+                            raise ValueError(
+                                f'Encoding channel(s) "{not_defined_channels}" must be defined in aggregate groupby: '
+                                f'{groupby}, otherwise that fields will disappear.'
+                            )
+                    else:
+                        groupby = list(encoding_channels)  # Use the encoding channels as groupby
+                    raw_data = aggregate_object.get_aggregated_data(raw_data, groupby)
+
+    # Aggregate in encoding
+    encoding_channels = chart_specs['encoding']
+    aggregate_fields = [ch['field'] for ch in encoding_channels.values() if ch.get('aggregate')]
+    aggregate_ops = [ch['aggregate'] for ch in encoding_channels.values() if ch.get('aggregate')]
+    groupby_fields = [spec['field'] for spec in encoding_channels.values() if not spec.get('aggregate')]
+
+    for ag in range(len(aggregate_fields)):
+        aggregate_object = AggregatedFieldDef(aggregate_ops[ag], aggregate_fields[ag])
+        raw_data = aggregate_object.get_aggregated_data(raw_data, groupby_fields)
 
     return raw_data
 
@@ -121,7 +141,7 @@ class ArcChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._raw_data = _get_raw_data(chart_specs['data'], chart_specs.get('transform'))  # Raw data
+        self._raw_data = _get_raw_data(chart_specs)  # Raw data
         self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS)  # Radius
         self._set_rotation()
         self._color_data = Series()
@@ -172,12 +192,15 @@ class ArcChartCreator(ChartCreator):
         try:
             self._theta_data = self._raw_data[theta_field]
         except KeyError:
-            raise ValueError(f'Data has no key {theta_field}.')
+            raise KeyError(f'Data has no field "{theta_field}".')
         theta_starts, theta_lengths = self._set_elements_theta()
 
         # Color
         color_field = self._encoding['color']['field']
-        self._color_data = self._raw_data[color_field]
+        try:
+            self._color_data = self._raw_data[color_field]
+        except KeyError:
+            raise KeyError(f'Data has no field "{color_field}".')
         colors = self._set_elements_colors()
 
         # Id
@@ -210,7 +233,7 @@ class BarChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._raw_data = _get_raw_data(chart_specs['data'], chart_specs.get('transform'))  # Raw data
+        self._raw_data = _get_raw_data(chart_specs)  # Raw data
         self._bar_width = chart_specs['mark'].get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
         self._max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
         self._x_data: Series | None = None
@@ -286,7 +309,7 @@ class BarChartCreator(ChartCreator):
             try:
                 self._x_data = self._raw_data[x_field]
             except KeyError:
-                raise ValueError(f'Data has no key "{x_field}".')
+                raise KeyError(f'Data has no field "{x_field}".')
 
         # Y-axis
         if self._encoding.get('y'):
@@ -294,7 +317,7 @@ class BarChartCreator(ChartCreator):
             try:
                 self._y_data = self._raw_data[y_field]
             except KeyError:
-                raise ValueError(f'Data has no key "{y_field}".')
+                raise KeyError(f'Data has no field "{y_field}".')
 
         # Z-axis
         if self._encoding.get('z'):
@@ -302,7 +325,7 @@ class BarChartCreator(ChartCreator):
             try:
                 self._z_data = self._raw_data[z_field]
             except KeyError:
-                raise ValueError(f'Data has no key "{z_field}".')
+                raise KeyError(f'Data has no field "{z_field}".')
 
         bar_widths = Series(  # Series of self._bar_width values
             data=np.full(len(self._raw_data), self._bar_width),
@@ -487,7 +510,7 @@ class PointChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._raw_data = _get_raw_data(chart_specs['data'], chart_specs.get('transform'))  # Raw data
+        self._raw_data = _get_raw_data(chart_specs)  # Raw data
         self._height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)
         self._max_radius = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
         self._color_data: Series | None = None
@@ -576,8 +599,6 @@ class PointChartCreator(ChartCreator):
         if self._raw_data.empty:  # There is no data to display
             return []
 
-        elements_specs = []
-
         # X-axis
         radius = Series(  # Series of self._max_radius values
             data=np.full(len(self._raw_data), self._max_radius),
@@ -586,11 +607,18 @@ class PointChartCreator(ChartCreator):
 
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']
-            self._x_data = self._raw_data[x_field]
+            try:
+                self._x_data = self._raw_data[x_field]
+            except KeyError:
+                raise KeyError(f'Data has no field "{x_field}".')
 
             if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
                 size_field = self._encoding['size']['field']
-                self._size_data = self._raw_data[size_field]
+                try:
+                    self._size_data = self._raw_data[size_field]
+                except KeyError:
+                    raise KeyError(f'Data has no field "{size_field}".')
+
                 radius = self._set_points_radius()
             else:  # Scatter plot (same radius for all points)
                 pass
@@ -600,21 +628,31 @@ class PointChartCreator(ChartCreator):
         # Y-axis
         if self._encoding.get('y'):
             y_field = self._encoding['y']['field']  # Field of the y-axis
-            self._y_data = self._raw_data[y_field]
+            try:
+                self._y_data = self._raw_data[y_field]
+            except KeyError:
+                raise KeyError(f'Data has no field "{y_field}".')
 
         y_coordinates = self._set_y_coordinates(radius)
 
         # Z-axis
         if self._encoding.get('z'):
             z_field = self._encoding['z']['field']  # Field of the z-axis
-            self._z_data = self._raw_data[z_field]
+            try:
+                self._z_data = self._raw_data[z_field]
+            except KeyError:
+                raise KeyError(f'Data has no field "{z_field}".')
 
         z_coordinates = self._set_z_coordinates()
 
         # Color
         if self._encoding.get('color'):  # Scatter plot (same color for each type of point)
             color_field = self._encoding['color']['field']
-            self._color_data = self._raw_data[color_field]
+            try:
+                self._color_data = self._raw_data[color_field]
+            except KeyError:
+                raise KeyError(f'Data has no field "{color_field}".')
+
             colors = self._set_points_colors()
         else:  # Bubbles plot (same color for all points)
             colors = Series(  # Series of DEFAULT_POINT_COLOR values
