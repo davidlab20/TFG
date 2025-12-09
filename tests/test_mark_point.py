@@ -178,7 +178,7 @@ class TestMarkPointError(unittest.TestCase):
             with self.assertRaises(KeyError) as error:
                 point_chart = aframexr.Chart(DATA).mark_point().encode(**e)
                 point_chart.show()
-            assert 'Data has no key ' in str(error.exception)
+            assert 'Data has no field ' in str(error.exception)
 
         for e in NOT_VALID_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(ValueError) as error:

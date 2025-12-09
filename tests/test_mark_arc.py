@@ -162,7 +162,7 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(KeyError) as error:
                 pie_chart = aframexr.Chart(DATA).mark_arc().encode(**e)
                 pie_chart.show()
-            assert 'Data has no key ' in str(error.exception)
+            assert 'Data has no field ' in str(error.exception)
 
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
             with self.assertRaises(ValueError) as error:

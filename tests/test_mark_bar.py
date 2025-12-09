@@ -216,7 +216,7 @@ class TestMarkBarError(unittest.TestCase):
             with self.assertRaises(KeyError) as error:
                 bars_chart = aframexr.Chart(DATA).mark_bar().encode(**e)
                 bars_chart.show()
-            assert 'Data has no key ' in str(error.exception)
+            assert 'Data has no field ' in str(error.exception)
 
         for e in NOT_VALID_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(ValueError) as error:
