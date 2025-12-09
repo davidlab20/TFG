@@ -158,6 +158,12 @@ class TestMarkArcError(unittest.TestCase):
     def test_encoding_error(self):
         """Pie chart encoding error."""
 
+        for e in NON_EXISTING_MARK_ARC_ENCODINGS:
+            with self.assertRaises(KeyError) as error:
+                pie_chart = aframexr.Chart(DATA).mark_arc().encode(**e)
+                pie_chart.show()
+            assert 'Data has no key ' in str(error.exception)
+
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc().encode(**e)

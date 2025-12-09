@@ -7,9 +7,10 @@ from aframexr.api.data import URLData
 # ----- GENERAL -----
 # Data
 URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
-LOCAL_PATH_DATA = URLData('../docs/examples/data/data.json')
+LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
+LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
-DATA_FORMATS = [DATA, LOCAL_PATH_DATA, URL_DATA]
+DATA_FORMATS = [DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA]
 
 # Positions OK
 POSITIONS = ['0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2']
@@ -40,6 +41,7 @@ MARK_ARC_RADIUS = [0.5, 1, 1.5]
 NOT_GREATER_THAN_0_MARK_ARC_RADIUS = [-1, 0]
 
 # Encodings ERROR
+NON_EXISTING_MARK_ARC_ENCODINGS = [{'color': 'model', 'theta': 'bad_key'}, {'color': 'bad_key', 'theta': 'sales'}]
 NOT_VALID_MARK_ARC_ENCODINGS = [{'color': 'model'}, {'theta': 'sales'}, {'x': 'model', 'y': 'sales'}]
 
 # ----- MARK BAR / MARK POINT -----
@@ -59,6 +61,7 @@ MARK_POINT_ENCODINGS = [{'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'm
                         {'x': 'model', 'y': 'sales', 'color': 'motor', 'size': 'doors'}, *MARK_BAR_ENCODINGS]
 
 # Encodings ERROR
+NON_EXISTING_MARK_BAR_POINT_ENCODINGS = [{'x': 'model', 'y': 'bad_key'}, {'x': 'bad_key', 'y': 'sales'}]
 NOT_VALID_MARK_BAR_POINT_ENCODINGS = [{'x': 'model'}, {'y': 'sales'}, {'z': 'motor'}, {'color': 'motor'}]
 
 # ----- MARK GLTF / MARK IMAGE -----
