@@ -1,0 +1,24 @@
+{
+    "data": {
+        "url": "https://davidlab20.github.io/TFG/examples/data/data.json"
+    },
+    "position": "-3 0 -8",
+    "mark": {
+        "type": "bar",
+        "width": 1
+    },
+    "height": 10,
+    "encoding": {
+        "x": {
+            "field": "model"
+        },
+        "y": {
+            "field": "sales"
+        }
+    },
+    "transform": [
+        {
+            "filter": "datum.motor=diesel"
+        }
+    ]
+}

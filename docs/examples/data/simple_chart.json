@@ -1,0 +1,19 @@
+{
+    "data": {
+        "url": "https://davidlab20.github.io/TFG/examples/data/data.json"
+    },
+    "position": "-3 0 -10",
+    "mark": {
+        "type": "bar",
+        "width": 1.5
+    },
+    "height": 10,
+    "encoding": {
+        "x": {
+            "field": "model"
+        },
+        "y": {
+            "field": "sales"
+        }
+    }
+}
