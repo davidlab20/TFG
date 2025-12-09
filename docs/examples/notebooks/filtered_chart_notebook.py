@@ -48,7 +48,7 @@ def _():
 @app.cell
 def _(aframexr, json, urllib):
     # Import a filtered chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/filt_chart.json") as json_chart:
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/filt_chart.json.gz") as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = aframexr.Chart.from_dict(json_specs)
@@ -68,7 +68,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, json, urllib):
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/data.json") as file_data:
+    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/data.json.gz") as file_data:
         data_json = json.load(file_data)
         data2 = aframexr.Data(data_json)
 

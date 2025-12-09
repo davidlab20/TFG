@@ -16,7 +16,7 @@ def _(mo):
 def _():
     import aframexr
 
-    data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json')
+    data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json.gz')
     return aframexr, data
 
 
