@@ -42,7 +42,7 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = aframexr.Data.from_json(data_str)  # Raw data
-    url_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json.gz')
+    url_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json')
     return aframexr, data, json, url_data, urllib
 
 

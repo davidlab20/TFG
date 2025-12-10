@@ -20,7 +20,7 @@ def _():
 
 @app.cell
 def _(aframexr):
-    csv_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/aggregate_data.csv.gz')
+    csv_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/aggregate_data.csv')
     return (csv_data,)
 
 
