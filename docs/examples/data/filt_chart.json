@@ -18,7 +18,7 @@
     },
     "transform": [
         {
-            "filter": "datum.motor=diesel"
+            "filter": "datum.motor==diesel"
         }
     ]
 }
