@@ -22,7 +22,7 @@ def _():
 @app.cell
 def _(aframexr):
     # Load the data having the URL of the JSON file
-    url = "https://davidlab20.github.io/TFG/examples/data/data.json.gz"
+    url = "https://davidlab20.github.io/TFG/examples/data/data.json"
     data = aframexr.URLData(url)  # Create an URLData object
 
     # Create the chart
