@@ -1,7 +1,9 @@
 """AframeXR entity creator"""
 
 import copy
+import io
 import numpy as np
+import os
 import pandas as pd
 import urllib.request, urllib.error
 import warnings
@@ -9,7 +11,6 @@ import warnings
 from itertools import cycle, islice
 from pandas import DataFrame, Series
 
-from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import *
 
 
@@ -24,26 +25,47 @@ GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}
 """Group dictionary template for group base specifications creation."""
 
 
+def _get_data_from_url(url: str) -> DataFrame:
+    """Loads the data from the URL (could be a local path) and returns it as a DataFrame."""
+
+    if url.startswith(('http://', 'https://')):  # Data is stored in a URL
+        try:
+            with urllib.request.urlopen(url) as response:
+                file_type = response.info().get_content_type()
+                data = io.BytesIO(response.read())  # For pandas
+        except urllib.error.URLError:
+            raise IOError(f'Could not load data from URL: {url}.')
+    else:  # Data is stored in a local file
+        path = os.path.normpath(url)
+        if not os.path.exists(path):
+            raise FileNotFoundError(f'Local file "{path}" was not found.')
+
+        data = open(path, 'rb')
+        _, file_type = os.path.splitext(path)
+        file_type = file_type.lower()
+    try:
+        if 'csv' in file_type:  # Data is in CSV format
+            df_data = pd.read_csv(data)
+        elif 'json' in file_type:
+            df_data = pd.read_json(data)
+        else:
+            raise NotImplementedError(f'Unsupported file type: {file_type}.')
+    except Exception as e:
+        raise IOError(f'Error when processing data. Error: {e}.')
+
+    if data and not url.startswith(('http', 'https')):
+        data.close()  # Close the file
+
+    return df_data
+
+
 def _get_raw_data(chart_specs: dict) -> DataFrame:
     """Returns the raw data from the chart specifications, transformed if necessary."""
 
     # Get the raw data of the chart
     data_field = chart_specs['data']
     if data_field.get('url'):  # Data is stored in a file
-        try:
-            raw_data = pd.read_json(data_field['url'])
-        except ValueError:  # Not a JSON file
-            try:
-                raw_data = pd.read_csv(data_field['url'])
-            except pd.errors.ParserError:  # File is not JSON neither CSV
-                raise ValueError(f'Error reading {data_field["url"]}. File is not JSON nor CSV.')
-            except urllib.error.URLError:
-                raise IOError(f'Could not load data from URL: {data_field['url']}.')
-            except FileNotFoundError:
-                raise IOError(f'Could not find local file: {data_field['url']}.')
-            except IOError as e:
-                raise IOError(f'Could not load data from local file: {data_field['url']}. Error: {e}.')
-
+        raw_data = _get_data_from_url(data_field['url'])
     elif data_field.get('values'):  # Data is stored as the raw data
         json_data = data_field['values']
         raw_data = pd.DataFrame(json_data)
@@ -52,6 +74,7 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
 
     # Transform data (if necessary)
     from aframexr.api.aggregate import AggregatedFieldDef  # To avoid circular import error
+    from aframexr.api.filters import FilterTransform
     transform_field = chart_specs.get('transform')
     if transform_field:
 
