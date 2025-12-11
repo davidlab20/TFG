@@ -1,19 +1,70 @@
 """AframeXR encoding classes"""
 
-from abc import ABC, abstractmethod
 from typing import Union
 
 from aframexr.utils.constants import AVAILABLE_ENCODING_TYPES
 from aframexr.utils.validators import AframeXRValidator
 
 
-class Encoding(ABC):
-    """Encoding base class."""
+class Encoding:
+    """
+    Encoding base class.
+
+    Parameters
+    ----------
+    field : str
+        The data field of the axis.
+    aggregate : bool | None (optional)
+        Type of transformation in the field data.
+    axis : bool | None (optional)
+        If the axis line is visible or not. Default is True (visible).
+    encoding_type : str | None (optional)
+        The encoding type.
+    group_by : str | None (optional)
+        The grouping key to use for the encoding.
+    """
+
+    _encoding_channel_name = ''  # Will be filled by child classes when calling to to_dict() method
+
+    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
+                 encoding_type: str | None = None, group_by: str | None = None):
+        AframeXRValidator.validate_type(field, str)
+        self.field = field
+
+        AframeXRValidator.validate_type(aggregate, Union[str | None])
+        if aggregate: AframeXRValidator.validate_aggregate_operation(aggregate)  # Only validate if it is not None
+        self.aggregate = aggregate
+
+        AframeXRValidator.validate_type(axis, Union[bool | None])
+        self.axis = axis
+
+        AframeXRValidator.validate_type(encoding_type, Union[str | None])
+        if encoding_type: AframeXRValidator.validate_encoding_type(encoding_type)  # Only validate if it is not None
+        self.encoding_type = encoding_type
+
+        AframeXRValidator.validate_type(group_by, Union[str | None])
+        self.group_by = group_by
 
     # Export
-    @abstractmethod
     def to_dict(self):
-        pass  # Must be implemented by child classes
+        """Returns the dictionary specifications expression."""
+
+        if not self._encoding_channel_name:  # Should never happen
+            raise RuntimeError(f'Encoding channel was not defined, must have be done by: {self.__class__.__name__}.')
+
+        spec_dict = {}
+        if self.field:
+            spec_dict.update({'field': self.field})
+        if self.aggregate:
+            spec_dict.update({'aggregate': self.aggregate})
+        if not self.axis:  # Add if it is not True (as True is the default)
+            spec_dict.update({'axis': self.axis})
+        if self.encoding_type:
+            spec_dict.update({'encoding_type': self.encoding_type})
+        if self.group_by:
+            spec_dict.update({'group_by': self.group_by})
+
+        return {self._encoding_channel_name: spec_dict}
 
     # Utils
     @staticmethod
@@ -44,163 +95,12 @@ class Encoding(ABC):
 
 
 class X(Encoding):
-    """
-    X-axis encoding class.
-
-    Parameters
-    ----------
-    field : str
-        The data field of the axis.
-    aggregate : bool | None (optional)
-        Type of transformation in the field data.
-    axis : bool | None (optional)
-        If the axis line is visible or not. Default is True (visible).
-    encoding_type : str | None (optional)
-        The encoding type.
-    group_by : str | None (optional)
-        The grouping key to use for the encoding.
-    """
-
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, group_by: str | None = None):
-        AframeXRValidator.validate_type(field, str)
-        self.field = field
-
-        AframeXRValidator.validate_type(aggregate, Union[str | None])
-        AframeXRValidator.validate_aggregate_operation(aggregate)
-        self.aggregate = aggregate
-
-        AframeXRValidator.validate_type(axis, Union[bool | None])
-        self.axis = axis
-
-        AframeXRValidator.validate_type(encoding_type, Union[str | None])
-        AframeXRValidator.validate_encoding_type(encoding_type)
-        self.encoding_type = encoding_type
-
-        AframeXRValidator.validate_type(group_by, str)
-        self.group_by = group_by
-
-    # Export
-    def to_dict(self):
-        """Returns the dictionary specifications expression."""
-
-        spec_dict = {'x': {}}
-        if self.field:
-            spec_dict['x']['field'] = self.field
-        if self.aggregate:
-            spec_dict['x']['aggregate'] = self.aggregate
-        if not self.axis:  # Add if it is not True (as True is the default)
-            spec_dict['x']['axis'] = self.axis
-        if self.encoding_type:
-            spec_dict['x']['encoding_type'] = self.encoding_type
-        if self.group_by:
-            spec_dict['x']['group_by'] = self.group_by
-        return spec_dict
+    _encoding_channel_name = 'x'  # Define the encoding channel name
 
 
 class Y(Encoding):
-    """
-    Y-axis encoding class.
-
-    Parameters
-    ----------
-    field : str
-        The data field of the axis.
-    aggregate : bool | None (optional)
-        Type of transformation in the field data.
-    axis : bool | None (optional)
-        If the axis line is visible or not. Default is True (visible).
-    encoding_type : str | None (optional)
-        The encoding type.
-    group_by : str | None (optional)
-        The grouping key to use for the encoding.
-    """
-
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, group_by: str | None = None):
-        AframeXRValidator.validate_type(field, str)
-        self.field = field
-
-        AframeXRValidator.validate_type(aggregate, Union[str | None])
-        AframeXRValidator.validate_aggregate_operation(aggregate)
-        self.aggregate = aggregate
-
-        AframeXRValidator.validate_type(axis, Union[bool | None])
-        self.axis = axis
-
-        AframeXRValidator.validate_type(encoding_type, Union[str | None])
-        AframeXRValidator.validate_encoding_type(encoding_type)
-        self.encoding_type = encoding_type
-
-        AframeXRValidator.validate_type(group_by, str)
-        self.group_by = group_by
-
-    # Export
-    def to_dict(self):
-        """Returns the dictionary specifications expression."""
-
-        spec_dict = {'y': {}}
-        if self.field:
-            spec_dict['y']['field'] = self.field
-        if self.aggregate:
-            spec_dict['y']['aggregate'] = self.aggregate
-        if not self.axis:  # Add if it is not True (as True is the default)
-            spec_dict['y']['axis'] = self.axis
-        if self.encoding_type:
-            spec_dict['y']['encoding_type'] = self.encoding_type
-        if self.group_by:
-            spec_dict['y']['group_by'] = self.group_by
-        return spec_dict
+    _encoding_channel_name = 'y'  # Define the encoding channel name
 
 
 class Z(Encoding):
-    """
-    Z-axis encoding class.
-
-    Parameters
-    ----------
-    field : str
-        The data field of the axis.
-    aggregate : bool | None (optional)
-        Type of transformation in the field data.
-    axis : bool | None (optional)
-        If the axis line is visible or not. Default is True (visible).
-    encoding_type : str | None (optional)
-        The encoding type.
-    group_by : str | None (optional)
-        The grouping key to use for the encoding.
-    """
-
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, group_by: str | None = None):
-        AframeXRValidator.validate_type(field, str)
-        self.field = field
-
-        AframeXRValidator.validate_type(aggregate, Union[str | None])
-        AframeXRValidator.validate_aggregate_operation(aggregate)
-        self.aggregate = aggregate
-
-        AframeXRValidator.validate_type(axis, Union[bool | None])
-        self.axis = axis
-
-        AframeXRValidator.validate_type(encoding_type, Union[str | None])
-        AframeXRValidator.validate_encoding_type(encoding_type)
-        self.encoding_type = encoding_type
-
-        AframeXRValidator.validate_type(group_by, str)
-        self.group_by = group_by
-
-    # Export
-    def to_dict(self):
-        """Returns the dictionary specifications expression."""
-
-        spec_dict = {'z': {}}
-        if self.field:
-            spec_dict['z']['field'] = self.field
-        if self.aggregate:
-            spec_dict['z']['aggregate'] = self.aggregate
-        if not self.axis:  # Add if it is not True (as True is the default)
-            spec_dict['z']['axis'] = self.axis
-        if self.encoding_type:
-            spec_dict['z']['encoding_type'] = self.encoding_type
-        return spec_dict
+    _encoding_channel_name = 'z'  # Define the encoding channel name
