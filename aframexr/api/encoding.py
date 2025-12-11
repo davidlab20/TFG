@@ -7,27 +7,12 @@ from aframexr.utils.validators import AframeXRValidator
 
 
 class Encoding:
-    """
-    Encoding base class.
-
-    Parameters
-    ----------
-    field : str
-        The data field of the axis.
-    aggregate : bool | None (optional)
-        Type of transformation in the field data.
-    axis : bool | None (optional)
-        If the axis line is visible or not. Default is True (visible).
-    encoding_type : str | None (optional)
-        The encoding type.
-    group_by : str | None (optional)
-        The grouping key to use for the encoding.
-    """
+    """Encoding base class."""
 
     _encoding_channel_name = ''  # Will be filled by child classes when calling to to_dict() method
 
     def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, group_by: str | None = None):
+                 encoding_type: str | None = None, group_by: list | None = None):
         AframeXRValidator.validate_type(field, str)
         self.field = field
 
@@ -42,7 +27,7 @@ class Encoding:
         if encoding_type: AframeXRValidator.validate_encoding_type(encoding_type)  # Only validate if it is not None
         self.encoding_type = encoding_type
 
-        AframeXRValidator.validate_type(group_by, Union[str | None])
+        AframeXRValidator.validate_type(group_by, Union[list | None])
         self.group_by = group_by
 
     # Export
