@@ -7,12 +7,27 @@ from aframexr.utils.validators import AframeXRValidator
 
 
 class Encoding:
-    """Encoding base class."""
+    """
+    Encoding base class.
+
+    Parameters
+    ----------
+    field: str
+        The name of the data field to encode.
+    aggregate: str | None (optional)
+        The aggregate operation.
+    axis: bool | None (optional)
+        If the axis is displayed or not, default is set to True (show axis).
+    encoding_type: str | None (optional)
+        The encoding type.
+    groupby: list | None (optional)
+        The fields of the aggrupation.
+    """
 
     _encoding_channel_name = ''  # Will be filled by child classes when calling to to_dict() method
 
     def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, group_by: list | None = None):
+                 encoding_type: str | None = None, groupby: list | None = None):
         AframeXRValidator.validate_type(field, str)
         self.field = field
 
@@ -27,8 +42,8 @@ class Encoding:
         if encoding_type: AframeXRValidator.validate_encoding_type(encoding_type)  # Only validate if it is not None
         self.encoding_type = encoding_type
 
-        AframeXRValidator.validate_type(group_by, Union[list | None])
-        self.group_by = group_by
+        AframeXRValidator.validate_type(groupby, Union[list | None])
+        self.groupby = groupby
 
     # Export
     def to_dict(self):
@@ -46,8 +61,8 @@ class Encoding:
             spec_dict.update({'axis': self.axis})
         if self.encoding_type:
             spec_dict.update({'encoding_type': self.encoding_type})
-        if self.group_by:
-            spec_dict.update({'group_by': self.group_by})
+        if self.groupby:
+            spec_dict.update({'group_by': self.groupby})
 
         return {self._encoding_channel_name: spec_dict}
 
