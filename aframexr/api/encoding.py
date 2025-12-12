@@ -7,64 +7,44 @@ from aframexr.utils.validators import AframeXRValidator
 
 
 class Encoding:
-    """
-    Encoding base class.
+    """Encoding base class."""
 
-    Parameters
-    ----------
-    field: str
-        The name of the data field to encode.
-    aggregate: str | None (optional)
-        The aggregate operation.
-    axis: bool | None (optional)
-        If the axis is displayed or not, default is set to True (show axis).
-    encoding_type: str | None (optional)
-        The encoding type.
-    groupby: list | None (optional)
-        The fields of the aggrupation.
-    """
+    _field: str = None
+    _aggregate: str | None = None
+    _axis: bool | None = True
+    _encoding_type: str | None = None
+    _groupby: list | None = None
 
-    _encoding_channel_name = ''  # Will be filled by child classes when calling to to_dict() method
+    def __init__(self):
+        AframeXRValidator.validate_type(self._field, str)
 
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, groupby: list | None = None):
-        AframeXRValidator.validate_type(field, str)
-        self.field = field
+        AframeXRValidator.validate_type(self._aggregate, Union[str | None])
+        if self._aggregate: AframeXRValidator.validate_aggregate_operation(self._aggregate)  # Validate if defined
 
-        AframeXRValidator.validate_type(aggregate, Union[str | None])
-        if aggregate: AframeXRValidator.validate_aggregate_operation(aggregate)  # Only validate if it is not None
-        self.aggregate = aggregate
+        AframeXRValidator.validate_type(self._axis, Union[bool | None])
 
-        AframeXRValidator.validate_type(axis, Union[bool | None])
-        self.axis = axis
+        AframeXRValidator.validate_type(self._encoding_type, Union[str | None])
+        if self._encoding_type: AframeXRValidator.validate_encoding_type(self._encoding_type)  # Validate if defined
 
-        AframeXRValidator.validate_type(encoding_type, Union[str | None])
-        if encoding_type: AframeXRValidator.validate_encoding_type(encoding_type)  # Only validate if it is not None
-        self.encoding_type = encoding_type
-
-        AframeXRValidator.validate_type(groupby, Union[list | None])
-        self.groupby = groupby
+        AframeXRValidator.validate_type(self._groupby, Union[list | None])
 
     # Export
     def to_dict(self):
         """Returns the dictionary specifications expression."""
 
-        if not self._encoding_channel_name:  # Should never happen
-            raise RuntimeError(f'Encoding channel was not defined, must have be done by: {self.__class__.__name__}.')
-
         spec_dict = {}
-        if self.field:
-            spec_dict.update({'field': self.field})
-        if self.aggregate:
-            spec_dict.update({'aggregate': self.aggregate})
-        if not self.axis:  # Add if it is not True (as True is the default)
-            spec_dict.update({'axis': self.axis})
-        if self.encoding_type:
-            spec_dict.update({'encoding_type': self.encoding_type})
-        if self.groupby:
-            spec_dict.update({'group_by': self.groupby})
+        if self._field:
+            spec_dict.update({'field': self._field})
+        if self._aggregate:
+            spec_dict.update({'aggregate': self._aggregate})
+        if not self._axis:  # Add if it is not True (as True is the default)
+            spec_dict.update({'axis': self._axis})
+        if self._encoding_type:
+            spec_dict.update({'encoding_type': self._encoding_type})
+        if self._groupby:
+            spec_dict.update({'group_by': self._groupby})
 
-        return {self._encoding_channel_name: spec_dict}
+        return {f'{self.__class__.__name__.lower()}': spec_dict}
 
     # Utils
     @staticmethod
@@ -95,12 +75,87 @@ class Encoding:
 
 
 class X(Encoding):
-    _encoding_channel_name = 'x'  # Define the encoding channel name
+    """
+    X channel encoding class.
+
+    Parameters
+    ----------
+    field: str
+        The name of the data field to encode.
+    aggregate: str | None (optional)
+        The aggregate operation.
+    axis: bool | None (optional)
+        If the axis is displayed or not, default is set to True (show axis).
+    encoding_type: str | None (optional)
+        The encoding type.
+    groupby: list | None (optional)
+        The fields of the aggrupation.
+    """
+
+    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
+                 encoding_type: str | None = None, groupby: list | None = None):
+        self._field = field
+        self._aggregate = aggregate
+        self._axis = axis
+        self._encoding_type = encoding_type
+        self._groupby = groupby
+
+        super().__init__()
 
 
 class Y(Encoding):
-    _encoding_channel_name = 'y'  # Define the encoding channel name
+    """
+    Y channel encoding class.
+
+    Parameters
+    ----------
+    field: str
+        The name of the data field to encode.
+    aggregate: str | None (optional)
+        The aggregate operation.
+    axis: bool | None (optional)
+        If the axis is displayed or not, default is set to True (show axis).
+    encoding_type: str | None (optional)
+        The encoding type.
+    groupby: list | None (optional)
+        The fields of the aggrupation.
+    """
+
+    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
+                 encoding_type: str | None = None, groupby: list | None = None):
+        self._field = field
+        self._aggregate = aggregate
+        self._axis = axis
+        self._encoding_type = encoding_type
+        self._groupby = groupby
+
+        super().__init__()
 
 
 class Z(Encoding):
-    _encoding_channel_name = 'z'  # Define the encoding channel name
+    """
+    Z channel encoding class.
+
+    Parameters
+    ----------
+    field: str
+        The name of the data field to encode.
+    aggregate: str | None (optional)
+        The aggregate operation.
+    axis: bool | None (optional)
+        If the axis is displayed or not, default is set to True (show axis).
+    encoding_type: str | None (optional)
+        The encoding type.
+    groupby: list | None (optional)
+        The fields of the aggrupation.
+    """
+
+    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
+                 encoding_type: str | None = None, groupby: list | None = None):
+        self._field = field
+        self._aggregate = aggregate
+        self._axis = axis
+        self._encoding_type = encoding_type
+        self._groupby = groupby
+
+        super().__init__()
