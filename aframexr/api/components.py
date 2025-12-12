@@ -4,7 +4,11 @@ import copy
 import json
 import marimo
 
-from pandas import DataFrame
+try:
+    import pandas as pd
+except ImportError:
+    DataFrame = object
+
 from typing import Literal, Union
 
 from aframexr.api.aggregate import AggregatedFieldDef
@@ -19,11 +23,8 @@ from aframexr.utils.validators import AframeXRValidator
 class TopLevelMixin:
     """Top level chart class."""
 
-    def __init__(self, specs: dict = None):
-        if specs is None:  # For calls of Chart.__init__(), calling super().__init__()
-            self._specifications = {}  # Specifications of the scene, in JSON format
-        else:  # For calls of __add__(), to create a new object and do not modify the rest
-            self._specifications = specs
+    def __init__(self, specs: dict):
+        self._specifications = specs
 
     # Concatenating charts
     def __add__(self, other):
@@ -174,19 +175,19 @@ class Chart(TopLevelMixin):
         If position or rotation are invalid.
     """
 
-    def __init__(self, data: Data | URLData | DataFrame, position: str = DEFAULT_CHART_POS,
+    def __init__(self, data: Data | URLData | pd.DataFrame, position: str = DEFAULT_CHART_POS,
                  rotation: str = DEFAULT_CHART_ROTATION):
-        super().__init__()
+        super().__init__({})  # Initiate specifications
 
         # Data
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
-        elif isinstance(data, DataFrame):
+        elif isinstance(data, pd.DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:
-            raise TypeError(f'Expected Data | URLData | DataFrame, got {type(data).__name__} instead.')
+            raise TypeError(f'Expected Data | URLData | pd.DataFrame, got {type(data).__name__} instead.')
 
         # Position
         pos_axes = position.strip().split()
