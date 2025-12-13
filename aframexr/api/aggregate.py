@@ -1,6 +1,7 @@
 """AframeXR aggregate."""
 
-from pandas import DataFrame
+import polars as pl
+from polars import DataFrame
 
 from aframexr.utils.validators import AframeXRValidator
 
@@ -49,11 +50,13 @@ class AggregatedFieldDef:
         """Returns the aggregated data."""
 
         try:
-            agg_map = {self.as_field: (self.field, self.op)}
-            aggregated_data = data.groupby(groupby).agg(**agg_map).reset_index()
-        except KeyError as e:
-            unknown_fields = e.args[0]  # Fields that are not in data
-            raise KeyError(f'Data has no key {unknown_fields}.')
+            expression = getattr(  # Take the polars method of column "self.field" and operation "self.op"
+                pl.col(self.field),  # Take the column (field)
+                self.op  # Aggregate operation
+            )().alias(self.as_field)  # Execute the operation and rename the column
+            aggregated_data = data.group_by(groupby).agg(expression)
+        except pl.exceptions.ColumnNotFoundError:
+            raise KeyError(f'Data has no field "{self.field}".')
         return aggregated_data
 
     @staticmethod

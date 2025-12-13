@@ -1,6 +1,7 @@
 """AframeXR filters"""
-import pandas as pd
-from pandas import DataFrame
+
+import polars as pl
+from polars import DataFrame
 
 from aframexr.utils.validators import AframeXRValidator
 
@@ -12,6 +13,7 @@ class FilterTransform:
         self.field = field
         self.operator = operator
         self.value = value
+        self._magic_method: str = ''  # Will be filled by child classes with its method (e.g. __eq__)
 
     # Exporting equation formats
     def equation_to_dict(self):
@@ -57,14 +59,19 @@ class FilterTransform:
         else:
             raise ValueError(f'There is no filter for equation: {equation}.')
 
+    # Filter data
     def get_filtered_data(self, data: DataFrame) -> DataFrame:
-        """Filters and returns the data"""
+        """Filters and returns the data."""
+
+        if not self._magic_method:  # Should never enter here
+            raise RuntimeError('Magic method was not defined.')
 
         try:
-            raw_data = data.query(f'{self.field} {self.operator} {self.value}').reset_index(drop=True)
-        except pd.errors.UndefinedVariableError:
+            condition = getattr(pl.col(self.field), self._magic_method)(self.value)
+            filtered_data = data.filter(condition)
+        except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{self.field}".')
-        return raw_data
+        return filtered_data
 
 
 class FieldEqualPredicate(FilterTransform):
@@ -73,6 +80,7 @@ class FieldEqualPredicate(FilterTransform):
     def __init__(self, field: str, equal: str | float):
         operator = '=='
         super().__init__(field, operator, equal)
+        self._magic_method = '__eq__'  # Magic method
 
     @staticmethod
     def from_string(equation: str):
@@ -116,6 +124,7 @@ class FieldGTPredicate(FilterTransform):
     def __init__(self, field: str, gt: float):
         operator = '>'
         super().__init__(field, operator, gt)
+        self._magic_method = '__gt__'  # Magic method
 
     @staticmethod
     def from_string(equation: str):
@@ -157,6 +166,7 @@ class FieldLTPredicate(FilterTransform):
     def __init__(self, field: str, lt: float):
         operator = '<'
         super().__init__(field, operator, lt)
+        self._magic_method = '__lt__'  # Magic method
 
     @staticmethod
     def from_string(equation: str):

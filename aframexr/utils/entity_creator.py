@@ -2,14 +2,13 @@
 
 import copy
 import io
-import numpy as np
 import os
-import pandas as pd
+import polars as pl
 import urllib.request, urllib.error
 import warnings
 
 from itertools import cycle, islice
-from pandas import DataFrame, Series
+from polars import DataFrame, Series
 
 from aframexr.utils.constants import *
 
@@ -45,9 +44,9 @@ def _get_data_from_url(url: str) -> DataFrame:
         file_type = file_type.lower()
     try:
         if 'csv' in file_type:  # Data is in CSV format
-            df_data = pd.read_csv(data)
+            df_data = pl.read_csv(data)
         elif 'json' in file_type:
-            df_data = pd.read_json(data)
+            df_data = pl.read_json(data)
         else:
             raise NotImplementedError(f'Unsupported file type: {file_type}.')
     except Exception as e:
@@ -66,9 +65,10 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
     data_field = chart_specs['data']
     if data_field.get('url'):  # Data is stored in a file
         raw_data = _get_data_from_url(data_field['url'])
+
     elif data_field.get('values'):  # Data is stored as the raw data
         json_data = data_field['values']
-        raw_data = pd.DataFrame(json_data)
+        raw_data = DataFrame(json_data)
     else:
         raise ValueError('Data specifications has no correct syntaxis, must have field "url" or "values".')
 
@@ -81,11 +81,8 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
         for filter_transformation in transform_field:  # The first transformations are the filters
             if filter_transformation.get('filter'):
                 filter_object = FilterTransform.from_string(filter_transformation['filter'])
-
-                if isinstance(filter_object.value, str):
-                    filter_object.value = f'"{filter_object.value}"'  # Add quotes to the value for query search
                 raw_data = filter_object.get_filtered_data(raw_data)
-                if raw_data.empty:  # Data does not contain any value for the filter
+                if raw_data.is_empty():  # Data does not contain any value for the filter
                     warnings.warn(f'Data does not contain values for the filter: {filter_transformation["filter"]}.')
 
         for non_filter_transf in transform_field:  # Non-filter transformations
@@ -167,8 +164,8 @@ class ArcChartCreator(ChartCreator):
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
         self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS)  # Radius
         self._set_rotation()
-        self._color_data = Series()
-        self._theta_data = Series()
+        self._color_data = Series(name='Color data', values=[], dtype=pl.String)
+        self._theta_data = Series(name='Theta data', values=[], dtype=pl.Float32)
 
     def _set_rotation(self):
         """Sets the rotation of the pie chart."""
@@ -182,66 +179,71 @@ class ArcChartCreator(ChartCreator):
         """Returns a tuple with a Series storing the theta start of each element, and another storing theta length."""
 
         sum_data = self._theta_data.sum()  # Sum all the values
-        theta_length = (self._theta_data / sum_data) * 360  # Series of theta lengths (in degrees)
-        theta_start = theta_length.cumsum().shift(1, fill_value=0)  # Accumulative sum (first value is 0)
-        return theta_start, theta_length
+        theta_length = Series((self._theta_data / sum_data) * 360)  # Series of theta lengths (in degrees)
+        theta_start = theta_length.cum_sum().shift(1).fill_null(0)  # Accumulative sum (first value is 0)
+        return theta_start.alias('theta_start'), theta_length.alias('theta_length')
 
     def _set_elements_colors(self) -> Series:
         """Returns a Series of the color for each element composing the chart."""
 
         colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
         element_colors = Series(islice(colors, len(self._color_data)))  # Take len(self._color_data) colors
-        return element_colors
+        return element_colors.alias('color')
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
-        if self._raw_data.empty:  # There is no data to display
+        if self._raw_data.is_empty():  # There is no data to display
             return []
 
+        data_length = len(self._raw_data)
+
         # Axis
-        x_coordinates = Series(data=np.full(len(self._raw_data), 0), index=self._raw_data.index)
-        y_coordinates = Series(data=np.full(len(self._raw_data), 0), index=self._raw_data.index)
-        z_coordinates = Series(data=np.full(len(self._raw_data), 0), index=self._raw_data.index)
+        x_coordinates = pl.repeat(value=0, n=data_length).alias('x_coordinates')
+        y_coordinates = pl.repeat(value=0, n=data_length).alias('y_coordinates')
+        z_coordinates = pl.repeat(value=0, n=data_length).alias('z_coordinates')
 
         # Radius
         radius = Series(
-            data=np.full(len(self._raw_data), self._radius),
-            index=self._raw_data.index
+            name='radius',
+            values=[self._radius] * data_length
         )
 
         # Theta
         theta_field = self._encoding['theta']['field']
         try:
-            self._theta_data = self._raw_data[theta_field]
-        except KeyError:
+            self._theta_data = self._raw_data.get_column(theta_field)
+        except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{theta_field}".')
         theta_starts, theta_lengths = self._set_elements_theta()
 
         # Color
         color_field = self._encoding['color']['field']
         try:
-            self._color_data = self._raw_data[color_field]
-        except KeyError:
+            self._color_data = self._raw_data.get_column(color_field)
+        except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{color_field}".')
         colors = self._set_elements_colors()
 
         # Id
-        ids_series = [self._color_data.astype(str), self._theta_data.astype(str)]
-        ids = ids_series[0].str.cat(others=ids_series[1:], sep=' : ', na_rep='?')  # Concatenate values of the series
+        ids = pl.select(pl.concat_str(
+            [self._color_data.cast(pl.String), self._theta_data.cast(pl.String)],
+            separator=' : ',
+        ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        pos_series = x_coordinates.astype(str).str.cat([y_coordinates.astype(str), z_coordinates.astype(str)], sep=' ')
-
-        temp_df = pd.DataFrame({
+        temp_df = DataFrame({
             'id': ids,
-            'pos': pos_series,
+            'pos': pl.select(pl.concat_str(
+                [x_coordinates, y_coordinates, z_coordinates],
+                separator=' '
+            ).alias('pos')).to_series(),
             'radius': radius,
             'theta_start': theta_starts,
             'theta_length': theta_lengths,
             'color': colors
         })
-        elements_specs = temp_df.to_dict(orient='records')  # Transform DataFrame into a list of dictionaries
+        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
     def get_axis_specs(self) -> dict:
@@ -268,62 +270,60 @@ class BarChartCreator(ChartCreator):
 
         colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
         bars_colors = Series(islice(colors, len(self._raw_data)))  # Take len(self._raw_data) colors from the cycle
-        return bars_colors
+        return bars_colors.alias('color')
 
     def _set_bars_heights(self) -> Series:
         """Returns a Series of the height for each bar composing the bar chart."""
 
         if self._y_data is None:
-            heights = Series(  # Series of DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS values
-                data=np.full(len(self._raw_data), DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS),
-                index=self._raw_data.index
-            )
+            heights = Series([DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS] * len(self._raw_data),)
         else:
             max_value = self._y_data.max()
-            heights = (self._y_data / max_value) * self._max_height
-        return heights
+            heights = Series(self._y_data / max_value) * self._max_height
+        return heights.alias('height')
 
     def _set_x_coordinates(self) -> Series:
         """Returns a Series of the x coordinates for each bar composing the bar chart."""
 
-        relative_x_start = self._bar_width / 2  # Shift because of box creations
+        base_x = self._bar_width / 2  # Shift because of box creations
 
         if self._x_data is None:  # No field for x-axis
-            x_coordinates = Series(  # Series of relative_x_start values
-                data=np.full(len(self._raw_data), relative_x_start),
-                index=self._raw_data.index
-            )
+            x_coordinates = Series([base_x] * len(self._raw_data))
         else:  # Field for x-axis
-            x_coordinates = Series(
-                data=relative_x_start + (np.arange(len(self._raw_data)) * self._bar_width),
-                index=self._raw_data.index
+            x_coordinates = (
+                    base_x + (
+                    pl.int_range(
+                        start=0,
+                        end=len(self._x_data),
+                        step=1,
+                        eager=True  # Returns a Series
+                    ) * self._bar_width)
             )
-        return x_coordinates
+        return x_coordinates.alias('x_coordinates')
 
     def _set_z_coordinates(self) -> Series:
         """Returns a Series of the z coordinates for each bar composing the bar chart."""
 
-        relative_z_start = - DEFAULT_BAR_DEPTH / 2  # Shift because of box creations
+        base_z = - DEFAULT_BAR_DEPTH / 2  # Shift because of box creations
 
         if self._z_data is None:
-            z_coordinates = Series(  # Series of relative_z_start values
-                data=np.full(len(self._raw_data), relative_z_start),
-                index=self._raw_data.index
-            )
+            z_coordinates = Series([base_z] * len(self._raw_data))
         else:
-            categories = pd.Categorical(self._z_data)  # Assign one number for each category (faster indexation)
-            z_coordinates_map = np.linspace(  # Array of equally spaced values
-                start=relative_z_start,  # First value of the array
-                stop=-DEFAULT_MAX_DEPTH + (DEFAULT_BAR_DEPTH / 2),  # Last value of the array
-                num=len(categories.categories)  # Number of elements
-            )
-            z_coordinates = pd.Series(z_coordinates_map[categories.codes], index=self._z_data.index)
-        return z_coordinates
+            category_codes = sorted(self._z_data.unique().cast(pl.Categorical).to_physical())  # Sorted for consistency
+            z_coordinates_map = pl.linear_space(
+                start=base_z,
+                end=-DEFAULT_MAX_DEPTH + (DEFAULT_BAR_DEPTH / 2),
+                num_samples=len(category_codes),
+                eager=True  # Returns a Series
+            ).alias('z_coordinates_map')
+            mapping_dict = dict(zip(category_codes, z_coordinates_map))
+            z_coordinates = self._z_data.replace(mapping_dict)
+        return z_coordinates.alias("z_coordinates")
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
-        if self._raw_data.empty:  # There is no data to display
+        if self._raw_data.is_empty():  # There is no data to display
             return []
 
         # X-axis
@@ -331,7 +331,7 @@ class BarChartCreator(ChartCreator):
             x_field = self._encoding['x']['field']  # Field of the x-axis
             try:
                 self._x_data = self._raw_data[x_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{x_field}".')
 
         # Y-axis
@@ -339,7 +339,7 @@ class BarChartCreator(ChartCreator):
             y_field = self._encoding['y']['field']  # Field of the y-axis
             try:
                 self._y_data = self._raw_data[y_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{y_field}".')
 
         # Z-axis
@@ -347,12 +347,12 @@ class BarChartCreator(ChartCreator):
             z_field = self._encoding['z']['field']  # Field of the z-axis
             try:
                 self._z_data = self._raw_data[z_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{z_field}".')
 
         bar_widths = Series(  # Series of self._bar_width values
-            data=np.full(len(self._raw_data), self._bar_width),
-            index=self._raw_data.index
+            name='width',
+            values=[self._bar_width] * len(self._raw_data),
         )
         x_coordinates = self._set_x_coordinates()  # X-axis coordinate for each bar
 
@@ -367,24 +367,29 @@ class BarChartCreator(ChartCreator):
         # Id
         ids_series = []
         if self._x_data is not None:
-            ids_series.append(self._x_data.astype(str))
+            ids_series.append(self._x_data.cast(pl.String))
         if self._y_data is not None:
-            ids_series.append(self._y_data.astype(str))
+            ids_series.append(self._y_data.cast(pl.String))
         if self._z_data is not None:
-            ids_series.append(self._z_data.astype(str))
+            ids_series.append(self._z_data.cast(pl.String))
 
-        ids = ids_series[0].str.cat(others=ids_series[1:], sep=' : ', na_rep='?')  # Concatenate values of the series
+        ids = pl.select(pl.concat_str(
+            ids_series,
+            separator=' : '
+        ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        pos_series = x_coordinates.astype(str).str.cat([y_coordinates.astype(str), z_coordinates.astype(str)], sep=' ')
-        temp_df = pd.DataFrame({
+        temp_df = DataFrame({
             'id': ids,
-            'pos': pos_series,
+            'pos': pl.select(pl.concat_str(
+                [x_coordinates, y_coordinates, z_coordinates],
+                separator=' '
+            ).alias('pos')).to_series(),
             'width': bar_widths,
             'height': bar_heights,
-            'color': colors,
+            'color': colors
         })
-        elements_specs = temp_df.to_dict(orient='records')  # Transform DataFrame into a list of dictionaries
+        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
     def get_axis_specs(self) -> dict:
@@ -392,96 +397,103 @@ class BarChartCreator(ChartCreator):
 
         axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
 
-        if self._raw_data.empty:  # There is no data to display
+        if self._raw_data.is_empty():  # There is no data to display
             return axis_specs
 
         # ---- X-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding['x']['axis'] if self._encoding.get('x') else False
-        except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
+        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
             axis_specs['x']['start'] = '0 0 0'
             axis_specs['x']['end'] = f'{self._bar_width * len(self._x_data)} 0 0'
 
             # Axis labels
             x_coords = self._set_x_coordinates()  # X-axis value for each bar
-            y_coords = Series(  # Series of LABELS_Y_DELTA values
-                data=np.full(len(self._x_data), LABELS_Y_DELTA),
-                index=self._x_data.index
+            y_coords = Series(
+                name='y_coords',
+                values=[LABELS_Y_DELTA] * len(self._x_data)
             )
-            z_coords = Series(  # Series of LABELS_Z_DELTA values
-                data=np.full(len(self._x_data), LABELS_Z_DELTA),
-                index=self._x_data.index
+            z_coords = Series(
+                name='z_coords',
+                values=[LABELS_Z_DELTA] * len(self._x_data)
             )
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' '
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['x']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['x']['labels_values'] = self._x_data.tolist()
+            axis_specs['x']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['x']['labels_values'] = self._x_data.to_list()
             axis_specs['x']['labels_rotation'] = '-90 0 -90'
 
         # ---- Y-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding['y']['axis'] if self._encoding.get('y') else False
-        except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
+        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
             axis_specs['y']['start'] = '0 0 0'
             axis_specs['y']['end'] = f'0 {self._max_height} 0'
 
             # Axis labels
-            label_y_positions = np.linspace(
+            label_y_positions = pl.linear_space(  # Equally spaced values
                 start=self._max_height / Y_NUM_OF_TICKS,  # The lower label does not start in the ground
-                stop=self._max_height,
-                num=Y_NUM_OF_TICKS
-            )
-            label_values = np.linspace(  # Array of Y_NUM_OF_TICKS equally spaced values
+                end=self._max_height,
+                num_samples=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('label_y_positions')
+            label_values = pl.linear_space(  # Equally spaced values
                 start=self._y_data.max() / Y_NUM_OF_TICKS,
-                stop=self._y_data.max(),
-                num=Y_NUM_OF_TICKS
+                end=self._y_data.max(),
+                num_samples=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
             )
 
-            x_coords = pd.Series(  # Series of Y_LABELS_X_DELTA values (repeated Y_NUM_OF_TICKS times)
-                data=np.full(Y_NUM_OF_TICKS, Y_LABELS_X_DELTA),
-                index=pd.RangeIndex(Y_NUM_OF_TICKS)
+            x_coords = pl.Series(
+                name='x_coords',
+                values=[Y_LABELS_X_DELTA] * Y_NUM_OF_TICKS
             )
-            y_coords = pd.Series(label_y_positions, index=pd.RangeIndex(Y_NUM_OF_TICKS))
-            z_coords = pd.Series(  # Series of 0 values (repeated Y_NUM_OF_TICKS times)
-                data=np.full(Y_NUM_OF_TICKS, 0),
-                index=pd.RangeIndex(Y_NUM_OF_TICKS)
+            y_coords = Series(
+                name='y_coords',
+                values=label_y_positions
             )
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            z_coords = Series(
+                name='z_coords',
+                values=[0] * Y_NUM_OF_TICKS
+            )
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' ',
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['y']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['y']['labels_values'] = label_values.tolist()
+            axis_specs['y']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['y']['labels_values'] = label_values.to_list()
             axis_specs['y']['labels_rotation'] = '0 0 0'
 
         # ---- Z-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding['z']['axis'] if self._encoding.get('z') else False
-        except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
+        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
             axis_specs['z']['start'] = '0 0 0'
             axis_specs['z']['end'] = f'0 0 {-DEFAULT_MAX_DEPTH}'
 
             # Axis labels
-            categories = pd.Categorical(self._z_data)  # Transform categories into numbers (faster indexation)
-            unique_label_values = categories.categories.tolist()  # Get only the unique values
+            categories = self._z_data.unique()
 
-            x_coords = pd.Series(  # Series of Z_LABELS_X_DELTA values
-                data=np.full(len(categories.categories), Z_LABELS_X_DELTA),
-                index=pd.RangeIndex(len(categories.categories))
+            x_coords = Series(
+                name='x_coords',
+                values=[Z_LABELS_X_DELTA] * len(categories),
             )
-            y_coords = pd.Series(  # Series of LABELS_Y_DELTA values
-                data=np.full(len(categories.categories), LABELS_Y_DELTA),
-                index=pd.RangeIndex(len(categories.categories))
+            y_coords = Series(
+                name='y_coords',
+                values=[LABELS_Y_DELTA] * len(categories),
             )
-            z_coords = self._set_z_coordinates()  # Z-axis coordinates for labels (aligned with bar centers)
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            z_coords = self._set_z_coordinates().unique()  # Z-axis coordinates for labels (aligned with bar centers)
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' ',
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['z']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['z']['labels_values'] = unique_label_values
+            axis_specs['z']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['z']['labels_values'] = categories.to_list()
             axis_specs['z']['labels_rotation'] = '-90 0 0'
 
         return axis_specs
@@ -548,12 +560,16 @@ class PointChartCreator(ChartCreator):
         if self._color_data is None:
             raise Exception('Should never enter here.')
 
-        categories = pd.Categorical(self._color_data)  # Transform categories to numbers (faster indexation)
-        color_cycle = cycle(AVAILABLE_COLORS)  # Color cycle
-        color_map_array = np.array(list(islice(color_cycle, len(categories.categories))))  # Array of colors (moduled)
-        point_colors_array = color_map_array[categories.codes]  # Assign one color for each category
-        points_colors = pd.Series(point_colors_array, index=self._color_data.index)
-        return points_colors
+        category_codes = sorted(self._color_data.unique().to_list())  # Sorted for consistency
+        mapping_dict = dict(zip(
+            category_codes,  # Dict keys
+            list(islice(  # Dict values
+                cycle(AVAILABLE_COLORS),  # Color cycle
+                len(category_codes)  # Moduled to category codes
+            ))
+        ))
+        points_colors = self._color_data.replace(list(mapping_dict.keys()), list(mapping_dict.values()))
+        return points_colors.alias('color')
 
     def _set_points_radius(self) -> Series:
         """Returns a Series of the radius for each point composing the bubble chart."""
@@ -563,23 +579,25 @@ class PointChartCreator(ChartCreator):
 
         max_value = self._size_data.max()
         points_radius_series = (self._size_data / max_value) * self._max_radius
-        return points_radius_series
+        return points_radius_series.alias('radius')
 
     def _set_x_coordinates(self, points_radius: Series) -> Series:
         """Returns a Series of the x coordinates for each point composing the point chart."""
 
-        base_x = points_radius.iat[0]  # Take the radius of the first element so the chart starts in the base position
+        base_x = points_radius.item(0)  # Take the radius of the first element so the chart starts in the base position
         if self._x_data is None:
-            x_coordinates = Series(  # Series of base_x values
-                data=np.full(len(self._raw_data), base_x),
-                index=self._raw_data.index
-            )
+            x_coordinates = Series([base_x] * len(self._raw_data))
         else:
-            x_coordinates = Series(
-                data=base_x + (np.arange(len(self._x_data)) * DEFAULT_POINT_X_SEPARATION),
-                index=self._raw_data.index
+            x_coordinates = (
+                    base_x +
+                    pl.int_range(
+                        start=0,
+                        end=len(self._x_data),
+                        step=1,
+                        eager=True  # Returns a Series
+                    ) * DEFAULT_POINT_X_SEPARATION
             )
-        return x_coordinates
+        return x_coordinates.alias('x_coordinates')
 
     def _set_y_coordinates(self, points_radius: Series) -> Series:
         """Returns a Series of the y coordinates for each point composing the point chart."""
@@ -587,14 +605,11 @@ class PointChartCreator(ChartCreator):
         base_y = points_radius.max()  # Assert no points cross under the chart
 
         if self._y_data is None:
-            y_coordinates = Series(  # Series of base_y values
-                data=np.full(len(self._raw_data), base_y),
-                index=self._raw_data.index
-            )
+            y_coordinates = Series([base_y] * len(self._raw_data))
         else:
             max_value = self._y_data.max()  # Proportional heights of the data
             y_coordinates = base_y + (self._y_data / max_value) * self._height  # Series of y-axis coordinates
-        return y_coordinates
+        return y_coordinates.alias('y_coordinates')
 
     def _set_z_coordinates(self) -> Series:
         """Returns a Series of the z coordinates for each point composing the point chart."""
@@ -602,44 +617,40 @@ class PointChartCreator(ChartCreator):
         base_z = -DEFAULT_POINT_RADIUS
 
         if self._z_data is None:
-            z_coordinates = Series(
-                data=np.full(len(self._raw_data), base_z),
-                index=self._raw_data.index
-            )
+            z_coordinates = Series([base_z] * len(self._raw_data))
         else:
-            categories = pd.Categorical(self._z_data)  # Transform categories to numbers (faster indexation)
-            z_coordinates_map = np.linspace(
+            category_codes = sorted(self._z_data.unique().cast(pl.Categorical).to_physical())  # Sorted for consistency
+            z_coordinates_map = pl.linear_space(
                 start=base_z,
-                stop=-DEFAULT_MAX_DEPTH + DEFAULT_POINT_RADIUS,
-                num=len(categories.categories)
-            )
-            z_coordinates = pd.Series(z_coordinates_map[categories.codes], index=self._z_data.index)
-        return z_coordinates
+                end=-DEFAULT_MAX_DEPTH + DEFAULT_POINT_RADIUS,
+                num_samples=len(category_codes),
+                eager=True  # Returns a Series
+            ).alias('z_coordinates_map')
+            mapping_dict = dict(zip(category_codes, z_coordinates_map))
+            z_coordinates = self._z_data.replace(mapping_dict)
+        return z_coordinates.alias('z_coordinates')
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
 
-        if self._raw_data.empty:  # There is no data to display
+        if self._raw_data.is_empty():  # There is no data to display
             return []
 
         # X-axis
-        radius = Series(  # Series of self._max_radius values
-            data=np.full(len(self._raw_data), self._max_radius),
-            index=self._raw_data.index
-        )
+        radius = Series([self._max_radius] * len(self._raw_data))
 
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']
             try:
                 self._x_data = self._raw_data[x_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{x_field}".')
 
             if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
                 size_field = self._encoding['size']['field']
                 try:
                     self._size_data = self._raw_data[size_field]
-                except KeyError:
+                except pl.exceptions.ColumnNotFoundError:
                     raise KeyError(f'Data has no field "{size_field}".')
 
                 radius = self._set_points_radius()
@@ -653,7 +664,7 @@ class PointChartCreator(ChartCreator):
             y_field = self._encoding['y']['field']  # Field of the y-axis
             try:
                 self._y_data = self._raw_data[y_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{y_field}".')
 
         y_coordinates = self._set_y_coordinates(radius)
@@ -663,7 +674,7 @@ class PointChartCreator(ChartCreator):
             z_field = self._encoding['z']['field']  # Field of the z-axis
             try:
                 self._z_data = self._raw_data[z_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{z_field}".')
 
         z_coordinates = self._set_z_coordinates()
@@ -673,36 +684,39 @@ class PointChartCreator(ChartCreator):
             color_field = self._encoding['color']['field']
             try:
                 self._color_data = self._raw_data[color_field]
-            except KeyError:
+            except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{color_field}".')
 
             colors = self._set_points_colors()
         else:  # Bubbles plot (same color for all points)
-            colors = Series(  # Series of DEFAULT_POINT_COLOR values
-                data=np.full(len(self._raw_data), DEFAULT_POINT_COLOR),
-                index=self._raw_data.index
-            )
+            colors = Series([DEFAULT_POINT_COLOR] * len(self._raw_data))
 
         # Id
         ids_series = []
         if self._x_data is not None:
-            ids_series.append(self._x_data.astype(str))
+            ids_series.append(self._x_data.cast(pl.String))
         if self._y_data is not None:
-            ids_series.append(self._y_data.astype(str))
+            ids_series.append(self._y_data.cast(pl.String))
         if self._z_data is not None:
-            ids_series.append(self._z_data.astype(str))
+            ids_series.append(self._z_data.cast(pl.String))
 
-        ids = ids_series[0].str.cat(others=ids_series[1:], sep=' : ', na_rep='?')  # Concatenate values of the series
+        ids = pl.select(pl.concat_str(
+            ids_series,
+            separator=' : ',
+        ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        pos_series = x_coordinates.astype(str).str.cat([y_coordinates.astype(str), z_coordinates.astype(str)], sep=' ')
-        temp_df = pd.DataFrame({
+        print(x_coordinates.cast(pl.String).alias('x_coordinates'))
+        temp_df = DataFrame({
             'id': ids,
-            'pos': pos_series,
+            'pos': pl.select(pl.concat_str(
+                [x_coordinates, y_coordinates, z_coordinates],
+                separator=' '
+            ).alias('pos')).to_series(),
             'radius': radius,
             'color': colors,
         })
-        elements_specs = temp_df.to_dict(orient='records')  # Transform DataFrame into a list of dictionaries
+        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
     def get_axis_specs(self) -> dict:
@@ -710,109 +724,104 @@ class PointChartCreator(ChartCreator):
 
         axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
 
-        if self._raw_data.empty:  # There is no data to display
+        if self._raw_data.is_empty():  # There is no data to display
             return axis_specs
 
         # ---- X-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding['x']['axis'] if self._encoding.get('x') else False
-        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
+        if display_axis:  # Display axis if key not found (default display axis) or True
             axis_specs['x']['start'] = '0 0 0'
             axis_specs['x']['end'] = f'{DEFAULT_POINT_X_SEPARATION * len(self._raw_data) + self._max_radius} 0 0'
 
             # Axis labels
-            if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
+            if self._size_data is not None:  # Bubbles plot (the size of the point depends on the value of the field)
                 radius = self._set_points_radius()
             else:  # Scatter plot (same radius for all points)
-                radius = Series(  # Series of self._max_radius values
-                    data=np.full(len(self._raw_data), self._max_radius),
-                    index=self._raw_data.index
-                )
+                radius = Series([self._max_radius] * len(self._raw_data))
 
             x_coords = self._set_x_coordinates(radius)  # X-axis value for each point
-            y_coords = Series(  # Series of LABELS_Y_DELTA values
-                data=np.full(len(self._x_data), LABELS_Y_DELTA),
-                index=self._x_data.index
+            y_coords = Series(
+                name='y_coords',
+                values=[LABELS_Y_DELTA] * len(self._raw_data)
             )
-            z_coords = Series(  # Series of LABELS_Z_DELTA values
-                data=np.full(len(self._x_data), LABELS_Z_DELTA),
-                index=self._x_data.index
+            z_coords = Series(
+                name='z_coords',
+                values=[LABELS_Z_DELTA] * len(self._raw_data)
             )
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' '
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['x']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['x']['labels_values'] = self._x_data.tolist()
+            axis_specs['x']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['x']['labels_values'] = self._x_data.to_list()
             axis_specs['x']['labels_rotation'] = '-90 0 -90'  # Rotation of the labels
 
         # ---- Y-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding['y']['axis'] if self._encoding.get('y') else False
-        except KeyError or display_axis is True:  # Display axis if key not found (default display axis) or True
+        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
+        if display_axis:  # Display axis if key not found (default display axis) or True
             axis_specs['y']['start'] = '0 0 0'
             axis_specs['y']['end'] = f'0 {self._height} 0'
 
             # Axis labels
-            label_y_positions = np.linspace(
-                start=self._height / Y_NUM_OF_TICKS,
-                stop=self._height,
-                num=Y_NUM_OF_TICKS
-            )
-            label_values = np.linspace(  # Array of Y_NUM_OF_TICKS equally spaced values
+            y_coords = pl.linear_space(  # Equally spaced values
+                start=self._height / Y_NUM_OF_TICKS,  # The lower label does not start in the ground
+                end=self._height,
+                num_samples=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('y_coords')
+            label_values = pl.linear_space(  # Equally spaced values
                 start=self._y_data.max() / Y_NUM_OF_TICKS,
-                stop=self._y_data.max(),
-                num=Y_NUM_OF_TICKS
+                end=self._y_data.max(),
+                num_samples=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
             )
 
-            x_coords = pd.Series(  # Series of Y_LABELS_X_DELTA values (repeated Y_NUM_OF_TICKS)
-                data=np.full(Y_NUM_OF_TICKS, Y_LABELS_X_DELTA),
-                index=pd.RangeIndex(Y_NUM_OF_TICKS)
+            x_coords = Series(
+                name='x_coords',
+                values=[Y_LABELS_X_DELTA] * Y_NUM_OF_TICKS
             )
-            y_coords = pd.Series(label_y_positions, index=pd.RangeIndex(Y_NUM_OF_TICKS))
-            z_coords = pd.Series(  # Series of 0 values
-                data=np.full(Y_NUM_OF_TICKS, 0),
-                index=pd.RangeIndex(Y_NUM_OF_TICKS)
+            z_coords = Series(
+                name='z_coords',
+                values=[0] * Y_NUM_OF_TICKS
             )
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' '
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['y']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['y']['labels_values'] = label_values.tolist()
+            axis_specs['y']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['y']['labels_values'] = label_values.to_list()
             axis_specs['y']['labels_rotation'] = '0 0 0'
 
         # ---- Z-axis ----
         # Axis line
-        display_axis = True
-        try:
-            display_axis = self._encoding.get('z')['axis'] if self._encoding.get('z') else False
-        except KeyError or display_axis is True:  # Display axis if key 'axis' not found (default display axis) or True
+        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
             axis_specs['z']['start'] = '0 0 0'
             axis_specs['z']['end'] = f'0 0 {-DEFAULT_MAX_DEPTH}'
 
             # Axis labels
-            categories = pd.Categorical(self._z_data)  # Transform categories into numbers (faster indexation)
-            label_z_positions = np.linspace(
-                start=-(DEFAULT_POINT_RADIUS / 2),  # Start where the points have the center
-                stop=-(DEFAULT_POINT_RADIUS / 2) - DEFAULT_MAX_DEPTH,  # End where the points have the center
-                num=len(categories.categories)
-            )
-            unique_label_values = categories.categories.tolist()  # Get only the unique values
+            categories = self._z_data.unique()
 
-            x_coords = pd.Series(  # Series of Z_LABELS_X_DELTA values
-                data=np.full(len(categories.categories), Z_LABELS_X_DELTA),
-                index=pd.RangeIndex(len(categories.categories))
+            x_coords = Series(
+                name='x_coords',
+                values=[Z_LABELS_X_DELTA] * len(categories),
             )
-            y_coords = pd.Series(  # Series of LABELS_Y_DELTA values
-                data=np.full(len(categories.categories), LABELS_Y_DELTA),
-                index=pd.RangeIndex(len(categories.categories))
+            y_coords = Series(
+                name='y_coords',
+                values=[LABELS_Y_DELTA] * len(categories),
             )
-            z_coords = pd.Series(label_z_positions)
-            label_pos_series = x_coords.astype(str).str.cat([y_coords.astype(str), z_coords.astype(str)], sep=' ')
+            z_coords = self._set_z_coordinates().unique()  # Z-axis coordinates for labels (aligned with centers)
+            label_pos_series = pl.select(pl.concat_str(
+                [x_coords, y_coords, z_coords],
+                separator=' ',
+            ).fill_null('?').alias('id')).to_series()
 
-            axis_specs['z']['labels_pos'] = label_pos_series.tolist()
-            axis_specs['z']['labels_values'] = unique_label_values
+            axis_specs['z']['labels_pos'] = label_pos_series.to_list()
+            axis_specs['z']['labels_values'] = categories.to_list()
             axis_specs['z']['labels_rotation'] = '-90 0 0'
 
         return axis_specs
