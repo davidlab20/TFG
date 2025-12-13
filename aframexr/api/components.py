@@ -185,7 +185,7 @@ class Chart(TopLevelMixin):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
-        elif isinstance(data, pd.DataFrame):
+        elif pd is not None and isinstance(data, pd.DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:
             raise TypeError(f'Expected Data | URLData | pd.DataFrame, got {type(data).__name__} instead.')
