@@ -6,6 +6,7 @@ import marimo
 
 try:
     import pandas as pd
+    from pandas import DataFrame
 except ImportError:
     DataFrame = object
     pd = None
