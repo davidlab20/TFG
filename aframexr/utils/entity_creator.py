@@ -31,7 +31,7 @@ def _get_data_from_url(url: str) -> DataFrame:
         try:
             with urllib.request.urlopen(url) as response:
                 file_type = response.info().get_content_type()
-                data = io.BytesIO(response.read())  # For pandas
+                data = io.BytesIO(response.read())  # For polars
         except urllib.error.URLError:
             raise IOError(f'Could not load data from URL: {url}.')
     else:  # Data is stored in a local file
