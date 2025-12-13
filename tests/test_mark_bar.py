@@ -242,3 +242,11 @@ class TestMarkBarError(unittest.TestCase):
             assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
                                             'Incorrect syntax, must be datum.{field} < {value}']
+
+    def test_mark_already_defined(self):
+        """Bars chart mark already defined error."""
+
+        for m in MARK_METHODS:
+            with self.assertRaises(ValueError) as error:
+                getattr(aframexr.Chart(DATA).mark_bar(), m)()  # Execute aframexr.Chart(DATA).mark_bar().m()
+            assert str(error.exception) == 'Trying to mark a chart already defined in the specifications.'

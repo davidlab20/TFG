@@ -12,6 +12,9 @@ LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON 
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 DATA_FORMATS = [DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA]
 
+# Methods
+MARK_METHODS = ['mark_arc', 'mark_bar', 'mark_gltf', 'mark_image', 'mark_point']
+
 # Positions OK
 POSITIONS = ['0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2']
 POSITION_FORMATS = ['1 1 1', '1  1  1', '  1 1 1  ', '  1  1  1  ']
