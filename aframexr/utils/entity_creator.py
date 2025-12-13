@@ -706,7 +706,6 @@ class PointChartCreator(ChartCreator):
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        print(x_coordinates.cast(pl.String).alias('x_coordinates'))
         temp_df = DataFrame({
             'id': ids,
             'pos': pl.select(pl.concat_str(
