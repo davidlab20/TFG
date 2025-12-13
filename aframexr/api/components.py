@@ -176,7 +176,7 @@ class Chart(TopLevelMixin):
         If position or rotation are invalid.
     """
 
-    def __init__(self, data: Data | URLData | pd.DataFrame, position: str = DEFAULT_CHART_POS,
+    def __init__(self, data: Data | URLData | DataFrame, position: str = DEFAULT_CHART_POS,
                  rotation: str = DEFAULT_CHART_ROTATION):
         super().__init__({})  # Initiate specifications
 
