@@ -1,5 +1,5 @@
 # Requirements for users
 
-numpy>=2.3.5
-pandas>=2.3.3
-marimo
+numpy>=2.3.0
+polars>=1.36.0
+marimo>=0.18.0
