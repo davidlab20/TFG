@@ -2,6 +2,7 @@
 
 import copy
 import io
+import json
 import os
 import polars as pl
 import urllib.request, urllib.error
@@ -46,7 +47,8 @@ def _get_data_from_url(url: str) -> DataFrame:
         if 'csv' in file_type:  # Data is in CSV format
             df_data = pl.read_csv(data)
         elif 'json' in file_type:
-            df_data = pl.read_json(data)
+            json_data = json.load(data)
+            df_data = DataFrame(json_data)
         else:
             raise NotImplementedError(f'Unsupported file type: {file_type}.')
     except Exception as e:
