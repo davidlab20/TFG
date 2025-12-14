@@ -16,6 +16,17 @@ class AframeXRValidator:
             raise ValueError(f'Invalid aggregate operation: {aggregate}.')
 
     @staticmethod
+    def validate_chart_specs(specs: dict) -> None:
+        """Raises ValueError if chart specifications are invalid."""
+
+        try:
+            _ = specs['data']
+            _ =specs['mark']
+            _ = specs['encoding']
+        except KeyError as e:
+            raise ValueError(f'Invalid chart specifications. Must contain key {e}.')
+
+    @staticmethod
     def validate_chart_type(chart_type: str) -> None:
         """Raises ValueError if the chart type is invalid."""
 

@@ -26,6 +26,7 @@ class TopLevelMixin:
     """Top level chart class."""
 
     def __init__(self, specs: dict):
+        if specs: AframeXRValidator.validate_chart_specs(specs)  # Validate specs if not initializing empty dict
         self._specifications = specs
 
     # Concatenating charts
@@ -135,6 +136,7 @@ class TopLevelMixin:
     def show(self):
         """Show the scene in the Marimo notebook."""
 
+        AframeXRValidator.validate_chart_specs(self._specifications)
         html_scene = SceneCreator.create_scene(self._specifications)
         return marimo.iframe(html_scene)
 
@@ -401,13 +403,6 @@ class Chart(TopLevelMixin):
         if z:
             AframeXRValidator.validate_type(z, Union[str | Z])
             filled_params.update({'z': z})
-
-        # Verify the argument combinations
-        if self._specifications['mark']['type'] in ['bar', 'point'] and sum([x != '', y != '', z != '']) < 2:
-            raise ValueError('At least 2 of (x, y, z) must be specified.')
-        if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
-            if not theta: raise ValueError('Parameter theta must be specified in arc chart.')
-            if not color: raise ValueError('Parameter color must be specified in arc chart.')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})
