@@ -38,26 +38,22 @@ class TopLevelMixin:
         if not isinstance(other, TopLevelMixin):
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}.")
 
-        # Create the new concatenation specifications
-        concat_specs = {'concat': []}
+        self_specs_list = self._specifications.get('concat', [self._specifications])
+        other_specs_list = other._specifications.get('concat', [other._specifications])
 
-        # Look if there is concatenation of concatenated charts (to join all in one concat field)
-        if self._specifications.get('concat'):
-            for chart in self._specifications['concat']:
-                concat_specs['concat'].append(chart)
-        else:
-            concat_specs['concat'].append(self._specifications)
-
-        if other._specifications.get('concat'):
-            for chart in other._specifications['concat']:
-                concat_specs['concat'].append(chart)
-        else:
-            concat_specs['concat'].append(other._specifications)
-
-        concatenated_chart = TopLevelMixin(concat_specs)  # Create a new 'scene' to preserve the original charts
-        return concatenated_chart
+        copy_of_the_chart = self.copy()  # Create a copy to modify
+        copy_of_the_chart._specifications = {'concat': self_specs_list + other_specs_list}
+        return copy_of_the_chart
 
     # Copy of the chart
+    def __deepcopy__(self, memo):
+        """Optimized deepcopy method."""
+
+        new_instance = self.__class__.__new__(self.__class__)
+        memo[id(self)] = new_instance
+        new_instance._specifications = copy.deepcopy(self._specifications, memo)
+        return new_instance
+
     def copy(self):
         """Returns a deep copy of the chart."""
 
@@ -65,7 +61,7 @@ class TopLevelMixin:
 
     # Importing charts
     @staticmethod
-    def from_dict(specs: dict) -> 'TopLevelMixin':
+    def from_dict(specs: dict) -> 'Chart':
         """
         Import the chart from the JSON dict specifications.
 
@@ -81,7 +77,9 @@ class TopLevelMixin:
         """
 
         AframeXRValidator.validate_type(specs, dict)
-        return TopLevelMixin(specs)
+        chart = Chart()
+        chart._specifications = specs
+        return chart
 
     @staticmethod
     def from_json(specs: str) -> 'TopLevelMixin':
@@ -100,7 +98,9 @@ class TopLevelMixin:
         """
 
         AframeXRValidator.validate_type(specs, str)
-        return TopLevelMixin(json.loads(specs))
+        chart = Chart()
+        chart._specifications = json.loads(specs)
+        return chart
 
     # Exporting charts
     def save(self, fp: str, fileFormat: Literal['json', 'html'] = None):
@@ -177,11 +177,9 @@ class Chart(TopLevelMixin):
         If position or rotation are invalid.
     """
 
-    def __init__(self, data: Data | URLData | DataFrame, position: str = DEFAULT_CHART_POS,
-                 rotation: str = DEFAULT_CHART_ROTATION):
-        super().__init__({})  # Initiate specifications
+    def _define_data(self, data: Data | URLData | DataFrame):
+        """Defines the data field in the specifications."""
 
-        # Data
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
@@ -191,7 +189,9 @@ class Chart(TopLevelMixin):
         else:
             raise TypeError(f'Expected Data | URLData | pd.DataFrame, got {type(data).__name__} instead.')
 
-        # Position
+    def _define_position(self, position: str):
+        """Defines the position field in the specifications."""
+
         pos_axes = position.strip().split()
         if len(pos_axes) != 3:
             raise ValueError(f'The position: {position} is not correct. Must be "x y z".')
@@ -201,8 +201,9 @@ class Chart(TopLevelMixin):
             except ValueError:
                 raise ValueError('The position values must be numeric.')
         self._specifications.update({'position': f'{pos_axes[0]} {pos_axes[1]} {pos_axes[2]}'})
+        return self
 
-        # Rotation
+    def _define_rotation(self, rotation: str):
         rot_axes = rotation.strip().split()
         if len(rot_axes) != 3:
             raise ValueError(f'The rotation: {rotation} is not correct. Must be "x y z".')
@@ -211,7 +212,16 @@ class Chart(TopLevelMixin):
                 float(axis)
             except ValueError:
                 raise ValueError('The rotation values must be numeric.')
-        self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
+        self._specifications.update({'position': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
+        return self
+
+    def __init__(self, data: Data | URLData | DataFrame = None, position: str = DEFAULT_CHART_POS,
+                 rotation: str = DEFAULT_CHART_ROTATION):
+        super().__init__({})  # Initiate specifications
+
+        self._define_data(data)
+        self._define_position(position)
+        self._define_rotation(rotation)
 
     # Types of charts
     def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
@@ -414,6 +424,16 @@ class Chart(TopLevelMixin):
                     self._specifications['encoding'][param_key].update({'aggregate': aggregate_op})
                 if encoding_type:
                     self._specifications['encoding'][param_key].update({'type': encoding_type})
+        return self
+
+    def properties(self, data: Data | URLData | DataFrame = None, position: str = '',
+                   rotation: str = ''):
+        """Modify general properties of the chart."""
+
+        if data: self._define_data(data)
+        if position: self._define_position(position)
+        if rotation: self._define_rotation(rotation)
+
         return self
 
     # Modifying data
