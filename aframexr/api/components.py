@@ -219,7 +219,7 @@ class Chart(TopLevelMixin):
                  rotation: str = DEFAULT_CHART_ROTATION):
         super().__init__({})  # Initiate specifications
 
-        self._define_data(data)
+        if data is not None: self._define_data(data)
         self._define_position(position)
         self._define_rotation(rotation)
 
