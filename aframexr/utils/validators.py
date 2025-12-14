@@ -21,8 +21,8 @@ class AframeXRValidator:
 
         try:
             _ = specs['data']
-            _ =specs['mark']
-            _ = specs['encoding']
+            mark_type = specs['mark']['type'] if isinstance(specs['mark'], dict) else specs['mark']
+            _ = specs['encoding'] if mark_type not in ['image', 'gltf'] else True  # Encoding is only needed in charts
         except KeyError as e:
             raise ValueError(f'Invalid chart specifications. Must contain key {e}.')
 

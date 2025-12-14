@@ -164,7 +164,8 @@ class ArcChartCreator(ChartCreator):
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
-        self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS)  # Radius
+        self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_PIE_RADIUS
         self._set_rotation()
         self._color_data = Series(name='Color data', values=[], dtype=pl.String)
         self._theta_data = Series(name='Theta data', values=[], dtype=pl.Float32)
@@ -261,7 +262,8 @@ class BarChartCreator(ChartCreator):
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
-        self._bar_width = chart_specs['mark'].get('width', DEFAULT_BAR_WIDTH)  # Width of the bar
+        self._bar_width = chart_specs['mark'].get('width', DEFAULT_BAR_WIDTH) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_BAR_WIDTH
         self._max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
         self._x_data: Series | None = None
         self._y_data: Series | None = None
@@ -507,7 +509,8 @@ class GLTFModelCreator(ChartCreator):
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._url = chart_specs['data']['url']  # URL of the image model
-        self._scale = chart_specs['mark'].get('scale', DEFAULT_GLTF_SCALE)
+        self._scale = chart_specs['mark'].get('scale', DEFAULT_GLTF_SCALE) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_GLTF_SCALE
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
@@ -527,8 +530,10 @@ class ImageCreator(ChartCreator):
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._url = chart_specs['data']['url']  # URL of the image model
-        self._height = chart_specs['mark'].get('height', DEFAULT_IMAGE_HEIGHT)
-        self._width = chart_specs['mark'].get('width', DEFAULT_IMAGE_WIDTH)
+        self._height = chart_specs['mark'].get('height', DEFAULT_IMAGE_HEIGHT) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_IMAGE_HEIGHT
+        self._width = chart_specs['mark'].get('width', DEFAULT_IMAGE_WIDTH) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_IMAGE_WIDTH
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
@@ -549,7 +554,8 @@ class PointChartCreator(ChartCreator):
         super().__init__(chart_specs)
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
         self._height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)
-        self._max_radius = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
+        self._max_radius = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_RADIUS
         self._color_data: Series | None = None
         self._size_data: Series | None = None
         self._x_data: Series | None = None

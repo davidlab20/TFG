@@ -27,7 +27,7 @@ class ChartsHTMLCreator:
         """
 
         # Validate chart type
-        chart_type = chart_specs['mark'].get('type', chart_specs['mark'])
+        chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
         AframeXRValidator.validate_chart_type(chart_type)
 
         # Chart HTML
