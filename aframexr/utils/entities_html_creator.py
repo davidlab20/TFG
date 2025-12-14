@@ -27,7 +27,7 @@ class ChartsHTMLCreator:
         """
 
         # Validate chart type
-        chart_type = chart_specs['mark']['type']
+        chart_type = chart_specs['mark'].get('type', chart_specs['mark'])  # To take
         AframeXRValidator.validate_chart_type(chart_type)
 
         # Chart HTML
