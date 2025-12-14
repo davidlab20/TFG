@@ -214,11 +214,6 @@ class Chart(TopLevelMixin):
         self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
 
     # Types of charts
-    def _there_is_one_chart_defined(self):
-        """Returns True if there is a chart defined in the specifications, False otherwise."""
-
-        return self._specifications.get('mark') is not None
-
     def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
         """
         Pie chart and doughnut chart.
@@ -233,10 +228,9 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'arc'}})
-        if radius > 0:
-            self._specifications['mark'].update({'radius': radius})
-        else:
+        if radius <= 0:
             raise ValueError('The radius must be greater than 0.')
+        self._specifications['mark'].update({'radius': radius})
         return self
 
     def mark_bar(self, size: float = DEFAULT_BAR_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
@@ -256,14 +250,12 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'bar'}})
-        if size > 0:
-            self._specifications['mark'].update({'width': size})
-        else:
+        if size <= 0:
             raise ValueError('The size must be greater than 0.')
-        if height > 0:
-            self._specifications.update({'height': height})
-        else:
+        self._specifications['mark'].update({'width': size})
+        if height <= 0:
             raise ValueError('The height must be greater than 0.')
+        self._specifications.update({'height': height})
         return self
 
     def mark_gltf(self, scale: str = DEFAULT_GLTF_SCALE):
@@ -311,14 +303,12 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'image'}})
-        if width > 0:
-            self._specifications['mark'].update({'width': width})
-        else:
+        if width <= 0:
             raise ValueError('The width must be greater than 0.')
-        if height > 0:
-            self._specifications['mark'].update({'height': height})
-        else:
+        self._specifications['mark'].update({'width': width})
+        if height <= 0:
             raise ValueError('The height must be greater than 0.')
+        self._specifications['mark'].update({'height': height})
         return self
 
     def mark_point(self, size: float = DEFAULT_POINT_RADIUS, height: float = DEFAULT_MAX_HEIGHT):
@@ -343,14 +333,12 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'point'}})
-        if size > 0:
-            self._specifications['mark'].update({'max_radius': size})
-        else:
+        if size <= 0:
             raise ValueError('The size must be greater than 0.')
-        if height > 0:
-            self._specifications.update({'height': height})
-        else:
+        self._specifications['mark'].update({'max_radius': size})
+        if height <= 0:
             raise ValueError('The height must be greater than 0.')
+        self._specifications.update({'height': height})
         return self
 
     # Parameters of the chart
