@@ -50,10 +50,13 @@ class AggregatedFieldDef:
         """Returns the aggregated data."""
 
         try:
-            expression = getattr(  # Take the polars method of column "self.field" and operation "self.op"
-                pl.col(self.field),  # Take the column (field)
-                self.op  # Aggregate operation
-            )().alias(self.as_field)  # Execute the operation and rename the column
+            if self.op == 'count':
+                expression = pl.len().alias(self.as_field)  # Counts the rows per group
+            else:
+                expression = getattr(  # Take the polars method of column "self.field" and operation "self.op"
+                    pl.col(self.field),  # Take the column (field)
+                    self.op  # Aggregate operation
+                )().alias(self.as_field)  # Execute the operation and rename the column
             aggregated_data = data.group_by(groupby).agg(expression)
         except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{self.field}".')
