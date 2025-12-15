@@ -449,7 +449,7 @@ class BarChartCreator(ChartCreator):
                 end=self._y_data.max(),
                 num_samples=Y_NUM_OF_TICKS,
                 eager=True  # Returns a Series
-            ).round(2)
+            ).round(2)  # Round to the second decimal
 
             x_coords = pl.Series(
                 name='x_coords',
