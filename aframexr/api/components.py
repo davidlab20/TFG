@@ -214,7 +214,7 @@ class Chart(TopLevelMixin):
                 float(axis)
             except ValueError:
                 raise ValueError('The rotation values must be numeric.')
-        self._specifications.update({'position': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
+        self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
         return self
 
     def __init__(self, data: Data | URLData | DataFrame = None, position: str = DEFAULT_CHART_POS,
