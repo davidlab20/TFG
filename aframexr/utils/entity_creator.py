@@ -313,14 +313,14 @@ class BarChartCreator(ChartCreator):
         if self._z_data is None:
             z_coordinates = Series([base_z] * len(self._raw_data))
         else:
-            category_codes = sorted(self._z_data.unique().cast(pl.Categorical).to_physical())  # Sorted for consistency
+            category_names = sorted(self._z_data.unique().to_list())  # Sorted for consistency
             z_coordinates_map = pl.linear_space(
                 start=base_z,
-                end=-DEFAULT_MAX_DEPTH + (DEFAULT_BAR_DEPTH / 2),
-                num_samples=len(category_codes),
+                end=-DEFAULT_MAX_DEPTH + DEFAULT_POINT_RADIUS,
+                num_samples=len(category_names),
                 eager=True  # Returns a Series
-            ).alias('z_coordinates_map')
-            mapping_dict = dict(zip(category_codes, z_coordinates_map))
+            )
+            mapping_dict = dict(zip(category_names, z_coordinates_map))
             z_coordinates = self._z_data.replace(mapping_dict)
         return z_coordinates.alias("z_coordinates")
 
@@ -597,26 +597,24 @@ class PointChartCreator(ChartCreator):
             x_coordinates = Series([base_x] * len(self._raw_data))
         else:
             x_coordinates = (
-                    base_x +
+                    base_x + (
                     pl.int_range(
                         start=0,
                         end=len(self._x_data),
                         step=1,
                         eager=True  # Returns a Series
-                    ) * DEFAULT_POINT_X_SEPARATION
+                    ) * DEFAULT_POINT_X_SEPARATION)
             )
         return x_coordinates.alias('x_coordinates')
 
-    def _set_y_coordinates(self, points_radius: Series) -> Series:
+    def _set_y_coordinates(self) -> Series:
         """Returns a Series of the y coordinates for each point composing the point chart."""
 
-        base_y = points_radius.max()  # Assert no points cross under the chart
-
         if self._y_data is None:
-            y_coordinates = Series([base_y] * len(self._raw_data))
+            y_coordinates = Series([0] * len(self._raw_data))
         else:
             max_value = self._y_data.max()  # Proportional heights of the data
-            y_coordinates = base_y + (self._y_data / max_value) * self._height  # Series of y-axis coordinates
+            y_coordinates = (self._y_data / max_value) * self._height  # Series of y-axis coordinates
         return y_coordinates.alias('y_coordinates')
 
     def _set_z_coordinates(self) -> Series:
@@ -627,14 +625,14 @@ class PointChartCreator(ChartCreator):
         if self._z_data is None:
             z_coordinates = Series([base_z] * len(self._raw_data))
         else:
-            category_codes = sorted(self._z_data.unique().cast(pl.Categorical).to_physical())  # Sorted for consistency
+            category_names = sorted(self._z_data.unique().to_list())  # Sorted for consistency
             z_coordinates_map = pl.linear_space(
                 start=base_z,
                 end=-DEFAULT_MAX_DEPTH + DEFAULT_POINT_RADIUS,
-                num_samples=len(category_codes),
+                num_samples=len(category_names),
                 eager=True  # Returns a Series
-            ).alias('z_coordinates_map')
-            mapping_dict = dict(zip(category_codes, z_coordinates_map))
+            )
+            mapping_dict = dict(zip(category_names, z_coordinates_map))
             z_coordinates = self._z_data.replace(mapping_dict)
         return z_coordinates.alias('z_coordinates')
 
@@ -675,7 +673,7 @@ class PointChartCreator(ChartCreator):
             except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{y_field}".')
 
-        y_coordinates = self._set_y_coordinates(radius)
+        y_coordinates = self._set_y_coordinates()
 
         # Z-axis
         if self._encoding.get('z'):
@@ -784,7 +782,7 @@ class PointChartCreator(ChartCreator):
                 end=self._y_data.max(),
                 num_samples=Y_NUM_OF_TICKS,
                 eager=True  # Returns a Series
-            )
+            ).round(2)  # Round to the second decimal
 
             x_coords = Series(
                 name='x_coords',
