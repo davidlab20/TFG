@@ -107,12 +107,23 @@ class TestMarkArcOK(unittest.TestCase):
                 assert _all_theta_sum_is_360_degrees(pie_chart)
                 assert _slices_are_well_placed(pie_chart)
 
-    def test_position_rotation_radius_filter(self):
+    def test_aggregate(self):
+        """Pie chart changing aggregates creation."""
+
+        for a in AGGREGATES:
+            pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+                         .transform_aggregate(new_field=f'{a}(sales)'))
+            pie_chart.show()
+            assert _all_theta_sum_is_360_degrees(pie_chart)
+            assert _slices_are_well_placed(pie_chart)
+
+    def test_aggregate_position_rotation_radius_filter(self):
         """Pie chart changing position, rotation, radius and filter creation."""
 
-        for pos, rot, rad, fil in zip(POSITIONS, ROTATIONS, MARK_ARC_RADIUS, FILTER_EQUATIONS):
+        for agg, pos, rot, rad, fil in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_ARC_RADIUS, FILTER_EQUATIONS):
             pie_chart = (aframexr.Chart(DATA, position=pos, rotation=rot).mark_arc(radius=rad)
-                         .encode(color='model',theta='sales').transform_filter(fil))
+                         .encode(color='model',theta='sales').transform_filter(fil)
+                         .transform_aggregate(agg=f'{agg}(sales)'))
             pie_chart.show()
             assert _all_theta_sum_is_360_degrees(pie_chart)
             assert _slices_are_well_placed(pie_chart)

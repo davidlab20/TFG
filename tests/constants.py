@@ -3,6 +3,7 @@
 import pandas as pd
 
 from aframexr.api.data import URLData
+from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
 # ----- GENERAL -----
 # Data
@@ -11,6 +12,9 @@ LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV fil
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 DATA_FORMATS = [DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA]
+
+# Aggregates
+AGGREGATES = AVAILABLE_AGGREGATES
 
 # Methods
 MARK_METHODS = ['mark_arc', 'mark_bar', 'mark_gltf', 'mark_image', 'mark_point']
