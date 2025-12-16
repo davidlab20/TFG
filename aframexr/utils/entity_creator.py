@@ -13,7 +13,6 @@ from polars import DataFrame, Series
 
 from aframexr.utils.constants import *
 
-
 AXIS_DICT_TEMPLATE = {
     'x': {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': ''},
     'y': {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': ''},
@@ -207,10 +206,11 @@ class ArcChartCreator(ChartCreator):
         z_coordinates = pl.repeat(value=0, n=data_length).alias('z_coordinates')
 
         # Radius
-        radius = Series(
-            name='radius',
-            values=[self._radius] * data_length
-        )
+        radius = pl.repeat(
+            value=self._radius,
+            n=data_length,
+            eager=True  # Returns a Series
+        ).alias('radius')
 
         # Theta
         theta_field = self._encoding['theta']['field']
@@ -280,7 +280,11 @@ class BarChartCreator(ChartCreator):
         """Returns a Series of the height for each bar composing the bar chart."""
 
         if self._y_data is None:
-            heights = Series([DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS] * len(self._raw_data),)
+            heights = pl.repeat(
+                value=DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:
             max_value = self._y_data.max()
             heights = Series(self._y_data / max_value) * self._max_height
@@ -292,7 +296,11 @@ class BarChartCreator(ChartCreator):
         base_x = self._bar_width / 2  # Shift because of box creations
 
         if self._x_data is None:  # No field for x-axis
-            x_coordinates = Series([base_x] * len(self._raw_data))
+            x_coordinates = pl.repeat(
+                value=base_x,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:  # Field for x-axis
             x_coordinates = (
                     base_x + (
@@ -311,7 +319,11 @@ class BarChartCreator(ChartCreator):
         base_z = - DEFAULT_BAR_DEPTH / 2  # Shift because of box creations
 
         if self._z_data is None:
-            z_coordinates = Series([base_z] * len(self._raw_data))
+            z_coordinates = pl.repeat(
+                value=base_z,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:
             category_names = sorted(self._z_data.unique().to_list())  # Sorted for consistency
             z_coordinates_map = pl.linear_space(
@@ -413,14 +425,16 @@ class BarChartCreator(ChartCreator):
 
             # Axis labels
             x_coords = self._set_x_coordinates()  # X-axis value for each bar
-            y_coords = Series(
-                name='y_coords',
-                values=[LABELS_Y_DELTA] * len(self._x_data)
-            )
-            z_coords = Series(
-                name='z_coords',
-                values=[LABELS_Z_DELTA] * len(self._x_data)
-            )
+            y_coords = pl.repeat(
+                value=LABELS_Y_DELTA,
+                n=len(self._x_data),
+                eager=True  # Returns a Series
+            ).alias('y_coords')
+            z_coords = pl.repeat(
+                value=LABELS_Z_DELTA,
+                n=len(self._x_data),
+                eager=True  # Returns a Series
+            ).alias('z_coords')
             label_pos_series = pl.select(pl.concat_str(
                 [x_coords, y_coords, z_coords],
                 separator=' '
@@ -438,12 +452,12 @@ class BarChartCreator(ChartCreator):
             axis_specs['y']['end'] = f'0 {self._max_height} 0'
 
             # Axis labels
-            label_y_positions = pl.linear_space(  # Equally spaced values
+            y_coords = pl.linear_space(  # Equally spaced values
                 start=self._max_height / Y_NUM_OF_TICKS,  # The lower label does not start in the ground
                 end=self._max_height,
                 num_samples=Y_NUM_OF_TICKS,
                 eager=True  # Returns a Series
-            ).alias('label_y_positions')
+            ).alias('y_coords')
             label_values = pl.linear_space(  # Equally spaced values
                 start=self._y_data.max() / Y_NUM_OF_TICKS,
                 end=self._y_data.max(),
@@ -451,18 +465,16 @@ class BarChartCreator(ChartCreator):
                 eager=True  # Returns a Series
             ).round(2)  # Round to the second decimal
 
-            x_coords = pl.Series(
-                name='x_coords',
-                values=[Y_LABELS_X_DELTA] * Y_NUM_OF_TICKS
-            )
-            y_coords = Series(
-                name='y_coords',
-                values=label_y_positions
-            )
-            z_coords = Series(
-                name='z_coords',
-                values=[0] * Y_NUM_OF_TICKS
-            )
+            x_coords = pl.repeat(
+                value=Y_LABELS_X_DELTA,
+                n=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('x_coords')
+            z_coords = pl.repeat(
+                value=0,
+                n=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('z_coords')
             label_pos_series = pl.select(pl.concat_str(
                 [x_coords, y_coords, z_coords],
                 separator=' ',
@@ -482,13 +494,15 @@ class BarChartCreator(ChartCreator):
             # Axis labels
             categories = self._z_data.unique()
 
-            x_coords = Series(
-                name='x_coords',
-                values=[Z_LABELS_X_DELTA] * len(categories),
-            )
-            y_coords = Series(
-                name='y_coords',
-                values=[LABELS_Y_DELTA] * len(categories),
+            x_coords = pl.repeat(
+                value=Z_LABELS_X_DELTA,
+                n=len(categories),
+                eager=True  # Returns a Series
+            ).alias('x_coords')
+            y_coords = pl.repeat(
+                value=LABELS_Y_DELTA,
+                n=len(categories),
+                eager=True  # Returns a Series
             )
             z_coords = self._set_z_coordinates().unique()  # Z-axis coordinates for labels (aligned with bar centers)
             label_pos_series = pl.select(pl.concat_str(
@@ -594,7 +608,11 @@ class PointChartCreator(ChartCreator):
 
         base_x = points_radius.item(0)  # Take the radius of the first element so the chart starts in the base position
         if self._x_data is None:
-            x_coordinates = Series([base_x] * len(self._raw_data))
+            x_coordinates = pl.repeat(
+                value=base_x,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:
             x_coordinates = (
                     base_x + (
@@ -611,7 +629,11 @@ class PointChartCreator(ChartCreator):
         """Returns a Series of the y coordinates for each point composing the point chart."""
 
         if self._y_data is None:
-            y_coordinates = Series([0] * len(self._raw_data))
+            y_coordinates = pl.repeat(
+                value=0,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:
             max_value = self._y_data.max()  # Proportional heights of the data
             y_coordinates = (self._y_data / max_value) * self._height  # Series of y-axis coordinates
@@ -623,7 +645,11 @@ class PointChartCreator(ChartCreator):
         base_z = -DEFAULT_POINT_RADIUS
 
         if self._z_data is None:
-            z_coordinates = Series([base_z] * len(self._raw_data))
+            z_coordinates = pl.repeat(
+                value=base_z,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
         else:
             category_names = sorted(self._z_data.unique().to_list())  # Sorted for consistency
             z_coordinates_map = pl.linear_space(
@@ -643,7 +669,11 @@ class PointChartCreator(ChartCreator):
             return []
 
         # X-axis
-        radius = Series([self._max_radius] * len(self._raw_data))
+        radius = pl.repeat(
+            value=self._max_radius,
+            n=len(self._raw_data),
+            eager=True  # Returns a Series
+        ).alias('radius')
 
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']
@@ -695,7 +725,11 @@ class PointChartCreator(ChartCreator):
 
             colors = self._set_points_colors()
         else:  # Bubbles plot (same color for all points)
-            colors = Series([DEFAULT_POINT_COLOR] * len(self._raw_data))
+            colors = pl.repeat(
+                value=DEFAULT_POINT_COLOR,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            ).alias('color')
 
         # Id
         ids_series = []
@@ -743,17 +777,23 @@ class PointChartCreator(ChartCreator):
             if self._size_data is not None:  # Bubbles plot (the size of the point depends on the value of the field)
                 radius = self._set_points_radius()
             else:  # Scatter plot (same radius for all points)
-                radius = Series([self._max_radius] * len(self._raw_data))
+                radius = pl.repeat(
+                    value=self._max_radius,
+                    n=len(self._raw_data),
+                    eager=True  # Returns a Series
+                ).alias('radius')
 
             x_coords = self._set_x_coordinates(radius)  # X-axis value for each point
-            y_coords = Series(
-                name='y_coords',
-                values=[LABELS_Y_DELTA] * len(self._raw_data)
-            )
-            z_coords = Series(
-                name='z_coords',
-                values=[LABELS_Z_DELTA] * len(self._raw_data)
-            )
+            y_coords = pl.repeat(
+                value=LABELS_Y_DELTA,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            ).alias('y_coords')
+            z_coords = pl.repeat(
+                value=LABELS_Z_DELTA,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            ).alias('z_coords')
             label_pos_series = pl.select(pl.concat_str(
                 [x_coords, y_coords, z_coords],
                 separator=' '
@@ -784,14 +824,16 @@ class PointChartCreator(ChartCreator):
                 eager=True  # Returns a Series
             ).round(2)  # Round to the second decimal
 
-            x_coords = Series(
-                name='x_coords',
-                values=[Y_LABELS_X_DELTA] * Y_NUM_OF_TICKS
-            )
-            z_coords = Series(
-                name='z_coords',
-                values=[0] * Y_NUM_OF_TICKS
-            )
+            x_coords = pl.repeat(
+                value=Y_LABELS_X_DELTA,
+                n=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('x_coords')
+            z_coords = pl.repeat(
+                value=0,
+                n=Y_NUM_OF_TICKS,
+                eager=True  # Returns a Series
+            ).alias('z_coords')
             label_pos_series = pl.select(pl.concat_str(
                 [x_coords, y_coords, z_coords],
                 separator=' '
@@ -811,14 +853,16 @@ class PointChartCreator(ChartCreator):
             # Axis labels
             categories = self._z_data.unique()
 
-            x_coords = Series(
-                name='x_coords',
-                values=[Z_LABELS_X_DELTA] * len(categories),
-            )
-            y_coords = Series(
-                name='y_coords',
-                values=[LABELS_Y_DELTA] * len(categories),
-            )
+            x_coords = pl.repeat(
+                value=Z_LABELS_X_DELTA,
+                n=len(categories),
+                eager=True  # Returns a Series
+            ).alias('x_coords')
+            y_coords = pl.repeat(
+                value=LABELS_Y_DELTA,
+                n=len(categories),
+                eager=True  # Returns a Series
+            ).alias('y_coords')
             z_coords = self._set_z_coordinates().unique()  # Z-axis coordinates for labels (aligned with centers)
             label_pos_series = pl.select(pl.concat_str(
                 [x_coords, y_coords, z_coords],
