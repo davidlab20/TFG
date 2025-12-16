@@ -4,7 +4,6 @@ on:
     paths:  # Deploy when they are changes on ...
       - '.github/workflows/deploy.yml'  # This file
       - 'docs/**'  # Any file in docs/
-      - '!docs/scripts/**'  # Except directory scripts in docs/
       - 'pyproject.toml'  # A new version of aframexr is released (to update notebooks)
   workflow_dispatch:
 
