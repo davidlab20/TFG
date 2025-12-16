@@ -21,7 +21,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         {elements}
         
         <!-- Variable label -->
-        <a-plane id="plainLabel" position="" height="1.75" width="3.75" visible="false"></a-plane>
+        <a-plane id="plainLabel" position="" height="1.75" width="3.75" side="double" shader="flat" visible="false"></a-plane>
         <a-text id="label" position="" value="" scale="2 2 2" visible="false"></a-text>
     </a-scene>
 </body>
