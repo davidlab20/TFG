@@ -1,5 +1,4 @@
 # Requirements for users
 
-numpy>=2.3.0
 polars>=1.36.0
 marimo>=0.18.0
