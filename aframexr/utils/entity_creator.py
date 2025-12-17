@@ -630,7 +630,7 @@ class PointChartCreator(ChartCreator):
 
         if self._y_data is None:
             y_coordinates = pl.repeat(
-                value=0,
+                value=self._max_radius,
                 n=len(self._raw_data),
                 eager=True  # Returns a Series
             )
