@@ -148,6 +148,13 @@ class ChartCreator:
             raise ValueError(f'Invalid chart type: {chart_type}.')
         return CREATOR_MAP[chart_type](chart_specs)
 
+    @staticmethod
+    def get_axis_specs():
+        """Returns a dictionary with the specifications for each axis of the charts that does not have an axis."""
+
+        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
+        return axis_specs
+
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
 
@@ -249,11 +256,7 @@ class ArcChartCreator(ChartCreator):
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
-    def get_axis_specs(self) -> dict:
-        """Returns a dictionary with the specifications for each axis of the chart."""
-
-        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
-        return axis_specs  # Arc chart have no axis
+    # Using get_axis_specs from ChartCreator
 
 
 class BarChartCreator(ChartCreator):
@@ -531,11 +534,7 @@ class GLTFModelCreator(ChartCreator):
 
         return [{'src': self._url, 'scale': self._scale}]
 
-    def get_axis_specs(self) -> dict:
-        """Returns a dictionary with the specifications for each axis of the chart."""
-
-        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
-        return axis_specs  # GLTF models have no axis
+    # Using get_axis_specs from ChartCreator
 
 
 class ImageCreator(ChartCreator):
@@ -554,11 +553,7 @@ class ImageCreator(ChartCreator):
 
         return [{'src': self._url, 'width': self._width, 'height': self._height}]
 
-    def get_axis_specs(self) -> dict:
-        """Returns a dictionary with the specifications for each axis of the chart."""
-
-        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
-        return axis_specs  # Images have no axis
+    # Using get_axis_specs from ChartCreator
 
 
 class PointChartCreator(ChartCreator):
