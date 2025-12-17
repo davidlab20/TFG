@@ -682,16 +682,16 @@ class PointChartCreator(ChartCreator):
             except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{x_field}".')
 
-            if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
-                size_field = self._encoding['size']['field']
-                try:
-                    self._size_data = self._raw_data[size_field]
-                except pl.exceptions.ColumnNotFoundError:
-                    raise KeyError(f'Data has no field "{size_field}".')
+        if self._encoding.get('size'):  # Bubbles plot (the size of the point depends on the value of the field)
+            size_field = self._encoding['size']['field']
+            try:
+                self._size_data = self._raw_data[size_field]
+            except pl.exceptions.ColumnNotFoundError:
+                raise KeyError(f'Data has no field "{size_field}".')
 
-                radius = self._set_points_radius()
-            else:  # Scatter plot (same radius for all points)
-                pass
+            radius = self._set_points_radius()
+        else:  # Scatter plot (same radius for all points)
+            pass
 
         x_coordinates = self._set_x_coordinates(radius)
 
