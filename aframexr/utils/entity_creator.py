@@ -187,8 +187,9 @@ class ArcChartCreator(ChartCreator):
     def _set_elements_theta(self) -> tuple[Series, Series]:
         """Returns a tuple with a Series storing the theta start of each element, and another storing theta length."""
 
-        sum_data = self._theta_data.sum()  # Sum all the values
-        theta_length = Series((self._theta_data / sum_data) * 360)  # Series of theta lengths (in degrees)
+        abs_theta_data = self._theta_data.abs()
+        sum_data = abs_theta_data.sum()  # Sum all the values
+        theta_length = Series((abs_theta_data / sum_data) * 360)  # Series of theta lengths (in degrees)
         theta_start = theta_length.cum_sum().shift(1).fill_null(0)  # Accumulative sum (first value is 0)
         return theta_start.alias('theta_start'), theta_length.alias('theta_length')
 
@@ -377,6 +378,7 @@ class BarChartCreator(ChartCreator):
 
         bar_heights = self._set_bars_heights()  # Series of the height for each bar
         y_coordinates = bar_heights / 2  # Y-axis coordinates is the height of the bar / 2 (because of box creation)
+        bar_heights = bar_heights.abs()  # Use absolute value in case of negative values (for visualization)
 
         z_coordinates = self._set_z_coordinates()
 
