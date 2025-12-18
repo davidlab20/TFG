@@ -104,7 +104,7 @@ class TopLevelMixin:
         return chart
 
     # Exporting charts
-    def save(self, fp: str, fileFormat: Literal['json', 'html'] = None):
+    def save(self, fp: str, file_format: Literal['json', 'html'] = None):
         """
         Saves the chart into a file, supported formats are JSON and HTML.
 
@@ -112,21 +112,21 @@ class TopLevelMixin:
         ----------
         fp : str
             File path.
-        fileFormat : str (optional)
+        file_format : str (optional)
             Format of the file could be ['html', 'json'].
             If no format is specified, the chart will be saved depending on the file extension.
 
         Raises
         ------
         ValueError
-            If fileFormat is invalid.
+            If file_format is invalid.
         """
 
         AframeXRValidator.validate_type(fp, str)
-        if fileFormat == 'html' or fp.endswith('.html'):
+        if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
                 file.write(self.to_html())
-        elif fileFormat == 'json' or fp.endswith('.json'):
+        elif file_format == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
                 json.dump(self._specifications, file, indent=4)
         else:
@@ -432,7 +432,7 @@ class Chart(TopLevelMixin):
                    rotation: str = ''):
         """Modify general properties of the chart."""
 
-        if data: self._define_data(data)
+        if data is not None: self._define_data(data)
         if position: self._define_position(position)
         if rotation: self._define_rotation(rotation)
 
