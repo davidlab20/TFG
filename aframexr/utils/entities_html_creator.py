@@ -41,7 +41,7 @@ class ChartsHTMLCreator:
         for element in elements_specs:
             chart_html += '\t\t\t' + base_html.format(**element) + '\n'  # Tabulate the lines (better visualization)
 
-        # Axis HTML
+        """# Axis HTML
         axis_specs = chart_object.get_axis_specs()
 
         for ax in axis_specs:
@@ -53,7 +53,7 @@ class ChartsHTMLCreator:
                 label_pos = axis_specs[ax]['labels_pos'][label]
                 label_rotation = axis_specs[ax]['labels_rotation']
                 label_value = axis_specs[ax]['labels_values'][label]
-                chart_html += '\t\t\t' + AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n'
+                chart_html += '\t\t\t' + AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n'"""
 
         # Close the group
         chart_html += '\t\t</a-entity>\n\t\t'

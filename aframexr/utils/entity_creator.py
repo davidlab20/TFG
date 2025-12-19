@@ -23,6 +23,17 @@ AXIS_DICT_TEMPLATE = {
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}
 """Group dictionary template for group base specifications creation."""
 
+def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
+    """Translates and returns the encoding for a given data type."""
+
+    if dtype.is_numeric():
+        encoding_type = 'quantitative'
+    elif dtype in (pl.String, pl.Categorical):
+        encoding_type = 'nominal'
+    else:
+        raise ValueError(f'Unknown dtype: {dtype}.')
+    return encoding_type
+
 
 def _get_data_from_url(url: str) -> DataFrame:
     """Loads the data from the URL (could be a local path) and returns it as a DataFrame."""
@@ -270,8 +281,11 @@ class BarChartCreator(ChartCreator):
             if isinstance(chart_specs['mark'], dict) else DEFAULT_BAR_WIDTH
         self._max_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the bar chart
         self._x_data: Series | None = None
+        self._x_encoding: str = ''
         self._y_data: Series | None = None
+        self._y_encoding: str = ''
         self._z_data: Series | None = None
+        self._z_encoding: str = ''
 
     def _set_bars_colors(self) -> Series:
         """Returns a Series of the color for each bar composing the bar chart."""
@@ -280,65 +294,135 @@ class BarChartCreator(ChartCreator):
         bars_colors = Series(islice(colors, len(self._raw_data)))  # Take len(self._raw_data) colors from the cycle
         return bars_colors.alias('color')
 
-    def _set_bars_heights(self) -> Series:
-        """Returns a Series of the height for each bar composing the bar chart."""
+    @staticmethod
+    def _set_coordinates_for_quantitative_axis(axis_data: Series, max_size: float) -> Series:
+        if axis_data.dtype == pl.String:
+            axis_data = axis_data.cast(pl.Categorical).to_physical()
+
+        max_value, min_value = axis_data.max(), axis_data.min()  # For proportions
+        range_value = max_value - min_value  # Range (positive value)
+        if range_value == 0:  # All the values are the same
+            return pl.repeat(
+                value=max_size / 2,  # Divided by 2 because of bars creation
+                n=len(axis_data),
+                eager=True  # Returns a Series
+            )
+
+        if max_value < 0:  # All data is negative
+            scale_factor = max_size / -min_value
+        elif min_value > 0:  # All data is positive
+            scale_factor = max_size / max_value
+        else:  # Positive and negative data
+            scale_factor = max_size / range_value
+        return axis_data * scale_factor / 2  # Divided by 2 because of elements creation
+
+    @staticmethod
+    def _set_coordinates_for_nominal_axis(axis_data: Series, step: float) -> Series:
+        base = step / 2  # Shift because of box creations
+        category_codes = axis_data.cast(pl.String).cast(pl.Categorical).to_physical()  # Codes (0, 1, 2, ..., len(axis_data) - 1)
+        return base + (step * category_codes)
+
+    def _set_x_coords_and_widths(self) -> tuple[Series, Series]:
+        """
+        Returns a tuple of Series for the x-axis:
+        One for the x coordinates of each bar composing the bar chart.
+        One for the widths of each bar composing the bar chart.
+        """
+
+        if self._x_data is None:
+            x_coordinates = pl.repeat(
+                value=self._bar_width / 2,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
+            bars_widths = pl.repeat(
+                value=self._bar_width,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
+        else:
+            if self._x_encoding == 'quantitative':
+                max_size = DEFAULT_MAX_HEIGHT  # TODO --> CAMBIAR POR UNA CONSTANTE BUENA (UN DEFAULT MAX WIDTH O ASI)
+                x_coordinates = self._set_coordinates_for_quantitative_axis(self._x_data, max_size)
+                bars_widths = 2 * x_coordinates.abs()
+            elif self._x_encoding == 'nominal':
+                step = self._bar_width  # TODO --> SE PUEDE AÑADIR ESPACIO ENTRE BARRAS SUMANDO AQUI EL VALOR
+                x_coordinates = self._set_coordinates_for_nominal_axis(self._x_data, step)
+                bars_widths = pl.repeat(
+                    value=self._bar_width,
+                    n=self._x_data.len(),
+                    eager=True  # Returns a Series
+                )
+            else:
+                raise ValueError(f'Invalid encoding type: {self._x_encoding}.')
+        return x_coordinates.alias('x_coordinates'), bars_widths.alias('width')
+
+    def _set_y_coords_and_heights(self) -> tuple[Series, Series]:
+        """
+        Returns a tuple of Series for the y-axis:
+        One for the y coordinates of each bar composing the bar chart.
+        One for the heights of each bar composing the bar chart.
+        """
 
         if self._y_data is None:
-            heights = pl.repeat(
+            y_coordinates = pl.repeat(
+                value=DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS / 2,  # Divided by 2 because of bars creation
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
+            bars_heights = pl.repeat(
                 value=DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS,
                 n=len(self._raw_data),
                 eager=True  # Returns a Series
             )
         else:
-            max_value = self._y_data.max()
-            heights = Series(self._y_data / max_value) * self._max_height
-        return heights.alias('height')
+            if self._y_encoding == 'quantitative':
+                y_coordinates = self._set_coordinates_for_quantitative_axis(self._y_data, self._max_height)
+                bars_heights = 2 * y_coordinates.abs()
+            elif self._y_encoding == 'nominal':
+                step = self._max_height / self._y_data.len()
+                y_coordinates = self._set_coordinates_for_nominal_axis(self._y_data, step)
+                bars_heights = pl.repeat(
+                    value=step,
+                    n=self._y_data.len(),
+                    eager=True  # Returns a Series
+                )
+            else:
+                raise ValueError(f'Invalid encoding type: {self._y_encoding}.')
+        return y_coordinates.alias('y_coordinates'), bars_heights.alias('height')
 
-    def _set_x_coordinates(self) -> Series:
-        """Returns a Series of the x coordinates for each bar composing the bar chart."""
-
-        base_x = self._bar_width / 2  # Shift because of box creations
-
-        if self._x_data is None:  # No field for x-axis
-            x_coordinates = pl.repeat(
-                value=base_x,
-                n=len(self._raw_data),
-                eager=True  # Returns a Series
-            )
-        else:  # Field for x-axis
-            x_coordinates = (
-                    base_x + (
-                    pl.int_range(
-                        start=0,
-                        end=len(self._x_data),
-                        step=1,
-                        eager=True  # Returns a Series
-                    ) * self._bar_width)
-            )
-        return x_coordinates.alias('x_coordinates')
-
-    def _set_z_coordinates(self) -> Series:
-        """Returns a Series of the z coordinates for each bar composing the bar chart."""
-
-        base_z = - DEFAULT_BAR_DEPTH / 2  # Shift because of box creations
+    def _set_z_coords_and_depths(self) -> tuple[Series, Series]:
+        """
+        Returns a tuple of Series for the z-axis:
+        One for the z coordinates of each bar composing the bar chart.
+        One for the depths of each bar composing the bar chart.
+        """
 
         if self._z_data is None:
             z_coordinates = pl.repeat(
-                value=base_z,
+                value=DEFAULT_BAR_DEPTH / 2,
+                n=len(self._raw_data),
+                eager=True  # Returns a Series
+            )
+            bars_depths = pl.repeat(
+                value=DEFAULT_BAR_DEPTH,
                 n=len(self._raw_data),
                 eager=True  # Returns a Series
             )
         else:
-            category_names = sorted(self._z_data.unique().to_list())  # Sorted for consistency
-            z_coordinates_map = pl.linear_space(
-                start=base_z,
-                end=-DEFAULT_MAX_DEPTH + DEFAULT_POINT_RADIUS,
-                num_samples=len(category_names),
-                eager=True  # Returns a Series
-            )
-            mapping_dict = dict(zip(category_names, z_coordinates_map))
-            z_coordinates = self._z_data.replace(mapping_dict)
-        return z_coordinates.alias("z_coordinates")
+            if self._z_encoding == 'quantitative':
+                z_coordinates = self._set_coordinates_for_quantitative_axis(self._z_data, DEFAULT_MAX_DEPTH)
+                bars_depths = 2 * z_coordinates.abs()
+            elif self._z_encoding == 'nominal':
+                z_coordinates = self._set_coordinates_for_nominal_axis(self._z_data, DEFAULT_BAR_DEPTH)
+                bars_depths = pl.repeat(
+                    value=DEFAULT_BAR_DEPTH,
+                    n=self._z_data.len(),
+                    eager=True  # Returns a Series
+                )
+            else:
+                raise ValueError(f'Invalid encoding type: {self._z_encoding}.')
+        return z_coordinates.alias('z_coordinates'), bars_depths.alias('depth')
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
@@ -346,41 +430,67 @@ class BarChartCreator(ChartCreator):
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
+        from aframexr import AframeXRValidator  # To avoid circular import
+
         # X-axis
         if self._encoding.get('x'):
             x_field = self._encoding['x']['field']  # Field of the x-axis
             try:
                 self._x_data = self._raw_data[x_field]
+
+                detected_x_encoding = _translate_dtype_into_encoding(self._x_data.dtype)
+                self._x_encoding = self._encoding['x'].get('type', detected_x_encoding)
+
+                AframeXRValidator.compare_user_encoding_detected_encoding(
+                    axis_name='x',
+                    user_encoding=self._x_encoding,
+                    detected_encoding=detected_x_encoding
+                )
             except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{x_field}".')
+
+        x_coordinates, bar_widths = self._set_x_coords_and_widths()
+        x_coordinates = x_coordinates + 2 * abs(x_coordinates.min()) if x_coordinates.min() < 0 else x_coordinates
 
         # Y-axis
         if self._encoding.get('y'):
             y_field = self._encoding['y']['field']  # Field of the y-axis
             try:
                 self._y_data = self._raw_data[y_field]
+
+                detected_y_encoding = _translate_dtype_into_encoding(self._y_data.dtype)
+                self._y_encoding = self._encoding['y'].get('type', detected_y_encoding)
+
+                AframeXRValidator.compare_user_encoding_detected_encoding(
+                    axis_name='y',
+                    user_encoding=self._y_encoding,
+                    detected_encoding=detected_y_encoding
+                )
             except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{y_field}".')
+
+        y_coordinates, bar_heights = self._set_y_coords_and_heights()
+        y_coordinates = y_coordinates + 2 * abs(y_coordinates.min()) if y_coordinates.min() < 0 else y_coordinates
 
         # Z-axis
         if self._encoding.get('z'):
             z_field = self._encoding['z']['field']  # Field of the z-axis
             try:
                 self._z_data = self._raw_data[z_field]
+                detected_z_encoding = _translate_dtype_into_encoding(self._z_data.dtype)
+                self._z_encoding = self._encoding['z'].get('type', _translate_dtype_into_encoding(self._z_data.dtype))
+
+                AframeXRValidator.compare_user_encoding_detected_encoding(
+                    axis_name='z',
+                    user_encoding=self._z_encoding,
+                    detected_encoding=detected_z_encoding
+                )
             except pl.exceptions.ColumnNotFoundError:
                 raise KeyError(f'Data has no field "{z_field}".')
 
-        bar_widths = Series(  # Series of self._bar_width values
-            name='width',
-            values=[self._bar_width] * len(self._raw_data),
-        )
-        x_coordinates = self._set_x_coordinates()  # X-axis coordinate for each bar
-
-        bar_heights = self._set_bars_heights()  # Series of the height for each bar
-        y_coordinates = bar_heights / 2  # Y-axis coordinates is the height of the bar / 2 (because of box creation)
-        bar_heights = bar_heights.abs()  # Use absolute value in case of negative values (for visualization)
-
-        z_coordinates = self._set_z_coordinates()
+        z_coordinates, bar_depths = self._set_z_coords_and_depths()
+        z_coordinates = z_coordinates + 2 * abs(z_coordinates.min()) if z_coordinates.min() < 0 else z_coordinates
+        z_coordinates = -z_coordinates  # Invert the coordinates to do deep
 
         # Color
         colors = self._set_bars_colors()
