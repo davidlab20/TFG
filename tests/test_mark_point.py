@@ -84,7 +84,7 @@ class TestMarkPointOK(unittest.TestCase):
         """Mark point changing height creation."""
 
         for h in MARK_BAR_POINT_HEIGHTS:
-            point_chart = aframexr.Chart(DATA).mark_point(height=h).encode(x='model', y='sales')
+            point_chart = aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
 
@@ -119,7 +119,7 @@ class TestMarkPointOK(unittest.TestCase):
 
         for a, p, r, s, h, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS,
                                        MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
-            point_chart = (aframexr.Chart(DATA, position=p, rotation=r).mark_point(size=s, height=h).encode(**e)
+            point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_point(size=s).encode(**e)
                            .transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
@@ -129,7 +129,7 @@ class TestMarkPointOK(unittest.TestCase):
 
         for p, r, s, h, e, f in zip(POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS,
                                     MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
-            point_chart = (aframexr.Chart(DATA, position=p, rotation=r).mark_point(size=s, height=h).encode(**e)
+            point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_point(size=s).encode(**e)
                            .transform_filter(f))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
@@ -177,7 +177,7 @@ class TestMarkPointError(unittest.TestCase):
 
         for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS:
             with self.assertRaises(ValueError) as error:
-                aframexr.Chart(DATA).mark_point(height=h).encode(x='model', y='sales')
+                aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             assert str(error.exception) == 'The height must be greater than 0.'
 
     def test_encoding_error(self):
