@@ -1,44 +1,28 @@
 // Wait for the scene content to load completely
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
-	const labelInfo = document.getElementById('labelInfo')
-	const textLabel = document.getElementById('textLabel')
-
-	// Offsets
-	const OFFSETS = {
-		PLAIN_Y: 2.25,
-        PLAIN_Z: 1.1,
-    };
+	const HUD = document.getElementById('HUD')
+	const HUDText = document.getElementById('HUD-text')
 
 	// Display information about the element
 	function displayInfo(event) {
 		const targetElement = event.target;
 
-	    const objectPosition = new THREE.Vector3();
-		objectPosition.setFromMatrixPosition(targetElement.object3D.matrixWorld);
-
 	    event.target.setAttribute('scale', '1.1 1.1 1.1');  // Size the scale up
-
-	    const labelInfoPos = {
-            x: objectPosition.x,
-            y: objectPosition.y + OFFSETS.PLAIN_Y,
-            z: objectPosition.z + OFFSETS.PLAIN_Z
-        };
 
         const value = event.target.getAttribute('id')
 
-		// Update label info attributes
-        labelInfo.setAttribute('position', labelInfoPos);
-        labelInfo.setAttribute('visible', 'true')
+		// Update HUD attributes
+        HUD.setAttribute('visible', 'true')
 
-	    // Update text label attributes
-        textLabel.setAttribute('value', value);
+	    // Update HUD text attributes
+        HUDText.setAttribute('value', value);
 	}
 
 	// Set the element to its original state
 	function returnToOriginal(event) {
 	    event.target.setAttribute('scale', '1 1 1');
-	    labelInfo.setAttribute('visible', 'false');  // Hide label info
+	    HUD.setAttribute('visible', 'false');  // Hide HUD display
 	}
 
     const interactiveElements = document.querySelectorAll('a-box, a-cylinder, a-sphere');

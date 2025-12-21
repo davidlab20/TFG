@@ -218,12 +218,23 @@ class Chart(TopLevelMixin):
         return self
 
     def __init__(self, data: Data | URLData | DataFrame = None, position: str = DEFAULT_CHART_POS,
-                 rotation: str = DEFAULT_CHART_ROTATION):
+                 rotation: str = DEFAULT_CHART_ROTATION, height: float = DEFAULT_MAX_HEIGHT,
+                 width: float = DEFAULT_MAX_WIDTH):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
         self._define_position(position)
         self._define_rotation(rotation)
+
+        AframeXRValidator.validate_type(height, Union[float | int])
+        AframeXRValidator.validate_type(width, Union[float | int])
+
+        if height <= 0:
+            raise ValueError('The width must be greater than 0.')
+        self._specifications.update({'height': height})
+        if width <= 0:
+            raise ValueError('The width must be greater than 0.')
+        self._specifications.update({'width': width})
 
     # Types of charts
     def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
@@ -245,7 +256,7 @@ class Chart(TopLevelMixin):
         self._specifications['mark'].update({'radius': radius})
         return self
 
-    def mark_bar(self, size: float = DEFAULT_BAR_WIDTH, height: float = DEFAULT_MAX_HEIGHT):
+    def mark_bar(self, size: float = DEFAULT_BAR_AXIS_SIZE):
         """
         Bars chart.
 
@@ -253,21 +264,15 @@ class Chart(TopLevelMixin):
         ----------
         size : float (optional)
             Width of the bars. If not specified, using default. Must be greater than 0.
-        height : float (optional)
-            Maximum height of the chart (the highest bar). If not specified, using default. Must be greater than 0.
         """
 
         AframeXRValidator.validate_type(size, Union[float | int])
-        AframeXRValidator.validate_type(height, Union[float | int])
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'bar'}})
         if size <= 0:
             raise ValueError('The size must be greater than 0.')
-        self._specifications['mark'].update({'width': size})
-        if height <= 0:
-            raise ValueError('The height must be greater than 0.')
-        self._specifications.update({'height': height})
+        self._specifications['mark'].update({'size': size})
         return self
 
     def mark_gltf(self, scale: str = DEFAULT_GLTF_SCALE):
@@ -323,7 +328,7 @@ class Chart(TopLevelMixin):
         self._specifications['mark'].update({'height': height})
         return self
 
-    def mark_point(self, size: float = DEFAULT_POINT_RADIUS, height: float = DEFAULT_MAX_HEIGHT):
+    def mark_point(self, size: float = DEFAULT_POINT_RADIUS):
         """
         Scatter plot and bubble chart.
 
@@ -331,8 +336,6 @@ class Chart(TopLevelMixin):
         ----------
         size : float (optional)
             Maximum radius of the point. If not specified, using default. Must be greater than 0.
-        height : float (optional)
-            Maximum height of the chart. If not specified, using default. Must be greater than 0.
 
         Raises
         ------
@@ -341,16 +344,12 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(size, Union[float | int])
-        AframeXRValidator.validate_type(height, Union[float | int])
         AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'point'}})
         if size <= 0:
             raise ValueError('The size must be greater than 0.')
         self._specifications['mark'].update({'max_radius': size})
-        if height <= 0:
-            raise ValueError('The height must be greater than 0.')
-        self._specifications.update({'height': height})
         return self
 
     # Parameters of the chart

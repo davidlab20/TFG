@@ -4,18 +4,20 @@
 AVAILABLE_AGGREGATES = ('count', 'max', 'median', 'mean', 'min', 'std', 'sum', 'var')
 AVAILABLE_COLORS = ('red', 'green', 'blue', 'yellow', 'magenta', 'cyan')
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
-Y_LABELS_X_DELTA = -1.75  # Variation in the x-axis between the labels and the axis (add to y-axis pos for label pos)
-Z_LABELS_X_DELTA = -3  # Variation in the x-axis between the labels and the axis (add to z-axis pos for label pos)
-LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
-LABELS_Z_DELTA = 1  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
-Y_NUM_OF_TICKS = 5  # Number of ticks in the y-axis
+
+START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
+X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
+LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
+LABELS_Y_DELTA = 0  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
+
+NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
 # ----- TEMPLATES -----
 CHART_TEMPLATES = {
     'arc': ('<a-cylinder id="{id}" position="{pos}" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}" data-raycastable></a-cylinder>'),
-    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" '
-            'material="color: {color}" data-raycastable></a-box>'),
+    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" material="color: {color}" '
+            'depth="{depth}" data-raycastable></a-box>'),
     'point': ('<a-sphere id="{id}" position="{pos}" radius="{radius}" material="color: {color}" data-raycastable>'
              '</a-sphere>')
 }
@@ -31,11 +33,10 @@ DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
 DEFAULT_CHART_ROTATION = '0 0 0'  # Default chart rotation
 DEFAULT_MAX_DEPTH = 10  # Default maximum depth of the chart
 DEFAULT_MAX_HEIGHT = 10  # Default maximum height of the chart
+DEFAULT_MAX_WIDTH = 10  # Default maximum width of the chart
 
 # Bar chart
-DEFAULT_BAR_DEPTH = 1  # Default bar depth
-DEFAULT_BAR_HEIGHT_WHEN_NO_Y_AXIS = 1  # Default bar height (if not field for y-axis specified)
-DEFAULT_BAR_WIDTH = 1  # Default bar width
+DEFAULT_BAR_AXIS_SIZE = 1  # Default bar size in the nominal axes and in the axis that are not defined.
 
 # Pie chart
 DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
@@ -50,6 +51,7 @@ DEFAULT_IMAGE_HEIGHT = 1  # Default height of the image
 DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 
 # Point chart
-DEFAULT_POINT_RADIUS = 1  # Default point radius
-DEFAULT_POINT_X_SEPARATION = 2  # Default horizontal separation between points
 DEFAULT_POINT_COLOR = "blue"  # Default point color
+DEFAULT_POINT_HEIGHT_WHEN_NO_Y_AXIS = 2  # Default point height (if not field for y-axis specified)
+DEFAULT_POINT_RADIUS = 1  # Default point radius
+DEFAULT_POINT_CENTER_SEPARATION = 2  # Default separation between points' center
