@@ -677,7 +677,7 @@ class PointChartCreator(XYZAxisDataChartCreator):
         if self._color_data is None:
             raise Exception('Should never enter here.')
 
-        category_codes = self._color_data.unique(mantain_order=True).to_list()
+        category_codes = self._color_data.unique(maintain_order=True).to_list()
         mapping_dict = dict(zip(
             category_codes,  # Dict keys
             list(islice(  # Dict values
