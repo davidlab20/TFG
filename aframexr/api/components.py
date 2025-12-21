@@ -248,7 +248,6 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(radius, Union[float | int])
-        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'arc'}})
         if radius <= 0:
@@ -267,7 +266,6 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(size, Union[float | int])
-        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'bar'}})
         if size <= 0:
@@ -292,7 +290,6 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(scale, str)
-        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'gltf'}})
         self._specifications['mark'].update({'scale': scale})
@@ -317,7 +314,6 @@ class Chart(TopLevelMixin):
 
         AframeXRValidator.validate_type(width, Union[float | int])
         AframeXRValidator.validate_type(height, Union[float | int])
-        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'image'}})
         if width <= 0:
@@ -344,7 +340,6 @@ class Chart(TopLevelMixin):
         """
 
         AframeXRValidator.validate_type(size, Union[float | int])
-        AframeXRValidator.validate_there_are_no_charts_defined(self._specifications)
 
         self._specifications.update({'mark': {'type': 'point'}})
         if size <= 0:

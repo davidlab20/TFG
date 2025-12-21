@@ -57,13 +57,6 @@ class AframeXRValidator:
             raise ValueError(f'Invalid encoding type: {encoding_type}.')
 
     @staticmethod
-    def validate_there_are_no_charts_defined(chart_specs: dict) -> None:
-        """Raises ValueError if there is a chart defined in the specifications."""
-
-        if chart_specs.get('mark') is not None:  # There is one chart defined already
-            raise ValueError('Trying to mark a chart already defined in the specifications.')
-
-    @staticmethod
     def validate_type(param, types: Union[type]) -> None:
         """Raises TypeError if type(param) is not in types."""
 
