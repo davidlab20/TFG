@@ -80,8 +80,10 @@ class ChartsHTMLCreator:
         """
 
         charts_html = ''
-        if specs.get('concat'):  # The scene has more than one chart
-            for chart in specs.get('concat'):
+
+        charts_list = specs.get('concat') or specs.get('layer')  # Charts could be concatenated using layer
+        if charts_list:  # The scene has more than one chart
+            for chart in charts_list:
                 charts_html += ChartsHTMLCreator._create_simple_chart_html(chart) + '\n\t\t'  # Tabulate (visualization)
         else:  # The scene has only one chart
             charts_html = ChartsHTMLCreator._create_simple_chart_html(specs)
