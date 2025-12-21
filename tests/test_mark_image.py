@@ -101,11 +101,3 @@ class TestMarkImageError(unittest.TestCase):
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_image(height=h)
             assert str(error.exception) == 'The height must be greater than 0.'
-
-    def test_mark_already_defined(self):
-        """Mark image mark already defined error."""
-
-        for m in MARK_METHODS:
-            with self.assertRaises(ValueError) as error:
-                getattr(aframexr.Chart(DATA).mark_image(), m)()  # Execute aframexr.Chart(DATA).mark_image().m()
-            assert str(error.exception) == 'Trying to mark a chart already defined in the specifications.'

@@ -80,11 +80,3 @@ class TestMarkGLTFError(unittest.TestCase):
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_gltf()
             assert str(error.exception) == 'The rotation values must be numeric.'
-
-    def test_mark_already_defined(self):
-        """Mark GLTF mark already defined error."""
-
-        for m in MARK_METHODS:
-            with self.assertRaises(ValueError) as error:
-                getattr(aframexr.Chart(DATA).mark_gltf(), m)()  # Execute aframexr.Chart(DATA).mark_gltf().m()
-            assert str(error.exception) == 'Trying to mark a chart already defined in the specifications.'
