@@ -6,25 +6,26 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <head>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.5.4/docs/scripts/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.5.5/docs/scripts/main.min.js"></script>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
     
         <!-- Camera -->
-        <a-camera position="0 4 0" active="true"></a-camera>
+        <a-camera position="0 4 0" active="true">
+
+            <!-- Element information -->
+            <a-entity id="HUD" position="-4.5 2 -4" visible="false">
+				<a-plane height="1" width="2.5" shader="flat" color="grey"></a-plane>
+				<a-text id="HUD-text" value="" align="center"></a-text>
+			</a-entity>
+        </a-camera>
     
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
         
         <!-- Elements -->
         {elements}
-        
-        <!-- Variable label -->
-        <a-entity id="labelInfo" position="" visible="false">
-			<a-plane height="2" width="5" side="double" shader="flat" color="grey"></a-plane>
-			<a-text id="textLabel" value="" scale="2 2 2" align="center"></a-text>
-		</a-entity>
     </a-scene>
 </body>
 """

@@ -1,6 +1,6 @@
 """AframeXR entities HTML creator"""
 
-from aframexr.utils.axis_html_creator import AxisHTMLCreator
+from aframexr.utils.axis_creator import AxisCreator
 from aframexr.utils.constants import ALL_TEMPLATES
 from aframexr.utils.entity_creator import ChartCreator
 from aframexr.utils.validators import AframeXRValidator
@@ -23,7 +23,7 @@ class ChartsHTMLCreator:
         -----
         Supposing that chart_specs is a dictionary (at this method has been called from self.create_charts_html).
 
-        Suppose that the parameters are correct for method calls of ChartCreator and AxisHTMLCreator.
+        Suppose that the parameters are correct for method calls of ChartCreator and AxisCreator.
         """
 
         # Validate chart type
@@ -41,19 +41,22 @@ class ChartsHTMLCreator:
         for element in elements_specs:
             chart_html += '\t\t\t' + base_html.format(**element) + '\n'  # Tabulate the lines (better visualization)
 
-        """# Axis HTML
+        # Axis HTML
         axis_specs = chart_object.get_axis_specs()
 
         for ax in axis_specs:
             if axis_specs[ax]['start'] is None:
                 continue  # If the axis is not displayed, continue with the next
             chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
-            chart_html += '\t\t\t' + AxisHTMLCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
+            chart_html += '\t\t\t' + AxisCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
             for label in range(len(axis_specs[ax]['labels_pos'])):
                 label_pos = axis_specs[ax]['labels_pos'][label]
                 label_rotation = axis_specs[ax]['labels_rotation']
                 label_value = axis_specs[ax]['labels_values'][label]
-                chart_html += '\t\t\t' + AxisHTMLCreator.create_label_html(label_pos, label_rotation, label_value) + '\n'"""
+                label_align = axis_specs[ax]['labels_align']
+                chart_html += '\t\t\t' + AxisCreator.create_label_html(
+                    label_pos, label_rotation, label_value, label_align
+                ) + '\n'
 
         # Close the group
         chart_html += '\t\t</a-entity>\n\t\t'
