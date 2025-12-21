@@ -230,7 +230,7 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_type(width, Union[float | int])
 
         if height <= 0:
-            raise ValueError('The width must be greater than 0.')
+            raise ValueError('The height must be greater than 0.')
         self._specifications.update({'height': height})
         if width <= 0:
             raise ValueError('The width must be greater than 0.')
