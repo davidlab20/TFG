@@ -267,6 +267,7 @@ class NonAxisDataChartCreator(DataChartCreator):
         return {}  # Returns an empty dictionary, because it has no axis
 
 
+# Third-level subclasses of ChartCreator.
 class ArcChartCreator(NonAxisDataChartCreator):
     """Arc chart creator class."""
 
