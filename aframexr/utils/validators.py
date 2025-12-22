@@ -31,8 +31,8 @@ class AframeXRValidator:
         """Raises ValueError if chart specifications are invalid."""
 
         if 'concat' in specs:
-            for chart_specs in specs['concat']:
-                AframeXRValidator.validate_chart_specs(chart_specs)
+            for chart_specs in specs['concat']:  # There are several charts in the specifications
+                AframeXRValidator.validate_chart_specs(chart_specs)  # Validate each chart specification
             return
 
         for key in ('data', 'mark'):
