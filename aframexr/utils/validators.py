@@ -30,7 +30,12 @@ class AframeXRValidator:
     def validate_chart_specs(specs: dict) -> None:
         """Raises ValueError if chart specifications are invalid."""
 
-        for key in {'data', 'mark'}:
+        if 'concat' in specs:
+            for chart_specs in specs['concat']:
+                AframeXRValidator.validate_chart_specs(chart_specs)
+            return
+
+        for key in ('data', 'mark'):
             if key not in specs:
                 raise ValueError(f'Invalid chart specifications. Must contain key "{key}".')
 
