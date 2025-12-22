@@ -4,14 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aframexr"
-version = "0.5.6"
+version = "0.6.0"
 authors = [{name = "David Díaz"}]
 description = "Python library to visualize data in Virtual and Extended Reality using Aframe components."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "polars>=1.20.0",  # For Pyodide compatibility
-    "marimo>=0.18.0",
 ]
 
 [project.urls]
@@ -24,5 +23,6 @@ pandas = [
 ]
 dev = [
     "beautifulsoup4>=4.14.0",
+    "pandas>=2.3.0",
     "pytest>=9.0.0",
 ]
