@@ -16,6 +16,7 @@ from aframexr.utils.constants import *
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
 """Group dictionary template for group base specifications creation."""
 
+
 def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
     """Translates and returns the encoding for a given data type."""
 
@@ -159,6 +160,7 @@ class ChartCreator:
         group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
                             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
         return group_specs
+
 
 # First-level subclasses of ChartCreator.
 class DataChartCreator(ChartCreator):
@@ -661,6 +663,7 @@ class ImageCreator(NonDataChartCreator):
 
     # Using get_axis_specs() from NonDataChartCreator class
 
+
 class PointChartCreator(XYZAxisDataChartCreator):
     """Point chart creator class."""
 
@@ -723,7 +726,6 @@ class PointChartCreator(XYZAxisDataChartCreator):
 
     def _set_y_coordinates(self) -> Series:
         """Returns a Series of the y coordinates for each point composing the point chart."""
-
 
         if self._y_data is None:
             y_coordinates = pl.repeat(
