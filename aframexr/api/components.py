@@ -3,6 +3,7 @@
 import copy
 import html
 import json
+import warnings
 
 try:
     import pandas as pd
@@ -11,6 +12,7 @@ except ImportError:
     DataFrame = object
     pd = None
 
+from IPython.display import HTML
 from typing import Literal, Union
 
 from aframexr.api.aggregate import AggregatedFieldDef
@@ -40,7 +42,7 @@ class TopLevelMixin:
             'height="400" '  # Height of the iframe
             'style="border:none;" '
             'sandbox="allow-scripts allow-forms allow-same-origin" '
-            'loading="lazy" '
+            'loading="lazy" '  # For optimization
             '></iframe>'
         )
 
@@ -151,7 +153,11 @@ class TopLevelMixin:
     def show(self):
         """Show the scene in the notebook."""
 
-        return self  # Using self._repr_html_()
+        with warnings.catch_warnings():
+            # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
+            warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
+
+            return HTML(self._repr_html_())
 
     # Chart formats
     def to_dict(self) -> dict:
