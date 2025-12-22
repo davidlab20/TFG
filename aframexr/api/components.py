@@ -1,8 +1,8 @@
 """AframeXR components"""
 
 import copy
+import html
 import json
-import marimo
 
 try:
     import pandas as pd
@@ -28,6 +28,21 @@ class TopLevelMixin:
     def __init__(self, specs: dict):
         if specs: AframeXRValidator.validate_chart_specs(specs)  # Validate specs if not initializing empty dict
         self._specifications = specs
+
+    def _repr_html_(self):
+        """Returns the iframe HTML for showing the scene in the notebook."""
+
+        AframeXRValidator.validate_chart_specs(self._specifications)
+        return (
+            '<iframe '
+            f'srcdoc="{html.escape(self.to_html(), quote=True)}" '  # Raw HTML escaped
+            'width="100%" '  # Adjust to maximum width
+            'height="400" '  # Height of the iframe
+            'style="border:none;" '
+            'sandbox="allow-scripts allow-forms allow-same-origin" '
+            'loading="lazy" '
+            '></iframe>'
+        )
 
     # Concatenating charts
     def __add__(self, other):
@@ -134,11 +149,9 @@ class TopLevelMixin:
 
     # Showing the scene
     def show(self):
-        """Show the scene in the Marimo notebook."""
+        """Show the scene in the notebook."""
 
-        AframeXRValidator.validate_chart_specs(self._specifications)
-        html_scene = SceneCreator.create_scene(self._specifications)
-        return marimo.iframe(html_scene)
+        return self  # Using self._repr_html_()
 
     # Chart formats
     def to_dict(self) -> dict:

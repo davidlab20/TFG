@@ -1,4 +1,3 @@
 # Requirements for users
 
 polars>=1.36.0
-marimo>=0.18.0
