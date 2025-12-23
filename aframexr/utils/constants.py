@@ -8,7 +8,7 @@ AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
 X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
 LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
-LABELS_Y_DELTA = 0  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
+LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 
 NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
