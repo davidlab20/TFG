@@ -193,12 +193,22 @@ class XYZAxisDataChartCreator(DataChartCreator):
         self._chart_depth = chart_specs.get('depth', DEFAULT_MAX_DEPTH)  # Maximum depth of the chart
         self._chart_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the chart
         self._chart_width = chart_specs.get('width', DEFAULT_MAX_WIDTH)  # Maximum width of the chart
+
+        self._base_x -= self._chart_width / 2  # Correct position of x-axis
+        self._base_y -= self._chart_height / 2  # Correct position of y-axis
+        self._base_z += self._chart_depth / 2  # Correct position of z-axis
+
+        self._x_elements_coordinates: Series | None = None
         self._x_data: Series | None = None
         self._x_encoding: str = ''
         self._x_offset: float = 0
+
+        self._y_elements_coordinates: Series | None = None
         self._y_data: Series | None = None
         self._y_encoding: str = ''
         self._y_offset: float = 0
+
+        self._z_elements_coordinates: Series | None = None
         self._z_data: Series | None = None
         self._z_encoding: str = ''
         self._z_offset: float = 0
@@ -230,6 +240,51 @@ class XYZAxisDataChartCreator(DataChartCreator):
                 except pl.exceptions.ColumnNotFoundError:
                     raise KeyError(f'Data has no field "{field}" for {ax}-axis.')
 
+    def get_axis_specs(self) -> dict:
+        """Returns a dictionary with the specifications for each axis of the chart."""
+
+        if self._raw_data.is_empty():  # There is no data to display
+            return {}
+
+        from aframexr import AxisCreator  # To avoid circular import
+
+        axis_specs = {}
+
+        # ---- X-axis ----
+        # Axis line
+        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
+            x_axis_specs = AxisCreator.create_axis_specs(
+                axis='x', axis_data=self._x_data, axis_encoding=self._x_encoding, axis_size=self._chart_width,
+                elements_coords=self._x_elements_coordinates,
+                x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,  # No offset for x-axis
+            )
+            axis_specs.update({'x': x_axis_specs})
+
+        # ---- Y-axis ----
+        # Axis line
+        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
+            y_axis_specs = AxisCreator.create_axis_specs(
+                axis='y', axis_data=self._y_data, axis_encoding=self._y_encoding, axis_size=self._chart_height,
+                elements_coords=self._y_elements_coordinates,
+                x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,  # No offset for y-axis
+            )
+            axis_specs.update({'y': y_axis_specs})
+
+        # ---- Z-axis ----
+        # Axis line
+        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
+        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
+            z_axis_specs = AxisCreator.create_axis_specs(
+                axis='z', axis_data=self._z_data, axis_encoding=self._z_encoding, axis_size=self._chart_depth,
+                elements_coords=self._z_elements_coordinates,
+                x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,  # No offset for z-axis
+            )
+            axis_specs.update({'z': z_axis_specs})
+
+        return axis_specs
+
     @staticmethod
     def set_elems_coordinates_for_quantitative_axis(axis_data: Series, max_size: float) -> Series:
         if axis_data.dtype == pl.String:
@@ -253,9 +308,25 @@ class XYZAxisDataChartCreator(DataChartCreator):
         return axis_data * scale_factor
 
     @staticmethod
-    def set_elems_coordinates_for_nominal_axis(axis_data: Series, step: float, start_offset: float) -> Series:
-        category_codes = axis_data.cast(pl.String).cast(pl.Categorical).to_physical()  # Codes (0 to len(axis_data) - 1)
-        return (start_offset + (step * category_codes)).cast(pl.Float32)
+    def set_elems_coordinates_for_nominal_axis(axis_data: Series, axis_size: float, extremes_offset: float) -> Series:
+        """
+        Returns a Series with the positions for each element in the nominal axis.
+
+        Parameters
+        ----------
+        axis_data : Series
+            The data of the nominal axis.
+        axis_size : float
+            The total size of the axis.
+        extremes_offset : float
+            The offset used in each extreme of the axis, so the elements do not exceed the chart dimensions.
+        """
+
+        category_codes = axis_data.cast(pl.String).cast(pl.Categorical).to_physical()
+        unique_categories = axis_data.n_unique()
+
+        step = (axis_size - 2 * extremes_offset) / (unique_categories - 1) if unique_categories > 1 else 0
+        return (extremes_offset + step * category_codes).cast(pl.Float32)
 
 
 class NonAxisDataChartCreator(DataChartCreator):
@@ -273,6 +344,7 @@ class ArcChartCreator(NonAxisDataChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
+        self._depth = chart_specs.get('depth', DEFAULT_MAX_DEPTH)
         self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_PIE_RADIUS
         self._set_rotation()
@@ -314,7 +386,14 @@ class ArcChartCreator(NonAxisDataChartCreator):
         # Axis
         x_coordinates = pl.repeat(value=0, n=data_length).alias('x_coordinates')
         y_coordinates = pl.repeat(value=0, n=data_length).alias('y_coordinates')
-        z_coordinates = pl.repeat(value=0, n=data_length).alias('z_coordinates')
+        z_coordinates = pl.repeat(value=-self._depth / 2, n=data_length).alias('z_coordinates')
+
+        # Depth
+        depth = pl.repeat(
+            value=self._depth,
+            n=data_length,
+            eager=True  # Returns a Series
+        ).alias('depth')
 
         # Radius
         radius = pl.repeat(
@@ -348,6 +427,7 @@ class ArcChartCreator(NonAxisDataChartCreator):
         # Return values
         temp_df = DataFrame({
             'id': ids,
+            'depth': depth,
             'pos': pl.select(pl.concat_str(
                 [x_coordinates, y_coordinates, z_coordinates],
                 separator=' '
@@ -401,11 +481,10 @@ class BarChartCreator(XYZAxisDataChartCreator):
                 x_coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(self._x_data, self._chart_width)
                 bars_widths = 2 * x_coordinates.abs()
             elif self._x_encoding == 'nominal':
-                step = self._bar_size_if_nominal_axis  # TODO --> CAN ADD PADDING
                 x_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._x_data,
-                    step=step,
-                    start_offset=self._bar_size_if_nominal_axis / 2  # Bars do not exceed the axis
+                    axis_size=self._chart_width,
+                    extremes_offset=self._bar_size_if_nominal_axis / 2
                 )
                 bars_widths = pl.repeat(
                     value=self._bar_size_if_nominal_axis,
@@ -439,11 +518,10 @@ class BarChartCreator(XYZAxisDataChartCreator):
                 y_coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(self._y_data, self._chart_height)
                 bars_heights = 2 * y_coordinates.abs()
             elif self._y_encoding == 'nominal':
-                step = self._bar_size_if_nominal_axis  # TODO --> CAN ADD PADDING
                 y_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._y_data,
-                    step=step,
-                    start_offset=DEFAULT_BAR_AXIS_SIZE / 2  # Bars do not exceed the axis
+                    axis_size=self._chart_height,
+                    extremes_offset=self._bar_size_if_nominal_axis / 2
                 )
                 bars_heights = pl.repeat(
                     value=self._bar_size_if_nominal_axis,
@@ -477,11 +555,10 @@ class BarChartCreator(XYZAxisDataChartCreator):
                 z_coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_MAX_DEPTH)
                 bars_depths = 2 * z_coordinates.abs()
             elif self._z_encoding == 'nominal':
-                step = self._bar_size_if_nominal_axis  # TODO --> CAN ADD PADDING
                 z_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._z_data,
-                    step=step,
-                    start_offset=self._bar_size_if_nominal_axis / 2  # Bars do not exceed the axis
+                    axis_size=self._chart_depth,
+                    extremes_offset=self._bar_size_if_nominal_axis / 2
                 )
                 bars_depths = pl.repeat(
                     value=self._bar_size_if_nominal_axis,
@@ -505,17 +582,20 @@ class BarChartCreator(XYZAxisDataChartCreator):
         x_min = x_coordinates.min()
         self._x_offset = 2 * abs(x_min) if x_min < 0 else 0  # Offset if negative data
         x_coordinates = x_coordinates + self._x_offset if self._x_offset != 0 else x_coordinates  # Avoid copying data
+        self._x_elements_coordinates = x_coordinates
 
         y_coordinates, bar_heights = self._set_y_coords_and_heights()
         y_min = y_coordinates.min()
         self._y_offset = 2 * abs(y_min) if y_min < 0 else 0  # Offset if negative data
         y_coordinates = y_coordinates + self._y_offset if self._y_offset != 0 else y_coordinates  # Avoid copying data
+        self._y_elements_coordinates = y_coordinates
 
         z_coordinates, bar_depths = self._set_z_coords_and_depths()
         z_min = z_coordinates.min()
         self._z_offset = 2 * abs(z_min) if z_min < 0 else 0  # Offset if negative data
-        z_coordinates = -(z_coordinates + self._z_offset)  # Invert the coordinates to do deep
+        z_coordinates = -(self._z_offset + z_coordinates)  # Invert the coordinates to do deep
         self._z_offset = -self._z_offset
+        self._z_elements_coordinates = z_coordinates
 
         # Color
         colors = self._set_bars_colors()
@@ -538,7 +618,7 @@ class BarChartCreator(XYZAxisDataChartCreator):
         temp_df = DataFrame({
             'id': ids,
             'pos': pl.select(pl.concat_str(
-                [x_coordinates, y_coordinates, z_coordinates],
+                [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
                 separator=' '
             ).alias('pos')).to_series(),
             'width': bar_widths,
@@ -549,86 +629,7 @@ class BarChartCreator(XYZAxisDataChartCreator):
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
-    def get_axis_specs(self) -> dict:
-        """Returns a dictionary with the specifications for each axis of the chart."""
-
-        if self._raw_data.is_empty():  # There is no data to display
-            return {}
-
-        from aframexr import AxisCreator  # To avoid circular import
-
-        axis_specs = {}
-
-        # ---- X-axis ----
-        # Axis line
-        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            x_axis_specs = {}
-            if self._x_encoding == 'quantitative':
-                x_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='x', axis_data=self._x_data,
-                    x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,
-                    axis_size=self._chart_width
-                ))
-            elif self._x_encoding == 'nominal':
-                x_elems_coords, _ = self._set_x_coords_and_widths()
-                x_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='x', axis_data=self._x_data, axis_elems_coords=x_elems_coords,
-                    x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,
-                    step=self._step_if_nominal_axis
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._x_encoding}.')
-
-            axis_specs.update({'x': x_axis_specs})
-
-        # ---- Y-axis ----
-        # Axis line
-        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            y_axis_specs = {}
-            if self._y_encoding == 'quantitative':
-                y_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='y', axis_data=self._y_data,
-                    x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,
-                    axis_size=self._chart_height
-                ))
-            elif self._y_encoding == 'nominal':
-                y_elems_coords, _ = self._set_y_coords_and_heights()
-                y_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='y', axis_data=self._y_data, axis_elems_coords=y_elems_coords,
-                    x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,
-                    step=self._step_if_nominal_axis
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._y_encoding}.')
-
-            axis_specs.update({'y': y_axis_specs})
-
-        # ---- Z-axis ----
-        # Axis line
-        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            z_axis_specs = {}
-            if self._z_encoding == 'quantitative':
-                z_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='z', axis_data=self._z_data,
-                    x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,
-                    axis_size=DEFAULT_MAX_DEPTH
-                ))
-            elif self._z_encoding == 'nominal':
-                z_elems_coords, _ = self._set_z_coords_and_depths()
-                z_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='z', axis_data=self._z_data, axis_elems_coords=z_elems_coords,
-                    x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,
-                    step=self._step_if_nominal_axis
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._z_encoding}.')
-
-            axis_specs.update({'z': z_axis_specs})
-
-        return axis_specs
+    # Using get_axis_scpecs() from parent class
 
 
 class GLTFModelCreator(NonDataChartCreator):
@@ -681,12 +682,12 @@ class PointChartCreator(XYZAxisDataChartCreator):
         if self._color_data is None:
             raise Exception('Should never enter here.')
 
-        category_codes = self._color_data.unique(maintain_order=True).to_list()
+        unique_categories = self._color_data.unique(maintain_order=True).to_list()
         mapping_dict = dict(zip(
-            category_codes,  # Dict keys
+            unique_categories,  # Dict keys
             list(islice(  # Dict values
                 cycle(AVAILABLE_COLORS),  # Color cycle
-                len(category_codes)  # Moduled to category codes
+                len(unique_categories)  # Moduled to category codes
             ))
         ))
         points_colors = self._color_data.replace(list(mapping_dict.keys()), list(mapping_dict.values()))
@@ -715,11 +716,10 @@ class PointChartCreator(XYZAxisDataChartCreator):
             if self._x_encoding == 'quantitative':
                 x_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._x_data, DEFAULT_MAX_WIDTH)
             elif self._x_encoding == 'nominal':
-                step = DEFAULT_POINT_CENTER_SEPARATION  # TODO --> ADD PADDING
                 x_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._x_data,
-                    step=step,
-                    start_offset=self._max_radius,  # Points do not cross the axis
+                    axis_size=self._chart_width,
+                    extremes_offset=self._max_radius
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {self._x_encoding}.')
@@ -738,11 +738,10 @@ class PointChartCreator(XYZAxisDataChartCreator):
             if self._y_encoding == 'quantitative':
                 y_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._y_data, self._chart_height)
             elif self._y_encoding == 'nominal':
-                step = DEFAULT_POINT_CENTER_SEPARATION  # TODO --> ADD PADDING
                 y_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._y_data,
-                    step=step,
-                    start_offset=self._max_radius  # Points do not cross the axis
+                    axis_size=self._chart_height,
+                    extremes_offset=self._max_radius
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {self._y_encoding}.')
@@ -761,11 +760,10 @@ class PointChartCreator(XYZAxisDataChartCreator):
             if self._z_encoding == 'quantitative':
                 z_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_MAX_DEPTH)
             elif self._z_encoding == 'nominal':
-                step = DEFAULT_POINT_CENTER_SEPARATION  # TODO --> ADD PADDING
                 z_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._z_data,
-                    step=step,
-                    start_offset=self._max_radius,  # Points do not cross the axis
+                    axis_size=self._chart_depth,
+                    extremes_offset=self._max_radius  # Offset so points do not exceed chart dimensions
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {self._z_encoding}.')
@@ -802,19 +800,22 @@ class PointChartCreator(XYZAxisDataChartCreator):
         self._x_offset = abs(x_min) if x_min < 0 else 0  # Offset if negative data
         self._x_offset += self._max_radius if self._x_encoding == 'quantitative' else 0  # Offset if quantitative axis
         x_coordinates = x_coordinates + self._x_offset if self._x_offset != 0 else x_coordinates  # Avoid copying data
+        self._x_elements_coordinates = x_coordinates
 
         y_coordinates = self._set_y_coordinates()
         y_min = y_coordinates.min()
         self._y_offset = abs(y_min) if y_min < 0 else 0  # Offset if negative data
         self._y_offset += self._max_radius if self._y_encoding == 'quantitative' else 0  # Offset if quantitative data
         y_coordinates = y_coordinates + self._y_offset if self._y_offset != 0 else y_coordinates  # Avoid copying data
+        self._y_elements_coordinates = y_coordinates
 
         z_coordinates = self._set_z_coordinates()
         z_min = z_coordinates.min()
         self._z_offset = abs(z_min) if z_min < 0 else 0  # Offset if negative data
         self._z_offset += self._max_radius if self._z_encoding == 'quantitative' else 0  # Offset if quantitative data
-        z_coordinates = -(z_coordinates + self._z_offset)  # Invert the coordinates to do deep
+        z_coordinates = -(self._z_offset + z_coordinates)  # Invert the coordinates to do deep
         self._z_offset = -self._z_offset
+        self._z_elements_coordinates = z_coordinates
 
         # Color
         if self._encoding.get('color'):  # Scatter plot (same color for each type of point)
@@ -859,83 +860,4 @@ class PointChartCreator(XYZAxisDataChartCreator):
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
         return elements_specs
 
-    def get_axis_specs(self) -> dict:
-        """Returns a dictionary with the specifications for each axis of the chart."""
-
-        if self._raw_data.is_empty():  # There is no data to display
-            return {}
-
-        from aframexr import AxisCreator  # To avoid circular import
-
-        axis_specs = {}
-
-        # ---- X-axis ----
-        # Axis line
-        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            x_axis_specs = {}
-            if self._x_encoding == 'quantitative':
-                x_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='x', axis_data=self._x_data,
-                    x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,
-                    axis_size=DEFAULT_MAX_WIDTH
-                ))
-            elif self._x_encoding == 'nominal':
-                x_elems_coords = self._set_x_coordinates()
-                x_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='x', axis_data=self._x_data, axis_elems_coords=x_elems_coords,
-                    x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,
-                    step=DEFAULT_POINT_CENTER_SEPARATION
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._x_encoding}.')
-
-            axis_specs.update({'x': x_axis_specs})
-
-        # ---- Y-axis ----
-        # Axis line
-        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            y_axis_specs = {}
-            if self._y_encoding == 'quantitative':
-                y_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='y', axis_data=self._y_data,
-                    x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,
-                    axis_size=self._chart_height
-                ))
-            elif self._y_encoding == 'nominal':
-                y_elems_coords = self._set_y_coordinates()
-                y_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='y', axis_data=self._y_data, axis_elems_coords=y_elems_coords,
-                    x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,
-                    step=self._chart_height / self._y_data.len()
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._y_encoding}.')
-
-            axis_specs.update({'y': y_axis_specs})
-
-        # ---- Z-axis ----
-        # Axis line
-        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            z_axis_specs = {}
-            if self._z_encoding == 'quantitative':
-                z_axis_specs.update(AxisCreator.get_axis_specs_for_quantitative_axis(
-                    axis_name='z', axis_data=self._z_data,
-                    x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,
-                    axis_size=DEFAULT_MAX_DEPTH
-                ))
-            elif self._z_encoding == 'nominal':
-                z_elems_coords = self._set_z_coordinates()
-                z_axis_specs.update(AxisCreator.get_axis_specs_for_nominal_axis(
-                    axis_name='z', axis_data=self._z_data, axis_elems_coords=z_elems_coords,
-                    x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,
-                    step=DEFAULT_MAX_DEPTH / self._z_data.len()
-                ))
-            else:
-                raise ValueError(f'Invalid encoding type: {self._z_encoding}.')
-
-            axis_specs.update({'z': z_axis_specs})
-
-        return axis_specs
+    # Using get_axis_scpecs() from parent class

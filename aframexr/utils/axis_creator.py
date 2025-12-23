@@ -97,68 +97,39 @@ class AxisCreator:
         return f'<a-text position="{pos}" rotation="{rotation}" value="{value}" scale="3 3 3" align="{align}"></a-text>'
 
     @staticmethod
-    def get_axis_specs_for_quantitative_axis(axis_name: Literal['x', 'y', 'z'], axis_data: Series, x_offset: float,
-                                             y_offset: float, z_offset: float, axis_size: float) -> dict:
-        """Returns the axis specifications for the quantitative x, y or z axis."""
+    def create_axis_specs(axis: Literal['x', 'y', 'z'], axis_data: Series, axis_encoding: str, axis_size: float,
+                          elements_coords: Series, x_offset: float, y_offset: float, z_offset: float) -> dict:
+        """Returns the axis specifications for x, y or z axis depending on its encoding."""
 
         axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
 
-        coords = _get_labels_coords_for_quantitative_axis(axis_size)
+        if axis_encoding == 'quantitative':
+            coords = _get_labels_coords_for_quantitative_axis(axis_size)
+            labels_values = _get_labels_values_for_quantitateve_axis(axis_data)
+        elif axis_encoding == 'nominal':
+            coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
+            labels_values = axis_data.unique(maintain_order=True)
+        else:
+            raise ValueError(f'Invalid encoding type: {axis_encoding}.')
 
         axis_specs['start'] = f'{x_offset} {y_offset} {z_offset}'
-        if axis_name == 'x':
+        if axis == 'x':
             axis_specs['end'] = f'{axis_size} {y_offset} {z_offset}'
             axis_specs['labels_pos'] = (coords.cast(pl.String) + f' {LABELS_Y_DELTA} {X_LABELS_Z_DELTA}').to_list()
             axis_specs['labels_rotation'] = _X_AXIS_LABELS_ROTATION
             axis_specs['labels_align'] = 'left'
-        elif axis_name == 'y':
+        elif axis == 'y':
             axis_specs['end'] = f'{x_offset} {axis_size} {z_offset}'
             axis_specs['labels_pos'] = (f'{LABELS_X_DELTA} ' + coords.cast(pl.String) + ' 0').to_list()
             axis_specs['labels_rotation'] = _Y_AXIS_LABELS_ROTATION
             axis_specs['labels_align'] = 'right'
-        elif axis_name == 'z':
+        elif axis == 'z':
             axis_specs['end'] = f'{x_offset} {y_offset} {-axis_size}'  # Negative axis size to go deep
-            coords = -coords  # Negative to go deep
             axis_specs['labels_pos'] = (f'{LABELS_X_DELTA} {LABELS_Y_DELTA} ' + coords.cast(pl.String)).to_list()
             axis_specs['labels_rotation'] = _Z_AXIS_LABELS_ROTATION
             axis_specs['labels_align'] = 'right'
         else:
             raise ValueError('Axis must be x or y or z.')
 
-        labels_values = _get_labels_values_for_quantitateve_axis(axis_data)
         axis_specs['labels_values'] = labels_values.to_list()
-
-        return axis_specs
-
-    @staticmethod
-    def get_axis_specs_for_nominal_axis(axis_name: Literal['x', 'y', 'z'], axis_data: Series, axis_elems_coords: Series,
-                                        x_offset: float, y_offset: float, z_offset: float, step: float) -> dict:
-        """Returns the axis specifications for the nominal x, y or z axis."""
-
-        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
-
-        unique_axis_data = axis_data.unique(maintain_order=True)  # Take only unique values
-        coords = axis_elems_coords.unique(maintain_order=True)  # Same as elements to align labels with elements
-
-        axis_specs['start'] = f'{x_offset} {y_offset} {z_offset}'
-        if axis_name == 'x':
-            axis_specs['end'] = f'{step * unique_axis_data.len()} {y_offset} {z_offset}'
-            axis_specs['labels_pos'] = (coords.cast(pl.String) + f' {LABELS_Y_DELTA} {X_LABELS_Z_DELTA}').to_list()
-            axis_specs['labels_rotation'] = _X_AXIS_LABELS_ROTATION
-            axis_specs['labels_align'] = 'left'
-        elif axis_name == 'y':
-            axis_specs['end'] = f'{x_offset} {step * unique_axis_data.len()} {z_offset}'
-            axis_specs['labels_pos'] = (f'{LABELS_X_DELTA} ' + coords.cast(pl.String) + ' 0').to_list()
-            axis_specs['labels_rotation'] = _Y_AXIS_LABELS_ROTATION
-            axis_specs['labels_align'] = 'right'
-        elif axis_name == 'z':
-            axis_specs['end'] = f'{x_offset} {y_offset} {-step * unique_axis_data.len()}'  # Negative depth to go deep
-            coords = -coords  # Negative to go deep
-            axis_specs['labels_pos'] = (f'{LABELS_X_DELTA} {LABELS_Y_DELTA} ' + coords.cast(pl.String)).to_list()
-            axis_specs['labels_rotation'] = _Z_AXIS_LABELS_ROTATION
-            axis_specs['labels_align'] = 'right'
-        else:
-            raise ValueError('Axis must be x or y or z.')
-
-        axis_specs['labels_values'] = unique_axis_data.to_list()
         return axis_specs

@@ -238,7 +238,7 @@ class Chart(TopLevelMixin):
 
     def __init__(self, data: Data | URLData | DataFrame = None, position: str = DEFAULT_CHART_POS,
                  rotation: str = DEFAULT_CHART_ROTATION, height: float = DEFAULT_MAX_HEIGHT,
-                 width: float = DEFAULT_MAX_WIDTH):
+                 width: float = DEFAULT_MAX_WIDTH, depth: float = DEFAULT_MAX_DEPTH):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
@@ -248,6 +248,9 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_type(height, Union[float | int])
         AframeXRValidator.validate_type(width, Union[float | int])
 
+        if depth <= 0:
+            raise ValueError('The depth must be greater than 0.')
+        self._specifications.update({'depth': depth})
         if height <= 0:
             raise ValueError('The height must be greater than 0.')
         self._specifications.update({'height': height})

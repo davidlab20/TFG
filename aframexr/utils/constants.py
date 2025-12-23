@@ -14,7 +14,7 @@ NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is qu
 
 # ----- TEMPLATES -----
 CHART_TEMPLATES = {
-    'arc': ('<a-cylinder id="{id}" position="{pos}" radius="{radius}" theta-start="{theta_start}" '
+    'arc': ('<a-cylinder id="{id}" position="{pos}" height="{depth}" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}" data-raycastable></a-cylinder>'),
     'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" material="color: {color}" '
             'depth="{depth}" data-raycastable></a-box>'),
