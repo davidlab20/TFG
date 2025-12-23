@@ -1,3 +1,4 @@
 # Requirements for users
 
+IPython>=9.8.0
 polars>=1.36.0
