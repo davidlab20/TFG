@@ -190,9 +190,9 @@ class XYZAxisDataChartCreator(DataChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._chart_depth = chart_specs.get('depth', DEFAULT_MAX_DEPTH)  # Maximum depth of the chart
-        self._chart_height = chart_specs.get('height', DEFAULT_MAX_HEIGHT)  # Maximum height of the chart
-        self._chart_width = chart_specs.get('width', DEFAULT_MAX_WIDTH)  # Maximum width of the chart
+        self._chart_depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)  # Maximum depth of the chart
+        self._chart_height = chart_specs.get('height', DEFAULT_CHART_HEIGHT)  # Maximum height of the chart
+        self._chart_width = chart_specs.get('width', DEFAULT_CHART_WIDTH)  # Maximum width of the chart
 
         self._base_x -= self._chart_width / 2  # Correct position of x-axis
         self._base_y -= self._chart_height / 2  # Correct position of y-axis
@@ -344,7 +344,7 @@ class ArcChartCreator(NonAxisDataChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._depth = chart_specs.get('depth', DEFAULT_MAX_DEPTH)
+        self._depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)
         self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_PIE_RADIUS
         self._set_rotation()
@@ -552,7 +552,7 @@ class BarChartCreator(XYZAxisDataChartCreator):
             )
         else:
             if self._z_encoding == 'quantitative':
-                z_coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_MAX_DEPTH)
+                z_coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_CHART_DEPTH)
                 bars_depths = 2 * z_coordinates.abs()
             elif self._z_encoding == 'nominal':
                 z_coordinates = self.set_elems_coordinates_for_nominal_axis(
@@ -714,7 +714,7 @@ class PointChartCreator(XYZAxisDataChartCreator):
             )
         else:
             if self._x_encoding == 'quantitative':
-                x_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._x_data, DEFAULT_MAX_WIDTH)
+                x_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._x_data, DEFAULT_CHART_WIDTH)
             elif self._x_encoding == 'nominal':
                 x_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._x_data,
@@ -758,7 +758,7 @@ class PointChartCreator(XYZAxisDataChartCreator):
             )
         else:
             if self._z_encoding == 'quantitative':
-                z_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_MAX_DEPTH)
+                z_coordinates = self.set_elems_coordinates_for_quantitative_axis(self._z_data, DEFAULT_CHART_DEPTH)
             elif self._z_encoding == 'nominal':
                 z_coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=self._z_data,
@@ -798,21 +798,18 @@ class PointChartCreator(XYZAxisDataChartCreator):
         x_coordinates = self._set_x_coordinates()
         x_min = x_coordinates.min()
         self._x_offset = abs(x_min) if x_min < 0 else 0  # Offset if negative data
-        self._x_offset += self._max_radius if self._x_encoding == 'quantitative' else 0  # Offset if quantitative axis
         x_coordinates = x_coordinates + self._x_offset if self._x_offset != 0 else x_coordinates  # Avoid copying data
         self._x_elements_coordinates = x_coordinates
 
         y_coordinates = self._set_y_coordinates()
         y_min = y_coordinates.min()
         self._y_offset = abs(y_min) if y_min < 0 else 0  # Offset if negative data
-        self._y_offset += self._max_radius if self._y_encoding == 'quantitative' else 0  # Offset if quantitative data
         y_coordinates = y_coordinates + self._y_offset if self._y_offset != 0 else y_coordinates  # Avoid copying data
         self._y_elements_coordinates = y_coordinates
 
         z_coordinates = self._set_z_coordinates()
         z_min = z_coordinates.min()
         self._z_offset = abs(z_min) if z_min < 0 else 0  # Offset if negative data
-        self._z_offset += self._max_radius if self._z_encoding == 'quantitative' else 0  # Offset if quantitative data
         z_coordinates = -(self._z_offset + z_coordinates)  # Invert the coordinates to do deep
         self._z_offset = -self._z_offset
         self._z_elements_coordinates = z_coordinates
