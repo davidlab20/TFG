@@ -382,14 +382,14 @@ class Chart(TopLevelMixin):
 
         return self
 
-    def mark_point(self, size: float = DEFAULT_POINT_RADIUS):
+    def mark_point(self, size: float = None):
         """
         Scatter plot and bubble chart.
 
         Parameters
         ----------
         size : float (optional)
-            Maximum radius of the point. If not specified, they will be automatically adjusted. Must be greater than 0.
+            Maximum radius of the point. If not specified, using DEFAULT_POINT_RADIUS. Must be greater than 0.
 
         Raises
         ------
