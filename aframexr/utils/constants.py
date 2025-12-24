@@ -31,9 +31,9 @@ ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary wi
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
 DEFAULT_CHART_ROTATION = '0 0 0'  # Default chart rotation
-DEFAULT_MAX_DEPTH = 10  # Default maximum depth of the chart
-DEFAULT_MAX_HEIGHT = 10  # Default maximum height of the chart
-DEFAULT_MAX_WIDTH = 10  # Default maximum width of the chart
+DEFAULT_CHART_DEPTH = 10  # Default depth of the chart
+DEFAULT_CHART_HEIGHT = 10  # Default height of the chart
+DEFAULT_CHART_WIDTH = 10  # Default width of the chart
 
 # Bar chart
 DEFAULT_BAR_AXIS_SIZE = 1  # Default bar size in the nominal axes and in the axis that are not defined.
