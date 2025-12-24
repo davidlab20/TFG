@@ -184,18 +184,25 @@ class Chart(TopLevelMixin):
     ----------
     data : Data | URLData
         Data or URLData object of the data.
-
+    depth : float (optional)
+        Depth of the chart. If not defined, using DEFAULT_CHART_DEPTH.
+    height : float (optional)
+        Height of the chart. If not defined, using DEFAULT_CHART_HEIGHT.
     position : str (optional)
         Position of the chart. The format is: 'x y z'. Refers to the position for the origin of coordinate system.
+        If not defined, using DEFAULT_CHART_POS.
     rotation : str (optional)
         Rotation of the chart in degrees. The format is: 'x y z'. The rotation axis is the coordinate system.
+        If not defined, using DEFAULT_CHART_ROTATION.
+    width : float (optional)
+        Width of the chart. If not defined, using DEFAULT_CHART_WIDTH.
 
     Raises
     ------
     TypeError
-        If data is not a Data or URLData object.
+        If any parameter has invalid type.
     ValueError
-        If position or rotation are invalid.
+        If depth, height, position, rotation or width is invalid.
     """
 
     def _define_data(self, data: Data | URLData | DataFrame):
@@ -236,114 +243,143 @@ class Chart(TopLevelMixin):
         self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
         return self
 
-    def __init__(self, data: Data | URLData | DataFrame = None, depth: float = DEFAULT_MAX_DEPTH,
-                 height: float = DEFAULT_MAX_HEIGHT, position: str = DEFAULT_CHART_POS, 
-                 rotation: str = DEFAULT_CHART_ROTATION, width: float = DEFAULT_MAX_WIDTH):
+    def __init__(self, data: Data | URLData | DataFrame = None, depth: float = None,
+                 height: float = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
-        self._define_position(position)
-        self._define_rotation(rotation)
+        if position is not None: self._define_position(position)
+        if rotation is not None: self._define_rotation(rotation)
 
-        AframeXRValidator.validate_type(height, Union[float | int])
-        AframeXRValidator.validate_type(width, Union[float | int])
+        if depth is not None:
+            AframeXRValidator.validate_type(depth, Union[float | int])
+            if depth <= 0:
+                raise ValueError('The depth must be greater than 0.')
+            self._specifications.update({'depth': depth})
 
-        if depth <= 0:
-            raise ValueError('The depth must be greater than 0.')
-        self._specifications.update({'depth': depth})
-        if height <= 0:
-            raise ValueError('The height must be greater than 0.')
-        self._specifications.update({'height': height})
-        if width <= 0:
-            raise ValueError('The width must be greater than 0.')
-        self._specifications.update({'width': width})
+        if height is not None:
+            AframeXRValidator.validate_type(height, Union[float | int])
+            if height <= 0:
+                raise ValueError('The height must be greater than 0.')
+            self._specifications.update({'height': height})
+
+        if width is not None:
+            AframeXRValidator.validate_type(width, Union[float | int])
+            if width <= 0:
+                raise ValueError('The width must be greater than 0.')
+            self._specifications.update({'width': width})
 
     # Types of charts
-    def mark_arc(self, radius: float = DEFAULT_PIE_RADIUS):
+    def mark_arc(self, radius: float = None):
         """
         Pie chart and doughnut chart.
 
         Parameters
         ----------
         radius : float (optional)
-            Outer radius of the pie chart. If not specified, using default. Must be greater than 0.
+            Outer radius of the pie chart. If not specified, using DEFAULT_PIE_RADIUS. Must be greater than 0.
         """
 
-        AframeXRValidator.validate_type(radius, Union[float | int])
-
         self._specifications.update({'mark': {'type': 'arc'}})
-        if radius <= 0:
-            raise ValueError('The radius must be greater than 0.')
-        self._specifications['mark'].update({'radius': radius})
+
+        if radius is not None:
+            AframeXRValidator.validate_type(radius, Union[float | int])
+            if radius <= 0:
+                raise ValueError('The radius must be greater than 0.')
+            self._specifications['mark'].update({'radius': radius})
+
         return self
 
-    def mark_bar(self, size: float = DEFAULT_BAR_AXIS_SIZE):
+    def mark_bar(self, size: float = None):
         """
         Bars chart.
 
         Parameters
         ----------
         size : float (optional)
-            Width of the bars. If not specified, using default. Must be greater than 0.
+            Width of the bars. If not specified, bars will be adjusted automatically. Must be greater than 0.
+
+        Raises
+        ------
+        ValueError
+            If defined size is not greater than 0.
         """
 
-        AframeXRValidator.validate_type(size, Union[float | int])
-
         self._specifications.update({'mark': {'type': 'bar'}})
-        if size <= 0:
-            raise ValueError('The size must be greater than 0.')
-        self._specifications['mark'].update({'size': size})
+
+        if size is not None:
+            AframeXRValidator.validate_type(size, Union[float | int])
+            if size <= 0:
+                raise ValueError('The size must be greater than 0.')
+            self._specifications['mark'].update({'size': size})
+
         return self
 
-    def mark_gltf(self, scale: str = DEFAULT_GLTF_SCALE):
+    def mark_gltf(self, scale: str = None):
         """
         GLTF model.
 
         Parameters
         ----------
         scale : str (optional)
-            Scale of the GLTF model (from its original scale).
+            Scale of the GLTF model (from its original scale). If not specified, using DEFAULT_GLTF_SCALE.
 
             **Format: 'x y z'** (values can be negative, works like a mirror).
 
             If an axis value is not specified, that value will be 1 (for example, '2 2' is the same as '2 2 1').
 
             If more than 3 axes are specified, then the first 3 axes will be used.
+
+        Raises
+        ------
+        ValueError:
+            If scale values are not numeric.
         """
 
-        AframeXRValidator.validate_type(scale, str)
-
         self._specifications.update({'mark': {'type': 'gltf'}})
-        self._specifications['mark'].update({'scale': scale})
+
+        if scale is not None:
+            AframeXRValidator.validate_type(scale, str)
+            try:
+                coords = scale.split()
+                _ = [float(c) for c in coords]
+            except ValueError:
+                raise ValueError('The scale values must be numeric.')
+            self._specifications['mark'].update({'scale': scale})
+
         return self
 
-    def mark_image(self, width: float = DEFAULT_IMAGE_WIDTH, height: float = DEFAULT_IMAGE_HEIGHT):
+    def mark_image(self, height: float = None, width: float = None):
         """
         Image.
 
         Parameters
         ----------
-        width : float (optional)
-            Width of the image. If not specified, using default. Must be greater than 0.
         height : float (optional)
-            Height of the image. If not specified, using default. Must be greater than 0.
+            Height of the image. If not specified, using DEFAULT_IMAGE_HEIGHT. Must be greater than 0.
+        width : float (optional)
+            Width of the image. If not specified, using DEFAULT_IMAGE_WIDTH. Must be greater than 0.
 
         Raises
         ------
         ValueError
-            If width or height are not greater than 0.
+            If width or height is not greater than 0.
         """
 
-        AframeXRValidator.validate_type(width, Union[float | int])
-        AframeXRValidator.validate_type(height, Union[float | int])
-
         self._specifications.update({'mark': {'type': 'image'}})
-        if width <= 0:
-            raise ValueError('The width must be greater than 0.')
-        self._specifications['mark'].update({'width': width})
-        if height <= 0:
-            raise ValueError('The height must be greater than 0.')
-        self._specifications['mark'].update({'height': height})
+
+        if height is not None:
+            AframeXRValidator.validate_type(height, Union[float | int])
+            if height <= 0:
+                raise ValueError('The height must be greater than 0.')
+            self._specifications['mark'].update({'height': height})
+
+        if width is not None:
+            AframeXRValidator.validate_type(width, Union[float | int])
+            if width <= 0:
+                raise ValueError('The width must be greater than 0.')
+            self._specifications['mark'].update({'width': width})
+
         return self
 
     def mark_point(self, size: float = DEFAULT_POINT_RADIUS):
@@ -353,25 +389,27 @@ class Chart(TopLevelMixin):
         Parameters
         ----------
         size : float (optional)
-            Maximum radius of the point. If not specified, using default. Must be greater than 0.
+            Maximum radius of the point. If not specified, they will be automatically adjusted. Must be greater than 0.
 
         Raises
         ------
         ValueError
-            If size or height are not greater than 0.
+            If size is not greater than 0.
         """
 
-        AframeXRValidator.validate_type(size, Union[float | int])
-
         self._specifications.update({'mark': {'type': 'point'}})
-        if size <= 0:
-            raise ValueError('The size must be greater than 0.')
-        self._specifications['mark'].update({'max_radius': size})
+
+        if size is not None:
+            AframeXRValidator.validate_type(size, Union[float | int])
+            if size <= 0:
+                raise ValueError('The size must be greater than 0.')
+            self._specifications['mark'].update({'max_radius': size})
+
         return self
 
     # Parameters of the chart
-    def encode(self, color: str = '', size: str = '', theta: str = '', x: str | X = '', y: str | Y = '',
-               z: str | Z = ''):
+    def encode(self, color: str = None, size: str = None, theta: str = None, x: str | X = None, y: str | Y = None,
+               z: str | Z = None):
         """
         Add properties to the chart.
 
@@ -401,31 +439,32 @@ class Chart(TopLevelMixin):
         filled_params = {}  # Dictionary that will store the parameters that have been filled
 
         # Verify the type of the arguments and store the filled parameters
-        if color:
+        if color is not None:
             AframeXRValidator.validate_type(color, str)
             filled_params.update({'color': color})
-        if size:
+        if size is not None:
             AframeXRValidator.validate_type(size, str)
             filled_params.update({'size': size})
-        if theta:
+        if theta is not None:
             AframeXRValidator.validate_type(theta, str)
             filled_params.update({'theta': theta})
-        if x:
+        if x is not None:
             AframeXRValidator.validate_type(x, Union[str | X])
             filled_params.update({'x': x})
-        if y:
+        if y is not None:
             AframeXRValidator.validate_type(y, Union[str | Y])
             filled_params.update({'y': y})
-        if z:
+        if z is not None:
             AframeXRValidator.validate_type(z, Union[str | Z])
             filled_params.update({'z': z})
 
         # Verify the argument combinations
-        if self._specifications['mark']['type'] in ['bar', 'point'] and sum([x != '', y != '', z != '']) < 2:
+        if self._specifications['mark']['type'] in ['bar', 'point'] \
+                and sum([x is not None, y is not None, z is not None]) < 2:
             raise ValueError('At least 2 of (x, y, z) must be specified.')
         if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
-            if not theta: raise ValueError('Parameter theta must be specified in arc chart.')
-            if not color: raise ValueError('Parameter color must be specified in arc chart.')
+            if theta is None: raise ValueError('Parameter theta must be specified in arc chart.')
+            if color is None: raise ValueError('Parameter color must be specified in arc chart.')
 
         # Do the encoding
         self._specifications.update({'encoding': {}})
@@ -442,20 +481,21 @@ class Chart(TopLevelMixin):
                     self._specifications['encoding'][param_key].update({'aggregate': aggregate_op})
                 if encoding_type:
                     self._specifications['encoding'][param_key].update({'type': encoding_type})
+
         return self
 
-    def properties(self, data: Data | URLData | DataFrame = None, position: str = '',
-                   rotation: str = ''):
+    def properties(self, data: Data | URLData | DataFrame = None, position: str = None,
+                   rotation: str = None):
         """Modify general properties of the chart."""
 
         if data is not None: self._define_data(data)
-        if position: self._define_position(position)
-        if rotation: self._define_rotation(rotation)
+        if position is not None: self._define_position(position)
+        if rotation is not None: self._define_rotation(rotation)
 
         return self
 
     # Modifying data
-    def transform_aggregate(self, groupby: list | None = None, **kwargs):
+    def transform_aggregate(self, groupby: list = None, **kwargs):
         """
         Aggregates the data with the specified aggregate function, grouped by the specified groupby.
 
