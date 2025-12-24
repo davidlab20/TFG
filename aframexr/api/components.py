@@ -236,9 +236,9 @@ class Chart(TopLevelMixin):
         self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
         return self
 
-    def __init__(self, data: Data | URLData | DataFrame = None, position: str = DEFAULT_CHART_POS,
-                 rotation: str = DEFAULT_CHART_ROTATION, height: float = DEFAULT_MAX_HEIGHT,
-                 width: float = DEFAULT_MAX_WIDTH, depth: float = DEFAULT_MAX_DEPTH):
+    def __init__(self, data: Data | URLData | DataFrame = None, depth: float = DEFAULT_MAX_DEPTH,
+                 height: float = DEFAULT_MAX_HEIGHT, position: str = DEFAULT_CHART_POS, 
+                 rotation: str = DEFAULT_CHART_ROTATION, width: float = DEFAULT_MAX_WIDTH):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
