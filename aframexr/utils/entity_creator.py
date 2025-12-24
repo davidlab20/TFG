@@ -385,8 +385,8 @@ class ArcChartCreator(NonAxisDataChartCreator):
 
         # Axis
         x_coordinates = pl.repeat(value=0, n=data_length).alias('x_coordinates')
-        y_coordinates = pl.repeat(value=0, n=data_length).alias('y_coordinates')
-        z_coordinates = pl.repeat(value=-self._depth / 2, n=data_length).alias('z_coordinates')
+        y_coordinates = pl.repeat(value=self._depth / 2, n=data_length).alias('y_coordinates')
+        z_coordinates = pl.repeat(value=0, n=data_length).alias('z_coordinates')
 
         # Depth
         depth = pl.repeat(

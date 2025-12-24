@@ -22,12 +22,13 @@ def _all_theta_sum_is_360_degrees(pie_chart: aframexr.Chart) -> bool:
     return True
 
 def _slices_are_well_placed(pie_chart: aframexr.Chart) -> bool:
-    """Verify that the slices are well-placed in the pie chart (relative position has to be '0 0 0' for all)."""
+    """Verify that the slices are well-placed in the pie chart (relative position has to be the same for all)."""
 
     soup = BeautifulSoup(pie_chart.to_html(), 'html.parser')
     slices = soup.find_all('a-cylinder')
+    position = slices[0]['position']
     for s in slices:
-        if s['position'] != '0 0 0':
+        if s['position'] != position:
             return False
     return True
 
