@@ -5,7 +5,7 @@ import unittest
 from bs4 import BeautifulSoup
 
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import DEFAULT_MAX_HEIGHT
+from aframexr.utils.constants import DEFAULT_CHART_HEIGHT
 from tests.constants import *  # Constants used for testing
 
 
@@ -24,7 +24,7 @@ def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
 def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
     """Verify that every bar height does not exceed the maximum height."""
 
-    max_height = float(bars_chart.to_dict().get('height', DEFAULT_MAX_HEIGHT))
+    max_height = float(bars_chart.to_dict().get('height', DEFAULT_CHART_HEIGHT))
 
     soup = BeautifulSoup(bars_chart.to_html(), 'html.parser')
     bars = soup.find_all('a-box')
