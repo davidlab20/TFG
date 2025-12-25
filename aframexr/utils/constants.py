@@ -10,8 +10,6 @@ X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axi
 LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 
-NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
-
 # ----- TEMPLATES -----
 CHART_TEMPLATES = {
     'arc': ('<a-cylinder id="{id}" position="{pos}" height="{depth}" radius="{radius}" theta-start="{theta_start}" '
