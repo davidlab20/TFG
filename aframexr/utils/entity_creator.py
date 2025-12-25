@@ -201,7 +201,7 @@ class ChannelChartCreator(ChartCreator):
                         setattr(self, f'_{ch}_data', data.cast(pl.String))
                     else:
                         setattr(self, f'_{ch}_data', data)
-                except KeyError:
+                except pl.exceptions.ColumnNotFoundError:
                     raise KeyError(f'Data has no field "{field}" for {ch}-channel.')
 
 
