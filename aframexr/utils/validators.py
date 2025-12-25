@@ -10,16 +10,6 @@ class AframeXRValidator:
     """AframeXR validator class."""
 
     @staticmethod
-    def compare_user_encoding_detected_encoding(axis_name: str, user_encoding: str, detected_encoding: str):
-        """Warns the user if the given encoding and the detected encoding do not match."""
-
-        if user_encoding != detected_encoding:
-            warnings.warn(
-                f'{axis_name}-axis data appears to be "{detected_encoding}", but "{user_encoding}" was specified when '
-                'using encode(). The chart may not display correctly.'
-            )
-
-    @staticmethod
     def validate_aggregate_operation(aggregate: str) -> None:
         """Raises ValueError if the aggregate operation is invalid."""
 
