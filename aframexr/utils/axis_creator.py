@@ -4,7 +4,7 @@ import copy
 import polars as pl
 
 from polars import Series
-from typing import Literal
+from typing import Literal, Final
 
 from aframexr.utils.constants import *
 
@@ -13,31 +13,40 @@ AXIS_DICT_TEMPLATE = {'start': None, 'end': None, 'labels_pos': [], 'labels_valu
                       'labels_align': None}
 """Template for each axis."""
 
-_X_AXIS_LABELS_ROTATION = '-90 0 -90'
-_Y_AXIS_LABELS_ROTATION = '0 0 0'
-_Z_AXIS_LABELS_ROTATION = '-90 0 0'
+_X_AXIS_LABELS_ROTATION: Final = '-90 0 -90'
+_Y_AXIS_LABELS_ROTATION: Final = '0 0 0'
+_Z_AXIS_LABELS_ROTATION: Final = '-90 0 0'
 
 
-def _get_labels_coords_for_quantitative_axis(axis_size: float) -> Series:
+def _get_labels_coords_for_quantitative_axis(axis_data: Series, axis_size: float) -> Series:
     """Returns the coordinates for the labels of the quantitative axis."""
 
-    return pl.linear_space(  # Equally spaced values
-        start=START_LABEL_OFFSET,  # Offset for the
-        end=axis_size,
-        num_samples=NUM_OF_TICKS_IF_QUANTITATIVE_AXIS,
-        eager=True  # Returns a Series
-    )
+    if axis_data.dtype == pl.String:  # Axis data contains nominal values, but user wants to encode as quantitative
+        coords = pl.linear_space(  # Equally spaced values
+            start=START_LABEL_OFFSET,  # Offset for the lowest label (for not being on the ground)
+            end=axis_size,
+            num_samples=axis_data.n_unique(),  # Same number of ticks as unique categories
+            eager=True  # Returns a Series
+        )
+    else:
+        coords = pl.linear_space(  # Equally spaced values
+            start=START_LABEL_OFFSET,  # Offset for the lowest label (for not being on the ground)
+            end=axis_size,
+            num_samples=DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS,
+            eager=True  # Returns a Series
+        )
+    return coords
 
 def _get_labels_values_for_quantitateve_axis(axis_data: Series) -> Series:
     """Returns the values for the labels of the quantitative axis."""
 
-    if axis_data.dtype == pl.String:
-        axis_data = axis_data.cast(pl.Categorical).to_physical()
+    if axis_data.dtype == pl.String:  # Axis data contains nominal values, but user wants to encode as quantitative
+        return axis_data.unique(maintain_order=True)  # Return the same values
 
     max_value, min_value = axis_data.max(), axis_data.min()
 
     if max_value == min_value:
-        labels_values = pl.repeat(value=max_value, n=NUM_OF_TICKS_IF_QUANTITATIVE_AXIS, eager=True)
+        labels_values = pl.repeat(value=max_value, n=DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS, eager=True)
     else:
         if max_value < 0:  # All data is negative
             start = min_value
@@ -51,7 +60,7 @@ def _get_labels_values_for_quantitateve_axis(axis_data: Series) -> Series:
         labels_values = pl.linear_space(
             start=start,
             end=end,
-            num_samples=NUM_OF_TICKS_IF_QUANTITATIVE_AXIS,
+            num_samples=DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS,
             eager=True  # Returns a Series
         )
     return labels_values
@@ -104,7 +113,7 @@ class AxisCreator:
         axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
 
         if axis_encoding == 'quantitative':
-            coords = _get_labels_coords_for_quantitative_axis(axis_size)
+            coords = _get_labels_coords_for_quantitative_axis(axis_data, axis_size)
             labels_values = _get_labels_values_for_quantitateve_axis(axis_data)
         elif axis_encoding == 'nominal':
             coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
