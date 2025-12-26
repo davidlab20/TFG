@@ -422,6 +422,10 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
         # Color and theta
         self._process_channels('color', 'theta')
+
+        if self._theta_encoding != 'quantitative':
+            raise ValueError(f'Theta-channel data must be quantitative.')
+
         colors = self._set_elements_colors()
         theta_starts, theta_lengths = self._set_elements_theta()
 
