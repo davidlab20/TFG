@@ -33,33 +33,22 @@ def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
     soup = BeautifulSoup(point_chart.to_html(), 'lxml')
     points = soup.find_all('a-sphere')
 
-    # X-axis
-    if float(points[0]['position'].split()[0]) - float(points[0]['radius']) < 0:
-        return False  # The first point must not cross the y-axis
-    if float(points[-1]['position'].split()[0]) - float(points[-1]['radius']) > chart_width:
-        return False  # The last point must not cross chart width
+    for p in points:
+        pos = p['position'].split()
+        x, y, z = float(pos[0]), float(pos[1]), float(pos[2])
+        radius = float(p.get('radius', '0'))
 
-    # Y-axis
-    def _get_y_pos(point):
-        return float(point['position'].split()[1])
+        # X-axis
+        if (x - radius) < 0 or (x + radius) > chart_width:
+            return False
 
-    lowest_point = min(points, key=_get_y_pos)
-    highest_point = max(points, key=_get_y_pos)
-    if _get_y_pos(lowest_point) - float(lowest_point['radius']) < 0:
-        return False
-    if _get_y_pos(highest_point) + float(highest_point['radius']) > chart_height:
-        return False
+        # Y-axis
+        if (y - radius) < 0 or (y + radius) > chart_height:
+            return False
 
-    # Z-axis
-    def _get_z_pos(point):
-        return float(point['position'].split()[2])
-
-    closest_point = max(points, key=_get_z_pos)  # The less negative, the closer
-    deepest_point = min(points, key=_get_z_pos)  # The more negative, the deeper
-    if _get_z_pos(closest_point) + float(closest_point['radius']) > 0:  # Positive coordinates go closer
-        return False
-    if _get_z_pos(deepest_point) - float(deepest_point['radius']) < -chart_depth:  # Negative coordinates go deeper
-        return False
+        # Z-axis
+        if (z + radius) > 0 or (z - radius) < -chart_depth:
+            return False
     return True
 
 
