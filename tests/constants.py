@@ -11,7 +11,8 @@ URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  
 LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
-DATA_FORMATS = (DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
+ALL_NEGATIVE_DATA =  DATA.assign(sales=DATA['sales'] * -1)  # DATA with negative sales
+DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
 
 # Aggregates
 AGGREGATES = AVAILABLE_AGGREGATES
@@ -62,8 +63,7 @@ MARK_BAR_POINT_HEIGHTS = (0.5, 10, 20)
 NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS = (-1, 0)
 
 # Encodings OK
-MARK_BAR_ENCODINGS = ({'x': 'model', 'y': 'sales'}, {'x': 'model', 'z': 'motor'}, {'y': 'sales', 'z': 'motor'},
-                      {'x': 'model', 'y': 'sales', 'z': 'motor'})
+MARK_BAR_ENCODINGS = ({'x': 'model', 'y': 'sales'}, {'x': 'model', 'y': 'sales', 'z': 'motor'})
 MARK_POINT_ENCODINGS = ({'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'model', 'y': 'sales', 'size': 'doors'},
                         {'x': 'model', 'y': 'sales', 'color': 'motor', 'size': 'doors'}, *MARK_BAR_ENCODINGS)
 

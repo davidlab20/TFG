@@ -13,12 +13,20 @@ def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
     """Verify that the bars are well-placed in the x-axis (the base of the bar is in the x-axis)."""
 
     soup = BeautifulSoup(bars_chart.to_html(), 'html.parser')
+    x_axis_y_pos = float(soup.select('a-entity[line]')[0]['line'].split(';')[0].split()[2])  # Y position of x-axis line
+
     bars = soup.find_all('a-box')
     for b in bars:
         bar_height = float(b['height'])  # Total height of the bar
         y_axis_midpoint = float(b['position'].split()[1])  # Y-axis coordinate
-        if not math.isclose(bar_height, 2 * y_axis_midpoint):
-            return False  # The height of the bar must be twice the value of its y-axis midpoint
+
+        y_id = float(b['id'].split(' : ')[1])
+        if y_id >= 0:  # Bar represents positive value (above x-axis)
+            if not math.isclose(x_axis_y_pos, y_axis_midpoint - 0.5 * bar_height):
+                return False  # Y-pos minus half its height must be the same as the x-axis y-coordinate
+        else:  # Bar represents negative value (below x-axis)
+            if not math.isclose(x_axis_y_pos, y_axis_midpoint + 0.5 * bar_height):
+                return False  # Y-pos plus half its height must be the same as the x-axis y-coordinate
     return True
 
 def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
