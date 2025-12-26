@@ -18,6 +18,7 @@ def _all_theta_sum_is_360_degrees(pie_chart: aframexr.Chart) -> bool:
     for s in slices:
         total_theta_length += float(s['theta-length'])
     if not math.isclose(total_theta_length, 360):
+        print(f'\nDEBUG: total theta length must be 360 degrees.\n\t- Total theta length: {total_theta_length}.')
         return False
     return True
 
@@ -26,9 +27,9 @@ def _slices_are_well_placed(pie_chart: aframexr.Chart) -> bool:
 
     soup = BeautifulSoup(pie_chart.to_html(), 'lxml')
     slices = soup.find_all('a-cylinder')
-    position = slices[0]['position']
     for s in slices:
-        if s['position'] != position:
+        if s['position'] != '0 0 0':
+            print(f'\nDEBUG: one slice does not have position "0 0 0".\n\t- Position: {s['position']}.')
             return False
     return True
 

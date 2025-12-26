@@ -19,6 +19,9 @@ def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> boo
     for p in points:
         point_radius = float(p['radius'])  # Radius of the sphere
         if point_radius > max_radius:
+            print(f'\nDEBUG: point\'s radius exceed max radius.'
+                  f'\n\t- Point\'s radius: {point_radius}'
+                  f'\n\t- Max radius: {max_radius}')
             return False
     return True
 
@@ -40,14 +43,26 @@ def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
 
         # X-axis
         if (x - radius) < 0 or (x + radius) > chart_width:
+            print(f'\nDEBUG: point exceed X-axis dimensions.'
+                  f'\n\t- Point x-coordinate: {x}'
+                  f'\n\t- Point\'s radius: {radius}'
+                  f'\n\t- Chart width: {chart_width}')
             return False
 
         # Y-axis
         if (y - radius) < 0 or (y + radius) > chart_height:
+            print(f'\nDEBUG: point exceed Y-axis dimensions.'
+                  f'\n\t- Point\'s y-coordinate: {y}'
+                  f'\n\t- Point\'s radius: {radius}'
+                  f'\n\t- Chart height: {chart_height}')
             return False
 
         # Z-axis
         if (z + radius) > 0 or (z - radius) < -chart_depth:
+            print(f'\nDEBUG: point exceed Z-axis dimensions.'
+                  f'\n\t- Point\'s z-coordinate: {z}'
+                  f'\n\t- Point\'s radius: {radius}'
+                  f'\n\t- Chart depth (negative): {-chart_depth}')
             return False
     return True
 
