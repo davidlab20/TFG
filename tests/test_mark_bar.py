@@ -12,7 +12,7 @@ from tests.constants import *  # Constants used for testing
 def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
     """Verify that the bars are well-placed in the x-axis (the base of the bar is in the x-axis)."""
 
-    soup = BeautifulSoup(bars_chart.to_html(), 'html.parser')
+    soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
     x_axis_y_pos = float(soup.select('a-entity[line]')[0]['line'].split(';')[0].split()[2])  # Y position of x-axis line
 
     bars = soup.find_all('a-box')
@@ -34,7 +34,7 @@ def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
 
     max_height = float(bars_chart.to_dict().get('height', DEFAULT_CHART_HEIGHT))
 
-    soup = BeautifulSoup(bars_chart.to_html(), 'html.parser')
+    soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
     bars = soup.find_all('a-box')
     for b in bars:
         bar_height = float(b['height'])  # Total height of the bar

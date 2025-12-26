@@ -3,8 +3,9 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr import DEFAULT_CHART_HEIGHT, DEFAULT_CHART_DEPTH
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import DEFAULT_POINT_RADIUS
+from aframexr.utils.constants import DEFAULT_CHART_WIDTH, DEFAULT_POINT_RADIUS
 from tests.constants import *  # Constants used for testing
 
 
@@ -13,12 +14,52 @@ def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> boo
 
     max_radius = point_chart.to_dict()['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
 
-    soup = BeautifulSoup(point_chart.to_html(), 'html.parser')
+    soup = BeautifulSoup(point_chart.to_html(), 'lxml')
     points = soup.find_all('a-sphere')
     for p in points:
         point_radius = float(p['radius'])  # Radius of the sphere
         if point_radius > max_radius:
             return False
+    return True
+
+def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
+    """Verify that no point exceeds the volume dimensions of the chart."""
+
+    point_chart_specs = point_chart.to_dict()
+    chart_depth = point_chart_specs.get('depth', DEFAULT_CHART_DEPTH)
+    chart_height = point_chart_specs.get('height', DEFAULT_CHART_HEIGHT)
+    chart_width = point_chart_specs.get('width', DEFAULT_CHART_WIDTH)
+
+    soup = BeautifulSoup(point_chart.to_html(), 'lxml')
+    points = soup.find_all('a-sphere')
+
+    # X-axis
+    if float(points[0]['position'].split()[0]) - float(points[0]['radius']) < 0:
+        return False  # The first point must not cross the y-axis
+    if float(points[-1]['position'].split()[0]) - float(points[-1]['radius']) > chart_width:
+        return False  # The last point must not cross chart width
+
+    # Y-axis
+    def _get_y_pos(point):
+        return float(point['position'].split()[1])
+
+    lowest_point = min(points, key=_get_y_pos)
+    highest_point = max(points, key=_get_y_pos)
+    if _get_y_pos(lowest_point) - float(lowest_point['radius']) < 0:
+        return False
+    if _get_y_pos(highest_point) + float(highest_point['radius']) > chart_height:
+        return False
+
+    # Z-axis
+    def _get_z_pos(point):
+        return float(point['position'].split()[2])
+
+    closest_point = max(points, key=_get_z_pos)  # The less negative, the closer
+    deepest_point = min(points, key=_get_z_pos)  # The more negative, the deeper
+    if _get_z_pos(closest_point) + float(closest_point['radius']) > 0:  # Positive coordinates go closer
+        return False
+    if _get_z_pos(deepest_point) - float(closest_point['radius']) < -chart_depth:  # Negative coordinates go deeper
+        return False
     return True
 
 
@@ -31,6 +72,7 @@ class TestMarkPointOK(unittest.TestCase):
         point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
         point_chart.show()
         assert _every_radius_does_not_exceed_max_radius(point_chart)
+        assert _points_are_inside_chart_volume(point_chart)
 
     def test_data_format(self):
         """Mark point changing data format creation."""
@@ -39,6 +81,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(d).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_position(self):
         """Mark point changing position creation."""
@@ -47,6 +90,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA, position=p).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_position_format(self):
         """Mark point changing position format creation."""
@@ -55,6 +99,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA, position=p).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_rotation(self):
         """Mark point changing rotation creation."""
@@ -63,6 +108,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA, rotation=r).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_rotation_format(self):
         """Mark point changing rotation format creation."""
@@ -71,6 +117,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA, rotation=r).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_size(self):
         """Mark point changing size creation."""
@@ -79,6 +126,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA).mark_point(size=s).encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_height(self):
         """Mark point changing height creation."""
@@ -87,6 +135,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_encoding(self):
         """Mark point changing encoding creation."""
@@ -95,6 +144,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = aframexr.Chart(DATA).mark_point().encode(**e)
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_filter(self):
         """Mark point changing filter creation."""
@@ -104,6 +154,7 @@ class TestMarkPointOK(unittest.TestCase):
                 point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
                 point_chart.show()
                 assert _every_radius_does_not_exceed_max_radius(point_chart)
+                assert _points_are_inside_chart_volume(point_chart)
 
     def test_aggregate(self):
         """Mark point changing aggregate creation."""
@@ -113,6 +164,7 @@ class TestMarkPointOK(unittest.TestCase):
                          .transform_aggregate(new_field=f'{a}(sales)'))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_aggregate_position_rotation_size_height_encoding_filter(self):
         """Mark point changing position, rotation size, height, encoding and filter creation."""
@@ -123,6 +175,7 @@ class TestMarkPointOK(unittest.TestCase):
                            .transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
     def test_concatenating_charts(self):
         """Mark point concatenating charts creation."""
@@ -133,6 +186,7 @@ class TestMarkPointOK(unittest.TestCase):
                            .transform_filter(f))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
 
 
 class TestMarkPointError(unittest.TestCase):

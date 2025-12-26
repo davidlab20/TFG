@@ -58,7 +58,7 @@ NOT_VALID_MARK_ARC_ENCODINGS = ({'color': 'model'}, {'theta': 'sales'}, {'x': 'm
 MARK_BAR_POINT_SIZES = (0.5, 1, 1.5)
 
 # Heights OK
-MARK_BAR_POINT_HEIGHTS = (0.5, 10, 20)
+MARK_BAR_POINT_HEIGHTS = (5, 10, 20)
 
 # Sizes and heights ERROR
 NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS = (-1, 0)
