@@ -12,7 +12,8 @@ LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV fil
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 ALL_NEGATIVE_DATA =  DATA.assign(sales=DATA['sales'] * -1)  # DATA with negative sales
-DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
+POSITVE_NEGATIVE_DATA = DATA.assign(sales=DATA['sales'] * ([1, -1] * len(DATA))[:len(DATA)])  # Alternate signs
+DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
 
 # Aggregates
 AGGREGATES = AVAILABLE_AGGREGATES
