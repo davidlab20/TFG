@@ -58,7 +58,7 @@ def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
     deepest_point = min(points, key=_get_z_pos)  # The more negative, the deeper
     if _get_z_pos(closest_point) + float(closest_point['radius']) > 0:  # Positive coordinates go closer
         return False
-    if _get_z_pos(deepest_point) - float(closest_point['radius']) < -chart_depth:  # Negative coordinates go deeper
+    if _get_z_pos(deepest_point) - float(deepest_point['radius']) < -chart_depth:  # Negative coordinates go deeper
         return False
     return True
 
