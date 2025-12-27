@@ -21,6 +21,9 @@ _Z_AXIS_LABELS_ROTATION: Final = '-90 0 0'
 def _get_labels_coords_for_quantitative_axis(axis_data: Series, axis_size: float) -> Series:
     """Returns the coordinates for the labels of the quantitative axis."""
 
+    if (axis_data == axis_data[0]).all():  # All the values are the same
+        return Series([axis_data[0]])  # Only one tick is placed in the axis
+
     if axis_data.dtype == pl.String:  # Axis data contains nominal values, but user wants to encode as quantitative
         coords = pl.linear_space(  # Equally spaced values
             start=START_LABEL_OFFSET,  # Offset for the lowest label (for not being on the ground)
@@ -45,8 +48,8 @@ def _get_labels_values_for_quantitateve_axis(axis_data: Series) -> Series:
 
     max_value, min_value = axis_data.max(), axis_data.min()
 
-    if max_value == min_value:
-        labels_values = pl.repeat(value=max_value, n=DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS, eager=True)
+    if max_value == min_value:  # All the values are the same
+        labels_values = Series([axis_data[0]])  # Only one tick is placed in the axis
     else:
         if max_value < 0:  # All data is negative
             start = min_value
