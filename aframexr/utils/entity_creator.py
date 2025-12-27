@@ -471,8 +471,8 @@ class BarChartCreator(XYZAxisChannelChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._bar_size_if_nominal_axis: float = chart_specs['mark'].get('size', DEFAULT_BAR_AXIS_SIZE) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_BAR_AXIS_SIZE
+        self._bar_size_if_nominal_axis: float = chart_specs['mark'].get('size') \
+            if isinstance(chart_specs['mark'], dict) else None
 
     def _set_bars_coords_size_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                               encoding_type: str) -> tuple[Series, Series]:
@@ -504,12 +504,25 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                 )
                 bars_axis_size = 2 * coordinates.abs()
             elif encoding_type == 'nominal':
+                if self._bar_size_if_nominal_axis is not None:   # User defined bars' size
+                    if self._bar_size_if_nominal_axis * axis_data.n_unique() > axis_size:  # Bars would overlap
+                        bar_size = axis_size / axis_data.n_unique()  # Adjust bars' axis size automatically
+                        warnings.warn(
+                            f'Defined bar size will make bars overlap on the {axis_name}-axis, adjusting automatically '
+                            f'for this axis. Consider changing {bars_size_alias}.'
+                        )
+
+                    else:  # Bars do not overlap with user's defined size
+                        bar_size = self._bar_size_if_nominal_axis  # Use user's defined size
+                else:  # User did not define bars' size
+                    bar_size = axis_size / axis_data.n_unique()  # Adjust bars' axis size automatically
+
                 coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=axis_data, axis_size=axis_size,
-                    extremes_offset=self._bar_size_if_nominal_axis / 2
+                    extremes_offset=bar_size / 2
                 )
                 bars_axis_size = pl.repeat(
-                    value=self._bar_size_if_nominal_axis,
+                    value=bar_size,
                     n=axis_data.len(),
                     eager=True  # Returns a Series
                 )
