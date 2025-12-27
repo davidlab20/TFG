@@ -19,7 +19,6 @@ from aframexr.api.aggregate import AggregatedFieldDef
 from aframexr.api.data import Data, URLData
 from aframexr.api.encoding import Encoding, X, Y, Z
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import *
 from aframexr.utils.scene_creator import SceneCreator
 from aframexr.utils.validators import AframeXRValidator
 
