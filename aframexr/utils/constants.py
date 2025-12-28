@@ -29,7 +29,7 @@ ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary wi
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
 DEFAULT_CHART_ROTATION = '0 0 0'  # Default chart rotation
-DEFAULT_CHART_DEPTH = 10  # Default depth of the chart
+DEFAULT_CHART_DEPTH = 5  # Default depth of the chart
 DEFAULT_CHART_HEIGHT = 10  # Default height of the chart
 DEFAULT_CHART_WIDTH = 10  # Default width of the chart
 
