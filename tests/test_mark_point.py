@@ -122,20 +122,29 @@ class TestMarkPointOK(unittest.TestCase):
             assert _every_radius_does_not_exceed_max_radius(point_chart)
             assert _points_are_inside_chart_volume(point_chart)
 
+    def test_height(self):
+        """Mark point changing height creation."""
+
+        for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:
+            point_chart = aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
+            point_chart.show()
+            assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
+
+    def test_width(self):
+        """Mark point changing width creation."""
+
+        for w in MARK_BAR_POINT_HEIGHTS_WIDTHS:
+            point_chart = aframexr.Chart(DATA, width=w).mark_point().encode(x='model', y='sales')
+            point_chart.show()
+            assert _every_radius_does_not_exceed_max_radius(point_chart)
+            assert _points_are_inside_chart_volume(point_chart)
+
     def test_size(self):
         """Mark point changing size creation."""
 
         for s in MARK_BAR_POINT_SIZES:
             point_chart = aframexr.Chart(DATA).mark_point(size=s).encode(x='model', y='sales')
-            point_chart.show()
-            assert _every_radius_does_not_exceed_max_radius(point_chart)
-            assert _points_are_inside_chart_volume(point_chart)
-
-    def test_height(self):
-        """Mark point changing height creation."""
-
-        for h in MARK_BAR_POINT_HEIGHTS:
-            point_chart = aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
             assert _points_are_inside_chart_volume(point_chart)
@@ -169,13 +178,14 @@ class TestMarkPointOK(unittest.TestCase):
             assert _every_radius_does_not_exceed_max_radius(point_chart)
             assert _points_are_inside_chart_volume(point_chart)
 
-    def test_aggregate_position_rotation_size_height_encoding_filter(self):
-        """Mark point changing position, rotation size, height, encoding and filter creation."""
+    def test_aggregate_position_rotation_size_height_width_encoding_filter(self):
+        """Mark point changing position, rotation size, height, width, encoding and filter creation."""
 
-        for a, p, r, s, h, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS,
-                                       MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
-            point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_point(size=s).encode(**e)
-                           .transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
+        for a, p, r, s, h, w, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
+                                          MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
+                                          MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
+            point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_point(size=s)
+                           .encode(**e).transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart.show()
             assert _every_radius_does_not_exceed_max_radius(point_chart)
             assert _points_are_inside_chart_volume(point_chart)
@@ -183,7 +193,7 @@ class TestMarkPointOK(unittest.TestCase):
     def test_concatenating_charts(self):
         """Mark point concatenating charts creation."""
 
-        for p, r, s, h, e, f in zip(POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS,
+        for p, r, s, h, e, f in zip(POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS_WIDTHS,
                                     MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
             point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_point(size=s).encode(**e)
                            .transform_filter(f))
@@ -224,7 +234,7 @@ class TestMarkPointError(unittest.TestCase):
     def test_size_error(self):
         """Mark point size error."""
 
-        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS:
+        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_point(size=s).encode(x='model', y='sales')
             assert str(error.exception) == 'The size must be greater than 0.'
@@ -232,10 +242,18 @@ class TestMarkPointError(unittest.TestCase):
     def test_height_error(self):
         """Mark point height error."""
 
-        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS:
+        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             assert str(error.exception) == 'The height must be greater than 0.'
+
+    def test_width_error(self):
+        """Mark point width error."""
+
+        for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+            with self.assertRaises(ValueError) as error:
+                aframexr.Chart(DATA, width=w).mark_point().encode(x='model', y='sales')
+            assert str(error.exception) == 'The width must be greater than 0.'
 
     def test_encoding_error(self):
         """Mark point encoding error."""

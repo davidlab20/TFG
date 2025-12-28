@@ -110,20 +110,29 @@ class TestMarkBarOK(unittest.TestCase):
             assert _bars_bases_are_on_x_axis(bars_chart)
             assert _bars_height_does_not_exceed_max_height(bars_chart)
 
+    def test_height(self):
+        """Bars chart changing height creation."""
+
+        for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:
+            bars_chart = aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
+            bars_chart.show()
+            assert _bars_bases_are_on_x_axis(bars_chart)
+            assert _bars_height_does_not_exceed_max_height(bars_chart)
+
+    def test_width(self):
+        """Bars chart changing width creation."""
+
+        for w in MARK_BAR_POINT_HEIGHTS_WIDTHS:
+            bars_chart = aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
+            bars_chart.show()
+            assert _bars_bases_are_on_x_axis(bars_chart)
+            assert _bars_height_does_not_exceed_max_height(bars_chart)
+
     def test_size(self):
         """Bars chart changing size creation."""
 
         for s in MARK_BAR_POINT_SIZES:
             bars_chart = aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
-            bars_chart.show()
-            assert _bars_bases_are_on_x_axis(bars_chart)
-            assert _bars_height_does_not_exceed_max_height(bars_chart)
-
-    def test_height(self):
-        """Bars chart changing height creation."""
-
-        for h in MARK_BAR_POINT_HEIGHTS:
-            bars_chart = aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
             assert _bars_bases_are_on_x_axis(bars_chart)
             assert _bars_height_does_not_exceed_max_height(bars_chart)
@@ -157,12 +166,13 @@ class TestMarkBarOK(unittest.TestCase):
             assert _bars_bases_are_on_x_axis(bar_chart)
             assert _bars_height_does_not_exceed_max_height(bar_chart)
 
-    def test_aggregate_position_rotation_size_height_encoding_filter(self):
-        """Bars chart changing position, rotation size, height, encoding and filter creation."""
+    def test_aggregate_position_rotation_size_height_width_encoding_filter(self):
+        """Bars chart changing position, rotation size, height, width, encoding and filter creation."""
 
-        for a, p, r, s, h, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS,
-                                       MARK_BAR_ENCODINGS, FILTER_EQUATIONS):
-            bars_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_bar(size=s).encode(**e)
+        for a, p, r, s, h, w, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
+                                          MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
+                                          MARK_BAR_ENCODINGS, FILTER_EQUATIONS):
+            bars_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_bar(size=s).encode(**e)
                           .transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             bars_chart.show()
             assert _bars_bases_are_on_x_axis(bars_chart)
@@ -201,7 +211,7 @@ class TestMarkBarError(unittest.TestCase):
     def test_size_error(self):
         """Bars chart size error."""
 
-        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS:
+        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
             assert str(error.exception) == 'The size must be greater than 0.'
@@ -209,10 +219,18 @@ class TestMarkBarError(unittest.TestCase):
     def test_height_error(self):
         """Bars chart height error."""
 
-        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS:
+        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
             assert str(error.exception) == 'The height must be greater than 0.'
+
+    def test_width_error(self):
+        """Bars chart width error."""
+
+        for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+            with self.assertRaises(ValueError) as error:
+                aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
+            assert str(error.exception) == 'The width must be greater than 0.'
 
     def test_encoding_error(self):
         """Bars chart encoding error."""
