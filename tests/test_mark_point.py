@@ -3,9 +3,8 @@ import unittest
 
 from bs4 import BeautifulSoup
 
-from aframexr import DEFAULT_CHART_HEIGHT, DEFAULT_CHART_DEPTH
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import DEFAULT_CHART_WIDTH, DEFAULT_POINT_RADIUS
+from aframexr.utils.constants import DEFAULT_CHART_DEPTH, DEFAULT_POINT_RADIUS
 from tests.constants import *  # Constants used for testing
 
 
@@ -28,12 +27,12 @@ def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> boo
 def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
     """Verify that no point exceeds the volume dimensions of the chart."""
 
-    point_chart_specs = point_chart.to_dict()
-    chart_depth = point_chart_specs.get('depth', DEFAULT_CHART_DEPTH)
-    chart_height = point_chart_specs.get('height', DEFAULT_CHART_HEIGHT)
-    chart_width = point_chart_specs.get('width', DEFAULT_CHART_WIDTH)
-
     soup = BeautifulSoup(point_chart.to_html(), 'lxml')
+
+    chart_depth = DEFAULT_CHART_DEPTH
+    chart_height = float(soup.select('a-entity[line]')[1]['line'].split(';')[1].split()[2])  # End of the y-axis line
+    chart_width = float(soup.select('a-entity[line]')[0]['line'].split(';')[1].split()[1])  # End of the x-axis line
+
     points = soup.find_all('a-sphere')
 
     for p in points:
