@@ -220,20 +220,22 @@ class NonChannelChartCreator(ChartCreator):
 
 # Second-level subclasses of ChartCreator.
 class XYZAxisChannelChartCreator(ChannelChartCreator):
-    """Chart creator base class for charts that have channels and XYZ axis."""
+    """
+    Chart creator base class for charts that have channels and XYZ axis.
+
+    Notes
+    -----
+    XYZ-axes are processed instantly when creating this class or derivatives.
+    """
 
     _AXIS_SIZE_MAP: Final = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
     _AXIS_BAR_SIZE_ALIAS_MAP: Final = {'x': 'width', 'y': 'height', 'z': 'depth'}
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._chart_depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)  # Maximum depth of the chart
-        self._chart_height = chart_specs.get('height', DEFAULT_CHART_HEIGHT)  # Maximum height of the chart
-        self._chart_width = chart_specs.get('width', DEFAULT_CHART_WIDTH)  # Maximum width of the chart
-
-        self._base_x -= self._chart_width / 2  # Correct position of x-axis
-        self._base_y -= self._chart_height / 2  # Correct position of y-axis
-        self._base_z += self._chart_depth / 2  # Correct position of z-axis
+        self._chart_depth = chart_specs.get('depth')  # Maximum depth of the chart
+        self._chart_height = chart_specs.get('height')  # Maximum height of the chart
+        self._chart_width = chart_specs.get('width')  # Maximum width of the chart
 
         self._x_elements_coordinates: Series | None = None
         self._x_data: Series | None = None
@@ -249,6 +251,39 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         self._z_data: Series | None = None
         self._z_encoding: str = ''
         self._z_offset: float = 0
+
+        self._process_channels('x', 'y', 'z')  # Process and set self._{axis} attributes
+
+    def _correct_axes_position(self, elem_size: float | None) -> None:
+        """
+        Corrects the axes' position for inner the calculations and processing.
+        Must be called by child classes when initiating.
+        """
+
+        def _calculate_axis_size(axis_data: Series, default_axis_size: float) -> float:
+            if elem_size is None or axis_data is None:  # User did not define bars' size, or there is no data
+                return default_axis_size  # Set default value
+
+            if _translate_dtype_into_encoding(axis_data.dtype) == 'quantitative':
+                return default_axis_size  # User did not define bars' size of axis is quantitative
+
+            return elem_size * axis_data.n_unique()
+
+        # X-axis
+        if self._chart_width is None:  # User did not define chart width
+            self._chart_width = _calculate_axis_size(self._x_data, DEFAULT_CHART_WIDTH)
+
+        # Y-axis
+        if self._chart_height is None:  # User did not define chart height
+            self._chart_height = _calculate_axis_size(self._y_data, DEFAULT_CHART_HEIGHT)
+
+        # Z-axis
+        if self._chart_depth is None:  # User did not define chart depth
+            self._chart_depth = _calculate_axis_size(self._z_data, DEFAULT_CHART_DEPTH)
+
+        self._base_x -= self._chart_width / 2  # Correct position of x-axis
+        self._base_y -= self._chart_height / 2  # Correct position of y-axis
+        self._base_z += self._chart_depth / 2  # Correct position of z-axis
 
     def get_axis_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
@@ -473,6 +508,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         super().__init__(chart_specs)
         self._bar_size_if_nominal_axis: float = chart_specs['mark'].get('size') \
             if isinstance(chart_specs['mark'], dict) else None
+        self._correct_axes_position(elem_size=self._bar_size_if_nominal_axis)
 
     def _set_bars_coords_size_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                               encoding_type: str) -> tuple[Series, Series]:
@@ -544,8 +580,6 @@ class BarChartCreator(XYZAxisChannelChartCreator):
             return []
 
         # XYZ-axis
-        self._process_channels('x', 'y', 'z')  # Process and set self._{axis} attributes of parent class
-
         x_coordinates, bar_widths = self._set_bars_coords_size_in_axis(
             axis_data=self._x_data, axis_name='x', encoding_type=self._x_encoding
         )
@@ -644,6 +678,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         super().__init__(chart_specs)
         self._max_radius: float = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_RADIUS
+        self._correct_axes_position(elem_size=self._max_radius)
 
         self._color_data: Series | None = None
         self._color_encoding: str = ''
@@ -731,7 +766,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             return []
 
         # Channels
-        self._process_channels('color', 'size', 'x', 'y', 'z')  # Process and set self._{ch} attributes
+        self._process_channels('color', 'size')  # Process and set self._{ch} attributes
         colors = self._set_points_colors()
         radius = self._set_points_radius()
 
