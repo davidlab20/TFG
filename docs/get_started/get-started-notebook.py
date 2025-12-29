@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.17.8"
+__generated_with = "0.18.4"
 app = marimo.App(width="medium")
 
 
@@ -26,10 +26,10 @@ def _(aframexr):
     data = aframexr.URLData(url)  # Create an URLData object
 
     # Create the chart
-    chart = aframexr.Chart(data, position="-4 0 -8").mark_bar().encode(x='model', y='sales')
+    chart = aframexr.Chart(data, position="0 5 -11").mark_bar().encode(x='model', y='sales')
 
     # Display the chart in the notebook
-    chart.show()
+    chart  # Can also use chart.show()
     return
 
 

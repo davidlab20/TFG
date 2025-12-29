@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.18.1"
+__generated_with = "0.18.4"
 app = marimo.App(width="medium")
 
 
@@ -22,7 +22,7 @@ def _():
 
 @app.cell
 def _(aframexr, data):
-    non_rotated_chart = aframexr.Chart(data, position='-7 0 -10').mark_point().encode(x='model', y='sales')
+    non_rotated_chart = aframexr.Chart(data, position='0 5 -11', depth=2).mark_point().encode(x='model', y='sales')
     non_rotated_chart.show()
     return
 
@@ -30,7 +30,7 @@ def _(aframexr, data):
 @app.cell
 def _(aframexr, data):
     # Rotation format is 'x y z' in degrees
-    rotated_chart = aframexr.Chart(data, position='-7 0 -15', rotation='10 -20 10').mark_point().encode(x='model', y='sales')
+    rotated_chart = aframexr.Chart(data, position='0 5 -12', rotation='10 -20 10', depth=2).mark_point().encode(x='model', y='sales')
     rotated_chart.show()
     return
 

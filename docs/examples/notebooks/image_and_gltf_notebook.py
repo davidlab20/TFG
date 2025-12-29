@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.18.3"
+__generated_with = "0.18.4"
 app = marimo.App(width="medium")
 
 
@@ -22,7 +22,7 @@ def _():
 def _(aframexr):
     image_url = aframexr.URLData('https://davidlab20.github.io/TFG/imgs/logo.png')
 
-    image_chart = aframexr.Chart(image_url, position='0 4 -6').mark_image(height=4, width=4)
+    image_chart = aframexr.Chart(image_url, position='0 4 -5').mark_image(height=4, width=4)
     image_chart.show()
     return
 

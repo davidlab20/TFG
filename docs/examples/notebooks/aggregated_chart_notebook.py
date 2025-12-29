@@ -1,7 +1,7 @@
 import marimo
 
-__generated_with = "0.18.3"
-app = marimo.App(width="medium")
+__generated_with = "0.18.4"
+app = marimo.App(width="medium", html_head_file="")
 
 
 @app.cell(hide_code=True)
@@ -26,22 +26,22 @@ def _(aframexr):
 
 @app.cell
 def _(aframexr, csv_data):
-    non_aggregate_chart = aframexr.Chart(csv_data, position='-8 0 -10').mark_bar().encode(x='model', y='sales')
+    non_aggregate_chart = aframexr.Chart(csv_data, position='0 5 -11').mark_bar().encode(x='model', y='sales')
     non_aggregate_chart.show()
     return
 
 
 @app.cell
 def _(aframexr, csv_data):
-    aggregate_chart1 = aframexr.Chart(csv_data, position='-8 0 -10').mark_bar().encode(x='model', y='mean(sales)')
+    aggregate_chart1 = aframexr.Chart(csv_data, position='0 5 -11').mark_bar().encode(x='model', y='mean(sales)')
     aggregate_chart1.show()
     return
 
 
 @app.cell
 def _(aframexr, csv_data):
-    aggregate_chart2 = aframexr.Chart(csv_data, position='-8 0 -10').mark_bar().encode(x='model', y='mean_sales').transform_aggregate(
-        mean_sales='mean(sales)',  # Must be the same name as in encoding()
+    aggregate_chart2 = aframexr.Chart(csv_data, position='0 5 -11').mark_bar().encode(x='model', y='mean_sales').transform_aggregate(
+        mean_sales='mean(sales)',  # Must be the same name as used in the encoding() argument
     )
     aggregate_chart2.show()
     return

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.17.8"
+__generated_with = "0.18.4"
 app = marimo.App(width="medium")
 
 
@@ -72,7 +72,7 @@ def _(aframexr, json, urllib):
         data_json = json.load(file_data)
         data2 = aframexr.Data(data_json)
 
-    bars = aframexr.Chart(data2, position="-4 0 -8").mark_bar().encode(x='model', y='sales')
+    bars = aframexr.Chart(data2, position="0 5 -11").mark_bar().encode(x='model', y='sales')
     bars.show()
     return (bars,)
 

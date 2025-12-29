@@ -1,7 +1,7 @@
 import marimo
 
-__generated_with = "0.17.8"
-app = marimo.App()
+__generated_with = "0.18.4"
+app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
@@ -45,14 +45,14 @@ def _():
 
 @app.cell
 def _(aframexr, data):
-    pieChart = aframexr.Chart(data, position="-3 5 -5").mark_arc().encode(color='model', theta='sales')
+    pieChart = aframexr.Chart(data, position="-6 5 -8", depth=2).mark_arc().encode(color='model', theta='sales')
     pieChart.show()
     return (pieChart,)
 
 
 @app.cell
 def _(aframexr, data):
-    barsChart = aframexr.Chart(data, position="0 0 -8").mark_bar().encode(x='model', y='sales')
+    barsChart = aframexr.Chart(data, position="4 5 -11").mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return (barsChart,)
 
@@ -68,10 +68,10 @@ def _(barsChart, pieChart):
 @app.cell
 def _(aframexr, data):
     # Concatenation of charts
-    chart1 = aframexr.Chart(data, position='-5 10 -8').mark_arc().encode(color='model', theta='sales')
-    chart2 = aframexr.Chart(data, position='5 10 -8').mark_arc().encode(color='model', theta='sales')
-    chart3 = aframexr.Chart(data, position='-5 5 -8').mark_arc().encode(color='model', theta='sales')
-    chart4 = aframexr.Chart(data, position='5 5 -8').mark_arc().encode(color='model', theta='sales')
+    chart1 = aframexr.Chart(data, position='-4 7 -10').mark_arc().encode(color='model', theta='sales')
+    chart2 = aframexr.Chart(data, position='4 7 -10').mark_arc().encode(color='model', theta='sales')
+    chart3 = aframexr.Chart(data, position='-4 2 -10').mark_arc().encode(color='model', theta='sales')
+    chart4 = aframexr.Chart(data, position='4 2 -10').mark_arc().encode(color='model', theta='sales')
     final_chart = chart1 + chart2 + chart3 + chart4
     final_chart.show()
     return
