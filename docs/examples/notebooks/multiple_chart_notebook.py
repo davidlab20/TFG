@@ -52,7 +52,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, data):
-    barsChart = aframexr.Chart(data, position="4 5 -11").mark_bar().encode(x='model', y='sales')
+    barsChart = aframexr.Chart(data, position="4 5 -14").mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return (barsChart,)
 
@@ -68,10 +68,10 @@ def _(barsChart, pieChart):
 @app.cell
 def _(aframexr, data):
     # Concatenation of charts
-    chart1 = aframexr.Chart(data, position='-4 7 -10').mark_arc().encode(color='model', theta='sales')
-    chart2 = aframexr.Chart(data, position='4 7 -10').mark_arc().encode(color='model', theta='sales')
-    chart3 = aframexr.Chart(data, position='-4 2 -10').mark_arc().encode(color='model', theta='sales')
-    chart4 = aframexr.Chart(data, position='4 2 -10').mark_arc().encode(color='model', theta='sales')
+    chart1 = aframexr.Chart(data, position='-4 7 -10', depth=2).mark_arc().encode(color='model', theta='sales')
+    chart2 = aframexr.Chart(data, position='4 7 -10', depth=2).mark_arc().encode(color='model', theta='sales')
+    chart3 = aframexr.Chart(data, position='-4 2 -10', depth=2).mark_arc().encode(color='model', theta='sales')
+    chart4 = aframexr.Chart(data, position='4 2 -10', depth=2).mark_arc().encode(color='model', theta='sales')
     final_chart = chart1 + chart2 + chart3 + chart4
     final_chart.show()
     return

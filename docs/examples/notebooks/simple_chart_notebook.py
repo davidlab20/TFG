@@ -49,7 +49,7 @@ def _():
 @app.cell
 def _(aframexr, data):
     # Pie chart with data as Data object
-    pieChart = aframexr.Chart(data, position="0 5 -7").mark_arc().encode(color='model', theta='sales')
+    pieChart = aframexr.Chart(data, position="0 5 -10").mark_arc().encode(color='model', theta='sales')
     pieChart.show()
     return
 
@@ -57,7 +57,7 @@ def _(aframexr, data):
 @app.cell
 def _(aframexr, url_data):
     # Pie chart with data as URLData object
-    pieChartJSON = aframexr.Chart(url_data, position="0 5 -7").mark_arc().encode(color='model', theta='sales')
+    pieChartJSON = aframexr.Chart(url_data, position="0 5 -10").mark_arc().encode(color='model', theta='sales')
     pieChartJSON.show()
     return
 
@@ -65,7 +65,7 @@ def _(aframexr, url_data):
 @app.cell
 def _(aframexr, data):
     # Bars chart with data as Data object
-    barsChart = aframexr.Chart(data, position="0 5 -11").mark_bar().encode(x='model', y='sales')
+    barsChart = aframexr.Chart(data, position="0 5 -14").mark_bar().encode(x='model', y='sales')
     barsChart.show()
     return
 
@@ -73,7 +73,7 @@ def _(aframexr, data):
 @app.cell
 def _(aframexr, url_data):
     # Bars chart with data as URLData object
-    barsChartJSON = aframexr.Chart(url_data, position="0 5 -11").mark_bar().encode(x='model', y='sales')
+    barsChartJSON = aframexr.Chart(url_data, position="0 5 -14").mark_bar().encode(x='model', y='sales')
     barsChartJSON.show()
     return
 
