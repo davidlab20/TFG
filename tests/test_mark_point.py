@@ -30,8 +30,8 @@ def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
     soup = BeautifulSoup(point_chart.to_html(), 'lxml')
 
     chart_depth = DEFAULT_CHART_DEPTH
-    chart_height = float(soup.select('a-entity[line]')[1]['line'].split(';')[1].split()[2])  # End of the y-axis line
-    chart_width = float(soup.select('a-entity[line]')[0]['line'].split(';')[1].split()[1])  # End of the x-axis line
+    chart_height = float(soup.select('a-entity[line]')[3]['line'].split(';')[1].split()[2])  # End of the y-axis line
+    chart_width = float(soup.select('a-entity[line]')[2]['line'].split(';')[1].split()[1])  # End of the x-axis line
 
     points = soup.find_all('a-sphere')
 

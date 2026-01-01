@@ -13,7 +13,7 @@ def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
     """Verify that the bars are well-placed in the x-axis (the base of the bar is in the x-axis)."""
 
     soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
-    x_axis_y_pos = float(soup.select('a-entity[line]')[0]['line'].split(';')[0].split()[2])  # Y position of x-axis line
+    x_axis_y_pos = float(soup.select('a-entity[line]')[2]['line'].split(';')[0].split()[2])  # Y position of x-axis line
 
     bars = soup.find_all('a-box')
     for b in bars:
