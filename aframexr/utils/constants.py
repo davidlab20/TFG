@@ -29,9 +29,9 @@ ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary wi
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
 DEFAULT_CHART_ROTATION = '0 0 0'  # Default chart rotation
-DEFAULT_CHART_DEPTH = 5  # Default depth of the chart
-DEFAULT_CHART_HEIGHT = 10  # Default height of the chart
-DEFAULT_CHART_WIDTH = 10  # Default width of the chart
+DEFAULT_CHART_DEPTH = 2  # Default depth of the chart
+DEFAULT_CHART_HEIGHT = 4  # Default height of the chart
+DEFAULT_CHART_WIDTH = 4  # Default width of the chart
 
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
@@ -53,5 +53,5 @@ DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 # Point chart
 DEFAULT_POINT_COLOR = "blue"  # Default point color
 DEFAULT_POINT_HEIGHT_WHEN_NO_Y_AXIS = 2  # Default point height (if not field for y-axis specified)
-DEFAULT_POINT_RADIUS = 1  # Default point radius
-DEFAULT_POINT_CENTER_SEPARATION = 2  # Default separation between points' center
+DEFAULT_POINT_RADIUS = 0.5  # Default point radius
+DEFAULT_POINT_CENTER_SEPARATION = 1  # Default separation between points' center
