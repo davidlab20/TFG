@@ -26,22 +26,22 @@ def _(aframexr):
 
 @app.cell
 def _(aframexr, csv_data):
-    non_aggregate_chart = aframexr.Chart(csv_data, position='0 5 -14').mark_bar().encode(x='model', y='sales')
+    non_aggregate_chart = aframexr.Chart(csv_data, position='0 2 -5').mark_bar().encode(x='model', y='sales')
     non_aggregate_chart.show()
     return
 
 
 @app.cell
 def _(aframexr, csv_data):
-    aggregate_chart1 = aframexr.Chart(csv_data, position='0 5 -14').mark_bar().encode(x='model', y='mean(sales)')
+    aggregate_chart1 = aframexr.Chart(csv_data, position='0 2 -5').mark_bar().encode(x='model', y='mean(sales)')
     aggregate_chart1.show()
     return
 
 
 @app.cell
 def _(aframexr, csv_data):
-    aggregate_chart2 = aframexr.Chart(csv_data, position='0 5 -14').mark_bar().encode(x='model', y='mean_sales').transform_aggregate(
-        mean_sales='mean(sales)',  # Must be the same name as used in the encoding() argument
+    aggregate_chart2 = aframexr.Chart(csv_data, position='0 2 -5').mark_bar().encode(x='model', y='mean_sales').transform_aggregate(
+        mean_sales='mean(sales)',  # Must be the same name as used in the encoding() argument, order can change
     )
     aggregate_chart2.show()
     return

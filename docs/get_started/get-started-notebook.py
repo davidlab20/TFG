@@ -26,7 +26,7 @@ def _(aframexr):
     data = aframexr.URLData(url)  # Create an URLData object
 
     # Create the chart
-    chart = aframexr.Chart(data, position="0 5 -14").mark_bar().encode(x='model', y='sales')
+    chart = aframexr.Chart(data, position="0 2 -5").mark_bar().encode(x="model", y="sales")
 
     # Display the chart in the notebook
     chart  # Can also use chart.show()

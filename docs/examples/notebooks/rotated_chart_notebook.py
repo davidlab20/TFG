@@ -22,7 +22,7 @@ def _():
 
 @app.cell
 def _(aframexr, data):
-    non_rotated_chart = aframexr.Chart(data, position='0 5 -11', depth=2).mark_point().encode(x='model', y='sales')
+    non_rotated_chart = aframexr.Chart(data, position='0 2 -5', depth=1).mark_point(size=0.4).encode(x='model', y='sales')
     non_rotated_chart.show()
     return
 
@@ -30,7 +30,7 @@ def _(aframexr, data):
 @app.cell
 def _(aframexr, data):
     # Rotation format is 'x y z' in degrees
-    rotated_chart = aframexr.Chart(data, position='0 5 -12', rotation='10 -20 10', depth=2).mark_point().encode(x='model', y='sales')
+    rotated_chart = aframexr.Chart(data, position='0 2 -6', rotation='10 -20 10', depth=1).mark_point(size=0.4).encode(x='model', y='sales')
     rotated_chart.show()
     return
 

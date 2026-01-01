@@ -2,7 +2,7 @@
     "data": {
         "url": "https://davidlab20.github.io/TFG/examples/data/data.json"
     },
-    "position": "0 5 -14",
+    "position": "0 2 -6",
     "mark": {
         "type": "bar",
         "width": 1.5

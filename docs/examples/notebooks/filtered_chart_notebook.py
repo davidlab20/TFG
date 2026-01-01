@@ -72,7 +72,7 @@ def _(aframexr, json, urllib):
         data_json = json.load(file_data)
         data2 = aframexr.Data(data_json)
 
-    bars = aframexr.Chart(data2, position="0 5 -14").mark_bar().encode(x='model', y='sales')
+    bars = aframexr.Chart(data2, position='0 2 -5').mark_bar().encode(x='model', y='sales')
     bars.show()
     return (bars,)
 
