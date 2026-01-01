@@ -10,9 +10,18 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
+        
+        <!-- VR controllers -->
+        <a-entity id="right-hand" tracked-controls="controller: true; hand: right"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.5"></a-entity>
+        
+        <a-entity id="left-hand" tracked-controls="controller: true; hand: left"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.5"></a-entity>
     
         <!-- Camera -->
-        <a-camera position="0 4 0" active="true">
+        <a-camera position="0 2 0" active="true">
 
             <!-- Element information -->
             <a-entity id="HUD" position="-4.5 2 -4" visible="false">
