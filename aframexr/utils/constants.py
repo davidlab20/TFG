@@ -39,7 +39,7 @@ DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if 
 DEFAULT_BAR_AXIS_SIZE = 1  # Default bar size in the nominal axes and in the axis that are not defined.
 
 # Pie chart
-DEFAULT_PIE_RADIUS = 2  # Default radius of the pie chart
+DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
 
