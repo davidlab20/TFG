@@ -10,29 +10,32 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
-        
-        <!-- VR controllers -->
-        <a-entity id="right-hand" tracked-controls="controller: true; hand: right"
-            raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
-        
-        <a-entity id="left-hand" tracked-controls="controller: true; hand: left"
-            raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
-    
+
+    <a-entity id="user">
+
         <!-- Camera -->
         <a-camera position="0 2 0" active="true">
 
-            <!-- Element information -->
+            <!-- HUD -->
             <a-entity id="HUD" position="-4.5 2 -4" visible="false">
 				<a-plane height="1" width="2.5" shader="flat" color="grey"></a-plane>
 				<a-text id="HUD-text" value="" align="center"></a-text>
 			</a-entity>
         </a-camera>
-    
+
+        <!-- VR controllers -->
+        <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.5"></a-entity>
+
+        <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.5"></a-entity>
+    </a-entity>
+
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
-        
+
         <!-- Elements -->
         {elements}
     </a-scene>
