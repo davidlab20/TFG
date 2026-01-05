@@ -9,12 +9,15 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.5.5/docs/scripts/main.min.js"></script>
 </head>
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]">
+    <a-scene>
 
     <a-entity id="user">
 
         <!-- Camera -->
         <a-camera position="0 2 0" active="true">
+            
+            <!-- Desktop cursor -->
+            <a-cursor rayOrigin="mouse" raycaster="objects: [data-raycastable]"></a-cursor>
 
             <!-- HUD -->
             <a-entity id="HUD" position="-4.5 2 -4" visible="false">
