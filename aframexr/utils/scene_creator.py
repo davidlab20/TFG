@@ -24,11 +24,11 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         </a-camera>
 
         <!-- VR controllers -->
-        <a-entity id="right-hand" oculus-touch-controls="hand: right" laser-controls="hand: right"
+        <a-entity id="right-hand" hand-controls="hand: right" laser-controls
             raycaster="objects: [data-raycastable]"
             line="color: yellow; opacity: 0.5"></a-entity>
 
-        <a-entity id="left-hand" oculus-touch-controls="hand: left" laser-controls="hand: left"
+        <a-entity id="left-hand" hand-controls="hand: left" laser-controls
             raycaster="objects: [data-raycastable]"
             line="color: yellow; opacity: 0.5"></a-entity>
     </a-entity>
