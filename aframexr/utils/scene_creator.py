@@ -9,15 +9,12 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.5.5/docs/scripts/main.min.js"></script>
 </head>
 <body>
-    <a-scene>
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
 
     <a-entity id="user">
 
         <!-- Camera -->
         <a-camera position="0 2 0" active="true">
-            
-            <!-- Desktop cursor -->
-            <a-cursor rayOrigin="mouse" raycaster="objects: [data-raycastable]"></a-cursor>
 
             <!-- HUD -->
             <a-entity id="HUD" position="-4.5 2 -4" visible="false">
@@ -27,12 +24,12 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         </a-camera>
 
         <!-- VR controllers -->
-        <a-entity id="right-hand" hand-controls="hand: right" laser-controls
-            raycaster="objects: [data-raycastable]"
+        <a-entity id="right-hand" hand-controls="hand: right"
+            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
             line="color: yellow; opacity: 0.5"></a-entity>
 
-        <a-entity id="left-hand" hand-controls="hand: left" laser-controls
-            raycaster="objects: [data-raycastable]"
+        <a-entity id="left-hand" hand-controls="hand: left"
+            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
             line="color: yellow; opacity: 0.5"></a-entity>
     </a-entity>
 
