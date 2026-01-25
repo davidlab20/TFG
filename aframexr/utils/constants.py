@@ -54,4 +54,3 @@ DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 DEFAULT_POINT_COLOR = "blue"  # Default point color
 DEFAULT_POINT_HEIGHT_WHEN_NO_Y_AXIS = 2  # Default point height (if not field for y-axis specified)
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
-DEFAULT_POINT_CENTER_SEPARATION = 1  # Default separation between points' center
