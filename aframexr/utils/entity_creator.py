@@ -541,7 +541,8 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')
-        return coordinates.alias(f'{axis_name}_coordinates'), bars_axis_size.alias(bars_size_alias)
+        return (coordinates.alias(f'{axis_name}_coordinates').round(PRECISION_DECIMALS),
+                bars_axis_size.alias(bars_size_alias).round(PRECISION_DECIMALS))
 
     def _set_bars_colors(self) -> Series:
         """Returns a Series of the color for each bar composing the bar chart."""
