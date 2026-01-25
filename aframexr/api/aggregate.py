@@ -8,7 +8,6 @@ from aframexr.utils.validators import AframeXRValidator
 
 class AggregatedFieldDef:
     """Aggregated field definition."""
-
     def __init__(self, op: str, field: str, as_field: str = ''):
         AframeXRValidator.validate_aggregate_operation(op)
         self.op = op
@@ -25,7 +24,6 @@ class AggregatedFieldDef:
     @staticmethod
     def from_dict(aggregate_specs: dict):
         """Creates an AggregatedFieldDef object from the aggregate specifications."""
-
         AframeXRValidator.validate_type(aggregate_specs, dict)
 
         try:  # Validate that 'field' and 'aggregate' are ono the specifications
@@ -39,7 +37,6 @@ class AggregatedFieldDef:
     # Export
     def to_dict(self) -> dict:
         """Returns the dictionary representation for chart specifications of the aggregated field."""
-
         specs: dict = {'op': self.op, 'field': self.field}
         if self.as_field:
             specs['as'] = self.as_field
@@ -48,7 +45,6 @@ class AggregatedFieldDef:
     # Utils
     def get_aggregated_data(self, data: DataFrame, groupby: list) -> DataFrame:
         """Returns the aggregated data."""
-
         try:
             if self.op == 'count':
                 expression = pl.len().alias(self.as_field)  # Counts the rows per group
@@ -65,7 +61,6 @@ class AggregatedFieldDef:
     @staticmethod
     def split_operator_field(aggregate_formula: str):
         """Returns the aggregate operator, the field and the groupby in the aggregate formula."""
-
         field, aggregate_op = aggregate_formula, None
 
         if '(' in aggregate_formula and  ')' in aggregate_formula:

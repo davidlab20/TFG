@@ -8,7 +8,6 @@ from aframexr.utils.validators import AframeXRValidator
 
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
-
     @staticmethod
     def _create_simple_chart_html(chart_specs: dict):
         """
@@ -25,7 +24,6 @@ class ChartsHTMLCreator:
 
         Suppose that the parameters are correct for method calls of ChartCreator and AxisCreator.
         """
-
         # Validate chart type
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
         AframeXRValidator.validate_chart_type(chart_type)
@@ -78,7 +76,6 @@ class ChartsHTMLCreator:
 
         Suppose that chart_specs is a dictionary for self._create_simple_chart_html(chart_specs).
         """
-
         charts_html = ''
 
         charts_list = specs.get('concat') or specs.get('layer')  # Charts could be concatenated using layer

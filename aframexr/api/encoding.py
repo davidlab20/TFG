@@ -8,7 +8,6 @@ from aframexr.utils.validators import AframeXRValidator
 
 class Encoding:
     """Encoding base class."""
-
     _field: str = None
     _aggregate: str | None = None
     _axis: bool | None = True
@@ -31,7 +30,6 @@ class Encoding:
     # Export
     def to_dict(self):
         """Returns the dictionary specifications expression."""
-
         spec_dict = {}
         if self._field:
             spec_dict.update({'field': self._field})
@@ -61,7 +59,6 @@ class Encoding:
         -----
         Supposing that param is a string, as it has been called from encode() method.
         """
-
         param_parts = param.split(':')  # Split parameter in field:encoding_type
         if len(param_parts) == 1:  # No encoding data type is specified
             return param, None
@@ -91,7 +88,6 @@ class X(Encoding):
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
-
     def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):
         self._field = field
@@ -120,7 +116,6 @@ class Y(Encoding):
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
-
     def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):
         self._field = field
@@ -149,7 +144,6 @@ class Z(Encoding):
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
-
     def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):
         self._field = field

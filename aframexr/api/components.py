@@ -25,14 +25,12 @@ from aframexr.utils.validators import AframeXRValidator
 
 class TopLevelMixin:
     """Top level chart class."""
-
     def __init__(self, specs: dict):
         if specs: AframeXRValidator.validate_chart_specs(specs)  # Validate specs if not initializing empty dict
         self._specifications = specs
 
     def _repr_html_(self):
         """Returns the iframe HTML for showing the scene in the notebook."""
-
         AframeXRValidator.validate_chart_specs(self._specifications)
         return (
             '<iframe '
@@ -51,7 +49,6 @@ class TopLevelMixin:
         Concatenation of charts (place charts in the same scene).
         Creates and returns a new scene with the charts. The original charts are not modified.
         """
-
         if not isinstance(other, TopLevelMixin):
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}.")
 
@@ -65,7 +62,6 @@ class TopLevelMixin:
     # Copy of the chart
     def __deepcopy__(self, memo):
         """Optimized deepcopy method."""
-
         new_instance = self.__class__.__new__(self.__class__)
         memo[id(self)] = new_instance
         new_instance._specifications = copy.deepcopy(self._specifications, memo)
@@ -73,7 +69,6 @@ class TopLevelMixin:
 
     def copy(self):
         """Returns a deep copy of the chart."""
-
         return copy.deepcopy(self)
 
     # Importing charts
@@ -92,7 +87,6 @@ class TopLevelMixin:
         TypeError
             If specs is not a dictionary.
         """
-
         AframeXRValidator.validate_type(specs, dict)
         chart = Chart()
         chart._specifications = specs
@@ -113,7 +107,6 @@ class TopLevelMixin:
         TypeError
             If specs is not a string.
         """
-
         AframeXRValidator.validate_type(specs, str)
         chart = Chart()
         chart._specifications = json.loads(specs)
@@ -137,7 +130,6 @@ class TopLevelMixin:
         ValueError
             If file_format is invalid.
         """
-
         AframeXRValidator.validate_type(fp, str)
         if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
@@ -151,7 +143,6 @@ class TopLevelMixin:
     # Showing the scene
     def show(self):
         """Show the scene in the notebook."""
-
         with warnings.catch_warnings():
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
             warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
@@ -161,17 +152,14 @@ class TopLevelMixin:
     # Chart formats
     def to_dict(self) -> dict:
         """Returns the scene specifications as a dictionary."""
-
         return self._specifications
 
     def to_html(self) -> str:
         """Returns the HTML representation of the scene."""
-
         return SceneCreator.create_scene(self._specifications)
 
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""
-
         return json.dumps(self._specifications)
 
 
@@ -203,7 +191,6 @@ class Chart(TopLevelMixin):
     ValueError
         If depth, height, position, rotation or width is invalid.
     """
-
     def _define_data(self, data: Data | URLData | DataFrame):
         """Defines the data field in the specifications."""
 
@@ -218,7 +205,6 @@ class Chart(TopLevelMixin):
 
     def _define_position(self, position: str):
         """Defines the position field in the specifications."""
-
         pos_axes = position.strip().split()
         if len(pos_axes) != 3:
             raise ValueError(f'The position: {position} is not correct. Must be "x y z".')
@@ -278,7 +264,6 @@ class Chart(TopLevelMixin):
         radius : float (optional)
             Outer radius of the pie chart. If not specified, using DEFAULT_PIE_RADIUS. Must be greater than 0.
         """
-
         self._specifications.update({'mark': {'type': 'arc'}})
 
         if radius is not None:
@@ -303,7 +288,6 @@ class Chart(TopLevelMixin):
         ValueError
             If defined size is not greater than 0.
         """
-
         self._specifications.update({'mark': {'type': 'bar'}})
 
         if size is not None:
@@ -334,7 +318,6 @@ class Chart(TopLevelMixin):
         ValueError:
             If scale values are not numeric.
         """
-
         self._specifications.update({'mark': {'type': 'gltf'}})
 
         if scale is not None:
@@ -364,7 +347,6 @@ class Chart(TopLevelMixin):
         ValueError
             If width or height is not greater than 0.
         """
-
         self._specifications.update({'mark': {'type': 'image'}})
 
         if height is not None:
@@ -395,7 +377,6 @@ class Chart(TopLevelMixin):
         ValueError
             If size is not greater than 0.
         """
-
         self._specifications.update({'mark': {'type': 'point'}})
 
         if size is not None:
@@ -434,7 +415,6 @@ class Chart(TopLevelMixin):
         ValueError
             If the encoding values are incorrect.
         """
-
         filled_params = {}  # Dictionary that will store the parameters that have been filled
 
         # Verify the type of the arguments and store the filled parameters
@@ -486,7 +466,6 @@ class Chart(TopLevelMixin):
     def properties(self, data: Data | URLData | DataFrame = None, position: str = None,
                    rotation: str = None):
         """Modify general properties of the chart."""
-
         if data is not None: self._define_data(data)
         if position is not None: self._define_position(position)
         if rotation is not None: self._define_rotation(rotation)
@@ -505,7 +484,6 @@ class Chart(TopLevelMixin):
         kwargs : dict
             Format is: <new_field>=<aggregate_op>(<data_field>).
         """
-
         AframeXRValidator.validate_type(groupby, Union[list | None])
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
@@ -570,7 +548,6 @@ class Chart(TopLevelMixin):
         >>> filtered_chart = chart.transform_filter(filter_object)
         >>> #filtered_chart.show()
         """
-
         # Validate the type of equation_filter and get a filter object from the equation_filter
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_string(equation_filter)

@@ -4,14 +4,13 @@ import copy
 import io
 import json
 import os
-from typing import Literal, Final
-
 import polars as pl
 import urllib.request, urllib.error
 import warnings
 
 from itertools import cycle, islice
 from polars import DataFrame, Series
+from typing import Literal, Final
 
 from aframexr.utils.constants import *
 
@@ -33,7 +32,6 @@ def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
 
 def _get_data_from_url(url: str) -> DataFrame:
     """Loads the data from the URL (could be a local path) and returns it as a DataFrame."""
-
     if url.startswith(('http://', 'https://')):  # Data is stored in a URL
         try:
             with urllib.request.urlopen(url) as response:
@@ -68,7 +66,6 @@ def _get_data_from_url(url: str) -> DataFrame:
 
 def _get_raw_data(chart_specs: dict) -> DataFrame:
     """Returns the raw data from the chart specifications, transformed if necessary."""
-
     # Get the raw data of the chart
     data_field = chart_specs['data']
     if data_field.get('url'):  # Data is stored in a file
@@ -131,7 +128,6 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
 
 class ChartCreator:
     """Chart creator base class"""
-
     def __init__(self, chart_specs: dict):
         base_position = chart_specs.get('position', DEFAULT_CHART_POS)
         [self._base_x, self._base_y, self._base_z] = [float(pos) for pos in base_position.split()]  # Base position
@@ -142,7 +138,6 @@ class ChartCreator:
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
         """Returns a ChartCreator instance of the specific chart type."""
-
         CREATOR_MAP = {
             'arc': ArcChartCreator,
             'bar': BarChartCreator,
@@ -157,7 +152,6 @@ class ChartCreator:
 
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
-
         group_specs = copy.copy(GROUP_DICT_TEMPLATE)  # Shallow copy because the template has no mutable objects.
         group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
                             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
@@ -167,7 +161,6 @@ class ChartCreator:
 # First-level subclasses of ChartCreator.
 class ChannelChartCreator(ChartCreator):
     """Chart creator base class for charts that have channels."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
@@ -178,7 +171,6 @@ class ChannelChartCreator(ChartCreator):
         Process and stores the necessary channels' information.
         Must have defined self._{ch}_data and self._{ch}_encoding.
         """
-
         for ch in channels_name:
             if self._encoding.get(ch):
                 channel_encoding = self._encoding[ch]
@@ -207,7 +199,6 @@ class ChannelChartCreator(ChartCreator):
 
 class NonChannelChartCreator(ChartCreator):
     """Chart creator base class for charts that do not have channels."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._url = chart_specs['data']['url']  # URL of the image / model
@@ -227,7 +218,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
     -----
     XYZ-axes are processed instantly when creating this class or derivatives.
     """
-
     _AXIS_SIZE_MAP: Final = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
     _AXIS_BAR_SIZE_ALIAS_MAP: Final = {'x': 'width', 'y': 'height', 'z': 'depth'}
 
@@ -259,7 +249,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         Corrects the axes' position for inner the calculations and processing.
         Must be called by child classes when initiating.
         """
-
         def _calculate_axis_size(axis_data: Series, default_axis_size: float) -> float:
             if elem_size is None or axis_data is None:  # User did not define bars' size, or there is no data
                 return default_axis_size  # Set default value
@@ -287,7 +276,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
 
     def get_axis_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
-
         if self._raw_data.is_empty():  # There is no data to display
             return {}
 
@@ -345,7 +333,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         extremes_offset : float
             The offset used in each extreme of the axis, so the elements do not exceed the chart dimensions.
         """
-
         if axis_data.dtype == pl.String:
             axis_data = axis_data.cast(pl.Categorical).to_physical()
 
@@ -384,7 +371,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         extremes_offset : float
             The offset used in each extreme of the axis, so the elements do not exceed the chart dimensions.
         """
-
         category_codes = axis_data.cast(pl.Categorical).to_physical()
         unique_categories = axis_data.n_unique()
 
@@ -394,17 +380,14 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
 
 class NonAxisChannelChartCreator(ChannelChartCreator):
     """Chart creator base class for charts that have channels but do not have XYZ axis."""
-
     def get_axis_specs(self):
         """Returns a Series with the specifications for each axis of the chart."""
-
         return {}  # Returns an empty dictionary, because it has no axis
 
 
 # Third-level subclasses of ChartCreator.
 class ArcChartCreator(NonAxisChannelChartCreator):
     """Arc chart creator class."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)
@@ -420,7 +403,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
     def _set_rotation(self):
         """Sets the rotation of the pie chart."""
-
         pie_rotation = DEFAULT_PIE_ROTATION.split()  # Default rotation for the pie chart to look at the camera
         self._x_rotation = self._x_rotation + float(pie_rotation[0])
         self._y_rotation = self._y_rotation + float(pie_rotation[1])
@@ -428,7 +410,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
     def _set_elements_theta(self) -> tuple[Series, Series]:
         """Returns a tuple with a Series storing the theta start of each element, and another storing theta length."""
-
         abs_theta_data = self._theta_data.abs()
         sum_data = abs_theta_data.sum()  # Sum all the values
         theta_length = (360 / sum_data) * abs_theta_data  # Series of theta lengths (in degrees)
@@ -437,14 +418,12 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
     def _set_elements_colors(self) -> Series:
         """Returns a Series of the color for each element composing the chart."""
-
         colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
         element_colors = Series(islice(colors, self._color_data.len()))  # Take self._color_data.len() colors
         return element_colors.alias('color')
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
-
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
@@ -503,7 +482,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
 class BarChartCreator(XYZAxisChannelChartCreator):
     """Bar chart creator class."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._bar_size_if_nominal_axis: float = chart_specs['mark'].get('size') \
@@ -517,7 +495,6 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         The first contains the axis coordinates of each bar for the given axis.
         The second contains the dimensions of each bar for the given axis.
         """
-
         try:
             axis_size = getattr(self, self._AXIS_SIZE_MAP[axis_name])  # Get axis dimension depending on the axis name
             bars_size_alias = self._AXIS_BAR_SIZE_ALIAS_MAP[axis_name]  # Get alias of bar size Series depending on axis
@@ -568,14 +545,12 @@ class BarChartCreator(XYZAxisChannelChartCreator):
 
     def _set_bars_colors(self) -> Series:
         """Returns a Series of the color for each bar composing the bar chart."""
-
         colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
         bars_colors = Series(islice(colors, self._raw_data.height))  # Take self._raw_data rows colors from the cycle
         return bars_colors.alias('color')
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
-
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
@@ -639,7 +614,6 @@ class BarChartCreator(XYZAxisChannelChartCreator):
 
 class GLTFModelCreator(NonChannelChartCreator):
     """GLTF model creator class."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._scale = chart_specs['mark'].get('scale', DEFAULT_GLTF_SCALE) \
@@ -647,7 +621,6 @@ class GLTFModelCreator(NonChannelChartCreator):
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
-
         return [{'src': self._url, 'scale': self._scale}]
 
     # Using get_axis_specs() from NonChannelChartCreator class
@@ -655,7 +628,6 @@ class GLTFModelCreator(NonChannelChartCreator):
 
 class ImageCreator(NonChannelChartCreator):
     """Image creator class."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._height = chart_specs['mark'].get('height', DEFAULT_IMAGE_HEIGHT) \
@@ -665,7 +637,6 @@ class ImageCreator(NonChannelChartCreator):
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
-
         return [{'src': self._url, 'width': self._width, 'height': self._height}]
 
     # Using get_axis_specs() from NonChannelChartCreator class
@@ -673,7 +644,6 @@ class ImageCreator(NonChannelChartCreator):
 
 class PointChartCreator(XYZAxisChannelChartCreator):
     """Point chart creator class."""
-
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._max_radius: float = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
@@ -689,7 +659,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
     def _set_points_coords_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                                    encoding_type: str) -> Series:
         """Returns a Series containing the coordinates for each point of the chart, for the given axis."""
-
         attr_name = self._AXIS_SIZE_MAP.get(axis_name)
         if not attr_name:
             raise ValueError(f"Axis must be x, y or z, not {axis_name}.")
@@ -720,7 +689,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
     def _set_points_colors(self) -> Series:
         """Returns a Series of the color for each point composing the scatter plot."""
-
         if self._color_encoding and self._color_encoding != 'nominal':
             raise ValueError(f'Color encoding type must be nominal, got "{self._color_encoding}".')
 
@@ -744,7 +712,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
     def _set_points_radius(self) -> Series:
         """Returns a Series of the radius for each point composing the bubble chart."""
-
         if self._size_encoding and self._size_encoding != 'quantitative':
             raise ValueError(f'Size encoding type must be quantitative, got "{self._size_encoding}".')
 
@@ -761,7 +728,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
     def get_elements_specs(self) -> list[dict]:
         """Returns a list of dictionaries with the specifications for each element of the chart."""
-
         if self._raw_data.is_empty():  # There is no data to display
             return []
 

@@ -8,7 +8,6 @@ from aframexr.utils.validators import AframeXRValidator
 
 class FilterTransform:
     """FilterTransform base class."""
-
     def __init__(self, field: str, operator: str, value: str | float):
         self.field = field
         self.operator = operator
@@ -18,12 +17,10 @@ class FilterTransform:
     # Exporting equation formats
     def equation_to_dict(self):
         """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
-
         return {'filter': f'datum.{self.field} {self.operator} {self.value}'}
 
     def equation_to_string(self):
         """Returns a string representation about the equation of the filter."""
-
         return f'{self.field} {self.operator} {self.value}'
 
     # Creating filters
@@ -48,7 +45,6 @@ class FilterTransform:
         -----
         Suppose equation is a string for posterior calls of from_string of child filters.
         """
-
         AframeXRValidator.validate_type(equation, str)
         if '==' in equation:  # Equation is of type field == value
             return FieldEqualPredicate.from_string(equation)
@@ -62,7 +58,6 @@ class FilterTransform:
     # Filter data
     def get_filtered_data(self, data: DataFrame) -> DataFrame:
         """Filters and returns the data."""
-
         if not self._magic_method:  # Should never enter here
             raise RuntimeError('Magic method was not defined.')
 
@@ -76,7 +71,6 @@ class FilterTransform:
 
 class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
-
     def __init__(self, field: str, equal: str | float):
         operator = '=='
         super().__init__(field, operator, equal)
@@ -101,7 +95,6 @@ class FieldEqualPredicate(FilterTransform):
         -----
         Should receive equation as a string (as it has been called from FilterTransform).
         """
-
         if len(equation.split('==')) != 2:
             raise SyntaxError('Incorrect syntax, must be datum.{field} == {value}')
         field = equation.split('==')[0].strip()
@@ -120,7 +113,6 @@ class FieldEqualPredicate(FilterTransform):
 
 class FieldGTPredicate(FilterTransform):
     """Greater than predicate filter class."""
-
     def __init__(self, field: str, gt: float):
         operator = '>'
         super().__init__(field, operator, gt)
@@ -145,7 +137,6 @@ class FieldGTPredicate(FilterTransform):
         -----
         Should receive equation as a string (as it has been called from FilterTransform).
         """
-
         if len(equation.split('>')) != 2:
             raise SyntaxError('Incorrect syntax, must be datum.{field} > {value}')
         field = equation.split('>')[0].strip()
@@ -162,7 +153,6 @@ class FieldGTPredicate(FilterTransform):
 
 class FieldLTPredicate(FilterTransform):
     """Lower than predicate filter class."""
-
     def __init__(self, field: str, lt: float):
         operator = '<'
         super().__init__(field, operator, lt)
@@ -187,7 +177,6 @@ class FieldLTPredicate(FilterTransform):
         -----
         Should receive equation as a string (as it has been called from FilterTransform).
         """
-
         if len(equation.split('<')) != 2:
             raise SyntaxError('Incorrect syntax, must be datum.{field} < {value}')
         field = equation.split('<')[0].strip()
