@@ -4,6 +4,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr import PRECISION_DECIMALS
 from aframexr.api.filters import FilterTransform
 from aframexr.utils.constants import DEFAULT_CHART_HEIGHT
 from tests.constants import *  # Constants used for testing
@@ -22,14 +23,14 @@ def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
 
         y_id = float(b['id'].split(' : ')[1])
         if y_id >= 0:  # Bar represents positive value (above x-axis)
-            if not math.isclose(x_axis_y_pos, y_axis_midpoint - 0.5 * bar_height):
+            if not math.isclose(x_axis_y_pos, y_axis_midpoint - 0.5 * bar_height, abs_tol=10 ** -PRECISION_DECIMALS):
                 print(f'\nDEBUG: Positive bar\'s base is not on x-axis line.'
                       f'\n\t- X-axis line Y-coordinate: {x_axis_y_pos}'
                       f'\n\t- Y-axis bar coordinate: {y_axis_midpoint}'
                       f'\n\t- Bar\'s height: {bar_height}')
                 return False  # Y-pos minus half its height must be the same as the x-axis y-coordinate
         else:  # Bar represents negative value (below x-axis)
-            if not math.isclose(x_axis_y_pos, y_axis_midpoint + 0.5 * bar_height):
+            if not math.isclose(x_axis_y_pos, y_axis_midpoint + 0.5 * bar_height, abs_tol=10 ** -PRECISION_DECIMALS):
                 print(f'\nDEBUG: Negative bar\'s base is not on x-axis line.'
                       f'\n\t- X-axis line Y-coordinate: {x_axis_y_pos}'
                       f'\n\t- Y-axis bar coordinate: {y_axis_midpoint}'
