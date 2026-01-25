@@ -33,6 +33,8 @@ DEFAULT_CHART_DEPTH = 2  # Default depth of the chart
 DEFAULT_CHART_HEIGHT = 4  # Default height of the chart
 DEFAULT_CHART_WIDTH = 4  # Default width of the chart
 
+PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
+
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
 # Bar chart
