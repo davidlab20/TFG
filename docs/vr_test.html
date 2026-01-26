@@ -20,14 +20,15 @@
         </a-camera>
 
         <!-- VR controllers -->
-        <a-entity id="right-hand" hand-controls="hand: right"
-            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
+        <a-entity laser-controls="hand: right"
+          raycaster="objects: [data-raycastable]"
+          line="color: yellow; opacity: 0.9">
+        </a-entity>
 
-        <a-entity id="left-hand" hand-controls="hand: left"
-            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
-    </a-entity>
+        <a-entity laser-controls="hand: left"
+                  raycaster="objects: [data-raycastable]"
+                  line="color: yellow; opacity: 0.9">
+        </a-entity>
 
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
