@@ -14,8 +14,8 @@ LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis
 CHART_TEMPLATES = {
     'arc': ('<a-cylinder id="{id}" position="{pos}" height="{depth}" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}" data-raycastable></a-cylinder>'),
-    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" material="color: {color}" '
-            'depth="{depth}" data-raycastable></a-box>'),
+    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" depth="{depth}" '
+            'material="color: {color}" data-raycastable></a-box>'),
     'point': ('<a-sphere id="{id}" position="{pos}" radius="{radius}" material="color: {color}" data-raycastable>'
              '</a-sphere>')
 }
