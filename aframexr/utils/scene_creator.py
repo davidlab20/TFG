@@ -24,13 +24,15 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         </a-camera>
 
         <!-- VR controllers -->
-        <a-entity id="right-hand" hand-controls="hand: right"
-            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
+        <a-entity id="right-hand" laser-controls="hand: right"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.8">
+        </a-entity>
 
-        <a-entity id="left-hand" hand-controls="hand: left"
-            cursor="rayOrigin: entity" raycaster="objects: [data-raycastable]"
-            line="color: yellow; opacity: 0.5"></a-entity>
+        <a-entity id="left-hand" laser-controls="hand: left"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.8">
+        </a-entity>
     </a-entity>
 
         <!-- Environment -->
