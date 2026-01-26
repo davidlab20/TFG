@@ -20,15 +20,16 @@
         </a-camera>
 
         <!-- VR controllers -->
-        <a-entity laser-controls="hand: right"
-          raycaster="objects: [data-raycastable]"
-          line="color: yellow; opacity: 0.9">
+        <a-entity id="right-hand" laser-controls="hand: right"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.8">
         </a-entity>
 
-        <a-entity laser-controls="hand: left"
-                  raycaster="objects: [data-raycastable]"
-                  line="color: yellow; opacity: 0.9">
+        <a-entity id="left-hand" laser-controls="hand: left"
+            raycaster="objects: [data-raycastable]"
+            line="color: yellow; opacity: 0.8">
         </a-entity>
+    </a-entity>
 
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
@@ -37,10 +38,10 @@
         <a-entity position="-2.0 0.0 -3.0" rotation="0.0 0.0 0.0">
 			<a-box id="leon : 10" position="0.2 1.0 -1.0" width="0.4" height="2.0" material="color: red" depth="2.0" data-raycastable></a-box>
 			<a-box id="ibiza : 15" position="0.6 1.5 -1.0" width="0.4" height="3.0" material="color: green" depth="2.0" data-raycastable></a-box>
-			<a-box id="cordoba : 3" position="1.0 0.30000000000000004 -1.0" width="0.4" height="0.6000000000000001" material="color: blue" depth="2.0" data-raycastable></a-box>
+			<a-box id="cordoba : 3" position="1.0 0.3 -1.0" width="0.4" height="0.6" material="color: blue" depth="2.0" data-raycastable></a-box>
 			<a-box id="toledo : 18" position="1.4 1.8 -1.0" width="0.4" height="3.6" material="color: yellow" depth="2.0" data-raycastable></a-box>
 			<a-box id="altea : 4" position="1.8 0.4 -1.0" width="0.4" height="0.8" material="color: magenta" depth="2.0" data-raycastable></a-box>
-			<a-box id="arosa : 12" position="2.2 1.2000000000000002 -1.0" width="0.4" height="2.4000000000000004" material="color: cyan" depth="2.0" data-raycastable></a-box>
+			<a-box id="arosa : 12" position="2.2 1.2 -1.0" width="0.4" height="2.4" material="color: cyan" depth="2.0" data-raycastable></a-box>
 			<a-box id="alhambra : 5" position="2.6 0.5 -1.0" width="0.4" height="1.0" material="color: red" depth="2.0" data-raycastable></a-box>
 			<a-box id="600 : 20" position="3.0 2.0 -1.0" width="0.4" height="4.0" material="color: green" depth="2.0" data-raycastable></a-box>
 			<a-box id="127 : 2" position="3.4 0.2 -1.0" width="0.4" height="0.4" material="color: blue" depth="2.0" data-raycastable></a-box>
