@@ -15,8 +15,11 @@ ALL_NEGATIVE_DATA =  DATA.assign(sales=DATA['sales'] * -1)  # DATA with negative
 POSITIVE_NEGATIVE_DATA = DATA.assign(sales=DATA['sales'] * ([1, -1] * len(DATA))[:len(DATA)])  # Alternate signs
 DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITIVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
 
-# Aggregates
+# Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES
+
+# Aggregates ERROR
+NOT_VALID_AGGREGATES = ('bad_aggregate_1', 'bad_aggregate_2', 'bad_aggregate_3')
 
 # Positions OK
 POSITIONS = ('0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2')

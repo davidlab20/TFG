@@ -192,3 +192,12 @@ class TestMarkArcError(unittest.TestCase):
             assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
                                             'Incorrect syntax, must be datum.{field} < {value}']
+
+    def test_aggregate_error(self):
+        """Pie chart aggregate error."""
+        for a in NOT_VALID_AGGREGATES:
+            with self.assertRaises(ValueError) as error:
+                agg_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+                             .transform_aggregate(new_field=f'{a}(sales)'))
+                agg_chart.show()
+            assert str(error.exception) == f'Invalid aggregate operation: {a}.'
