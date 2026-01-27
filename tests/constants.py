@@ -18,9 +18,6 @@ DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITIVE_NEGATIVE_DATA, LOCAL_PATH_CSV_
 # Aggregates
 AGGREGATES = AVAILABLE_AGGREGATES
 
-# Methods
-MARK_METHODS = ('mark_arc', 'mark_bar', 'mark_gltf', 'mark_image', 'mark_point')
-
 # Positions OK
 POSITIONS = ('0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2')
 POSITION_FORMATS = ('1 1 1', '1  1  1', '  1 1 1  ', '  1  1  1  ')
