@@ -31,7 +31,6 @@ class TopLevelMixin:
 
     def _repr_html_(self):
         """Returns the iframe HTML for showing the scene in the notebook."""
-        AframeXRValidator.validate_chart_specs(self._specifications)
         return (
             '<iframe '
             f'srcdoc="{html.escape(self.to_html(), quote=True)}" '  # Raw HTML escaped
@@ -110,6 +109,7 @@ class TopLevelMixin:
         AframeXRValidator.validate_type(specs, str)
         chart = Chart()
         chart._specifications = json.loads(specs)
+        AframeXRValidator.validate_chart_specs(chart._specifications)
         return chart
 
     # Exporting charts
@@ -156,6 +156,7 @@ class TopLevelMixin:
 
     def to_html(self) -> str:
         """Returns the HTML representation of the scene."""
+        AframeXRValidator.validate_chart_specs(self._specifications)
         return SceneCreator.create_scene(self._specifications)
 
     def to_json(self) -> str:

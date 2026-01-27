@@ -43,8 +43,6 @@ class ChartsHTMLCreator:
         axis_specs = chart_object.get_axis_specs()
 
         for ax in axis_specs:
-            if axis_specs[ax]['start'] is None:
-                continue  # If the axis is not displayed, continue with the next
             chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
             chart_html += '\t\t\t' + AxisCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
             for label in range(len(axis_specs[ax]['labels_pos'])):

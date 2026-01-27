@@ -12,14 +12,14 @@ LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV fil
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 ALL_NEGATIVE_DATA =  DATA.assign(sales=DATA['sales'] * -1)  # DATA with negative sales
-POSITVE_NEGATIVE_DATA = DATA.assign(sales=DATA['sales'] * ([1, -1] * len(DATA))[:len(DATA)])  # Alternate signs
-DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
+POSITIVE_NEGATIVE_DATA = DATA.assign(sales=DATA['sales'] * ([1, -1] * len(DATA))[:len(DATA)])  # Alternate signs
+DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITIVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
 
-# Aggregates
+# Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES
 
-# Methods
-MARK_METHODS = ('mark_arc', 'mark_bar', 'mark_gltf', 'mark_image', 'mark_point')
+# Aggregates ERROR
+NOT_VALID_AGGREGATES = ('bad_aggregate_1', 'bad_aggregate_2', 'bad_aggregate_3')
 
 # Positions OK
 POSITIONS = ('0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2')
@@ -41,6 +41,9 @@ WARNING_FILTER_EQUATIONS = ('datum.motor == bad_value', 'datum.doors == 0', 'dat
 
 # Filters ERROR
 ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100', 'doors < 0')
+
+# Concatenation OK
+CONCATENATION_POSITIONS = ('-5 2 -5', '5 2 -5')
 
 # ----- MARK ARC -----
 # Radius OK

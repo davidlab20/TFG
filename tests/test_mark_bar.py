@@ -12,7 +12,6 @@ from tests.constants import *  # Constants used for testing
 
 def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
     """Verify that the bars are well-placed in the x-axis (the base of the bar is in the x-axis)."""
-
     soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
     x_axis_y_pos = float(soup.select('a-entity[line]')[2]['line'].split(';')[0].split()[2])  # Y position of x-axis line
 
@@ -40,7 +39,6 @@ def _bars_bases_are_on_x_axis(bars_chart: aframexr.Chart) -> bool:
 
 def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
     """Verify that every bar height does not exceed the maximum height."""
-
     max_height = float(bars_chart.to_dict().get('height', DEFAULT_CHART_HEIGHT))
 
     soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
@@ -57,10 +55,8 @@ def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
 
 class TestMarkBarOK(unittest.TestCase):
     """Bars chart OK tests."""
-
     def test_simple(self):
         """Simple bars chart creation."""
-
         bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
         bars_chart.show()
         assert _bars_bases_are_on_x_axis(bars_chart)
@@ -68,7 +64,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_data_format(self):
         """Bars chart changing data format creation."""
-
         for d in DATA_FORMATS:
             bars_chart = aframexr.Chart(d).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -77,7 +72,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_position(self):
         """Bars chart changing position creation."""
-
         for p in POSITIONS:
             bars_chart = aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -86,7 +80,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_position_format(self):
         """Bars chart changing position format creation."""
-
         for p in POSITION_FORMATS:
             bars_chart = aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -95,7 +88,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_rotation(self):
         """Bars chart changing rotation creation."""
-
         for r in ROTATIONS:
             bars_chart = aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -104,7 +96,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_rotation_format(self):
         """Bars chart changing rotation format creation."""
-
         for r in ROTATION_FORMATS:
             bars_chart = aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -113,7 +104,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_height(self):
         """Bars chart changing height creation."""
-
         for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -122,7 +112,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_width(self):
         """Bars chart changing width creation."""
-
         for w in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
             bars_chart.show()
@@ -131,7 +120,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_size(self):
         """Bars chart changing size creation."""
-
         for s in MARK_BAR_POINT_SIZES:
             bars_chart = aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
             bars_chart.show()
@@ -140,7 +128,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_encoding(self):
         """Bars chart changing encoding creation."""
-
         for e in MARK_BAR_ENCODINGS:
             bars_chart = aframexr.Chart(DATA).mark_bar().encode(**e)
             bars_chart.show()
@@ -149,7 +136,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_filter(self):
         """Bars chart changing filter creation."""
-
         for eq in FILTER_EQUATIONS:
             for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
                 bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
@@ -159,7 +145,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_aggregate(self):
         """Bar chart changing aggregates creation."""
-
         for a in AGGREGATES:
             bar_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
                          .transform_aggregate(new_field=f'{a}(sales)'))
@@ -169,7 +154,6 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_aggregate_position_rotation_size_height_width_encoding_filter(self):
         """Bars chart changing position, rotation size, height, width, encoding and filter creation."""
-
         for a, p, r, s, h, w, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
                                           MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
                                           MARK_BAR_ENCODINGS, FILTER_EQUATIONS):
@@ -179,13 +163,22 @@ class TestMarkBarOK(unittest.TestCase):
             assert _bars_bases_are_on_x_axis(bars_chart)
             assert _bars_height_does_not_exceed_max_height(bars_chart)
 
+    def test_concatenation(self):
+        """Bars chart concatenation creation."""
+        concatenated_chart = (aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_bar()
+                              .encode(x='model', y='sales'))
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_bar().encode(x='model', y='sales')
+
+        concatenated_chart.show()
+        assert _bars_bases_are_on_x_axis(concatenated_chart)
+        assert _bars_height_does_not_exceed_max_height(concatenated_chart)
+
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""
-
     def test_position_error(self):
         """Bars chart position error."""
-
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
@@ -198,7 +191,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_rotation_error(self):
         """Bars chart rotation error."""
-
         for r in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
@@ -211,7 +203,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_size_error(self):
         """Bars chart size error."""
-
         for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
@@ -219,7 +210,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_height_error(self):
         """Bars chart height error."""
-
         for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
@@ -227,7 +217,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_width_error(self):
         """Bars chart width error."""
-
         for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
@@ -235,7 +224,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_encoding_error(self):
         """Bars chart encoding error."""
-
         for e in NON_EXISTING_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(KeyError) as error:
                 bars_chart = aframexr.Chart(DATA).mark_bar().encode(**e)
@@ -247,9 +235,15 @@ class TestMarkBarError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_bar().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
 
+    def test_encoding_error_not_encoded(self):
+        """Bars chart encoding error. Encoding not in specifications."""
+        with self.assertRaises(ValueError) as error:
+            bars_chart = aframexr.Chart(DATA).mark_bar()
+            bars_chart.show()
+        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+
     def test_filter_warning(self):
         """Bars chart filter warning."""
-
         for f in WARNING_FILTER_EQUATIONS:
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
@@ -258,7 +252,6 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_filter_error(self):
         """Bars chart filter error."""
-
         for f in ERROR_FILTER_EQUATIONS:
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
@@ -266,3 +259,12 @@ class TestMarkBarError(unittest.TestCase):
             assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
                                             'Incorrect syntax, must be datum.{field} < {value}']
+
+    def test_aggregate_error(self):
+        """Bars chart aggregate error."""
+        for a in NOT_VALID_AGGREGATES:
+            with self.assertRaises(ValueError) as error:
+                agg_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+                             .transform_aggregate(new_field=f'{a}(sales)'))
+                agg_chart.show()
+            assert str(error.exception) == f'Invalid aggregate operation: {a}.'
