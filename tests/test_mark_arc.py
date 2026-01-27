@@ -117,6 +117,16 @@ class TestMarkArcOK(unittest.TestCase):
             assert _all_theta_sum_is_360_degrees(pie_chart)
             assert _slices_are_well_placed(pie_chart)
 
+    def test_concatenation(self):
+        """Pie chart concatenation creation."""
+        concatenated_chart = (aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_arc()
+                              .encode(color='model', theta='sales'))
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_arc().encode(color='model', theta='sales')
+
+        concatenated_chart.show()
+        assert _slices_are_well_placed(concatenated_chart)
+
 
 class TestMarkArcError(unittest.TestCase):
     """Pie chart error tests."""

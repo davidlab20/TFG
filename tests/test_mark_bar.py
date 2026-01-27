@@ -163,6 +163,17 @@ class TestMarkBarOK(unittest.TestCase):
             assert _bars_bases_are_on_x_axis(bars_chart)
             assert _bars_height_does_not_exceed_max_height(bars_chart)
 
+    def test_concatenation(self):
+        """Bars chart concatenation creation."""
+        concatenated_chart = (aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_bar()
+                              .encode(x='model', y='sales'))
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_bar().encode(x='model', y='sales')
+
+        concatenated_chart.show()
+        assert _bars_bases_are_on_x_axis(concatenated_chart)
+        assert _bars_height_does_not_exceed_max_height(concatenated_chart)
+
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""

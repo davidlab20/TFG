@@ -174,15 +174,15 @@ class TestMarkPointOK(unittest.TestCase):
             assert _every_radius_does_not_exceed_max_radius(point_chart)
             assert _points_are_inside_chart_volume(point_chart)
 
-    def test_concatenating_charts(self):
-        """Mark point concatenating charts creation."""
-        for p, r, s, h, e, f in zip(POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES, MARK_BAR_POINT_HEIGHTS_WIDTHS,
-                                    MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
-            point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h).mark_point(size=s).encode(**e)
-                           .transform_filter(f))
-            point_chart.show()
-            assert _every_radius_does_not_exceed_max_radius(point_chart)
-            assert _points_are_inside_chart_volume(point_chart)
+    def test_concatenation(self):
+        """Mark point concatenation creation."""
+        concatenated_chart = (aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_point()
+                              .encode(x='model', y='sales'))
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_point().encode(x='model', y='sales')
+
+        concatenated_chart.show()
+        assert _points_are_inside_chart_volume(concatenated_chart)
 
 
 class TestMarkPointError(unittest.TestCase):

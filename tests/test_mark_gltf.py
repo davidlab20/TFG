@@ -43,6 +43,14 @@ class TestMarkGLTFOK(unittest.TestCase):
         for p, r, s in zip(POSITIONS, ROTATIONS, MARK_GLTF_SCALES):
             aframexr.Chart(DATA, position=p, rotation=r).mark_gltf(scale=s).show()
 
+    def test_concatenation(self):
+        """GLTF concatenation creation."""
+        concatenated_chart = aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_gltf()
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_gltf()
+
+        concatenated_chart.show()
+
 
 class TestMarkGLTFError(unittest.TestCase):
     """Mark GLTF error tests."""

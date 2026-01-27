@@ -47,6 +47,14 @@ class TestMarkImageOK(unittest.TestCase):
         for p, r, w, h in zip(POSITIONS, ROTATIONS, MARK_IMAGE_WIDTHS_HEIGHTS, MARK_IMAGE_WIDTHS_HEIGHTS):
             aframexr.Chart(DATA, position=p, rotation=r).mark_image(width=w, height=h).show()
 
+    def test_concatenation(self):
+        """Image concatenation creation."""
+        concatenated_chart = aframexr.Chart(DATA, position=CONCATENATION_POSITIONS[0]).mark_image()
+        for pos in CONCATENATION_POSITIONS[1:]:
+            concatenated_chart += aframexr.Chart(DATA, position=pos).mark_image()
+
+        concatenated_chart.show()
+
 
 class TestMarkImageError(unittest.TestCase):
     """Mark image error tests."""
