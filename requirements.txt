@@ -4,3 +4,5 @@ lxml>=6.0.0
 marimo>=0.18.0
 pandas>=2.3.0
 polars>=1.36.0
+pytest>=9.0.0
+pytest-cov>=7.0.0
