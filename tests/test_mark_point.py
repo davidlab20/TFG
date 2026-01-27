@@ -245,6 +245,13 @@ class TestMarkPointError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_point().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
 
+    def test_encoding_error_not_encoded(self):
+        """Mark point encoding error. Encoding not in specifications."""
+        with self.assertRaises(ValueError) as error:
+            point_chart = aframexr.Chart(DATA).mark_point()
+            point_chart.show()
+        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+
     def test_filter_warning(self):
         """Mark point filter warning."""
         for f in WARNING_FILTER_EQUATIONS:

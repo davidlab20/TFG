@@ -175,6 +175,13 @@ class TestMarkArcError(unittest.TestCase):
             assert str(error.exception) in ['Parameter theta must be specified in arc chart.',
                                             'Parameter color must be specified in arc chart.']
 
+    def test_encoding_error_not_encoded(self):
+        """Pie chart encoding error. Encoding not in specifications."""
+        with self.assertRaises(ValueError) as error:
+            pie_chart = aframexr.Chart(DATA).mark_arc()
+            pie_chart.show()
+        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+
     def test_filter_warning(self):
         """Pie chart filter warning."""
         for f in WARNING_FILTER_EQUATIONS:

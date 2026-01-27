@@ -235,6 +235,13 @@ class TestMarkBarError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_bar().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
 
+    def test_encoding_error_not_encoded(self):
+        """Bars chart encoding error. Encoding not in specifications."""
+        with self.assertRaises(ValueError) as error:
+            bars_chart = aframexr.Chart(DATA).mark_bar()
+            bars_chart.show()
+        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+
     def test_filter_warning(self):
         """Bars chart filter warning."""
         for f in WARNING_FILTER_EQUATIONS:
