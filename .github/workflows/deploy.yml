@@ -16,8 +16,8 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Install marimo
-            run: pip install marimo
+          - name: Install marimo and aframexr
+            run: pip install marimo aframexr
 
           - name: 📄 Export Get Started notebooks
             working-directory: docs/get_started
