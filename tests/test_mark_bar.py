@@ -257,6 +257,13 @@ class TestMarkBarError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_bar().encode(**e)
             assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
 
+    def test_encoding_error_invalid_encoding_type(self):
+        """Bars chart encoding error with invalid encoding type."""
+        with self.assertRaises(ValueError) as error:
+            bad_encoding_type = 'BAD_ENCODING'
+            aframexr.Chart(DATA).mark_bar().encode(x=f'model:{bad_encoding_type}', y='sales').to_html()
+        assert str(error.exception) == f'Invalid encoding type: {bad_encoding_type}.'
+
     def test_encoding_error_not_encoded(self):
         """Bars chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
