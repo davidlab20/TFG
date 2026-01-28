@@ -96,7 +96,6 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
         for non_filter_transf in transform_field:  # Non-filter transformations
             groupby = set(non_filter_transf.get('groupby')) if non_filter_transf.get('groupby') else set()
             if non_filter_transf.get('aggregate'):
-
                 for aggregate in non_filter_transf.get('aggregate'):
                     aggregate_object = AggregatedFieldDef.from_dict(aggregate)
 
