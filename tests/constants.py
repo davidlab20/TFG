@@ -71,8 +71,8 @@ NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS = (-1, 0)
 
 # Encodings OK
 MARK_BAR_ENCODINGS = ({'x': 'model', 'y': 'sales'}, {'x': 'model', 'y': 'sales', 'z': 'motor'})
-MARK_POINT_ENCODINGS = ({'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'model', 'y': 'sales', 'size': 'doors'},
-                        {'x': 'model', 'y': 'sales', 'color': 'motor', 'size': 'doors'}, *MARK_BAR_ENCODINGS)
+MARK_POINT_ENCODINGS = ({'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'model', 'y': 'sales', 'size': 'doors:Q'},
+                        {'x': 'model', 'y': 'sales', 'color': 'motor', 'size': 'doors:Q'}, *MARK_BAR_ENCODINGS)
 
 # Encodings ERROR
 NON_EXISTING_MARK_BAR_POINT_ENCODINGS = ({'x': 'model', 'y': 'bad_key'}, {'x': 'bad_key', 'y': 'sales'})
