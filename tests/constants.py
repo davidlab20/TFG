@@ -22,6 +22,7 @@ DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, AFRAMEXR_DATA, AFRAMEXR_DATA_2, POSITIV
 NON_EXISTING_URL_DATA = URLData('https://bad_url.bad_url')
 NON_EXISTING_LOCAL_PATH = URLData('../bad_path')
 BAD_FILE_FORMAT = URLData('bad_file.bad_extension')
+EMPTY_FILE = URLData('empty_file.csv')
 
 # Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES

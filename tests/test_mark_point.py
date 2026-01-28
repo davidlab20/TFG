@@ -254,6 +254,21 @@ class TestMarkPointError(unittest.TestCase):
             from pathlib import Path
             Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
 
+    def test_file_is_empty(self):
+        """Mark point error when file is empty."""
+        with open(EMPTY_FILE.url, 'w'):
+            pass  # Create an empty temporal file
+
+        try:
+            with self.assertRaises(IOError) as error:
+                aframexr.Chart(EMPTY_FILE).mark_point().encode(x='model', y='sales').to_html()
+
+            self.assertIn('Error when processing data. Error: ', str(error.exception))
+
+        finally:
+            from pathlib import Path
+            Path(EMPTY_FILE.url).unlink()  # Remove the temporal file
+
     def test_position_error(self):
         """Mark point position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
