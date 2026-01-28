@@ -6,7 +6,7 @@ from aframexr.api.data import Data, URLData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
 # ----- GENERAL -----
-# Data
+# Data OK
 URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
 LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
