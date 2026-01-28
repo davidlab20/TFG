@@ -54,7 +54,7 @@ def _get_data_from_url(url: str) -> DataFrame:
             json_data = json.load(data)
             df_data = DataFrame(json_data)
         else:
-            raise NotImplementedError(f'Unsupported file type: {file_type}.')
+            raise ValueError(f'Unsupported file type: {file_type}.')
     except Exception as e:
         raise IOError(f'Error when processing data. Error: {e}.')
 
