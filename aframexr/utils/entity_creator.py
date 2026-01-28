@@ -55,6 +55,8 @@ def _get_data_from_url(url: str) -> DataFrame:
             df_data = DataFrame(json_data)
         else:
             raise ValueError(f'Unsupported file type: {file_type}.')
+    except ValueError:
+        raise  # To raise previous ValueError
     except Exception as e:
         raise IOError(f'Error when processing data. Error: {e}.')
 
