@@ -28,3 +28,10 @@ class TestAframexrError(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             aframexr.Chart.from_dict({'data': ''}).to_html()
         assert str(error.exception) == 'Invalid chart specifications. Must contain key "mark".'
+
+    def test_invalid_chart_type(self):
+        """Verify that the error is raised when the chart type is invalid."""
+        with self.assertRaises(ValueError) as error:
+            bad_chart_type = 'bad_mark'
+            aframexr.Chart.from_dict({'data': '', 'mark': bad_chart_type, 'encoding': ''}).to_html()
+        assert str(error.exception) == f'Invalid chart type: {bad_chart_type}.'
