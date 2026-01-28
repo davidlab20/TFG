@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from aframexr.api.data import URLData
+from aframexr.api.data import Data, URLData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
 # ----- GENERAL -----
@@ -11,9 +11,12 @@ URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  
 LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
 LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
+AFRAMEXR_DATA = Data(DATA.to_dict(orient='records'))  # To test Data.__init__() method
+AFRAMEXR_DATA_2 = Data.from_json(AFRAMEXR_DATA.to_json())  # To test Data.from_json() and Data.to_json() methods
 ALL_NEGATIVE_DATA =  DATA.assign(sales=DATA['sales'] * -1)  # DATA with negative sales
 POSITIVE_NEGATIVE_DATA = DATA.assign(sales=DATA['sales'] * ([1, -1] * len(DATA))[:len(DATA)])  # Alternate signs
-DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, POSITIVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA, LOCAL_PATH_JSON_DATA, URL_DATA)
+DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, AFRAMEXR_DATA, AFRAMEXR_DATA_2, POSITIVE_NEGATIVE_DATA, LOCAL_PATH_CSV_DATA,
+                LOCAL_PATH_JSON_DATA, URL_DATA)
 
 # Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES
