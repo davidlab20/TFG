@@ -93,7 +93,7 @@ class TestMarkBarOK(unittest.TestCase):
         self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
         # noinspection PyTypeChecker
         self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
-        self.assertTrue(bars_chart.to_json() == json_string)
+        self.assertEqual(bars_chart.to_json(), json_string)
 
     def test_data_format(self):
         """Bars chart changing data format creation."""
@@ -222,45 +222,45 @@ class TestMarkBarError(unittest.TestCase):
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == f'The position: {p} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The position: {p} is not correct. Must be "x y z".')
 
         for p in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == 'The position values must be numeric.'
+            self.assertEqual(str(error.exception), 'The position values must be numeric.')
 
     def test_rotation_error(self):
         """Bars chart rotation error."""
         for r in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == f'The rotation: {r} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The rotation: {r} is not correct. Must be "x y z".')
 
         for r in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == 'The rotation values must be numeric.'
+            self.assertEqual(str(error.exception), 'The rotation values must be numeric.')
 
     def test_size_error(self):
         """Bars chart size error."""
         for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
-            assert str(error.exception) == 'The size must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The size must be greater than 0.')
 
     def test_height_error(self):
         """Bars chart height error."""
         for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == 'The height must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The height must be greater than 0.')
 
     def test_width_error(self):
         """Bars chart width error."""
         for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
-            assert str(error.exception) == 'The width must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The width must be greater than 0.')
 
     def test_encoding_error(self):
         """Bars chart encoding error."""
@@ -268,26 +268,26 @@ class TestMarkBarError(unittest.TestCase):
             with self.assertRaises(KeyError) as error:
                 bars_chart = aframexr.Chart(DATA).mark_bar().encode(**e)
                 bars_chart.to_html()
-            assert 'Data has no field ' in str(error.exception)
+            self.assertIn('Data has no field ', str(error.exception))
 
         for e in NOT_VALID_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar().encode(**e)
-            assert str(error.exception) == 'At least 2 of (x, y, z) must be specified.'
+            self.assertEqual(str(error.exception), 'At least 2 of (x, y, z) must be specified.')
 
     def test_encoding_error_invalid_encoding_type(self):
         """Bars chart encoding error with invalid encoding type."""
         with self.assertRaises(ValueError) as error:
             bad_encoding_type = 'BAD_ENCODING'
             aframexr.Chart(DATA).mark_bar().encode(x=f'model:{bad_encoding_type}', y='sales').to_html()
-        assert str(error.exception) == f'Invalid encoding type: {bad_encoding_type}.'
+        self.assertEqual(str(error.exception), f'Invalid encoding type: {bad_encoding_type}.')
 
     def test_encoding_error_not_encoded(self):
         """Bars chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
             bars_chart = aframexr.Chart(DATA).mark_bar()
             bars_chart.to_html()
-        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+        self.assertEqual(str(error.exception), "Invalid chart specifications. Must contain key 'encoding'.")
 
     def test_filter_warning(self):
         """Bars chart filter warning."""
@@ -295,7 +295,7 @@ class TestMarkBarError(unittest.TestCase):
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
                 filt_chart.to_html()
-            assert str(warning.warning) == f'Data does not contain values for the filter: {f}.'
+            self.assertEqual(str(warning.warning), f'Data does not contain values for the filter: {f}.')
 
     def test_filter_error(self):
         """Bars chart filter error."""
@@ -303,9 +303,9 @@ class TestMarkBarError(unittest.TestCase):
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
                 filt_chart.to_html()
-            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
+            self.assertIn(str(error.exception), ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
-                                            'Incorrect syntax, must be datum.{field} < {value}']
+                                            'Incorrect syntax, must be datum.{field} < {value}'])
 
     def test_aggregate_error(self):
         """Bars chart aggregate error."""
@@ -314,4 +314,4 @@ class TestMarkBarError(unittest.TestCase):
                 agg_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
                              .transform_aggregate(new_field=f'{a}(sales)'))
                 agg_chart.to_html()
-            assert str(error.exception) == f'Invalid aggregate operation: {a}.'
+            self.assertEqual(str(error.exception), f'Invalid aggregate operation: {a}.')

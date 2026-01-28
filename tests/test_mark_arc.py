@@ -72,7 +72,7 @@ class TestMarkArcOK(unittest.TestCase):
         self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
         # noinspection PyTypeChecker
         self.assertTrue(_slices_are_well_placed(pie_chart))
-        self.assertTrue(pie_chart.to_json() == json_string)
+        self.assertEqual(pie_chart.to_json(), json_string)
 
     def test_data_format(self):
         """Pie chart changing data format creation."""
@@ -168,31 +168,31 @@ class TestMarkArcError(unittest.TestCase):
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_arc().encode(color='model', theta='sales')
-            assert str(error.exception) == f'The position: {p} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The position: {p} is not correct. Must be "x y z".')
 
         for p in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_arc().encode(color='model', theta='sales')
-            assert str(error.exception) == 'The position values must be numeric.'
+            self.assertEqual(str(error.exception), 'The position values must be numeric.')
 
     def test_rotation_error(self):
         """Pie chart rotation error."""
         for r in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_arc().encode(color='model', theta='sales')
-            assert str(error.exception) == f'The rotation: {r} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The rotation: {r} is not correct. Must be "x y z".')
 
         for r in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_arc().encode(color='model', theta='sales')
-            assert str(error.exception) == 'The rotation values must be numeric.'
+            self.assertEqual(str(error.exception), 'The rotation values must be numeric.')
 
     def test_radius_error(self):
         """Pie chart radius error."""
         for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc(radius=r).encode(color='model', theta='sales')
-            assert str(error.exception) == 'The radius must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The radius must be greater than 0.')
 
     def test_encoding_error(self):
         """Pie chart encoding error."""
@@ -200,27 +200,27 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(KeyError) as error:
                 pie_chart = aframexr.Chart(DATA).mark_arc().encode(**e)
                 pie_chart.to_html()
-            assert 'Data has no field ' in str(error.exception)
+            self.assertIn('Data has no field ', str(error.exception))
 
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc().encode(**e)
-            assert str(error.exception) in ['Parameter theta must be specified in arc chart.',
-                                            'Parameter color must be specified in arc chart.']
+            self.assertIn(str(error.exception), ['Parameter theta must be specified in arc chart.',
+                                            'Parameter color must be specified in arc chart.'])
 
     def test_encoding_error_invalid_encoding_type(self):
         """Pie chart encoding error with invalid encoding type."""
         with self.assertRaises(ValueError) as error:
             bad_encoding_type = 'BAD_ENCODING'
             aframexr.Chart(DATA).mark_arc().encode(color=f'model:{bad_encoding_type}', theta='sales').to_html()
-        assert str(error.exception) == f'Invalid encoding type: {bad_encoding_type}.'
+        self.assertEqual(str(error.exception), f'Invalid encoding type: {bad_encoding_type}.')
 
     def test_encoding_error_not_encoded(self):
         """Pie chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
             pie_chart = aframexr.Chart(DATA).mark_arc()
             pie_chart.to_html()
-        assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
+        self.assertEqual(str(error.exception), "Invalid chart specifications. Must contain key 'encoding'.")
 
     def test_filter_warning(self):
         """Pie chart filter warning."""
@@ -228,7 +228,7 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.to_html()
-            assert str(warning.warning) == f'Data does not contain values for the filter: {f}.'
+            self.assertEqual(str(warning.warning), f'Data does not contain values for the filter: {f}.')
 
     def test_filter_error(self):
         """Pie chart filter error."""
@@ -236,9 +236,9 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.to_html()
-            assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
+            self.assertIn(str(error.exception), ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
-                                            'Incorrect syntax, must be datum.{field} < {value}']
+                                            'Incorrect syntax, must be datum.{field} < {value}'])
 
     def test_aggregate_error(self):
         """Pie chart aggregate error."""
@@ -247,4 +247,4 @@ class TestMarkArcError(unittest.TestCase):
                 agg_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
                              .transform_aggregate(new_field=f'{a}(sales)'))
                 agg_chart.to_html()
-            assert str(error.exception) == f'Invalid aggregate operation: {a}.'
+            self.assertEqual(str(error.exception), f'Invalid aggregate operation: {a}.')

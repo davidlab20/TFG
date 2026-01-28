@@ -90,35 +90,35 @@ class TestMarkImageError(unittest.TestCase):
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_image()
-            assert str(error.exception) == f'The position: {p} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The position: {p} is not correct. Must be "x y z".')
 
         for p in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_image()
-            assert str(error.exception) == 'The position values must be numeric.'
+            self.assertEqual(str(error.exception), 'The position values must be numeric.')
 
     def test_rotation_error(self):
         """Mark image rotation error."""
         for r in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_image()
-            assert str(error.exception) == f'The rotation: {r} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The rotation: {r} is not correct. Must be "x y z".')
 
         for r in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_image()
-            assert str(error.exception) == 'The rotation values must be numeric.'
+            self.assertEqual(str(error.exception), 'The rotation values must be numeric.')
 
     def test_width_error(self):
         """Mark image width error."""
         for w in NOT_GREATER_THAN_0_MARK_IMAGE_WIDTHS_HEIGHTS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_image(width=w)
-            assert str(error.exception) == 'The width must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The width must be greater than 0.')
 
     def test_height_error(self):
         """Mark image height error."""
         for h in NOT_GREATER_THAN_0_MARK_IMAGE_WIDTHS_HEIGHTS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_image(height=h)
-            assert str(error.exception) == 'The height must be greater than 0.'
+            self.assertEqual(str(error.exception), 'The height must be greater than 0.')

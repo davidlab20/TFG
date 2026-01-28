@@ -28,21 +28,21 @@ class TestAframexrError(unittest.TestCase):
             one = aframexr.Chart(aframexr.URLData(''))
             other = 2
             one + other
-        assert str(error.exception) == f"Cannot add {type(other).__name__} to {type(one).__name__}."
+        self.assertEqual(str(error.exception), f"Cannot add {type(other).__name__} to {type(one).__name__}.")
 
     def test_invalid_chart_specifications_not_data_mark(self):
         """Verify that the error is raised when chart specifications do not have field "data" or "mark"."""
         with self.assertRaises(ValueError) as error:
             aframexr.Chart.from_dict({'mark': ''}).to_html()
-        assert str(error.exception) == 'Invalid chart specifications. Must contain key "data".'
+        self.assertEqual(str(error.exception), 'Invalid chart specifications. Must contain key "data".')
 
         with self.assertRaises(ValueError) as error:
             aframexr.Chart.from_dict({'data': ''}).to_html()
-        assert str(error.exception) == 'Invalid chart specifications. Must contain key "mark".'
+        self.assertEqual(str(error.exception), 'Invalid chart specifications. Must contain key "mark".')
 
     def test_invalid_chart_type(self):
         """Verify that the error is raised when the chart type is invalid."""
         with self.assertRaises(ValueError) as error:
             bad_chart_type = 'bad_mark'
             aframexr.Chart.from_dict({'data': '', 'mark': bad_chart_type, 'encoding': ''}).to_html()
-        assert str(error.exception) == f'Invalid chart type: {bad_chart_type}.'
+        self.assertEqual(str(error.exception), f'Invalid chart type: {bad_chart_type}.')

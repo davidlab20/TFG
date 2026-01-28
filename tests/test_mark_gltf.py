@@ -38,7 +38,7 @@ class TestMarkGLTFOK(unittest.TestCase):
         gltf_chart = aframexr.Chart.from_json(json_string)
         gltf_chart.to_html()
 
-        self.assertTrue(gltf_chart.to_json() == json_string)
+        self.assertEqual(gltf_chart.to_json(), json_string)
 
     def test_position(self):
         """GLTF changing position creation."""
@@ -86,21 +86,21 @@ class TestMarkGLTFError(unittest.TestCase):
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_gltf()
-            assert str(error.exception) == f'The position: {p} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The position: {p} is not correct. Must be "x y z".')
 
         for p in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_gltf()
-            assert str(error.exception) == 'The position values must be numeric.'
+            self.assertEqual(str(error.exception), 'The position values must be numeric.')
 
     def test_rotation_error(self):
         """Mark GLTF rotation error."""
         for r in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_gltf()
-            assert str(error.exception) == f'The rotation: {r} is not correct. Must be "x y z".'
+            self.assertEqual(str(error.exception), f'The rotation: {r} is not correct. Must be "x y z".')
 
         for r in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, rotation=r).mark_gltf()
-            assert str(error.exception) == 'The rotation values must be numeric.'
+            self.assertEqual(str(error.exception), 'The rotation values must be numeric.')
