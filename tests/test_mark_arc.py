@@ -163,6 +163,18 @@ class TestMarkArcOK(unittest.TestCase):
 
 class TestMarkArcError(unittest.TestCase):
     """Pie chart error tests."""
+    def test_load_data_url_error(self):
+        """Pie chart load data url error."""
+        import urllib.error
+        from unittest.mock import patch
+
+        with patch('urllib.request.urlopen') as mock_urlopen:
+            with self.assertRaises(IOError) as error:
+                mock_urlopen.side_effect = urllib.error.URLError("Not Found")
+                aframexr.Chart(URL_DATA).mark_arc().encode(color='model', theta='sales').to_html()
+
+        self.assertEqual(str(error.exception), f"Could not load data from URL: {URL_DATA.url}.")
+
     def test_position_error(self):
         """Pie chart position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:

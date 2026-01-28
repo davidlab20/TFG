@@ -217,6 +217,18 @@ class TestMarkBarOK(unittest.TestCase):
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""
+    def test_load_data_url_error(self):
+        """Bars chart load data url error."""
+        import urllib.error
+        from unittest.mock import patch
+
+        with patch('urllib.request.urlopen') as mock_urlopen:
+            with self.assertRaises(IOError) as error:
+                mock_urlopen.side_effect = urllib.error.URLError("Not Found")
+                aframexr.Chart(URL_DATA).mark_bar().encode(x='model', y='sales').to_html()
+
+        self.assertEqual(str(error.exception), f"Could not load data from URL: {URL_DATA.url}.")
+
     def test_position_error(self):
         """Bars chart position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
