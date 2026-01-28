@@ -9,7 +9,18 @@ class TestAframexrError(unittest.TestCase):
         with self.assertRaises(TypeError) as error:
             # noinspection PyTypeChecker
             aframexr.Chart.from_dict('not_a_dict')
-        assert str(error.exception) == f'Expected {dict.__name__}, got {str.__name__} instead.'
+        self.assertEqual(str(error.exception), f'Expected {dict.__name__}, got {str.__name__} instead.')
+
+    def test_NULL_series(self):
+        """Verify that the error is raised when having NULL series."""
+        with self.assertRaises(ValueError) as error:
+            data = [
+                {"id": 1, "value": None},
+                {"id": 2, "value": None},
+                {"id": 3, "value": None}
+            ]
+            aframexr.Chart(aframexr.Data(data)).mark_bar().encode(x='id', y='value').to_html()
+        self.assertEqual(str(error.exception), 'Unknown dtype: Null.')
 
     def test_add_error_not_isinstance_TopLevelMixin(self):
         """Verify that the error is raised when adding one chart to other thing."""
