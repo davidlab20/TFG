@@ -181,13 +181,16 @@ class TestMarkArcError(unittest.TestCase):
         """Pie chart error when file format is incorrect."""
         with open(BAD_FILE_FORMAT.url, 'w'):
             pass  # Create a bad format temporal file
-        with self.assertRaises(ValueError) as error:
-            aframexr.Chart(BAD_FILE_FORMAT).mark_arc().encode(color='model', theta='sales').to_html()
 
-        self.assertIn(f'Unsupported file type: ', str(error.exception))
+        try:
+            with self.assertRaises(ValueError) as error:
+                aframexr.Chart(BAD_FILE_FORMAT).mark_arc().encode(color='model', theta='sales').to_html()
 
-        from pathlib import Path
-        Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
+            self.assertIn(f'Unsupported file type: ', str(error.exception))
+
+        finally:
+            from pathlib import Path
+            Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
 
     def test_position_error(self):
         """Pie chart position error."""
