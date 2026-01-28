@@ -95,6 +95,17 @@ class TestMarkPointOK(unittest.TestCase):
             self.assertIsNone(components.pd)
             self.assertIs(components.DataFrame, object)
 
+    def test_from_json(self):
+        """Mark point using from_json() method creation."""
+        json_string = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').to_json()
+        point_chart = aframexr.Chart.from_json(json_string)
+        point_chart.to_html()
+        # noinspection PyTypeChecker
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+        # noinspection PyTypeChecker
+        self.assertTrue(_points_are_inside_chart_volume(point_chart))
+        self.assertTrue(point_chart.to_json() == json_string)
+
     def test_data_format(self):
         """Mark point changing data format creation."""
         for d in DATA_FORMATS:

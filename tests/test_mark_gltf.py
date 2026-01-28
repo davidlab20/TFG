@@ -32,6 +32,14 @@ class TestMarkGLTFOK(unittest.TestCase):
             self.assertIsNone(components.pd)
             self.assertIs(components.DataFrame, object)
 
+    def test_from_json(self):
+        """GLTF using from_json() method creation."""
+        json_string = aframexr.Chart(DATA).mark_gltf().to_json()
+        gltf_chart = aframexr.Chart.from_json(json_string)
+        gltf_chart.to_html()
+
+        self.assertTrue(gltf_chart.to_json() == json_string)
+
     def test_position(self):
         """GLTF changing position creation."""
         for p in POSITIONS:

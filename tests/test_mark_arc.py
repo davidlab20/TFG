@@ -63,6 +63,17 @@ class TestMarkArcOK(unittest.TestCase):
             self.assertIsNone(components.pd)
             self.assertIs(components.DataFrame, object)
 
+    def test_from_json(self):
+        """Pie chart using from_json() method creation."""
+        json_string = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').to_json()
+        pie_chart = aframexr.Chart.from_json(json_string)
+        pie_chart.to_html()
+        # noinspection PyTypeChecker
+        self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+        # noinspection PyTypeChecker
+        self.assertTrue(_slices_are_well_placed(pie_chart))
+        self.assertTrue(pie_chart.to_json() == json_string)
+
     def test_data_format(self):
         """Pie chart changing data format creation."""
         for d in DATA_FORMATS:

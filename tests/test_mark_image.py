@@ -31,6 +31,14 @@ class TestMarkImageOK(unittest.TestCase):
             self.assertIsNone(components.pd)
             self.assertIs(components.DataFrame, object)
 
+    def test_from_json(self):
+        """Image using from_json() method creation."""
+        json_string = aframexr.Chart(DATA).mark_image().to_json()
+        image_chart = aframexr.Chart.from_json(json_string)
+        image_chart.to_html()
+
+        self.assertTrue(image_chart.to_json() == json_string)
+
     def test_position(self):
         """Image changing position creation."""
         for p in POSITIONS:

@@ -84,6 +84,17 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertIsNone(components.pd)
             self.assertIs(components.DataFrame, object)
 
+    def test_from_json(self):
+        """Bars chart using from_json() method creation."""
+        json_string = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').to_json()
+        bars_chart = aframexr.Chart.from_json(json_string)
+        bars_chart.to_html()
+        # noinspection PyTypeChecker
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
+        # noinspection PyTypeChecker
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+        self.assertTrue(bars_chart.to_json() == json_string)
+
     def test_data_format(self):
         """Bars chart changing data format creation."""
         for d in DATA_FORMATS:
