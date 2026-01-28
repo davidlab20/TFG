@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.18.4"
+__generated_with = "0.19.6"
 app = marimo.App(width="medium")
 
 
@@ -9,6 +9,17 @@ def _(mo):
     mo.md("""
     # **Images and GLTF notebook**
     """)
+    return
+
+
+@app.cell(hide_code=True)
+async def _():
+    # Install necessary packages only when running in WASM (browser) mode.
+    import sys
+
+    if sys.platform == 'emscripten':  # WASM mode
+        import micropip
+        await micropip.install(['aframexr', 'wcwidth'])
     return
 
 
