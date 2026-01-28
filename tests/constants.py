@@ -20,8 +20,8 @@ DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, AFRAMEXR_DATA, AFRAMEXR_DATA_2, POSITIV
 
 # Data ERROR
 NON_EXISTING_URL_DATA = URLData('https://bad_url.bad_url')
-NON_EXISTING_LOCAL_PATH = '../bad_path'
-BAD_FILE_EXTENSION = 'bad_file.bad_extension'
+NON_EXISTING_LOCAL_PATH = URLData('../bad_path')
+BAD_FILE_FORMAT = URLData('bad_file.bad_extension')
 
 # Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES
