@@ -62,6 +62,28 @@ class TestMarkBarOK(unittest.TestCase):
         assert _bars_bases_are_on_x_axis(bars_chart)
         assert _bars_height_does_not_exceed_max_height(bars_chart)
 
+    def test_simple_with_pandas_not_installed(self):
+        """Simple bars chart creation without having pandas installed."""
+        import sys
+        import importlib
+        from unittest import mock
+
+        sys.modules.pop('aframexr', None)
+        sys.modules.pop('aframexr.api.components', None)
+
+        with mock.patch.dict(sys.modules, {'pandas': None}):
+            import aframexr
+            importlib.reload(aframexr)
+
+            bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+            bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+
+            import aframexr.api.components as components
+            self.assertIsNone(components.pd)
+            self.assertIs(components.DataFrame, object)
+
     def test_data_format(self):
         """Bars chart changing data format creation."""
         for d in DATA_FORMATS:

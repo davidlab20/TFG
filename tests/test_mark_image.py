@@ -12,6 +12,25 @@ class TestMarkImageOK(unittest.TestCase):
         """Simple image creation."""
         aframexr.Chart(DATA).mark_image().show()
 
+    def test_simple_with_pandas_not_installed(self):
+        """Simple image creation without having pandas installed."""
+        import sys
+        import importlib
+        from unittest import mock
+
+        sys.modules.pop('aframexr', None)
+        sys.modules.pop('aframexr.api.components', None)
+
+        with mock.patch.dict(sys.modules, {'pandas': None}):
+            import aframexr
+            importlib.reload(aframexr)
+
+            aframexr.Chart(DATA).mark_image().show()
+
+            import aframexr.api.components as components
+            self.assertIsNone(components.pd)
+            self.assertIs(components.DataFrame, object)
+
     def test_position(self):
         """Image changing position creation."""
         for p in POSITIONS:

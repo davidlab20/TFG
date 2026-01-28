@@ -13,6 +13,25 @@ class TestMarkGLTFOK(unittest.TestCase):
         """Simple GLTF creation."""
         aframexr.Chart(DATA).mark_gltf().show()
 
+    def test_simple_with_pandas_not_installed(self):
+        """Simple GLTF creation without having pandas installed."""
+        import sys
+        import importlib
+        from unittest import mock
+
+        sys.modules.pop('aframexr', None)
+        sys.modules.pop('aframexr.api.components', None)
+
+        with mock.patch.dict(sys.modules, {'pandas': None}):
+            import aframexr
+            importlib.reload(aframexr)
+
+            aframexr.Chart(DATA).mark_gltf().show()
+
+            import aframexr.api.components as components
+            self.assertIsNone(components.pd)
+            self.assertIs(components.DataFrame, object)
+
     def test_position(self):
         """GLTF changing position creation."""
         for p in POSITIONS:

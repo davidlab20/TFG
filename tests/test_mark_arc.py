@@ -41,6 +41,28 @@ class TestMarkArcOK(unittest.TestCase):
         assert _all_theta_sum_is_360_degrees(pie_chart)
         assert _slices_are_well_placed(pie_chart)
 
+    def test_simple_with_pandas_not_installed(self):
+        """Simple pie chart creation without having pandas installed."""
+        import sys
+        import importlib
+        from unittest import mock
+
+        sys.modules.pop('aframexr', None)
+        sys.modules.pop('aframexr.api.components', None)
+
+        with mock.patch.dict(sys.modules, {'pandas': None}):
+            import aframexr
+            importlib.reload(aframexr)
+
+            pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
+
+            import aframexr.api.components as components
+            self.assertIsNone(components.pd)
+            self.assertIs(components.DataFrame, object)
+
     def test_data_format(self):
         """Pie chart changing data format creation."""
         for d in DATA_FORMATS:

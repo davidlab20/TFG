@@ -73,6 +73,29 @@ class TestMarkPointOK(unittest.TestCase):
         assert _every_radius_does_not_exceed_max_radius(point_chart)
         assert _points_are_inside_chart_volume(point_chart)
 
+    def test_simple_with_pandas_not_installed(self):
+        """Simple mark point creation without having pandas installed."""
+        import sys
+        import importlib
+        from unittest import mock
+
+        sys.modules.pop('aframexr', None)
+        sys.modules.pop('aframexr.api.components', None)
+
+        with mock.patch.dict(sys.modules, {'pandas': None}):
+            import aframexr
+            importlib.reload(aframexr)
+
+            point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
+            point_chart.show()
+
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_points_are_inside_chart_volume(point_chart))
+
+            import aframexr.api.components as components
+            self.assertIsNone(components.pd)
+            self.assertIs(components.DataFrame, object)
+
     def test_data_format(self):
         """Mark point changing data format creation."""
         for d in DATA_FORMATS:
