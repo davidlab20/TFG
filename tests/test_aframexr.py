@@ -18,3 +18,13 @@ class TestAframexrError(unittest.TestCase):
             other = 2
             one + other
         assert str(error.exception) == f"Cannot add {type(other).__name__} to {type(one).__name__}."
+
+    def test_invalid_chart_specifications_not_data_mark(self):
+        """Verify that the error is raised when chart specifications do not have field "data" or "mark"."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart.from_dict({'mark': ''}).to_html()
+        assert str(error.exception) == 'Invalid chart specifications. Must contain key "data".'
+
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart.from_dict({'data': ''}).to_html()
+        assert str(error.exception) == 'Invalid chart specifications. Must contain key "mark".'
