@@ -367,3 +367,13 @@ class TestMarkPointError(unittest.TestCase):
                              .transform_aggregate(new_field=f'{a}(sales)'))
                 agg_chart.to_html()
             self.assertEqual(str(error.exception), f'Invalid aggregate operation: {a}.')
+
+    def test_aggregate_error_not_defined_encoding_channels(self):
+        """Mark point aggregate error raised when encoding channels are not defined in aggregation."""
+        with self.assertRaises(ValueError) as error:
+            agg_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
+                         .transform_aggregate(mean_sales='mean(sales)', groupby=['model']))
+            agg_chart.to_html()
+
+        self.assertRegex(str(error.exception), r'Encoding channel\(s\) .* must be defined in aggregate .*'
+                                               r', otherwise that fields will disappear.')
