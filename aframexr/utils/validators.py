@@ -16,6 +16,7 @@ class AframeXRValidator:
     @staticmethod
     def validate_chart_specs(specs: dict) -> None:
         """Raises ValueError if chart specifications are invalid."""
+        AframeXRValidator.validate_type(specs, dict)
         if 'concat' in specs:
             for chart_specs in specs['concat']:  # There are several charts in the specifications
                 AframeXRValidator.validate_chart_specs(chart_specs)  # Validate each chart specification

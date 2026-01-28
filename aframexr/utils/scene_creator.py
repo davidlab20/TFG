@@ -63,7 +63,5 @@ class SceneCreator:
         -----
         Suppose that specs is a dictionary for posterior method calls of ChartsHTMLCreator.
         """
-        if not isinstance(specs, dict):
-            raise TypeError(f'Expected specs to be a dict, got {type(specs).__name__}')
         elements_html = ChartsHTMLCreator.create_charts_html(specs)
         return HTML_SCENE_TEMPLATE.format(elements=elements_html)
