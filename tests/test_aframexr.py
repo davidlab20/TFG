@@ -11,6 +11,14 @@ class TestAframexrError(unittest.TestCase):
             aframexr.Chart.from_dict('not_a_dict')
         self.assertEqual(str(error.exception), f'Expected {dict.__name__}, got {str.__name__} instead.')
 
+    def test_data_has_not_field_data_url(self):
+        """Verify that the error is raised when data has not field "data" or "url"."""
+        with self.assertRaises(ValueError) as error:
+            bad_data_specifications = {"data": {}, "mark": "bar", "encoding": {}}  # Same occurs with other marks
+            aframexr.Chart.from_dict(bad_data_specifications).to_html()
+        self.assertEqual(str(error.exception),
+                         'Data specifications has no correct syntaxis, must have field "url" or "values".')
+
     def test_NULL_series(self):
         """Verify that the error is raised when having NULL series."""
         with self.assertRaises(ValueError) as error:
