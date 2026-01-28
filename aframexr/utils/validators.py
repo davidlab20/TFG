@@ -40,9 +40,6 @@ class AframeXRValidator:
     @staticmethod
     def validate_encoding_type(encoding_type: str) -> None:
         """Raises ValueError if encoding type is not valid."""
-        if not isinstance(encoding_type, str):
-            raise TypeError(f'Expected str, got {type(encoding_type).__name__} instead.')
-
         if encoding_type not in AVAILABLE_ENCODING_TYPES:
             raise ValueError(f'Invalid encoding type: {encoding_type}.')
 
