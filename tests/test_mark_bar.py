@@ -167,6 +167,13 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
 
+    def test_encoding_with_no_Y_axis_displayed(self):
+        """Bars chart creation with no Y-axis displayed."""
+        bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y=aframexr.Y('sales', axis=None))
+        bars_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+
     def test_filter(self):
         """Bars chart changing filter creation."""
         for eq in FILTER_EQUATIONS:

@@ -178,6 +178,12 @@ class TestMarkPointOK(unittest.TestCase):
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
 
+    def test_encoding_with_no_Y_axis_displayed(self):
+        """Mark point creation with no Y-axis displayed."""
+        point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y=aframexr.Y('sales', axis=None))
+        point_chart.to_html()
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+
     def test_filter(self):
         """Mark point changing filter creation."""
         for eq in FILTER_EQUATIONS:
