@@ -11,7 +11,7 @@ class TestMarkGLTFOK(unittest.TestCase):
     """Mark GLTF OK tests."""
     def test_simple(self):
         """Simple GLTF creation."""
-        aframexr.Chart(DATA).mark_gltf().show()
+        aframexr.Chart(DATA).mark_gltf().to_html()
 
     def test_simple_with_pandas_not_installed(self):
         """Simple GLTF creation without having pandas installed."""
@@ -26,7 +26,7 @@ class TestMarkGLTFOK(unittest.TestCase):
             import aframexr
             importlib.reload(aframexr)
 
-            aframexr.Chart(DATA).mark_gltf().show()
+            aframexr.Chart(DATA).mark_gltf().to_html()
 
             import aframexr.api.components as components
             self.assertIsNone(components.pd)
@@ -35,32 +35,32 @@ class TestMarkGLTFOK(unittest.TestCase):
     def test_position(self):
         """GLTF changing position creation."""
         for p in POSITIONS:
-            aframexr.Chart(DATA, position=p).mark_gltf().show()
+            aframexr.Chart(DATA, position=p).mark_gltf().to_html()
 
     def test_position_format(self):
         """GLTF changing position format creation."""
         for p in POSITION_FORMATS:
-            aframexr.Chart(DATA, position=p).mark_gltf().show()
+            aframexr.Chart(DATA, position=p).mark_gltf().to_html()
 
     def test_rotation(self):
         """GLTF changing rotation creation."""
         for r in ROTATIONS:
-            aframexr.Chart(DATA, rotation=r).mark_gltf().show()
+            aframexr.Chart(DATA, rotation=r).mark_gltf().to_html()
 
     def test_rotation_format(self):
         """GLTF changing rotation format creation."""
         for r in ROTATION_FORMATS:
-            aframexr.Chart(DATA, rotation=r).mark_gltf().show()
+            aframexr.Chart(DATA, rotation=r).mark_gltf().to_html()
 
     def test_scale(self):
         """GLTF changing scale creation."""
         for s in MARK_GLTF_SCALES:
-            aframexr.Chart(DATA).mark_gltf(scale=s).show()
+            aframexr.Chart(DATA).mark_gltf(scale=s).to_html()
 
     def test_position_rotation_scale(self):
         """GLTF changing position, rotation and scale creation."""
         for p, r, s in zip(POSITIONS, ROTATIONS, MARK_GLTF_SCALES):
-            aframexr.Chart(DATA, position=p, rotation=r).mark_gltf(scale=s).show()
+            aframexr.Chart(DATA, position=p, rotation=r).mark_gltf(scale=s).to_html()
 
     def test_concatenation(self):
         """GLTF concatenation creation."""
@@ -68,7 +68,7 @@ class TestMarkGLTFOK(unittest.TestCase):
         for pos in CONCATENATION_POSITIONS[1:]:
             concatenated_chart += aframexr.Chart(DATA, position=pos).mark_gltf()
 
-        concatenated_chart.show()
+        concatenated_chart.to_html()
 
 
 class TestMarkGLTFError(unittest.TestCase):

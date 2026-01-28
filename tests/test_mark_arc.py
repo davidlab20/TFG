@@ -37,9 +37,9 @@ class TestMarkArcOK(unittest.TestCase):
     def test_simple(self):
         """Simple pie chart creation."""
         pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
-        pie_chart.show()
-        assert _all_theta_sum_is_360_degrees(pie_chart)
-        assert _slices_are_well_placed(pie_chart)
+        pie_chart.to_html()
+        self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+        self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_simple_with_pandas_not_installed(self):
         """Simple pie chart creation without having pandas installed."""
@@ -67,67 +67,67 @@ class TestMarkArcOK(unittest.TestCase):
         """Pie chart changing data format creation."""
         for d in DATA_FORMATS:
             pie_chart = aframexr.Chart(d).mark_arc().encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_position(self):
         """Pie chart changing position creation."""
         for p in POSITIONS:
             pie_chart = aframexr.Chart(DATA, position=p).mark_arc().encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_position_format(self):
         """Pie chart changing position format creation."""
         for p in POSITION_FORMATS:
             pie_chart = aframexr.Chart(DATA, position=p).mark_arc().encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_rotation(self):
         """Pie chart changing rotation creation."""
         for r in ROTATIONS:
             pie_chart = aframexr.Chart(DATA, rotation=r).mark_arc().encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_rotation_format(self):
         """Pie chart changing rotation format creation."""
         for r in ROTATION_FORMATS:
             pie_chart = aframexr.Chart(DATA, rotation=r).mark_arc().encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_radius(self):
         """Pie chart changing radius creation."""
         for r in MARK_ARC_RADIUS:
             pie_chart = aframexr.Chart(DATA).mark_arc(radius=r).encode(color='model', theta='sales')
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_filter(self):
         """Pie chart changing filter creation."""
         for eq in FILTER_EQUATIONS:
             for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
                 pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
-                pie_chart.show()
-                assert _all_theta_sum_is_360_degrees(pie_chart)
-                assert _slices_are_well_placed(pie_chart)
+                pie_chart.to_html()
+                self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+                self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_aggregate(self):
         """Pie chart changing aggregates creation."""
         for a in AGGREGATES:
             pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
                          .transform_aggregate(new_field=f'{a}(sales)'))
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_aggregate_position_rotation_radius_filter(self):
         """Pie chart changing position, rotation, radius and filter creation."""
@@ -135,9 +135,9 @@ class TestMarkArcOK(unittest.TestCase):
             pie_chart = (aframexr.Chart(DATA, position=pos, rotation=rot).mark_arc(radius=rad)
                          .encode(color='model',theta='sales').transform_filter(fil)
                          .transform_aggregate(agg=f'{agg}(sales)'))
-            pie_chart.show()
-            assert _all_theta_sum_is_360_degrees(pie_chart)
-            assert _slices_are_well_placed(pie_chart)
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
 
     def test_concatenation(self):
         """Pie chart concatenation creation."""
@@ -146,8 +146,8 @@ class TestMarkArcOK(unittest.TestCase):
         for pos in CONCATENATION_POSITIONS[1:]:
             concatenated_chart += aframexr.Chart(DATA, position=pos).mark_arc().encode(color='model', theta='sales')
 
-        concatenated_chart.show()
-        assert _slices_are_well_placed(concatenated_chart)
+        concatenated_chart.to_html()
+        self.assertTrue(_slices_are_well_placed(concatenated_chart))
 
 
 class TestMarkArcError(unittest.TestCase):
@@ -188,7 +188,7 @@ class TestMarkArcError(unittest.TestCase):
         for e in NON_EXISTING_MARK_ARC_ENCODINGS:
             with self.assertRaises(KeyError) as error:
                 pie_chart = aframexr.Chart(DATA).mark_arc().encode(**e)
-                pie_chart.show()
+                pie_chart.to_html()
             assert 'Data has no field ' in str(error.exception)
 
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
@@ -201,7 +201,7 @@ class TestMarkArcError(unittest.TestCase):
         """Pie chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
             pie_chart = aframexr.Chart(DATA).mark_arc()
-            pie_chart.show()
+            pie_chart.to_html()
         assert str(error.exception) == "Invalid chart specifications. Must contain key 'encoding'."
 
     def test_filter_warning(self):
@@ -209,7 +209,7 @@ class TestMarkArcError(unittest.TestCase):
         for f in WARNING_FILTER_EQUATIONS:
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
-                filt_chart.show()
+                filt_chart.to_html()
             assert str(warning.warning) == f'Data does not contain values for the filter: {f}.'
 
     def test_filter_error(self):
@@ -217,7 +217,7 @@ class TestMarkArcError(unittest.TestCase):
         for f in ERROR_FILTER_EQUATIONS:
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
-                filt_chart.show()
+                filt_chart.to_html()
             assert str(error.exception) in ['Incorrect syntax, must be datum.{field} == {value}',
                                             'Incorrect syntax, must be datum.{field} > {value}',
                                             'Incorrect syntax, must be datum.{field} < {value}']
@@ -228,5 +228,5 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(ValueError) as error:
                 agg_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
                              .transform_aggregate(new_field=f'{a}(sales)'))
-                agg_chart.show()
+                agg_chart.to_html()
             assert str(error.exception) == f'Invalid aggregate operation: {a}.'

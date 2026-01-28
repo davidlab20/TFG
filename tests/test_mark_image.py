@@ -10,7 +10,7 @@ class TestMarkImageOK(unittest.TestCase):
     """Mark image OK tests."""
     def test_simple(self):
         """Simple image creation."""
-        aframexr.Chart(DATA).mark_image().show()
+        aframexr.Chart(DATA).mark_image().to_html()
 
     def test_simple_with_pandas_not_installed(self):
         """Simple image creation without having pandas installed."""
@@ -25,7 +25,7 @@ class TestMarkImageOK(unittest.TestCase):
             import aframexr
             importlib.reload(aframexr)
 
-            aframexr.Chart(DATA).mark_image().show()
+            aframexr.Chart(DATA).mark_image().to_html()
 
             import aframexr.api.components as components
             self.assertIsNone(components.pd)
@@ -34,37 +34,37 @@ class TestMarkImageOK(unittest.TestCase):
     def test_position(self):
         """Image changing position creation."""
         for p in POSITIONS:
-            aframexr.Chart(DATA, position=p).mark_image().show()
+            aframexr.Chart(DATA, position=p).mark_image().to_html()
 
     def test_position_format(self):
         """Image changing position format creation."""
         for p in POSITION_FORMATS:
-            aframexr.Chart(DATA, position=p).mark_image().show()
+            aframexr.Chart(DATA, position=p).mark_image().to_html()
 
     def test_rotation(self):
         """Image changing rotation creation."""
         for r in ROTATIONS:
-            aframexr.Chart(DATA, rotation=r).mark_image().show()
+            aframexr.Chart(DATA, rotation=r).mark_image().to_html()
 
     def test_rotation_format(self):
         """Image changing rotation format creation."""
         for r in ROTATION_FORMATS:
-            aframexr.Chart(DATA, rotation=r).mark_image().show()
+            aframexr.Chart(DATA, rotation=r).mark_image().to_html()
 
     def test_width(self):
         """Image changing width creation."""
         for w in MARK_IMAGE_WIDTHS_HEIGHTS:
-            aframexr.Chart(DATA).mark_image(width=w).show()
+            aframexr.Chart(DATA).mark_image(width=w).to_html()
 
     def test_height(self):
         """Image changing height creation."""
         for h in MARK_IMAGE_WIDTHS_HEIGHTS:
-            aframexr.Chart(DATA).mark_image(height=h).show()
+            aframexr.Chart(DATA).mark_image(height=h).to_html()
 
     def test_position_rotation_width_height(self):
         """Image changing position, rotation, width and height creation."""
         for p, r, w, h in zip(POSITIONS, ROTATIONS, MARK_IMAGE_WIDTHS_HEIGHTS, MARK_IMAGE_WIDTHS_HEIGHTS):
-            aframexr.Chart(DATA, position=p, rotation=r).mark_image(width=w, height=h).show()
+            aframexr.Chart(DATA, position=p, rotation=r).mark_image(width=w, height=h).to_html()
 
     def test_concatenation(self):
         """Image concatenation creation."""
@@ -72,7 +72,7 @@ class TestMarkImageOK(unittest.TestCase):
         for pos in CONCATENATION_POSITIONS[1:]:
             concatenated_chart += aframexr.Chart(DATA, position=pos).mark_image()
 
-        concatenated_chart.show()
+        concatenated_chart.to_html()
 
 
 class TestMarkImageError(unittest.TestCase):
