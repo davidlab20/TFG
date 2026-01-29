@@ -357,7 +357,7 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         else:  # Positive and negative data
             scale_factor = usable_axis_size / range_value
             final_offset = 0
-        return axis_data * scale_factor + final_offset  # Add the final offset to center the elements in the axis
+        return (axis_data * scale_factor + final_offset).round(PRECISION_DECIMALS)  # Add final offset to center
 
     @staticmethod
     def set_elems_coordinates_for_nominal_axis(axis_data: Series, axis_size: float, extremes_offset: float) -> Series:
@@ -377,7 +377,7 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         unique_categories = axis_data.n_unique()
 
         step = (axis_size - 2 * extremes_offset) / (unique_categories - 1) if unique_categories > 1 else 0
-        return (extremes_offset + step * category_codes).cast(pl.Float32)
+        return (extremes_offset + step * category_codes).cast(pl.Float32).round(PRECISION_DECIMALS)
 
 
 class NonAxisChannelChartCreator(ChannelChartCreator):
@@ -543,8 +543,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')
-        return (coordinates.alias(f'{axis_name}_coordinates').round(PRECISION_DECIMALS),
-                bars_axis_size.alias(bars_size_alias).round(PRECISION_DECIMALS))
+        return coordinates.alias(f'{axis_name}_coordinates'), bars_axis_size.alias(bars_size_alias)
 
     def _set_bars_colors(self) -> Series:
         """Returns a Series of the color for each bar composing the bar chart."""
