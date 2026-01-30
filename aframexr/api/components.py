@@ -13,7 +13,7 @@ except ImportError:
     pd = None
 
 from IPython.display import HTML
-from typing import Literal, Union
+from typing import Literal
 
 from aframexr.api.aggregate import AggregatedFieldDef
 from aframexr.api.data import Data, URLData
@@ -238,19 +238,19 @@ class Chart(TopLevelMixin):
         if rotation is not None: self._define_rotation(rotation)
 
         if depth is not None:
-            AframeXRValidator.validate_type(depth, Union[float | int])
+            AframeXRValidator.validate_type(depth, (float, int))
             if depth <= 0:
                 raise ValueError('The depth must be greater than 0.')
             self._specifications.update({'depth': depth})
 
         if height is not None:
-            AframeXRValidator.validate_type(height, Union[float | int])
+            AframeXRValidator.validate_type(height, (float, int))
             if height <= 0:
                 raise ValueError('The height must be greater than 0.')
             self._specifications.update({'height': height})
 
         if width is not None:
-            AframeXRValidator.validate_type(width, Union[float | int])
+            AframeXRValidator.validate_type(width, (float, int))
             if width <= 0:
                 raise ValueError('The width must be greater than 0.')
             self._specifications.update({'width': width})
@@ -268,7 +268,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'arc'}})
 
         if radius is not None:
-            AframeXRValidator.validate_type(radius, Union[float | int])
+            AframeXRValidator.validate_type(radius, (float, int))
             if radius <= 0:
                 raise ValueError('The radius must be greater than 0.')
             self._specifications['mark'].update({'radius': radius})
@@ -292,7 +292,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'bar'}})
 
         if size is not None:
-            AframeXRValidator.validate_type(size, Union[float | int])
+            AframeXRValidator.validate_type(size, (float, int))
             if size <= 0:
                 raise ValueError('The size must be greater than 0.')
             self._specifications['mark'].update({'size': size})
@@ -351,13 +351,13 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'image'}})
 
         if height is not None:
-            AframeXRValidator.validate_type(height, Union[float | int])
+            AframeXRValidator.validate_type(height, (float, int))
             if height <= 0:
                 raise ValueError('The height must be greater than 0.')
             self._specifications['mark'].update({'height': height})
 
         if width is not None:
-            AframeXRValidator.validate_type(width, Union[float | int])
+            AframeXRValidator.validate_type(width, (float, int))
             if width <= 0:
                 raise ValueError('The width must be greater than 0.')
             self._specifications['mark'].update({'width': width})
@@ -381,7 +381,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'point'}})
 
         if size is not None:
-            AframeXRValidator.validate_type(size, Union[float | int])
+            AframeXRValidator.validate_type(size, (float, int))
             if size <= 0:
                 raise ValueError('The size must be greater than 0.')
             self._specifications['mark'].update({'max_radius': size})
@@ -429,13 +429,13 @@ class Chart(TopLevelMixin):
             AframeXRValidator.validate_type(theta, str)
             filled_params.update({'theta': theta})
         if x is not None:
-            AframeXRValidator.validate_type(x, Union[str | X])
+            AframeXRValidator.validate_type(x, (str, X))
             filled_params.update({'x': x})
         if y is not None:
-            AframeXRValidator.validate_type(y, Union[str | Y])
+            AframeXRValidator.validate_type(y, (str, Y))
             filled_params.update({'y': y})
         if z is not None:
-            AframeXRValidator.validate_type(z, Union[str | Z])
+            AframeXRValidator.validate_type(z, (str, Z))
             filled_params.update({'z': z})
 
         # Verify the argument combinations
@@ -485,7 +485,7 @@ class Chart(TopLevelMixin):
         kwargs : dict
             Format is: <new_field>=<aggregate_op>(<data_field>).
         """
-        AframeXRValidator.validate_type(groupby, Union[list | None])
+        AframeXRValidator.validate_type(groupby, (list, type(None)))
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         aggreg_chart = self.copy()
@@ -569,13 +569,20 @@ class Chart(TopLevelMixin):
 
 
 class Element(TopLevelMixin):
-    def __init__(self, color: str = None, position: str = None, rotation: str = None):
-        self.color = color if self.color is not None else
-        super().__init__({})
+    def __init__(self, element: str, color: str = None, position: str = None, rotation: str = None):
+        super().__init__({'element': element})
+
+        if color is not None: self._specifications.update({'color': color})
+        if position is not None: self._specifications.update({'position': position})
+        if rotation is not None: self._specifications.update({'rotation': rotation})
 
 
 class Box(Element):
     """Simple box."""
     def __init__(self, color: str = None, depth: float = None, height: float = None, position: str = None,
                  rotation: str = None, width: float = None):
-        super().__init__()
+        super().__init__(element='box', color=color, position=position, rotation=rotation)
+
+        if depth is not None: self._specifications.update({'depth': depth})
+        if height is not None: self._specifications.update({'height': height})
+        if width is not None: self._specifications.update({'width': width})
