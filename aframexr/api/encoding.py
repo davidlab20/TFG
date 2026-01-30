@@ -1,7 +1,5 @@
 """AframeXR encoding classes"""
 
-from typing import Union
-
 from aframexr.utils.constants import AVAILABLE_ENCODING_TYPES
 from aframexr.utils.validators import AframeXRValidator
 
@@ -17,15 +15,15 @@ class Encoding:
     def __init__(self):
         AframeXRValidator.validate_type(self._field, str)
 
-        AframeXRValidator.validate_type(self._aggregate, Union[str | None])
+        AframeXRValidator.validate_type(self._aggregate, (str, type(None)))
         if self._aggregate: AframeXRValidator.validate_aggregate_operation(self._aggregate)  # Validate if defined
 
-        AframeXRValidator.validate_type(self._axis, Union[bool | None])
+        AframeXRValidator.validate_type(self._axis, (bool, type(None)))
 
-        AframeXRValidator.validate_type(self._encoding_type, Union[str | None])
+        AframeXRValidator.validate_type(self._encoding_type, (str, type(None)))
         if self._encoding_type: AframeXRValidator.validate_encoding_type(self._encoding_type)  # Validate if defined
 
-        AframeXRValidator.validate_type(self._groupby, Union[list | None])
+        AframeXRValidator.validate_type(self._groupby, (list, type(None)))
 
     # Export
     def to_dict(self):
