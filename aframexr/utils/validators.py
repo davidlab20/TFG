@@ -20,14 +20,17 @@ class AframeXRValidator:
                 AframeXRValidator.validate_chart_specs(chart_specs)  # Validate each chart specification
             return
 
-        for key in ('data', 'mark'):
-            if key not in specs:
-                raise ValueError(f'Invalid chart specifications. Must contain key "{key}".')
-
-        mark = specs['mark']
-        mark_type = mark['type'] if isinstance(mark, dict) else mark
-        if mark_type not in {'image', 'gltf'} and 'encoding' not in specs:
-            raise ValueError("Invalid chart specifications. Must contain key 'encoding'.")
+        if 'mark' in specs:  # Chart
+            if 'data' not in specs:
+                raise ValueError(f'Invalid chart specifications. Must contain key "data".')
+            mark = specs['mark']
+            mark_type = mark['type'] if isinstance(mark, dict) else mark
+            if mark_type not in {'image', 'gltf'} and 'encoding' not in specs:
+                raise ValueError("Invalid chart specifications. Must contain key 'encoding'.")
+        elif 'element' in specs:  # Single element
+            pass
+        else:
+            raise ValueError(f'Invalid chart specifications. Must contain key "mark" or "element".')
 
     @staticmethod
     def validate_chart_type(chart_type: str) -> None:
