@@ -2,16 +2,16 @@
 
 from aframexr.utils.axis_creator import AxisCreator
 from aframexr.utils.constants import ALL_TEMPLATES
-from aframexr.utils.entity_creator import ChartCreator
+from aframexr.utils.chart_creator import ChartCreator
 from aframexr.utils.validators import AframeXRValidator
 
 
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
     @staticmethod
-    def _create_simple_chart_html(chart_specs: dict):
+    def _create_entity_html(chart_specs: dict):
         """
-        Returns the HTML of the elements that compose the chart.
+        Returns the HTML of the elements that compose the entity.
 
         Parameters
         ----------
@@ -79,8 +79,8 @@ class ChartsHTMLCreator:
         charts_list = specs.get('concat') or specs.get('layer')  # Charts could be concatenated using layer
         if charts_list:  # The scene has more than one chart
             for chart in charts_list:
-                charts_html += ChartsHTMLCreator._create_simple_chart_html(chart) + '\n\t\t'  # Tabulate (visualization)
+                charts_html += ChartsHTMLCreator._create_entity_html(chart) + '\n\t\t'  # Tabulate (visualization)
         else:  # The scene has only one chart
-            charts_html = ChartsHTMLCreator._create_simple_chart_html(specs)
+            charts_html = ChartsHTMLCreator.create_charts_html(specs)
         charts_html = charts_html.removesuffix('\n\t\t')  # Delete the last tabulation
         return charts_html
