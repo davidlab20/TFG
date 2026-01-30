@@ -217,6 +217,7 @@ class Chart(TopLevelMixin):
         return self
 
     def _define_rotation(self, rotation: str):
+        """Defines the rotation field in the specifications."""
         rot_axes = rotation.strip().split()
         if len(rot_axes) != 3:
             raise ValueError(f'The rotation: {rotation} is not correct. Must be "x y z".')
