@@ -62,7 +62,7 @@ class ChartsHTMLCreator:
         if 'mark' in chart_specs:
             html = ChartsHTMLCreator._create_chart_html(chart_specs)
         elif 'element' in chart_specs:
-            html = ''
+            html = ''  # TODO --> SINGLE ELEMENTS CREATION LOGIC, IN NEW FILE element_creator.py
         else:
             raise Exception
 
