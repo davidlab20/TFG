@@ -194,7 +194,6 @@ class Chart(TopLevelMixin):
     """
     def _define_data(self, data: Data | URLData | DataFrame):
         """Defines the data field in the specifications."""
-
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
