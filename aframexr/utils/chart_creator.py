@@ -1,4 +1,4 @@
-"""AframeXR entity creator"""
+"""AframeXR charts creator"""
 
 import copy
 import io
