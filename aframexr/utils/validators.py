@@ -1,7 +1,5 @@
 """AframeXR validators"""
 
-from typing import Union
-
 from aframexr.utils.constants import ALL_TEMPLATES, AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES
 
 
