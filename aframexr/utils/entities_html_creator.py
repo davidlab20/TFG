@@ -1,7 +1,7 @@
 """AframeXR entities HTML creator"""
 
 from aframexr.utils.axis_creator import AxisCreator
-from aframexr.utils.constants import ALL_TEMPLATES
+from aframexr.utils.constants import CHART_TEMPLATES
 from aframexr.utils.chart_creator import ChartCreator
 from aframexr.utils.validators import AframeXRValidator
 
@@ -9,28 +9,13 @@ from aframexr.utils.validators import AframeXRValidator
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
     @staticmethod
-    def _create_entity_html(chart_specs: dict):
-        """
-        Returns the HTML of the elements that compose the entity.
-
-        Parameters
-        ----------
-        chart_specs : dict
-            Chart specifications.
-
-        Notes
-        -----
-        Supposing that chart_specs is a dictionary (at this method has been called from self.create_charts_html).
-
-        Suppose that the parameters are correct for method calls of ChartCreator and AxisCreator.
-        """
-        # Validate chart type
+    def _create_chart_html(chart_specs: dict):
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
         AframeXRValidator.validate_chart_type(chart_type)
 
         # Chart HTML
         chart_html = ''
-        base_html = ALL_TEMPLATES[chart_type]
+        base_html = CHART_TEMPLATES[chart_type]
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
@@ -57,6 +42,31 @@ class ChartsHTMLCreator:
         # Close the group
         chart_html += '\t\t</a-entity>\n\t\t'
         return chart_html
+
+    @staticmethod
+    def _create_entity_html(chart_specs: dict):
+        """
+        Returns the HTML of the elements that compose the entity.
+
+        Parameters
+        ----------
+        chart_specs : dict
+            Chart specifications.
+
+        Notes
+        -----
+        Supposing that chart_specs is a dictionary (at this method has been called from self.create_charts_html).
+
+        Suppose that the parameters are correct for method calls of ChartCreator and AxisCreator.
+        """
+        if 'mark' in chart_specs:
+            html = ChartsHTMLCreator._create_chart_html(chart_specs)
+        elif 'element' in chart_specs:
+            html = ''
+        else:
+            raise Exception
+
+        return html
 
     @staticmethod
     def create_charts_html(specs: dict):
