@@ -11,7 +11,7 @@ LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 
 # ----- TEMPLATES -----
-ELEMENTS_TEMPLATES = {
+CHART_TEMPLATES = {
     'arc': ('<a-cylinder id="{id}" position="{pos}" height="{depth}" radius="{radius}" theta-start="{theta_start}" '
             'theta-length="{theta_length}" material="color: {color}; side: double" data-raycastable></a-cylinder>'),
     'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" depth="{depth}" '
@@ -23,7 +23,7 @@ IMAGES_TEMPLATES = {
     'gltf': '<a-gltf-model src="{src}" scale="{scale}"></a-gltf-model>',
     'image': '<a-image src="{src}" width="{width}" height="{height}"></a-image>'
 }
-ALL_TEMPLATES = {**ELEMENTS_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary with all templates
+ALL_TEMPLATES = {**CHART_TEMPLATES, **IMAGES_TEMPLATES}  # Grouped dictionary with all templates
 
 # ----- DEFAULTS -----
 # General
