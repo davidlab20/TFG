@@ -44,7 +44,13 @@ class AframeXRValidator:
             raise ValueError(f'Invalid encoding type: {encoding_type}.')
 
     @staticmethod
-    def validate_type(param, types: Union[type]) -> None:
+    def validate_type(param, types: type | tuple[type, ...]) -> None:
         """Raises TypeError if type(param) is not in types."""
         if not isinstance(param, types):
-            raise TypeError(f'Expected {types.__name__}, got {type(param).__name__} instead.')
+            if isinstance(types, tuple):
+                expected = ' or '.join(t.__name__ for t in types)
+            else:
+                expected = types.__name__
+            raise TypeError(
+                f'Expected {expected}, got {type(param).__name__} instead.'
+            )
