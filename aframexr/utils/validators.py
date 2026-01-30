@@ -1,6 +1,6 @@
 """AframeXR validators"""
 
-from aframexr.utils.constants import ALL_TEMPLATES, AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES
+from aframexr.utils.constants import AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, CHART_TEMPLATES
 
 
 class AframeXRValidator:
@@ -35,7 +35,7 @@ class AframeXRValidator:
     @staticmethod
     def validate_chart_type(chart_type: str) -> None:
         """Raises ValueError if the chart type is invalid."""
-        if chart_type not in ALL_TEMPLATES:
+        if chart_type not in CHART_TEMPLATES:
             raise ValueError(f'Invalid chart type: {chart_type}.')
 
     @staticmethod
