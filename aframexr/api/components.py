@@ -566,3 +566,16 @@ class Chart(TopLevelMixin):
         else:  # Not the first filter of the chart
             filt_chart._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
         return filt_chart  # Returns the copy of the chart
+
+
+class Element(TopLevelMixin):
+    def __init__(self, color: str = None, position: str = None, rotation: str = None):
+        self.color = color if self.color is not None else
+        super().__init__({})
+
+
+class Box(Element):
+    """Simple box."""
+    def __init__(self, color: str = None, depth: float = None, height: float = None, position: str = None,
+                 rotation: str = None, width: float = None):
+        super().__init__()
