@@ -1,5 +1,5 @@
 """AframeXR validators"""
-
+from aframexr import ELEMENTS_TEMPLATES
 from aframexr.utils.constants import AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, CHART_TEMPLATES
 
 
@@ -43,6 +43,12 @@ class AframeXRValidator:
         """Raises ValueError if encoding type is not valid."""
         if encoding_type not in AVAILABLE_ENCODING_TYPES:
             raise ValueError(f'Invalid encoding type: {encoding_type}.')
+
+    @staticmethod
+    def validate_element_type(element_type: str) -> None:
+        """Raises ValueError if element type is not valid."""
+        if element_type not in ELEMENTS_TEMPLATES:
+            raise ValueError(f'Invalid element type: {element_type}.')
 
     @staticmethod
     def validate_type(param, types: type | tuple[type, ...]) -> None:
