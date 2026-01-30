@@ -81,6 +81,6 @@ class ChartsHTMLCreator:
             for chart in charts_list:
                 charts_html += ChartsHTMLCreator._create_entity_html(chart) + '\n\t\t'  # Tabulate (visualization)
         else:  # The scene has only one chart
-            charts_html = ChartsHTMLCreator.create_charts_html(specs)
+            charts_html = ChartsHTMLCreator._create_entity_html(specs)
         charts_html = charts_html.removesuffix('\n\t\t')  # Delete the last tabulation
         return charts_html
