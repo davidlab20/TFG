@@ -6,24 +6,21 @@ from aframexr.utils.validators import AframeXRValidator
 
 class Encoding:
     """Encoding base class."""
-    _field: str = None
-    _aggregate: str | None = None
-    _axis: bool | None = True
-    _encoding_type: str | None = None
-    _groupby: list | None = None
+    def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool = True,
+                 encoding_type: str | None = None, groupby: list | None = None):
+        from aframexr import AframeXRValidator  # To avoid circular import
 
-    def __init__(self):
-        AframeXRValidator.validate_type(self._field, str)
+        AframeXRValidator.validate_type(field, (str, type(None)))
+        AframeXRValidator.validate_type(aggregate, (str, type(None)))
+        AframeXRValidator.validate_type(axis, (bool, type(None)))
+        AframeXRValidator.validate_type(encoding_type, (str, type(None)))
+        AframeXRValidator.validate_type(groupby, (list, type(None)))
 
-        AframeXRValidator.validate_type(self._aggregate, (str, type(None)))
-        if self._aggregate: AframeXRValidator.validate_aggregate_operation(self._aggregate)  # Validate if defined
-
-        AframeXRValidator.validate_type(self._axis, (bool, type(None)))
-
-        AframeXRValidator.validate_type(self._encoding_type, (str, type(None)))
-        if self._encoding_type: AframeXRValidator.validate_encoding_type(self._encoding_type)  # Validate if defined
-
-        AframeXRValidator.validate_type(self._groupby, (list, type(None)))
+        self._field = field
+        self._aggregate = aggregate
+        self._axis = axis
+        self._encoding_type = encoding_type
+        self._groupby = groupby
 
     # Export
     def to_dict(self):
@@ -70,84 +67,12 @@ class Encoding:
 
 
 class X(Encoding):
-    """
-    X channel encoding class.
-
-    Parameters
-    ----------
-    field: str
-        The name of the data field to encode.
-    aggregate: str | None (optional)
-        The aggregate operation.
-    axis: bool | None (optional)
-        If the axis is displayed or not, default is set to True (show axis).
-    encoding_type: str | None (optional)
-        The encoding type.
-    groupby: list | None (optional)
-        The fields of the aggrupation.
-    """
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, groupby: list | None = None):
-        self._field = field
-        self._aggregate = aggregate
-        self._axis = axis
-        self._encoding_type = encoding_type
-        self._groupby = groupby
-
-        super().__init__()
+    pass  # Using Encode __init__() method
 
 
 class Y(Encoding):
-    """
-    Y channel encoding class.
-
-    Parameters
-    ----------
-    field: str
-        The name of the data field to encode.
-    aggregate: str | None (optional)
-        The aggregate operation.
-    axis: bool | None (optional)
-        If the axis is displayed or not, default is set to True (show axis).
-    encoding_type: str | None (optional)
-        The encoding type.
-    groupby: list | None (optional)
-        The fields of the aggrupation.
-    """
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, groupby: list | None = None):
-        self._field = field
-        self._aggregate = aggregate
-        self._axis = axis
-        self._encoding_type = encoding_type
-        self._groupby = groupby
-
-        super().__init__()
+    pass  # Using Encode __init__() method
 
 
 class Z(Encoding):
-    """
-    Z channel encoding class.
-
-    Parameters
-    ----------
-    field: str
-        The name of the data field to encode.
-    aggregate: str | None (optional)
-        The aggregate operation.
-    axis: bool | None (optional)
-        If the axis is displayed or not, default is set to True (show axis).
-    encoding_type: str | None (optional)
-        The encoding type.
-    groupby: list | None (optional)
-        The fields of the aggrupation.
-    """
-    def __init__(self, field: str, aggregate: str | None = None, axis: bool | None = True,
-                 encoding_type: str | None = None, groupby: list | None = None):
-        self._field = field
-        self._aggregate = aggregate
-        self._axis = axis
-        self._encoding_type = encoding_type
-        self._groupby = groupby
-
-        super().__init__()
+    pass  # Using Encode __init__() method
