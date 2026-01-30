@@ -5,7 +5,20 @@ from aframexr.utils.validators import AframeXRValidator
 
 
 class Encoding:
-    """Encoding base class."""
+    """
+    Parameters
+    ----------
+    field: str
+        The name of the data field to encode.
+    aggregate: str | None (optional)
+        The aggregate operation.
+    axis: bool | None (optional)
+        If the axis is displayed or not, default is set to True (show axis).
+    encoding_type: str | None (optional)
+        The encoding type.
+    groupby: list | None (optional)
+        The fields of the aggrupation.
+    """
     def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool = True,
                  encoding_type: str | None = None, groupby: list | None = None):
         from aframexr import AframeXRValidator  # To avoid circular import
@@ -67,12 +80,18 @@ class Encoding:
 
 
 class X(Encoding):
-    pass  # Using Encode __init__() method
+    def __init__(self, field: str | None = None, aggregate: str | None = None,
+                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+        super().__init__(field, aggregate, axis, encoding_type, groupby)
 
 
 class Y(Encoding):
-    pass  # Using Encode __init__() method
+    def __init__(self, field: str | None = None, aggregate: str | None = None,
+                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+        super().__init__(field, aggregate, axis, encoding_type, groupby)
 
 
 class Z(Encoding):
-    pass  # Using Encode __init__() method
+    def __init__(self, field: str | None = None, aggregate: str | None = None,
+                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+        super().__init__(field, aggregate, axis, encoding_type, groupby)
