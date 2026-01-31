@@ -34,7 +34,7 @@ def _get_data_from_url(url: str) -> DataFrame:
     """Loads the data from the URL (could be a local path) and returns it as a DataFrame."""
     if url.startswith(('http://', 'https://')):  # Data is stored in a URL
         try:
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url, timeout=10) as response:
                 file_type = response.info().get_content_type()
                 data = io.BytesIO(response.read())  # For polars
         except urllib.error.URLError:
