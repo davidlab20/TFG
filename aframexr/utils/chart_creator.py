@@ -60,9 +60,8 @@ def _get_data_from_url(url: str) -> DataFrame:
     except Exception as e:
         raise IOError(f'Error when processing data. Error: {e}.')
 
-    finally:
-        if data and not url.startswith(('http', 'https')):
-            data.close()  # Close the file
+    if data and not url.startswith(('http', 'https')):
+        data.close()  # Close the file
 
     return df_data
 
