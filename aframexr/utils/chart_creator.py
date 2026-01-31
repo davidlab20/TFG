@@ -47,6 +47,7 @@ def _get_data_from_url(url: str) -> DataFrame:
         data = open(path, 'rb')
         _, file_type = os.path.splitext(path)
         file_type = file_type.lower()
+
     try:
         if 'csv' in file_type:  # Data is in CSV format
             df_data = pl.read_csv(data)
@@ -55,15 +56,16 @@ def _get_data_from_url(url: str) -> DataFrame:
             df_data = DataFrame(json_data)
         else:
             raise ValueError(f'Unsupported file type: {file_type}.')
+
+        return df_data
     except ValueError:
         raise  # To raise previous ValueError
     except Exception as e:
         raise IOError(f'Error when processing data. Error: {e}.')
 
-    if data and not url.startswith(('http', 'https')):
-        data.close()  # Close the file
-
-    return df_data
+    finally:
+        if data and not url.startswith(('http', 'https')):
+            data.close()  # Close the file
 
 
 def _get_raw_data(chart_specs: dict) -> DataFrame:
