@@ -45,6 +45,12 @@ class ChartsHTMLCreator:
         return chart_html
 
     @staticmethod
+    def _create_element_html(element_specs: dict):
+        element_type = element_specs['element']
+        element_object = ElementCreator.create_object(element_type, element_specs)
+        return ELEMENTS_TEMPLATES[element_type].format(**element_object.get_element_specs())
+
+    @staticmethod
     def _create_entity_html(chart_specs: dict):
         """
         Returns the HTML of the elements that compose the entity.
@@ -63,7 +69,7 @@ class ChartsHTMLCreator:
         if 'mark' in chart_specs:
             html = ChartsHTMLCreator._create_chart_html(chart_specs)
         elif 'element' in chart_specs:
-            html = ''  # TODO --> SINGLE ELEMENTS CREATION LOGIC, IN NEW FILE element_creator.py
+            html = ChartsHTMLCreator._create_element_html(chart_specs)
         else:
             raise Exception
 
