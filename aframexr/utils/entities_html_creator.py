@@ -1,9 +1,10 @@
 """AframeXR entities HTML creator"""
 
-from aframexr.utils.axis_creator import AxisCreator
-from aframexr.utils.constants import CHART_TEMPLATES
-from aframexr.utils.chart_creator import ChartCreator
-from aframexr.utils.validators import AframeXRValidator
+from .axis_creator import AxisCreator
+from .constants import CHART_TEMPLATES, ELEMENTS_TEMPLATES
+from .chart_creator import ChartCreator
+from .element_creator import ElementCreator
+from .validators import AframeXRValidator
 
 
 class ChartsHTMLCreator:
