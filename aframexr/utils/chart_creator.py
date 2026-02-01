@@ -86,7 +86,7 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
     # Transform data (if necessary)
     from ..api.aggregate import AggregatedFieldDef  # To avoid circular import error
     from ..api.filters import FilterTransform
-    
+
     transform_field = chart_specs.get('transform')
     if transform_field:
 
