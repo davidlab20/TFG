@@ -1,7 +1,7 @@
 """AframeXR encoding classes"""
 
-from aframexr.utils.constants import AVAILABLE_ENCODING_TYPES
-from aframexr.utils.validators import AframeXRValidator
+from ..utils.constants import AVAILABLE_ENCODING_TYPES
+from ..utils.validators import AframeXRValidator
 
 
 class Encoding:
@@ -21,8 +21,6 @@ class Encoding:
     """
     def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool = True,
                  encoding_type: str | None = None, groupby: list | None = None):
-        from aframexr import AframeXRValidator  # To avoid circular import
-
         AframeXRValidator.validate_type(field, (str, type(None)))
         AframeXRValidator.validate_type(aggregate, (str, type(None)))
         AframeXRValidator.validate_type(axis, (bool, type(None)))

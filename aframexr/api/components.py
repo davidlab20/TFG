@@ -15,12 +15,12 @@ except ImportError:
 from IPython.display import HTML
 from typing import Literal
 
-from aframexr.api.aggregate import AggregatedFieldDef
-from aframexr.api.data import Data, URLData
-from aframexr.api.encoding import Encoding, X, Y, Z
-from aframexr.api.filters import FilterTransform
-from aframexr.utils.scene_creator import SceneCreator
-from aframexr.utils.validators import AframeXRValidator
+from .aggregate import AggregatedFieldDef
+from .data import Data, URLData
+from .encoding import Encoding, X, Y, Z
+from .filters import FilterTransform
+from ..utils.scene_creator import SceneCreator
+from ..utils.validators import AframeXRValidator
 
 
 class TopLevelMixin:

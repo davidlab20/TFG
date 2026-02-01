@@ -12,6 +12,7 @@ from itertools import cycle, islice
 from polars import DataFrame, Series
 from typing import Literal, Final
 
+from .axis_creator import AxisCreator
 from .constants import *
 
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
@@ -276,8 +277,6 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         """Returns a dictionary with the specifications for each axis of the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return {}
-
-        from aframexr import AxisCreator  # To avoid circular import
 
         axis_specs = {}
 

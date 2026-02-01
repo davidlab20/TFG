@@ -2,7 +2,7 @@
 
 import json
 
-from aframexr.utils.validators import AframeXRValidator
+from ..utils.validators import AframeXRValidator
 
 
 class Data:

@@ -3,7 +3,7 @@
 import polars as pl
 from polars import DataFrame
 
-from aframexr.utils.validators import AframeXRValidator
+from ..utils.validators import AframeXRValidator
 
 
 class FilterTransform:

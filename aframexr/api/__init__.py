@@ -1,7 +1,7 @@
 """AframeXR API"""
 
-from aframexr.api.aggregate import *
-from aframexr.api.components import *
-from aframexr.api.data import *
-from aframexr.api.encoding import *
-from aframexr.api.filters import *
+from .aggregate import *
+from .components import *
+from .data import *
+from .encoding import *
+from .filters import *

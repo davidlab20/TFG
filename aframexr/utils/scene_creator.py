@@ -1,6 +1,6 @@
 """AframeXR scene creator"""
 
-from aframexr.utils.entities_html_creator import ChartsHTMLCreator
+from .entities_html_creator import ChartsHTMLCreator
 
 HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <head>

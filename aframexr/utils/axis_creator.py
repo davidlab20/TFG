@@ -6,7 +6,7 @@ import polars as pl
 from polars import Series
 from typing import Literal, Final
 
-from aframexr.utils.constants import *
+from .constants import *
 
 
 AXIS_DICT_TEMPLATE = {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': '',
