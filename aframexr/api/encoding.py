@@ -19,7 +19,7 @@ class Encoding:
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
-    def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool = True,
+    def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):
         AframeXRValidator.validate_type(field, (str, type(None)))
         AframeXRValidator.validate_type(aggregate, (str, type(None)))
@@ -79,17 +79,17 @@ class Encoding:
 
 class X(Encoding):
     def __init__(self, field: str | None = None, aggregate: str | None = None,
-                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+                 axis: bool | None = True, encoding_type: str | None = None, groupby: list | None = None):
         super().__init__(field, aggregate, axis, encoding_type, groupby)
 
 
 class Y(Encoding):
     def __init__(self, field: str | None = None, aggregate: str | None = None,
-                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+                 axis: bool | None = True, encoding_type: str | None = None, groupby: list | None = None):
         super().__init__(field, aggregate, axis, encoding_type, groupby)
 
 
 class Z(Encoding):
     def __init__(self, field: str | None = None, aggregate: str | None = None,
-                 axis: bool = True, encoding_type: str | None = None, groupby: list | None = None):
+                 axis: bool | None = True, encoding_type: str | None = None, groupby: list | None = None):
         super().__init__(field, aggregate, axis, encoding_type, groupby)
