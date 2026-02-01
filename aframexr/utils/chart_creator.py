@@ -84,8 +84,9 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
         raise ValueError('Data specifications has no correct syntaxis, must have field "url" or "values".')
 
     # Transform data (if necessary)
-    from aframexr.api.aggregate import AggregatedFieldDef  # To avoid circular import error
-    from aframexr.api.filters import FilterTransform
+    from ..api.aggregate import AggregatedFieldDef  # To avoid circular import error
+    from ..api.filters import FilterTransform
+    
     transform_field = chart_specs.get('transform')
     if transform_field:
 
