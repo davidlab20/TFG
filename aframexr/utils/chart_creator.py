@@ -17,6 +17,8 @@ from aframexr.utils.constants import *
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
 """Group dictionary template for group base specifications creation."""
 
+CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, classes are added at the end of this file
+
 
 def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
     """Translates and returns the encoding for a given data type."""
@@ -141,14 +143,6 @@ class ChartCreator:
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
         """Returns a ChartCreator instance of the specific chart type."""
-        CREATOR_MAP = {
-            'arc': ArcChartCreator,
-            'bar': BarChartCreator,
-            'gltf': GLTFModelCreator,
-            'image': ImageCreator,
-            'point': PointChartCreator,
-        }
-
         if chart_type not in CREATOR_MAP:
             raise ValueError(f'Invalid chart type: {chart_type}.')
         return CREATOR_MAP[chart_type](chart_specs)
@@ -789,3 +783,11 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         return elements_specs
 
     # Using get_axis_scpecs() from parent class
+
+
+# Add classes to CREATOR_MAP
+CREATOR_MAP.update({'arc': ArcChartCreator})
+CREATOR_MAP.update({'bar': BarChartCreator})
+CREATOR_MAP.update({'gltf': GLTFModelCreator})
+CREATOR_MAP.update({'image': ImageCreator})
+CREATOR_MAP.update({'point': PointChartCreator})
