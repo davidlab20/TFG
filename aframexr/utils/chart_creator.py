@@ -12,7 +12,7 @@ from itertools import cycle, islice
 from polars import DataFrame, Series
 from typing import Literal, Final
 
-from aframexr.utils.constants import *
+from .constants import *
 
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
 """Group dictionary template for group base specifications creation."""
