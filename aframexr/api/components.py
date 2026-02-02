@@ -505,8 +505,6 @@ class Chart(TopLevelMixin):
 
 
 class Element(TopLevelMixin, ABC):
-    _IGNORED = {'self', 'element'}  # Ignored attributes of **locals()
-
     @abstractmethod
     def __init__(self, **kwargs):
         element_name = self.__class__.__name__.lower()  # Use child class's name for defining the element
@@ -514,7 +512,7 @@ class Element(TopLevelMixin, ABC):
 
         self._specifications.update(
             {key: value for key, value in kwargs.items()
-             if value is not None and key not in self._IGNORED}
+             if value is not None}
         )
 
 
