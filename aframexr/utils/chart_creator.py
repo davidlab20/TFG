@@ -10,7 +10,7 @@ import warnings
 
 from itertools import cycle, islice
 from polars import DataFrame, Series
-from typing import Literal, Final
+from typing import Literal
 
 from .axis_creator import AxisCreator
 from .constants import *
@@ -217,8 +217,8 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
     -----
     XYZ-axes are processed instantly when creating this class or derivatives.
     """
-    _AXIS_SIZE_MAP: Final = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
-    _AXIS_BAR_SIZE_ALIAS_MAP: Final = {'x': 'width', 'y': 'height', 'z': 'depth'}
+    _AXIS_SIZE_MAP = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
+    _AXIS_BAR_SIZE_ALIAS_MAP = {'x': 'width', 'y': 'height', 'z': 'depth'}
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
