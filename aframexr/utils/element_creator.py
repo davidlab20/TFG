@@ -7,6 +7,7 @@ CREATOR_MAP: dict[str, type['ElementCreator']] = {}  # Creator map of elements, 
 
 class ElementCreator:
     def __init__(self, element_specs: dict):
+        self._color = element_specs.get('color', DEFAULT_SINGLE_ELEMENT_COLOR)
         self._position = element_specs.get('position', DEFAULT_CHART_POS)
         self._rotation = element_specs.get('rotation', DEFAULT_CHART_ROTATION)
 
@@ -26,7 +27,6 @@ class ElementCreator:
 class BoxCreator(ElementCreator):
     def __init__(self, element_specs: dict):
         super().__init__(element_specs)
-        self._color = element_specs.get('color', DEFAULT_SINGLE_ELEMENT_COLOR)
         self._depth = element_specs.get('depth', 1)
         self._height = element_specs.get('height', 1)
         self._width = element_specs.get('width', 1)
