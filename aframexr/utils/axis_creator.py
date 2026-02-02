@@ -39,7 +39,7 @@ def _get_labels_coords_for_quantitative_axis(axis_data: Series, axis_size: float
         )
     return coords
 
-def _get_labels_values_for_quantitateve_axis(axis_data: Series) -> Series:
+def _get_labels_values_for_quantitative_axis(axis_data: Series) -> Series:
     """Returns the values for the labels of the quantitative axis."""
     if axis_data.dtype == pl.String:  # Axis data contains nominal values, but user wants to encode as quantitative
         return axis_data.unique(maintain_order=True)  # Return the same values
