@@ -85,7 +85,7 @@ class ChartsHTMLCreator:
         -----
         Supposing that specs is a dictionary, at this method has been called from SceneCreator.create_scene().
 
-        Suppose that chart_specs is a dictionary for self._create_simple_chart_html(chart_specs).
+        Suppose that chart_specs is a dictionary for self._create_entity_html(chart_specs).
         """
         charts_html = ''
 
