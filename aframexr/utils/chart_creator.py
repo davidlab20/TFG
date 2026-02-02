@@ -255,7 +255,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
         self._base_y -= self._chart_height / 2  # Correct position of y-axis
         self._base_z += self._chart_depth / 2  # Correct position of z-axis
 
-    def get_axis_specs(self) -> dict:
+    def get_axes_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return {}
@@ -359,7 +359,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
 
 class NonAxisChannelChartCreator(ChartCreator):
     """Chart creator base class for charts that have channels but do not have XYZ axis."""
-    def get_axis_specs(self):
+    def get_axes_specs(self):
         """Returns a Series with the specifications for each axis of the chart."""
         return {}  # Returns an empty dictionary, because it has no axis
 
