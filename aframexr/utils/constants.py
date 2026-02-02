@@ -18,28 +18,14 @@ DEFAULT_CHART_DEPTH = 2  # Default depth of the chart
 DEFAULT_CHART_HEIGHT = 4  # Default height of the chart
 DEFAULT_CHART_WIDTH = 4  # Default width of the chart
 
-DEFAULT_SINGLE_ELEMENT_COLOR = 'blue'  # Default color for single elements
-
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
 PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
 
-# Bar chart
-DEFAULT_BAR_AXIS_SIZE = 1  # Default bar size in the nominal axes and in the axis that are not defined.
-
 # Pie chart
 DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
-DEFAULT_PIE_INNER_RADIUS = 0  # Default inner radius of the pie chart
-
-# GLTF model
-DEFAULT_GLTF_SCALE = '1 1 1'  # Default scale of the GLTF model
-
-# Image
-DEFAULT_IMAGE_HEIGHT = 1  # Default height of the image
-DEFAULT_IMAGE_WIDTH = 1  # Default width of the image
 
 # Point chart
 DEFAULT_POINT_COLOR = "blue"  # Default point color
-DEFAULT_POINT_HEIGHT_WHEN_NO_Y_AXIS = 2  # Default point height (if not field for y-axis specified)
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
