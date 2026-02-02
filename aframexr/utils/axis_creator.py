@@ -111,7 +111,7 @@ class AxisCreator:
 
         if axis_encoding == 'quantitative':
             coords = _get_labels_coords_for_quantitative_axis(axis_data, axis_size)
-            labels_values = _get_labels_values_for_quantitateve_axis(axis_data)
+            labels_values = _get_labels_values_for_quantitative_axis(axis_data)
         elif axis_encoding == 'nominal':
             coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
             labels_values = axis_data.unique(maintain_order=True)
