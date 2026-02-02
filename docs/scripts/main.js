@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	    targetElement.setAttribute('scale', '1.1 1.1');  // Size the scale up
 
 	    // Update HUD text attributes
-        const value = targetElement.getAttribute('id');
+        const value = targetElement.getAttribute('info');
         HUDText.setAttribute('value', value);
 	}
 
