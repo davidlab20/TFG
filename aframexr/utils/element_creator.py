@@ -1,15 +1,20 @@
 """AframeXR elements creator"""
 
-from .constants import DEFAULT_CHART_POS, DEFAULT_CHART_ROTATION, DEFAULT_SINGLE_ELEMENT_COLOR
-
 CREATOR_MAP: dict[str, type['ElementCreator']] = {}  # Creator map of elements, classes are added at the end of the file
 
 
 class ElementCreator:
+    _ELEMENT_HTML: str = ''  # Must be defined by child classes
+    """
+    When defining _ELEMENT_HTML in a subclass:
+        * Do NOT add a space before {attributes}.
+        * The method get_element_html() automatically adds a leading space if there are attributes.
+    """
+
     def __init__(self, element_specs: dict):
-        self._color = element_specs.get('color', DEFAULT_SINGLE_ELEMENT_COLOR)
-        self._position = element_specs.get('position', DEFAULT_CHART_POS)
-        self._rotation = element_specs.get('rotation', DEFAULT_CHART_ROTATION)
+        self._color = element_specs.get('color')
+        self._position = element_specs.get('position')
+        self._rotation = element_specs.get('rotation')
 
     @staticmethod
     def create_object(element_type: str, element_specs: dict):
@@ -23,23 +28,26 @@ class ElementCreator:
             raise ValueError()
         return CREATOR_MAP[element_type](element_specs)
 
+    def get_element_html(self):
+        if self._ELEMENT_HTML == '':
+            raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
+
+        attributes = ''.join(
+            f' {key[1:]}="{value}"'  # Add space at the beggining
+            for key, value in self.__dict__.items()
+            if value is not None and key.startswith('_')  # Only add defined private attributes in the HTML
+        )
+        return self._ELEMENT_HTML.format(attributes=attributes)
+
 
 class BoxCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-box{attributes}></a-box>'
+
     def __init__(self, element_specs: dict):
         super().__init__(element_specs)
-        self._depth = element_specs.get('depth', 1)
-        self._height = element_specs.get('height', 1)
-        self._width = element_specs.get('width', 1)
-
-    def get_element_specs(self):
-        return {
-            'position': self._position,
-            'rotation': self._rotation,
-            'width': self._width,
-            'height': self._height,
-            'depth': self._depth,
-            'color': self._color,
-        }
+        self._depth = element_specs.get('depth')
+        self._height = element_specs.get('height')
+        self._width = element_specs.get('width')
 
 
 # Add creator classes to CREATOR_MAP dynamically

@@ -48,7 +48,7 @@ class ChartsHTMLCreator:
     def _create_element_html(element_specs: dict):
         element_type = element_specs['element']
         element_object = ElementCreator.create_object(element_type, element_specs)
-        return ELEMENTS_TEMPLATES[element_type].format(**element_object.get_element_specs())
+        return element_object.get_element_html()
 
     @staticmethod
     def _create_entity_html(chart_specs: dict):
