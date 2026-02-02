@@ -13,6 +13,7 @@ class ElementCreator:
 
     def __init__(self, element_specs: dict):
         self._color = element_specs.get('color')
+        self._info = element_specs.get('info')
         self._position = element_specs.get('position')
         self._rotation = element_specs.get('rotation')
 
@@ -33,10 +34,14 @@ class ElementCreator:
             raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
 
         attributes = ''.join(
-            f' {key[1:]}="{value}"'  # Add space at the beginning
+            f' {key[1:].replace("_", "-")}="{value}"'  # Add space at the beginning (using HTML format)
             for key, value in self.__dict__.items()
             if value is not None and key.startswith('_')  # Only add defined private attributes in the HTML
         )
+
+        if self._info is not None:  # Add interaction if there is information to display
+            attributes += ' data-raycastable'
+
         return self._ELEMENT_HTML.format(attributes=attributes)
 
 
@@ -50,5 +55,46 @@ class BoxCreator(ElementCreator):
         self._width = element_specs.get('width')
 
 
+class CylinderCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-cylinder side="double"{attributes}></a-cylinder>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._radius = element_specs.get('radius')
+        self._theta_start = element_specs.get('theta_start')
+        self._theta_length = element_specs.get('theta_length')
+
+
+class GLTFCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-gltf-model{attributes}></a-gltf-model>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._scale = element_specs.get('scale')
+        self._src = element_specs.get('src')
+
+
+class ImageCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-image{attributes}></a-image>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._height = element_specs.get('height')
+        self._src = element_specs.get('src')
+        self._width = element_specs.get('width')
+
+
+class SphereCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-sphere{attributes}></a-sphere>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._radius = element_specs.get('radius')
+
+
 # Add creator classes to CREATOR_MAP dynamically
 CREATOR_MAP.update({'box': BoxCreator})
+CREATOR_MAP.update({'cylinder': CylinderCreator})
+CREATOR_MAP.update({'gltf': GLTFCreator})
+CREATOR_MAP.update({'image': ImageCreator})
+CREATOR_MAP.update({'sphere': SphereCreator})

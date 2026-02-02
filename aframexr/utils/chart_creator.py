@@ -14,6 +14,7 @@ from typing import Literal
 
 from .axis_creator import AxisCreator
 from .constants import *
+from .element_creator import BoxCreator, CylinderCreator, ElementCreator, SphereCreator
 
 GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
 """Group dictionary template for group base specifications creation."""
@@ -141,27 +142,6 @@ class ChartCreator:
         self._encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
         rotation = chart_specs.get('rotation', DEFAULT_CHART_ROTATION)  # Rotation of the chart
         [self._x_rotation, self._y_rotation, self._z_rotation] = [float(rot) for rot in rotation.split()]
-
-    @staticmethod
-    def create_object(chart_type: str, chart_specs: dict):
-        """Returns a ChartCreator instance of the specific chart type."""
-        if chart_type not in CREATOR_MAP:
-            raise ValueError(f'Invalid chart type: {chart_type}.')
-        return CREATOR_MAP[chart_type](chart_specs)
-
-    def get_group_specs(self) -> dict:
-        """Returns a dictionary with the base specifications for the group of elements."""
-        group_specs = copy.copy(GROUP_DICT_TEMPLATE)  # Shallow copy because the template has no mutable objects.
-        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
-                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
-        return group_specs
-
-
-# First-level subclasses of ChartCreator.
-class ChannelChartCreator(ChartCreator):
-    """Chart creator base class for charts that have channels."""
-    def __init__(self, chart_specs: dict):
-        super().__init__(chart_specs)
         self._raw_data = _get_raw_data(chart_specs)  # Raw data
         # Each self._{channel} attributes must be named by child classes
 
@@ -195,21 +175,23 @@ class ChannelChartCreator(ChartCreator):
                 except pl.exceptions.ColumnNotFoundError:
                     raise KeyError(f'Data has no field "{field}" for {ch}-channel.')
 
+    @staticmethod
+    def create_object(chart_type: str, chart_specs: dict):
+        """Returns a ChartCreator instance of the specific chart type."""
+        if chart_type not in CREATOR_MAP:
+            raise ValueError(f'Invalid chart type: {chart_type}.')
+        return CREATOR_MAP[chart_type](chart_specs)
 
-class NonChannelChartCreator(ChartCreator):
-    """Chart creator base class for charts that do not have channels."""
-    def __init__(self, chart_specs: dict):
-        super().__init__(chart_specs)
-        self._url = chart_specs['data']['url']  # URL of the image / model
-
-    def get_axis_specs(self):
-        """Returns a Series with the specifications for each axis of the chart."""
-
-        return {}  # Returns an empty dictionary, because it has no axis
+    def get_group_specs(self) -> dict:
+        """Returns a dictionary with the base specifications for the group of elements."""
+        group_specs = copy.copy(GROUP_DICT_TEMPLATE)  # Shallow copy because the template has no mutable objects.
+        group_specs.update({'pos': f'{self._base_x} {self._base_y} {self._base_z}',
+                            'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'})
+        return group_specs
 
 
-# Second-level subclasses of ChartCreator.
-class XYZAxisChannelChartCreator(ChannelChartCreator):
+# First-level subclasses of ChartCreator.
+class XYZAxisChannelChartCreator(ChartCreator):
     """
     Chart creator base class for charts that have channels and XYZ axis.
 
@@ -375,14 +357,14 @@ class XYZAxisChannelChartCreator(ChannelChartCreator):
         return (extremes_offset + step * category_codes).cast(pl.Float32).round(PRECISION_DECIMALS)
 
 
-class NonAxisChannelChartCreator(ChannelChartCreator):
+class NonAxisChannelChartCreator(ChartCreator):
     """Chart creator base class for charts that have channels but do not have XYZ axis."""
     def get_axis_specs(self):
         """Returns a Series with the specifications for each axis of the chart."""
         return {}  # Returns an empty dictionary, because it has no axis
 
 
-# Third-level subclasses of ChartCreator.
+# Second-level subclasses of ChartCreator.
 class ArcChartCreator(NonAxisChannelChartCreator):
     """Arc chart creator class."""
     def __init__(self, chart_specs: dict):
@@ -419,8 +401,8 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         element_colors = Series(islice(colors, self._color_data.len()))  # Take self._color_data.len() colors
         return element_colors.alias('color')
 
-    def get_elements_specs(self) -> list[dict]:
-        """Returns a list of dictionaries with the specifications for each element of the chart."""
+    def get_elements(self) -> list[ElementCreator]:
+        """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
@@ -454,27 +436,28 @@ class ArcChartCreator(NonAxisChannelChartCreator):
             eager=True  # Returns a Series
         ).alias('radius')
 
-        # Id
-        ids = pl.select(pl.concat_str(
+        # Information display
+        info = pl.select(pl.concat_str(
             [self._color_data.cast(pl.String), self._theta_data.cast(pl.String)],
             separator=' : ',
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
         temp_df = DataFrame({
-            'id': ids,
+            'info': info,
             'depth': depth,
-            'pos': pl.select(pl.concat_str(
+            'position': pl.select(pl.concat_str(
                 [x_coordinates, y_coordinates, z_coordinates],
                 separator=' '
-            ).alias('pos')).to_series(),
+            ).alias('position')).to_series(),
             'radius': radius,
             'theta_start': theta_starts,
             'theta_length': theta_lengths,
             'color': colors
         })
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
-        return elements_specs
+
+        return [CylinderCreator(specification) for specification in elements_specs]
 
 
 class BarChartCreator(XYZAxisChannelChartCreator):
@@ -546,8 +529,8 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         bars_colors = Series(islice(colors, self._raw_data.height))  # Take self._raw_data rows colors from the cycle
         return bars_colors.alias('color')
 
-    def get_elements_specs(self) -> list[dict]:
-        """Returns a list of dictionaries with the specifications for each element of the chart."""
+    def get_elements(self) -> list[ElementCreator]:
+        """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
@@ -577,66 +560,37 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         # Color
         colors = self._set_bars_colors()
 
-        # Id
-        ids_series = []
+        # Information display
+        info_series = []
         if self._x_data is not None:
-            ids_series.append(self._x_data.cast(pl.String))
+            info_series.append(self._x_data.cast(pl.String))
         if self._y_data is not None:
-            ids_series.append(self._y_data.cast(pl.String))
+            info_series.append(self._y_data.cast(pl.String))
         if self._z_data is not None:
-            ids_series.append(self._z_data.cast(pl.String))
+            info_series.append(self._z_data.cast(pl.String))
 
-        ids = pl.select(pl.concat_str(
-            ids_series,
+        info = pl.select(pl.concat_str(
+            info_series,
             separator=' : '
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
         temp_df = DataFrame({
-            'id': ids,
-            'pos': pl.select(pl.concat_str(
+            'info': info,
+            'position': pl.select(pl.concat_str(
                 [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
                 separator=' '
-            ).alias('pos')).to_series(),
+            ).alias('position')).to_series(),
             'width': bar_widths,
             'height': bar_heights,
             'depth': bar_depths,
             'color': colors
         })
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
-        return elements_specs
+
+        return [BoxCreator(specification) for specification in elements_specs]
 
     # Using get_axis_scpecs() from parent class
-
-
-class GLTFModelCreator(NonChannelChartCreator):
-    """GLTF model creator class."""
-    def __init__(self, chart_specs: dict):
-        super().__init__(chart_specs)
-        self._scale = chart_specs['mark'].get('scale', DEFAULT_GLTF_SCALE) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_GLTF_SCALE
-
-    def get_elements_specs(self) -> list[dict]:
-        """Returns a list of dictionaries with the specifications for each element of the chart."""
-        return [{'src': self._url, 'scale': self._scale}]
-
-    # Using get_axis_specs() from NonChannelChartCreator class
-
-
-class ImageCreator(NonChannelChartCreator):
-    """Image creator class."""
-    def __init__(self, chart_specs: dict):
-        super().__init__(chart_specs)
-        self._height = chart_specs['mark'].get('height', DEFAULT_IMAGE_HEIGHT) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_IMAGE_HEIGHT
-        self._width = chart_specs['mark'].get('width', DEFAULT_IMAGE_WIDTH) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_IMAGE_WIDTH
-
-    def get_elements_specs(self) -> list[dict]:
-        """Returns a list of dictionaries with the specifications for each element of the chart."""
-        return [{'src': self._url, 'width': self._width, 'height': self._height}]
-
-    # Using get_axis_specs() from NonChannelChartCreator class
 
 
 class PointChartCreator(XYZAxisChannelChartCreator):
@@ -723,8 +677,8 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             points_radius = (self._size_data / max_value) * self._max_radius
         return points_radius.alias('radius')
 
-    def get_elements_specs(self) -> list[dict]:
-        """Returns a list of dictionaries with the specifications for each element of the chart."""
+    def get_elements(self) -> list[ElementCreator]:
+        """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
 
@@ -755,32 +709,33 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._z_elements_coordinates = -(self._z_offset + z_coordinates)  # Negative to go deep
         self._z_offset *= -1  # Negative offset (to go deep)
 
-        # Id
-        ids_series = []
+        # # Information display
+        info_series = []
         if self._x_data is not None:
-            ids_series.append(self._x_data.cast(pl.String))
+            info_series.append(self._x_data.cast(pl.String))
         if self._y_data is not None:
-            ids_series.append(self._y_data.cast(pl.String))
+            info_series.append(self._y_data.cast(pl.String))
         if self._z_data is not None:
-            ids_series.append(self._z_data.cast(pl.String))
+            info_series.append(self._z_data.cast(pl.String))
 
-        ids = pl.select(pl.concat_str(
-            ids_series,
+        info = pl.select(pl.concat_str(
+            info_series,
             separator=' : ',
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
         temp_df = DataFrame({
-            'id': ids,
-            'pos': pl.select(pl.concat_str(
+            'info': info,
+            'position': pl.select(pl.concat_str(
                 [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
                 separator=' '
-            ).alias('pos')).to_series(),
+            ).alias('position')).to_series(),
             'radius': radius,
             'color': colors,
         })
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
-        return elements_specs
+
+        return [SphereCreator(specefications) for specefications in elements_specs]
 
     # Using get_axis_scpecs() from parent class
 
@@ -788,6 +743,4 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 # Add classes to CREATOR_MAP
 CREATOR_MAP.update({'arc': ArcChartCreator})
 CREATOR_MAP.update({'bar': BarChartCreator})
-CREATOR_MAP.update({'gltf': GLTFModelCreator})
-CREATOR_MAP.update({'image': ImageCreator})
 CREATOR_MAP.update({'point': PointChartCreator})

@@ -1,10 +1,8 @@
 """AframeXR entities HTML creator"""
 
 from .axis_creator import AxisCreator
-from .constants import CHART_TEMPLATES, ELEMENTS_TEMPLATES
 from .chart_creator import ChartCreator
 from .element_creator import ElementCreator
-from .validators import AframeXRValidator
 
 
 class ChartsHTMLCreator:
@@ -12,18 +10,16 @@ class ChartsHTMLCreator:
     @staticmethod
     def _create_chart_html(chart_specs: dict):
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
-        AframeXRValidator.validate_chart_type(chart_type)
 
         # Chart HTML
         chart_html = ''
-        base_html = CHART_TEMPLATES[chart_type]
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
         chart_html += '<a-entity position="{pos}" rotation="{rotation}">\n'.format(**group_specs)
-        elements_specs = chart_object.get_elements_specs()  # Get the specifications for each element of the chart
-        for element in elements_specs:
-            chart_html += '\t\t\t' + base_html.format(**element) + '\n'  # Tabulate the lines (better visualization)
+        elements = chart_object.get_elements()  # Get the specifications for each element of the chart
+        for element in elements:
+            chart_html += '\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
 
         # Axis HTML
         axis_specs = chart_object.get_axis_specs()

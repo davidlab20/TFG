@@ -1,5 +1,6 @@
 """AframeXR components"""
 
+from abc import ABC, abstractmethod
 import copy
 import html
 import json
@@ -299,71 +300,6 @@ class Chart(TopLevelMixin):
 
         return self
 
-    def mark_gltf(self, scale: str = None):
-        """
-        GLTF model.
-
-        Parameters
-        ----------
-        scale : str (optional)
-            Scale of the GLTF model (from its original scale). If not specified, using DEFAULT_GLTF_SCALE.
-
-            **Format: 'x y z'** (values can be negative, works like a mirror).
-
-            If an axis value is not specified, that value will be 1 (for example, '2 2' is the same as '2 2 1').
-
-            If more than 3 axes are specified, then the first 3 axes will be used.
-
-        Raises
-        ------
-        ValueError:
-            If scale values are not numeric.
-        """
-        self._specifications.update({'mark': {'type': 'gltf'}})
-
-        if scale is not None:
-            AframeXRValidator.validate_type(scale, str)
-            try:
-                coords = scale.split()
-                _ = [float(c) for c in coords]
-            except ValueError:
-                raise ValueError('The scale values must be numeric.')
-            self._specifications['mark'].update({'scale': scale})
-
-        return self
-
-    def mark_image(self, height: float = None, width: float = None):
-        """
-        Image.
-
-        Parameters
-        ----------
-        height : float (optional)
-            Height of the image. If not specified, using DEFAULT_IMAGE_HEIGHT. Must be greater than 0.
-        width : float (optional)
-            Width of the image. If not specified, using DEFAULT_IMAGE_WIDTH. Must be greater than 0.
-
-        Raises
-        ------
-        ValueError
-            If width or height is not greater than 0.
-        """
-        self._specifications.update({'mark': {'type': 'image'}})
-
-        if height is not None:
-            AframeXRValidator.validate_type(height, (float, int))
-            if height <= 0:
-                raise ValueError('The height must be greater than 0.')
-            self._specifications['mark'].update({'height': height})
-
-        if width is not None:
-            AframeXRValidator.validate_type(width, (float, int))
-            if width <= 0:
-                raise ValueError('The width must be greater than 0.')
-            self._specifications['mark'].update({'width': width})
-
-        return self
-
     def mark_point(self, size: float = None):
         """
         Scatter plot and bubble chart.
@@ -568,21 +504,48 @@ class Chart(TopLevelMixin):
         return filt_chart  # Returns the copy of the chart
 
 
-class Element(TopLevelMixin):
-    def __init__(self, element: str, color: str = None, position: str = None, rotation: str = None):
-        super().__init__({'element': element})
+class Element(TopLevelMixin, ABC):
+    _IGNORED = {'self', 'element'}  # Ignored attributes of **locals()
 
-        if color is not None: self._specifications.update({'color': color})
-        if position is not None: self._specifications.update({'position': position})
-        if rotation is not None: self._specifications.update({'rotation': rotation})
+    @abstractmethod
+    def __init__(self, **kwargs):
+        element_name = self.__class__.__name__.lower()  # Use child class's name for defining the element
+        super().__init__({'element': element_name})
+
+        self._specifications.update(
+            {key: value for key, value in kwargs.items()
+             if value is not None and key not in self._IGNORED}
+        )
 
 
+# Single elements
 class Box(Element):
     """Simple box."""
     def __init__(self, color: str = None, depth: float = None, height: float = None, position: str = None,
                  rotation: str = None, width: float = None):
-        super().__init__(element='box', color=color, position=position, rotation=rotation)
+        super().__init__(**locals())
 
-        if depth is not None: self._specifications.update({'depth': depth})
-        if height is not None: self._specifications.update({'height': height})
-        if width is not None: self._specifications.update({'width': width})
+
+class Cylinder(Element):
+    """Simple cylinder."""
+    def __init__(self, color: str = None, height: float = None, position: str = None, radius: float = None,
+                 rotation: str = None):
+        super().__init__(**locals())
+
+
+class GLTF(Element):
+    """GLTF model."""
+    def __init__(self, src: str, scale: str = None, position: str = None, rotation: str = None):
+        super().__init__(**locals())
+
+
+class Image(Element):
+    """Image."""
+    def __init__(self, src: str, height: float = None, position: str = None, rotation: str = None, width: float = None):
+        super().__init__(**locals())
+
+
+class Sphere(Element):
+    """Simple sphere."""
+    def __init__(self, color: str = None, position: str = None, radius: float = None):
+        super().__init__(**locals())

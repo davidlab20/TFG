@@ -10,25 +10,6 @@ X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axi
 LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 
-# ----- TEMPLATES -----
-CHART_TEMPLATES = {
-    # Charts templates
-    'arc': ('<a-cylinder id="{id}" position="{pos}" height="{depth}" radius="{radius}" theta-start="{theta_start}" '
-            'theta-length="{theta_length}" material="color: {color}; side: double" data-raycastable></a-cylinder>'),
-    'bar': ('<a-box id="{id}" position="{pos}" width="{width}" height="{height}" depth="{depth}" '
-            'material="color: {color}" data-raycastable></a-box>'),
-    'point': ('<a-sphere id="{id}" position="{pos}" radius="{radius}" material="color: {color}" data-raycastable>'
-             '</a-sphere>'),
-
-    # Images templates
-    'gltf': '<a-gltf-model src="{src}" scale="{scale}"></a-gltf-model>',
-    'image': '<a-image src="{src}" width="{width}" height="{height}"></a-image>'
-}
-ELEMENTS_TEMPLATES = {
-    'box': '<a-box position="{position}" rotation="{rotation}" width="{width}" height="{height}" depth="{depth}" '
-            'material="color: {color}"></a-box>',
-}
-
 # ----- DEFAULTS -----
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart

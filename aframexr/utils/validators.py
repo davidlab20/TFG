@@ -1,6 +1,6 @@
 """AframeXR validators"""
 
-from .constants import AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, CHART_TEMPLATES, ELEMENTS_TEMPLATES
+from .constants import AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES
 
 
 class AframeXRValidator:
@@ -33,22 +33,10 @@ class AframeXRValidator:
             raise ValueError(f'Invalid chart specifications. Must contain key "mark" or "element".')
 
     @staticmethod
-    def validate_chart_type(chart_type: str) -> None:
-        """Raises ValueError if the chart type is invalid."""
-        if chart_type not in CHART_TEMPLATES:
-            raise ValueError(f'Invalid chart type: {chart_type}.')
-
-    @staticmethod
     def validate_encoding_type(encoding_type: str) -> None:
         """Raises ValueError if encoding type is not valid."""
         if encoding_type not in AVAILABLE_ENCODING_TYPES:
             raise ValueError(f'Invalid encoding type: {encoding_type}.')
-
-    @staticmethod
-    def validate_element_type(element_type: str) -> None:
-        """Raises ValueError if element type is not valid."""
-        if element_type not in ELEMENTS_TEMPLATES:
-            raise ValueError(f'Invalid element type: {element_type}.')
 
     @staticmethod
     def validate_type(param, types: type | tuple[type, ...]) -> None:
