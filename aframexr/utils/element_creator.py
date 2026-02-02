@@ -33,7 +33,7 @@ class ElementCreator:
             raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
 
         attributes = ''.join(
-            f' {key[1:]}="{value}"'  # Add space at the beggining
+            f' {key[1:]}="{value}"'  # Add space at the beginning
             for key, value in self.__dict__.items()
             if value is not None and key.startswith('_')  # Only add defined private attributes in the HTML
         )
