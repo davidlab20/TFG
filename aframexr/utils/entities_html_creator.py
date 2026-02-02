@@ -8,7 +8,7 @@ from .element_creator import ElementCreator
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
     @staticmethod
-    def _create_chart_html(chart_specs: dict):
+    def _create_chart_html(chart_specs: dict) -> str:
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
 
         # Chart HTML
@@ -27,10 +27,8 @@ class ChartsHTMLCreator:
         for ax in axis_specs:
             chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
             chart_html += '\t\t\t' + AxisCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
-            for label in range(len(axis_specs[ax]['labels_pos'])):
-                label_pos = axis_specs[ax]['labels_pos'][label]
+            for label_pos, label_value in zip(axis_specs[ax]['labels_pos'], axis_specs[ax]['labels_values']):
                 label_rotation = axis_specs[ax]['labels_rotation']
-                label_value = axis_specs[ax]['labels_values'][label]
                 label_align = axis_specs[ax]['labels_align']
                 chart_html += '\t\t\t' + AxisCreator.create_label_html(
                     label_pos, label_rotation, label_value, label_align
@@ -41,13 +39,13 @@ class ChartsHTMLCreator:
         return chart_html
 
     @staticmethod
-    def _create_element_html(element_specs: dict):
+    def _create_element_html(element_specs: dict) -> str:
         element_type = element_specs['element']
         element_object = ElementCreator.create_object(element_type, element_specs)
         return element_object.get_element_html()
 
     @staticmethod
-    def _create_entity_html(chart_specs: dict):
+    def _create_entity_html(chart_specs: dict) -> str:
         """
         Returns the HTML of the elements that compose the entity.
 
@@ -72,7 +70,7 @@ class ChartsHTMLCreator:
         return html
 
     @staticmethod
-    def create_charts_html(specs: dict):
+    def create_charts_html(specs: dict) -> str:
         """
         Returns the HTML of the charts that compose the scene.
 
