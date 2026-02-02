@@ -22,14 +22,14 @@ class ChartsHTMLCreator:
             chart_html += '\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
 
         # Axis HTML
-        axis_specs = chart_object.get_axis_specs()
+        axes_specs = chart_object.get_axes_specs()
 
-        for ax in axis_specs:
+        for ax, ax_specs in axes_specs.items():
             chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
-            chart_html += '\t\t\t' + AxisCreator.create_axis_html(axis_specs[ax]['start'], axis_specs[ax]['end']) + '\n'
-            for label_pos, label_value in zip(axis_specs[ax]['labels_pos'], axis_specs[ax]['labels_values']):
-                label_rotation = axis_specs[ax]['labels_rotation']
-                label_align = axis_specs[ax]['labels_align']
+            chart_html += '\t\t\t' + AxisCreator.create_axis_html(ax_specs['start'], ax_specs['end']) + '\n'
+            for label_pos, label_value in zip(ax_specs['labels_pos'], ax_specs['labels_values']):
+                label_rotation = ax_specs['labels_rotation']
+                label_align = ax_specs['labels_align']
                 chart_html += '\t\t\t' + AxisCreator.create_label_html(
                     label_pos, label_rotation, label_value, label_align
                 ) + '\n'
