@@ -18,7 +18,7 @@ class ElementCreator:
         self._rotation = element_specs.get('rotation')
 
     @staticmethod
-    def create_object(element_type: str, element_specs: dict):
+    def create_object(element_type: str, element_specs: dict) -> 'ElementCreator':
         """
         Returns an ElementCreator instance depending on element specifications.
         Notes
@@ -29,7 +29,7 @@ class ElementCreator:
             raise ValueError()
         return CREATOR_MAP[element_type](element_specs)
 
-    def get_element_html(self):
+    def get_element_html(self) -> str:
         if self._ELEMENT_HTML == '':
             raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
 
