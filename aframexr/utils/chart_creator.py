@@ -735,7 +735,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         })
         elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
 
-        return [SphereCreator(specefications) for specefications in elements_specs]
+        return [SphereCreator(specifications) for specifications in elements_specs]
 
     # Using get_axis_scpecs() from parent class
 
