@@ -16,7 +16,7 @@ class ChartsHTMLCreator:
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
-        chart_html += '<a-entity position="{pos}" rotation="{rotation}">\n'.format(**group_specs)
+        chart_html += '<a-entity position="{position}" rotation="{rotation}">\n'.format(**group_specs)
         elements = chart_object.get_elements()  # Get the specifications for each element of the chart
         for element in elements:
             chart_html += '\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
