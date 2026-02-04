@@ -3,6 +3,7 @@
 from .entities_html_creator import ChartsHTMLCreator
 
 HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
+<html lang="en">
 <head>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
@@ -39,7 +40,8 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         <!-- Elements -->
         {elements}
     </a-scene>
-</body>"""
+</body>
+</html>"""
 
 
 class SceneCreator:
