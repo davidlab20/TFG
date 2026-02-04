@@ -1,8 +1,8 @@
 """Constant / default values utils file"""
 
 # ----- CONSTANTS -----
-AVAILABLE_AGGREGATES = ('count', 'max', 'median', 'mean', 'min', 'std', 'sum', 'var')
-AVAILABLE_COLORS = ('red', 'green', 'blue', 'yellow', 'magenta', 'cyan')
+AVAILABLE_AGGREGATES = {'count', 'max', 'median', 'mean', 'min', 'std', 'sum', 'var'}
+AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
