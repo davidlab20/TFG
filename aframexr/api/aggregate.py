@@ -63,7 +63,7 @@ class AggregatedFieldDef:
         """Returns the aggregate operator, the field and the groupby in the aggregate formula."""
         field, aggregate_op = aggregate_formula, None
 
-        if '(' in aggregate_formula and  ')' in aggregate_formula:
+        if '(' in aggregate_formula and ')' in aggregate_formula:
             aggregate_op = aggregate_formula.split('(')[0].strip()  # Value before parentheses (aggregate operation)
             AframeXRValidator.validate_aggregate_operation(aggregate_op)  # Validate that the aggregate is correct
 
