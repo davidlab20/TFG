@@ -203,6 +203,11 @@ class TestMarkPointOK(unittest.TestCase):
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
 
+            point_chart_2 = aframexr.Chart(DATA).mark_point().encode(x='model', y=f'{a}(sales)')
+            point_chart_2.to_html()
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2))
+            self.assertTrue(_points_are_inside_chart_volume(point_chart_2))
+
     def test_aggregate_position_rotation_size_height_width_filter(self):
         """Mark point changing position, rotation size, height, width and filter creation."""
         for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,

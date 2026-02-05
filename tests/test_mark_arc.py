@@ -141,6 +141,11 @@ class TestMarkArcOK(unittest.TestCase):
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
             self.assertTrue(_slices_are_well_placed(pie_chart))
 
+            pie_chart_2 = aframexr.Chart(DATA).mark_arc().encode(color='model', theta=f'{a}(sales)')
+            pie_chart_2.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_2))
+            self.assertTrue(_slices_are_well_placed(pie_chart_2))
+
     def test_aggregate_position_rotation_radius_filter(self):
         """Pie chart changing position, rotation, radius and filter creation."""
         for agg, pos, rot, rad, fil in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_ARC_RADIUS, FILTER_EQUATIONS):

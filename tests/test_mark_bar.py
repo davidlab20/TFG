@@ -191,6 +191,11 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
 
+            bars_chart_2 = aframexr.Chart(DATA).mark_bar().encode(x='model', y=f'{a}(sales)')
+            bars_chart_2.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2))
+
     def test_aggregate_position_rotation_size_height_width_filter(self):
         """Bars chart changing position, rotation size, height, width and filter creation."""
         for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
