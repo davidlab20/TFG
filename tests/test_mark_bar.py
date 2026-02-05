@@ -324,6 +324,16 @@ class TestMarkBarError(unittest.TestCase):
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='size'))
 
+    def test_depth_error(self):
+        """Bars chart error when depth is incorrect."""
+        for d in NOT_GREATER_THAN_0_DEPTHS:
+            with self.assertRaises(ValueError) as error:
+                aframexr.Chart(DATA, depth=d).mark_bar().encode(x='model', y='sales')
+            self.assertEqual(
+                str(error.exception),
+                ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='depth')
+            )
+
     def test_height_error(self):
         """Bars chart height error."""
         for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:

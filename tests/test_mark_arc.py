@@ -237,6 +237,16 @@ class TestMarkArcError(unittest.TestCase):
             from pathlib import Path
             Path(EMPTY_FILE.url).unlink()  # Remove the temporal file
 
+    def test_depth_error(self):
+        """Pie chart error when depth is incorrect."""
+        for d in NOT_GREATER_THAN_0_DEPTHS:
+            with self.assertRaises(ValueError) as error:
+                aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales')
+            self.assertEqual(
+                str(error.exception),
+                ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='depth')
+            )
+
     def test_position_error(self):
         """Pie chart position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
