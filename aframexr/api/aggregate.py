@@ -28,10 +28,10 @@ class AggregatedFieldDef:
 
         try:  # Validate that 'field' and 'aggregate' are ono the specifications
             aggregate_op = aggregate_specs['op']
-            field = aggregate_specs['field']
+            field = aggregate_specs.get('field', '')
             as_field = aggregate_specs.get('as', field)
         except KeyError:
-            raise KeyError('Invalid aggregate specification, must contain "op" and "field".')
+            raise KeyError('Invalid aggregate specification, must contain "op" (and "field" if required)')
         return AggregatedFieldDef(aggregate_op, field, as_field)
 
     # Export
