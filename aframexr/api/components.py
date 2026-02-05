@@ -138,6 +138,7 @@ class TopLevelMixin:
                 file.write(self.to_html())
         elif file_format == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
+                AframeXRValidator.validate_chart_specs(self._specifications)
                 json.dump(self._specifications, file, indent=4)
         else:
             raise ValueError('Invalid file format.')
@@ -154,6 +155,7 @@ class TopLevelMixin:
     # Chart formats
     def to_dict(self) -> dict:
         """Returns the scene specifications as a dictionary."""
+        AframeXRValidator.validate_chart_specs(self._specifications)
         return self._specifications
 
     def to_html(self) -> str:
@@ -163,6 +165,7 @@ class TopLevelMixin:
 
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""
+        AframeXRValidator.validate_chart_specs(self._specifications)
         return json.dumps(self._specifications)
 
 
