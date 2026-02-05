@@ -253,7 +253,7 @@ class TestMarkArcError(unittest.TestCase):
 
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
             with self.assertRaises(ValueError) as error:
-                aframexr.Chart(DATA).mark_arc().encode(**e)
+                aframexr.Chart(DATA).mark_arc().encode(**e).to_html()
             self.assertIn(str(error.exception), ['Parameter theta must be specified in arc chart.',
                                             'Parameter color must be specified in arc chart.'])
 

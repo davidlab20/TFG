@@ -319,7 +319,7 @@ class TestMarkBarError(unittest.TestCase):
 
         for e in NOT_VALID_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(ValueError) as error:
-                aframexr.Chart(DATA).mark_bar().encode(**e)
+                aframexr.Chart(DATA).mark_bar().encode(**e).to_html()
             self.assertEqual(str(error.exception), 'At least 2 of (x, y, z) must be specified.')
 
     def test_encoding_error_invalid_encoding_type(self):

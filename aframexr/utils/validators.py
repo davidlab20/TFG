@@ -49,6 +49,24 @@ def _validate_mark(mark: str | dict) -> None:
         raise ValueError(ERROR_MESSAGES['MARK_TYPE'].format(mark_type=mark_type))
 
 
+def _validate_mark_encoding(mark: str | dict, encoding: dict) -> None:
+    """
+    Raises ValueError if mark and encoding combination is invalid.
+
+    Notes
+    -----
+    Assuming that mark and encoding are valid, as this method is called after mark and encoding validation.
+    """
+    mark_type = mark.get('type') if isinstance(mark, dict) else mark
+
+    if mark_type in {'bar', 'point'} \
+            and sum([encoding.get('x') is not None, encoding.get('y') is not None, encoding.get('z') is not None]) < 2:
+        raise ValueError('At least 2 of (x, y, z) must be specified.')
+    if mark_type == 'arc' and (encoding.get('color') is None or encoding.get('theta') is None):
+        if encoding.get('theta') is None: raise ValueError('Parameter theta must be specified in arc chart.')
+        if encoding.get('color') is None: raise ValueError('Parameter color must be specified in arc chart.')
+
+
 def _validate_transform(transform: list[dict]) -> None:
     """Raises TypeError or ValueError if transform is invalid."""
     AframeXRValidator.validate_type('specs.transform', transform, list)
@@ -100,6 +118,8 @@ class AframeXRValidator:
             if 'encoding' not in specs:
                 raise ValueError(ERROR_MESSAGES['ENCODING_NOT_IN_SPECS'])
             _validate_encoding(specs['encoding'])
+
+            _validate_mark_encoding(specs['mark'], specs['encoding'])
 
         elif 'element' in specs:  # Single element
             _validate_element(specs['element'])

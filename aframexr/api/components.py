@@ -352,14 +352,6 @@ class Chart(TopLevelMixin):
             AframeXRValidator.validate_type('z', z, (str, Z))
             filled_params.update({'z': z})
 
-        # Verify the argument combinations
-        if self._specifications['mark']['type'] in ['bar', 'point'] \
-                and sum([x is not None, y is not None, z is not None]) < 2:
-            raise ValueError('At least 2 of (x, y, z) must be specified.')
-        if self._specifications['mark']['type'] == 'arc' and (not theta or not color):
-            if theta is None: raise ValueError('Parameter theta must be specified in arc chart.')
-            if color is None: raise ValueError('Parameter color must be specified in arc chart.')
-
         # Do the encoding
         self._specifications.update({'encoding': {}})
         for param_key in filled_params:
