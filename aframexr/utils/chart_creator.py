@@ -464,7 +464,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
     """Bar chart creator class."""
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._bar_size_if_nominal_axis: float = chart_specs['mark'].get('size') \
+        self._bar_size_if_nominal_axis: float | None = chart_specs['mark'].get('size') \
             if isinstance(chart_specs['mark'], dict) else None
         self._correct_axes_position(elem_size=self._bar_size_if_nominal_axis)
 
