@@ -26,6 +26,18 @@ class TestAframexrError(unittest.TestCase):
             aframexr.Chart.from_dict(bad_data_specifications).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_AND_URL_NOT_IN_SPECS'])
 
+    def test_data_of_invalid_type(self):
+        """Verify that the error is raised when data has invalid type."""
+        with self.assertRaises(TypeError) as error:
+            err_data = 'invalid data type'
+            aframexr.Chart(err_data)
+        self.assertEqual(
+            str(error.exception),
+            ERROR_MESSAGES['TYPE'].format(
+                param_name='data', expected_type='Data or URLData or DataFrame', current_type=type(err_data).__name__
+            )
+        )
+
     def test_NULL_series(self):
         """Verify that the error is raised when having NULL series."""
         with self.assertRaises(ValueError) as error:
