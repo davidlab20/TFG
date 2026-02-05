@@ -25,12 +25,13 @@ class ElementCreator:
         -----
         Supposing that field "element" exists in element specifications, this method is called from ChartsHTMLCreator.
         """
-        if element_type not in CREATOR_MAP:
-            raise ValueError()
+        if element_type not in CREATOR_MAP:  # pragma: no cover (all classes should be added at the end of this file)
+            raise RuntimeError(f'Class for {element_type} was not added to CREATOR_MAP')
+
         return CREATOR_MAP[element_type](element_specs)
 
     def get_element_html(self) -> str:
-        if self._ELEMENT_HTML == '':
+        if self._ELEMENT_HTML == '':  # pragma: no cover (all classes should have inner _ELEMENT_HTML constant defined)
             raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
 
         attributes = ''.join(
