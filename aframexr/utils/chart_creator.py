@@ -177,8 +177,9 @@ class ChartCreator:
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
         """Returns a ChartCreator instance of the specific chart type."""
-        if chart_type not in CREATOR_MAP:
-            raise ValueError(f'Invalid chart type: {chart_type}.')
+        if chart_type not in CREATOR_MAP:  # pragma: no cover (creator classes should be added at the end of this file)
+            raise RuntimeError(f'Class for {chart_type} was not added to CREATOR_MAP')
+
         return CREATOR_MAP[chart_type](chart_specs)
 
     def get_group_specs(self) -> dict:
