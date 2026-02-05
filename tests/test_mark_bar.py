@@ -232,6 +232,7 @@ class TestMarkBarOK(unittest.TestCase):
             bars_chart.save(str(temp_json_file_path))
 
             assert temp_html_file_path.exists()
+            assert temp_json_file_path.exists()
 
 
 class TestMarkBarError(unittest.TestCase):
