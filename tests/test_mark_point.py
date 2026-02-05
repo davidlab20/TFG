@@ -251,8 +251,17 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart.save(str(temp_html_file_path))
             point_chart.save(str(temp_json_file_path))
 
-            assert temp_html_file_path.exists()
-            assert temp_json_file_path.exists()
+            self.assertTrue(temp_html_file_path.exists())
+            self.assertTrue(temp_json_file_path.exists())
+
+    def test_properties(self):
+        """Mark point properties definition."""
+        point_chart = aframexr.Chart().mark_point().encode(x='model', y='sales')
+        for p, r in zip(POSITIONS, ROTATIONS):
+            point_chart_2 = point_chart.properties(data=DATA, position=p, rotation=r)
+            point_chart_2.to_html()
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2))
+            self.assertTrue(_points_are_inside_chart_volume(point_chart_2))
 
 
 class TestMarkPointError(unittest.TestCase):

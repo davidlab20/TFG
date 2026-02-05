@@ -187,8 +187,17 @@ class TestMarkArcOK(unittest.TestCase):
             pie_chart.save(str(temp_html_file_path))
             pie_chart.save(str(temp_json_file_path))
 
-            assert temp_html_file_path.exists()
-            assert temp_json_file_path.exists()
+            self.assertTrue(temp_html_file_path.exists())
+            self.assertTrue(temp_json_file_path.exists())
+
+    def test_properties(self):
+        """Pie chart properties definition."""
+        pie_chart = aframexr.Chart().mark_arc().encode(color='model', theta='sales')
+        for p, r in zip(POSITIONS, ROTATIONS):
+            pie_chart_2 = pie_chart.properties(data=DATA, position=p, rotation=r)
+            pie_chart_2.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_2))
+            self.assertTrue(_slices_are_well_placed(pie_chart_2))
 
 
 class TestMarkArcError(unittest.TestCase):

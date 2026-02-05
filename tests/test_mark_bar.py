@@ -239,8 +239,17 @@ class TestMarkBarOK(unittest.TestCase):
             bars_chart.save(str(temp_html_file_path))
             bars_chart.save(str(temp_json_file_path))
 
-            assert temp_html_file_path.exists()
-            assert temp_json_file_path.exists()
+            self.assertTrue(temp_html_file_path.exists())
+            self.assertTrue(temp_json_file_path.exists())
+
+    def test_properties(self):
+        """Bars chart properties definition."""
+        bars_chart = aframexr.Chart().mark_bar().encode(x='model', y='sales')
+        for p, r in zip(POSITIONS, ROTATIONS):
+            bars_chart_2 = bars_chart.properties(data=DATA, position=p, rotation=r)
+            bars_chart_2.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2))
 
 
 class TestMarkBarError(unittest.TestCase):
