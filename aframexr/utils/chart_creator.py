@@ -78,12 +78,11 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
     data_field = chart_specs['data']
     if data_field.get('url'):  # Data is stored in a file
         raw_data = _get_data_from_url(data_field['url'])
-
     elif data_field.get('values'):  # Data is stored as the raw data
         json_data = data_field['values']
         raw_data = DataFrame(json_data)
-    else:
-        raise ValueError('Data specifications has no correct syntaxis, must have field "url" or "values".')
+    else:  # pragma: no cover (should never enter here, as chart_specs should have previously been validated)
+        raise RuntimeError('Unreachable code: chart_specs should have been validated earlier')
 
     # Transform data (if necessary)
     from ..api.aggregate import AggregatedFieldDef  # To avoid circular import error
