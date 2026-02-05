@@ -135,7 +135,7 @@ class TestMarkArcOK(unittest.TestCase):
     def test_aggregate(self):
         """Pie chart changing aggregates creation."""
         for a in AGGREGATES:
-            pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+            pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='new_field')
                          .transform_aggregate(new_field=f'{a}(sales)'))
             pie_chart.to_html()
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
@@ -145,7 +145,7 @@ class TestMarkArcOK(unittest.TestCase):
         """Pie chart changing position, rotation, radius and filter creation."""
         for agg, pos, rot, rad, fil in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_ARC_RADIUS, FILTER_EQUATIONS):
             pie_chart = (aframexr.Chart(DATA, position=pos, rotation=rot).mark_arc(radius=rad)
-                         .encode(color='model',theta='sales').transform_filter(fil)
+                         .encode(color='model',theta='agg').transform_filter(fil)
                          .transform_aggregate(agg=f'{agg}(sales)'))
             pie_chart.to_html()
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))

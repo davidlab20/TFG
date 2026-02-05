@@ -197,19 +197,19 @@ class TestMarkPointOK(unittest.TestCase):
     def test_aggregate(self):
         """Mark point changing aggregate creation."""
         for a in AGGREGATES:
-            point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
+            point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='new_field')
                          .transform_aggregate(new_field=f'{a}(sales)'))
             point_chart.to_html()
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
 
-    def test_aggregate_position_rotation_size_height_width_encoding_filter(self):
-        """Mark point changing position, rotation size, height, width, encoding and filter creation."""
-        for a, p, r, s, h, w, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
+    def test_aggregate_position_rotation_size_height_width_filter(self):
+        """Mark point changing position, rotation size, height, width and filter creation."""
+        for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
                                           MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
-                                          MARK_POINT_ENCODINGS, FILTER_EQUATIONS):
+                                          FILTER_EQUATIONS):
             point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_point(size=s)
-                           .encode(**e).transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
+                           .encode(x='model', y='agg').transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart.to_html()
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))

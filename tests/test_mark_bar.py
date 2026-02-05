@@ -185,19 +185,19 @@ class TestMarkBarOK(unittest.TestCase):
     def test_aggregate(self):
         """Bar chart changing aggregates creation."""
         for a in AGGREGATES:
-            bars_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+            bars_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='new_field')
                          .transform_aggregate(new_field=f'{a}(sales)'))
             bars_chart.to_html()
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
 
-    def test_aggregate_position_rotation_size_height_width_encoding_filter(self):
-        """Bars chart changing position, rotation size, height, width, encoding and filter creation."""
-        for a, p, r, s, h, w, e, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
+    def test_aggregate_position_rotation_size_height_width_filter(self):
+        """Bars chart changing position, rotation size, height, width and filter creation."""
+        for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
                                           MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
-                                          MARK_BAR_ENCODINGS, FILTER_EQUATIONS):
-            bars_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_bar(size=s).encode(**e)
-                          .transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
+                                          FILTER_EQUATIONS):
+            bars_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_bar(size=s)
+                          .encode(x='model', y='agg').transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             bars_chart.to_html()
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
