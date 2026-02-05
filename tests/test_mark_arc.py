@@ -242,9 +242,10 @@ class TestMarkArcError(unittest.TestCase):
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, position=p).mark_arc().encode(color='model', theta='sales')
-            self.assertEqual(str(error.exception), ERROR_MESSAGES['NOT_3_AXES_POSITION_OR_ROTATION'].format(
-                pos_or_rot='position', pos_or_rot_value=p
-            ))
+            self.assertEqual(
+                str(error.exception),
+                ERROR_MESSAGES['NOT_3_AXES_POSITION_OR_ROTATION'].format(pos_or_rot='position', pos_or_rot_value=p)
+            )
 
         for p in NOT_NUMERIC_POSITIONS_ROTATIONS:
             with self.assertRaises(ValueError) as error:
