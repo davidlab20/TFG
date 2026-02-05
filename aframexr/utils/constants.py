@@ -5,6 +5,7 @@ AVAILABLE_AGGREGATES = {'count', 'max', 'median', 'mean', 'min', 'std', 'sum', '
 AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 AVAILABLE_MARKS = {'arc', 'bar', 'point'}
+AVAILABLE_SINGLE_ELEMENTS = {'box', 'cylinder', 'gltf', 'image', 'sphere'}
 
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
 X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
@@ -30,3 +31,22 @@ DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 # Point chart
 DEFAULT_POINT_COLOR = "blue"  # Default point color
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
+
+# ========== ERROR MESSAGES ==========
+ERROR_MESSAGES = {
+    'AGGREGATE_OPERATION': 'Invalid aggregate operation: {operation}',
+    'AGGREGATE_OPERATION_NOT_IN_AGGREGATE': 'Aggregate must contain key "op"',
+    'DATA_AND_URL_IN_SPECS': 'Data cannot contain both "values" and "url"; they are mutually exclusive',
+    'DATA_AND_URL_NOT_IN_SPECS': 'Data must contain key "values" or "url"',
+    'DATA_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "data"',
+    'ELEMENT_TYPE': 'Invalid element type: {element}',
+    'ENCODING_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "encoding"',
+    'ENCODING_TYPE': 'Invalid encoding type: {encoding_type}',
+    'MARK_AND_ELEMENT_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "mark" or "element"',
+    'MARK_TYPE': 'Invalid mark type: {mark_type}',
+    'NOT_ALL_DATA_VALUES_ARE_DICT': 'Data field "values" must be a list of dictionaries',
+    'NOT_ALL_ENCODINGS_ARE_DICT': 'Encoding channels must be dictionaries',
+    'POSITIVE_NUMBER': 'The "{param_name}" must be greater than 0.',
+    'TRANSFORM_TYPE': 'Invalid transform type: {transform_type}',
+    'TYPE': 'Expected "{param_name}" to be {expected_type}, got {current_type} instead',
+}

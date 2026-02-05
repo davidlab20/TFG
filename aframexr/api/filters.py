@@ -45,7 +45,7 @@ class FilterTransform:
         -----
         Suppose equation is a string for posterior calls of from_string of child filters.
         """
-        AframeXRValidator.validate_type(equation, str)
+        AframeXRValidator.validate_type('equation', equation, str)
         if '==' in equation:  # Equation is of type field == value
             return FieldEqualPredicate.from_string(equation)
         if '>' in equation:  # Equation is of type field > value

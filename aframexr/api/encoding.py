@@ -1,10 +1,11 @@
 """AframeXR encoding classes"""
 
+from abc import ABC, abstractmethod
 from ..utils.constants import AVAILABLE_ENCODING_TYPES
 from ..utils.validators import AframeXRValidator
 
 
-class Encoding:
+class Encoding(ABC):
     """
     Parameters
     ----------
@@ -19,14 +20,9 @@ class Encoding:
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
+    @abstractmethod
     def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):
-        AframeXRValidator.validate_type(field, (str, type(None)))
-        AframeXRValidator.validate_type(aggregate, (str, type(None)))
-        AframeXRValidator.validate_type(axis, (bool, type(None)))
-        AframeXRValidator.validate_type(encoding_type, (str, type(None)))
-        AframeXRValidator.validate_type(groupby, (list, type(None)))
-
         self._field = field
         self._aggregate = aggregate
         self._axis = axis

@@ -86,7 +86,7 @@ class TopLevelMixin:
         TypeError
             If specs is not a dictionary.
         """
-        AframeXRValidator.validate_type(specs, dict)
+        AframeXRValidator.validate_type('specs', specs, dict)
         chart = Chart()
         chart._specifications = specs
         return chart
@@ -108,7 +108,7 @@ class TopLevelMixin:
         json.JSONDecodeError
             If specs is not valid JSON.
         """
-        AframeXRValidator.validate_type(specs, str)
+        AframeXRValidator.validate_type('specs', specs, str)
         chart = Chart()
         chart._specifications = json.loads(specs)
         AframeXRValidator.validate_chart_specs(chart._specifications)
@@ -132,7 +132,7 @@ class TopLevelMixin:
         ValueError
             If file_format is invalid.
         """
-        AframeXRValidator.validate_type(fp, str)
+        AframeXRValidator.validate_type('fp', fp, str)
         if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
                 file.write(self.to_html())
@@ -240,21 +240,15 @@ class Chart(TopLevelMixin):
         if rotation is not None: self._define_rotation(rotation)
 
         if depth is not None:
-            AframeXRValidator.validate_type(depth, (float, int))
-            if depth <= 0:
-                raise ValueError('The depth must be greater than 0.')
+            AframeXRValidator.validate_positive_number('depth', depth)
             self._specifications.update({'depth': depth})
 
         if height is not None:
-            AframeXRValidator.validate_type(height, (float, int))
-            if height <= 0:
-                raise ValueError('The height must be greater than 0.')
+            AframeXRValidator.validate_positive_number('height', height)
             self._specifications.update({'height': height})
 
         if width is not None:
-            AframeXRValidator.validate_type(width, (float, int))
-            if width <= 0:
-                raise ValueError('The width must be greater than 0.')
+            AframeXRValidator.validate_positive_number('width', width)
             self._specifications.update({'width': width})
 
     # Types of charts
@@ -270,9 +264,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'arc'}})
 
         if radius is not None:
-            AframeXRValidator.validate_type(radius, (float, int))
-            if radius <= 0:
-                raise ValueError('The radius must be greater than 0.')
+            AframeXRValidator.validate_positive_number('radius', radius)
             self._specifications['mark'].update({'radius': radius})
 
         return self
@@ -294,9 +286,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'bar'}})
 
         if size is not None:
-            AframeXRValidator.validate_type(size, (float, int))
-            if size <= 0:
-                raise ValueError('The size must be greater than 0.')
+            AframeXRValidator.validate_positive_number('size', size)
             self._specifications['mark'].update({'size': size})
 
         return self
@@ -318,9 +308,7 @@ class Chart(TopLevelMixin):
         self._specifications.update({'mark': {'type': 'point'}})
 
         if size is not None:
-            AframeXRValidator.validate_type(size, (float, int))
-            if size <= 0:
-                raise ValueError('The size must be greater than 0.')
+            AframeXRValidator.validate_positive_number('size', size)
             self._specifications['mark'].update({'max_radius': size})
 
         return self
@@ -357,22 +345,22 @@ class Chart(TopLevelMixin):
 
         # Verify the type of the arguments and store the filled parameters
         if color is not None:
-            AframeXRValidator.validate_type(color, str)
+            AframeXRValidator.validate_type('color', color, str)
             filled_params.update({'color': color})
         if size is not None:
-            AframeXRValidator.validate_type(size, str)
+            AframeXRValidator.validate_type('size', size, str)
             filled_params.update({'size': size})
         if theta is not None:
-            AframeXRValidator.validate_type(theta, str)
+            AframeXRValidator.validate_type('theta', theta, str)
             filled_params.update({'theta': theta})
         if x is not None:
-            AframeXRValidator.validate_type(x, (str, X))
+            AframeXRValidator.validate_type('x', x, (str, X))
             filled_params.update({'x': x})
         if y is not None:
-            AframeXRValidator.validate_type(y, (str, Y))
+            AframeXRValidator.validate_type('y', y, (str, Y))
             filled_params.update({'y': y})
         if z is not None:
-            AframeXRValidator.validate_type(z, (str, Z))
+            AframeXRValidator.validate_type('z', z, (str, Z))
             filled_params.update({'z': z})
 
         # Verify the argument combinations
@@ -422,7 +410,7 @@ class Chart(TopLevelMixin):
         kwargs : dict
             Format is: <new_field>=<aggregate_op>(<data_field>).
         """
-        AframeXRValidator.validate_type(groupby, (list, type(None)))
+        AframeXRValidator.validate_type('groupby', groupby, (list, type(None)))
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         aggreg_chart = self.copy()

@@ -4,9 +4,8 @@ import unittest
 
 from bs4 import BeautifulSoup
 
-from aframexr import PRECISION_DECIMALS
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import DEFAULT_CHART_HEIGHT
+from aframexr.utils.constants import DEFAULT_CHART_HEIGHT, ERROR_MESSAGES, PRECISION_DECIMALS
 from tests.constants import *  # Constants used for testing
 
 
@@ -290,21 +289,21 @@ class TestMarkBarError(unittest.TestCase):
         for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
-            self.assertEqual(str(error.exception), 'The size must be greater than 0.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='size'))
 
     def test_height_error(self):
         """Bars chart height error."""
         for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
-            self.assertEqual(str(error.exception), 'The height must be greater than 0.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='height'))
 
     def test_width_error(self):
         """Bars chart width error."""
         for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
-            self.assertEqual(str(error.exception), 'The width must be greater than 0.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='width'))
 
     def test_encoding_error(self):
         """Bars chart encoding error."""
@@ -324,14 +323,14 @@ class TestMarkBarError(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             bad_encoding_type = 'BAD_ENCODING'
             aframexr.Chart(DATA).mark_bar().encode(x=f'model:{bad_encoding_type}', y='sales').to_html()
-        self.assertEqual(str(error.exception), f'Invalid encoding type: {bad_encoding_type}.')
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENCODING_TYPE'].format(encoding_type=bad_encoding_type))
 
     def test_encoding_error_not_encoded(self):
         """Bars chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
             bars_chart = aframexr.Chart(DATA).mark_bar()
             bars_chart.to_html()
-        self.assertEqual(str(error.exception), "Invalid chart specifications. Must contain key 'encoding'.")
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENCODING_NOT_IN_SPECS'])
 
     def test_filter_warning(self):
         """Bars chart filter warning."""
@@ -358,7 +357,7 @@ class TestMarkBarError(unittest.TestCase):
                 agg_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
                              .transform_aggregate(new_field=f'{a}(sales)'))
                 agg_chart.to_html()
-            self.assertEqual(str(error.exception), f'Invalid aggregate operation: {a}.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['AGGREGATE_OPERATION'].format(operation=a))
 
     def test_aggregate_error_not_defined_encoding_channels(self):
         """Bars chart aggregate error raised when encoding channels are not defined in aggregation."""

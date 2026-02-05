@@ -4,6 +4,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
+from aframexr import ERROR_MESSAGES
 from aframexr.api.filters import FilterTransform
 from tests.constants import *  # Constants used for testing
 
@@ -236,7 +237,7 @@ class TestMarkArcError(unittest.TestCase):
         for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc(radius=r).encode(color='model', theta='sales')
-            self.assertEqual(str(error.exception), 'The radius must be greater than 0.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='radius'))
 
     def test_encoding_error(self):
         """Pie chart encoding error."""
@@ -257,14 +258,14 @@ class TestMarkArcError(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             bad_encoding_type = 'BAD_ENCODING'
             aframexr.Chart(DATA).mark_arc().encode(color=f'model:{bad_encoding_type}', theta='sales').to_html()
-        self.assertEqual(str(error.exception), f'Invalid encoding type: {bad_encoding_type}.')
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENCODING_TYPE'].format(encoding_type=bad_encoding_type))
 
     def test_encoding_error_not_encoded(self):
         """Pie chart encoding error. Encoding not in specifications."""
         with self.assertRaises(ValueError) as error:
             pie_chart = aframexr.Chart(DATA).mark_arc()
             pie_chart.to_html()
-        self.assertEqual(str(error.exception), "Invalid chart specifications. Must contain key 'encoding'.")
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENCODING_NOT_IN_SPECS'])
 
     def test_filter_warning(self):
         """Pie chart filter warning."""
@@ -291,7 +292,7 @@ class TestMarkArcError(unittest.TestCase):
                 agg_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
                              .transform_aggregate(new_field=f'{a}(sales)'))
                 agg_chart.to_html()
-            self.assertEqual(str(error.exception), f'Invalid aggregate operation: {a}.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['AGGREGATE_OPERATION'].format(operation=a))
 
     def test_aggregate_error_not_defined_encoding_channels(self):
         """Pie chart aggregate error raised when encoding channels are not defined in aggregation."""

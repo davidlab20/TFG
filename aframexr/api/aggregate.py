@@ -24,7 +24,7 @@ class AggregatedFieldDef:
     @staticmethod
     def from_dict(aggregate_specs: dict):
         """Creates an AggregatedFieldDef object from the aggregate specifications."""
-        AframeXRValidator.validate_type(aggregate_specs, dict)
+        AframeXRValidator.validate_type('aggregate specifications', aggregate_specs, dict)
 
         try:  # Validate that 'field' and 'aggregate' are ono the specifications
             aggregate_op = aggregate_specs['op']
