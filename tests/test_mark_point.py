@@ -111,7 +111,7 @@ class TestMarkPointOK(unittest.TestCase):
         """Mark point changing data format creation."""
         for d in DATA_FORMATS:
             point_chart = aframexr.Chart(d).mark_point().encode(x='model', y='sales')
-            point_chart.show()
+            point_chart.to_html()
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
 
