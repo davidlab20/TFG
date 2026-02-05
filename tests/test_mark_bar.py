@@ -134,6 +134,14 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
 
+    def test_depth(self):
+        """Bars chart changing depth creation."""
+        for d in ALL_MARK_DEPTHS:
+            bars_chart = aframexr.Chart(DATA, depth=d).mark_bar().encode(x='model', y='sales')
+            bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+
     def test_height(self):
         """Bars chart changing height creation."""
         for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:

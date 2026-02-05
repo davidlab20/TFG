@@ -24,11 +24,11 @@ def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> boo
             return False
     return True
 
-def _points_are_inside_chart_volume(point_chart: aframexr.Chart) -> bool:
+def _points_are_inside_chart_volume(point_chart: aframexr.Chart, depth: float = None) -> bool:
     """Verify that no point exceeds the volume dimensions of the chart."""
     soup = BeautifulSoup(point_chart.to_html(), 'lxml')
 
-    chart_depth = DEFAULT_CHART_DEPTH
+    chart_depth = DEFAULT_CHART_DEPTH if depth is None else depth
     chart_height = float(soup.select('a-entity[line]')[3]['line'].split(';')[1].split()[2])  # End of the y-axis line
     chart_width = float(soup.select('a-entity[line]')[2]['line'].split(';')[1].split()[1])  # End of the x-axis line
 
@@ -146,6 +146,15 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart.to_html()
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
+
+    def test_depth(self):
+        """Mark point changing depth creation."""
+        for d in ALL_MARK_DEPTHS:
+            print(d)
+            point_chart = aframexr.Chart(DATA, depth=d).mark_point().encode(x='model', y='sales')
+            point_chart.to_html()
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_points_are_inside_chart_volume(point_chart, depth=d))
 
     def test_height(self):
         """Mark point changing height creation."""

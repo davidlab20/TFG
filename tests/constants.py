@@ -54,6 +54,9 @@ ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100', 'doors
 # Concatenation OK
 CONCATENATION_POSITIONS = ('-5 2 -5', '5 2 -5')
 
+# Depths
+ALL_MARK_DEPTHS = (5, 10, 20)
+
 # ----- MARK ARC -----
 # Radius OK
 MARK_ARC_RADIUS = (0.5, 1, 1.5)

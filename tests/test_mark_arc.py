@@ -83,6 +83,14 @@ class TestMarkArcOK(unittest.TestCase):
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
             self.assertTrue(_slices_are_well_placed(pie_chart))
 
+    def test_depth(self):
+        """Pie chart changing depth creation."""
+        for d in ALL_MARK_DEPTHS:
+            pie_chart = aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales')
+            pie_chart.to_html()
+            self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
+            self.assertTrue(_slices_are_well_placed(pie_chart))
+
     def test_position(self):
         """Pie chart changing position creation."""
         for p in POSITIONS:
