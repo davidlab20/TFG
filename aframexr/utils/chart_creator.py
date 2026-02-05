@@ -121,14 +121,14 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
                     raw_data = aggregate_object.get_aggregated_data(raw_data, groupby)
 
     # Aggregate in encoding
-    encoding_channels = chart_specs['encoding']
-    aggregate_fields = [ch['field'] for ch in encoding_channels.values() if ch.get('aggregate')]
-    aggregate_ops = [ch['aggregate'] for ch in encoding_channels.values() if ch.get('aggregate')]
-    groupby_fields = [spec['field'] for spec in encoding_channels.values() if not spec.get('aggregate')]
+    encoding_channels_values = list(chart_specs['encoding'].values())
+    groupby_fields = [ch['field'] for ch in encoding_channels_values if not ch.get('aggregate')]
 
-    for ag in range(len(aggregate_fields)):
-        aggregate_object = AggregatedFieldDef(aggregate_ops[ag], aggregate_fields[ag])
-        raw_data = aggregate_object.get_aggregated_data(raw_data, groupby_fields)
+    for ch in encoding_channels_values:
+        aggregate_op = ch.get('aggregate')
+        if aggregate_op is not None:
+            aggregate_object = AggregatedFieldDef(aggregate_op, ch['field'])
+            raw_data = aggregate_object.get_aggregated_data(raw_data, groupby_fields)
 
     return raw_data
 
