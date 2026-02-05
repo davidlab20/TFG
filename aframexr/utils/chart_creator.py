@@ -478,8 +478,8 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         try:
             axis_size = getattr(self, self._AXIS_SIZE_MAP[axis_name])  # Get axis dimension depending on the axis name
             bars_size_alias = self._AXIS_BAR_SIZE_ALIAS_MAP[axis_name]  # Get alias of bar size Series depending on axis
-        except KeyError:
-            raise ValueError('Axis must be x or y or z.')
+        except KeyError:  # pragma: no cover (should never enter here, except code errors)
+            raise RuntimeError('Unreachable code. Axis must be x or y or z')
 
         if axis_data is None:
             coordinates = pl.repeat(
