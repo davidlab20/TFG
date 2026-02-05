@@ -469,7 +469,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         self._correct_axes_position(elem_size=self._bar_size_if_nominal_axis)
 
     def _set_bars_coords_size_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
-                              encoding_type: str) -> tuple[Series, Series]:
+                                      encoding_type: str) -> tuple[Series, Series]:
         """
         Returns a tuple of Series.
         The first contains the axis coordinates of each bar for the given axis.
