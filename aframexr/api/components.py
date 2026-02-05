@@ -464,12 +464,11 @@ class Chart(TopLevelMixin):
         >>> #filtered_chart.show()
         """
         # Validate the type of equation_filter and get a filter object from the equation_filter
+        AframeXRValidator.validate_type('equation_filter', equation_filter, (str, FilterTransform))
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_string(equation_filter)
-        elif isinstance(equation_filter, FilterTransform):
+        if isinstance(equation_filter, FilterTransform):
             filter_transform = equation_filter
-        else:
-            raise TypeError(f'Expected str | FilterTransform, got {type(equation_filter).__name__} instead.')
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         filt_chart = self.copy()
