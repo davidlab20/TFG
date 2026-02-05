@@ -47,7 +47,9 @@ ERROR_MESSAGES = {
     'NOT_3_AXES_POSITION_OR_ROTATION': 'The {pos_or_rot}: {pos_or_rot_value} is not correct. Must be "x y z"',
     'NOT_ALL_DATA_VALUES_ARE_DICT': 'Data field "values" must be a list of dictionaries',
     'NOT_ALL_ENCODINGS_ARE_DICT': 'Encoding channels must be dictionaries',
+    'PARAM_NOT_SPECIFIED_IN_MARK_ARC': 'Parameter "{param}" must be specified in arc chart',
     'POSITIVE_NUMBER': 'The "{param_name}" must be greater than 0.',
+    'LESS_THAN_2_XYZ_ENCODING': 'At least 2 of (x, y, z) must be specified when encoding "mark_bar" or "mark_point"',
     'TRANSFORM_TYPE': 'Invalid transform type: {transform_type}',
     'TYPE': 'Expected "{param_name}" to be {expected_type}, got {current_type} instead',
 }

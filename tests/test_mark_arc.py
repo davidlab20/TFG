@@ -254,8 +254,13 @@ class TestMarkArcError(unittest.TestCase):
         for e in NOT_VALID_MARK_ARC_ENCODINGS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc().encode(**e).to_html()
-            self.assertIn(str(error.exception), ['Parameter theta must be specified in arc chart.',
-                                            'Parameter color must be specified in arc chart.'])
+            self.assertIn(
+                str(error.exception),
+                [
+                    ERROR_MESSAGES['PARAM_NOT_SPECIFIED_IN_MARK_ARC'].format(param='color'),
+                    ERROR_MESSAGES['PARAM_NOT_SPECIFIED_IN_MARK_ARC'].format(param='theta')
+                ]
+            )
 
     def test_encoding_error_invalid_encoding_type(self):
         """Pie chart encoding error with invalid encoding type."""

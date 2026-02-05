@@ -61,10 +61,12 @@ def _validate_mark_encoding(mark: str | dict, encoding: dict) -> None:
 
     if mark_type in {'bar', 'point'} \
             and sum([encoding.get('x') is not None, encoding.get('y') is not None, encoding.get('z') is not None]) < 2:
-        raise ValueError('At least 2 of (x, y, z) must be specified.')
+        raise ValueError(ERROR_MESSAGES['LESS_THAN_2_XYZ_ENCODING'])
     if mark_type == 'arc' and (encoding.get('color') is None or encoding.get('theta') is None):
-        if encoding.get('theta') is None: raise ValueError('Parameter theta must be specified in arc chart.')
-        if encoding.get('color') is None: raise ValueError('Parameter color must be specified in arc chart.')
+        if encoding.get('color') is None:
+            raise ValueError(ERROR_MESSAGES['PARAM_NOT_SPECIFIED_IN_MARK_ARC'].format(param='color'))
+        if encoding.get('theta') is None:
+            raise ValueError(ERROR_MESSAGES['PARAM_NOT_SPECIFIED_IN_MARK_ARC'].format(param='theta'))
 
 
 def _validate_transform(transform: list[dict]) -> None:

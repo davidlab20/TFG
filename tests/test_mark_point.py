@@ -330,7 +330,7 @@ class TestMarkPointError(unittest.TestCase):
         for e in NOT_VALID_MARK_BAR_POINT_ENCODINGS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_point().encode(**e).to_html()
-            self.assertEqual(str(error.exception), 'At least 2 of (x, y, z) must be specified.')
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['LESS_THAN_2_XYZ_ENCODING'])
 
     def test_encoding_error_invalid_encoding_type(self):
         """Mark point encoding error with invalid encoding type."""
