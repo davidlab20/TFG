@@ -64,8 +64,8 @@ class ChartsHTMLCreator:
             html = ChartsHTMLCreator._create_chart_html(chart_specs)
         elif 'element' in chart_specs:
             html = ChartsHTMLCreator._create_element_html(chart_specs)
-        else:
-            raise Exception
+        else:  # pragma: no cover (should never enter here, as chart_specs should have previously been validated)
+            raise RuntimeError('Unreachable code: chart_specs should have been validated earlier')
 
         return html
 
