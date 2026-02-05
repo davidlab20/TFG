@@ -105,6 +105,8 @@ class TopLevelMixin:
         ------
         TypeError
             If specs is not a string.
+        json.JSONDecodeError
+            If specs is not valid JSON.
         """
         AframeXRValidator.validate_type(specs, str)
         chart = Chart()
