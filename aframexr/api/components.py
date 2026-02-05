@@ -467,7 +467,7 @@ class Chart(TopLevelMixin):
         AframeXRValidator.validate_type('equation_filter', equation_filter, (str, FilterTransform))
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_string(equation_filter)
-        if isinstance(equation_filter, FilterTransform):
+        else:  # FilterTransform object
             filter_transform = equation_filter
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
