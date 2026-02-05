@@ -199,14 +199,15 @@ class Chart(TopLevelMixin):
     """
     def _define_data(self, data: Data | URLData | DataFrame):
         """Defines the data field in the specifications."""
+        AframeXRValidator.validate_type('data', data, (Data, URLData, DataFrame))
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, URLData):
             self._specifications.update({'data': {'url': data.url}})
         elif pd is not None and isinstance(data, pd.DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
-        else:
-            raise TypeError(f'Expected Data | URLData | pd.DataFrame, got {type(data).__name__} instead.')
+        else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
+            raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
 
     def _define_position(self, position: str):
         """Defines the position field in the specifications."""
