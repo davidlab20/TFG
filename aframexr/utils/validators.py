@@ -123,6 +123,22 @@ class AframeXRValidator:
             raise ValueError(ERROR_MESSAGES['ENCODING_TYPE'].format(encoding_type=encoding_type))
 
     @staticmethod
+    def validate_3_axes_numerical_values(param_name: str, param_value: str) -> None:
+        """Raises TypeError or ValueError if parameter is not a string of 3 numerical values."""
+        AframeXRValidator.validate_type(param_name, param_value, str)
+
+        pos_axes = param_value.strip().split()
+        if len(pos_axes) != 3:
+            raise ValueError(ERROR_MESSAGES['NOT_3_AXES_POSITION_OR_ROTATION'].format(
+                pos_or_rot=param_name, pos_or_rot_value=param_value)
+            )
+        for axis in pos_axes:
+            try:
+                float(axis)
+            except ValueError:
+                raise ValueError(f'The {param_name} values must be numeric.')
+
+    @staticmethod
     def validate_positive_number(name: str, value: float | int):
         """Raises TypeError or ValueError if value is not greater than 0."""
         AframeXRValidator.validate_type(name, value, (float, int))

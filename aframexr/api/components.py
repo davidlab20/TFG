@@ -210,28 +210,14 @@ class Chart(TopLevelMixin):
 
     def _define_position(self, position: str):
         """Defines the position field in the specifications."""
-        pos_axes = position.strip().split()
-        if len(pos_axes) != 3:
-            raise ValueError(f'The position: {position} is not correct. Must be "x y z".')
-        for axis in pos_axes:
-            try:
-                float(axis)
-            except ValueError:
-                raise ValueError('The position values must be numeric.')
-        self._specifications.update({'position': f'{pos_axes[0]} {pos_axes[1]} {pos_axes[2]}'})
+        AframeXRValidator.validate_3_axes_numerical_values('position', position)
+        self._specifications.update({'position': position})
         return self
 
     def _define_rotation(self, rotation: str):
         """Defines the rotation field in the specifications."""
-        rot_axes = rotation.strip().split()
-        if len(rot_axes) != 3:
-            raise ValueError(f'The rotation: {rotation} is not correct. Must be "x y z".')
-        for axis in rot_axes:
-            try:
-                float(axis)
-            except ValueError:
-                raise ValueError('The rotation values must be numeric.')
-        self._specifications.update({'rotation': f'{rot_axes[0]} {rot_axes[1]} {rot_axes[2]}'})
+        AframeXRValidator.validate_3_axes_numerical_values('rotation', rotation)
+        self._specifications.update({'rotation': rotation})
         return self
 
     def __init__(self, data: Data | URLData | DataFrame = None, depth: float = None,
