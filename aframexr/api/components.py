@@ -141,7 +141,7 @@ class TopLevelMixin:
                 AframeXRValidator.validate_chart_specs(self._specifications)
                 json.dump(self._specifications, file, indent=4)
         else:
-            raise ValueError('Invalid file format.')
+            raise ValueError('Invalid file format')
 
     # Showing the scene
     def show(self):
