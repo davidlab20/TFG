@@ -27,7 +27,6 @@ from ..utils.validators import AframeXRValidator
 class TopLevelMixin:
     """Top level chart class."""
     def __init__(self, specs: dict):
-        if specs: AframeXRValidator.validate_chart_specs(specs)  # Validate specs if not initializing empty dict
         self._specifications = specs
 
     def _repr_html_(self):
