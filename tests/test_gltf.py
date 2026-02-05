@@ -77,3 +77,19 @@ class TestMarkGLTFOK(unittest.TestCase):
             concatenated_chart += aframexr.GLTF(URL, position=pos)
 
         concatenated_chart.to_html()
+
+    def test_save(self):
+        """GLTF saving."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_html_file_path = Path(tmpdir) / "test.html"
+            temp_json_file_path = Path(tmpdir) / "test.json"
+
+            gltf = aframexr.GLTF(URL)
+            gltf.save(str(temp_html_file_path))
+            gltf.save(str(temp_json_file_path))
+
+            assert temp_html_file_path.exists()
+            assert temp_json_file_path.exists()

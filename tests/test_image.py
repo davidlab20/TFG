@@ -81,3 +81,19 @@ class TestMarkImageOK(unittest.TestCase):
             concatenated_chart += aframexr.Image(URL, position=pos)
 
         concatenated_chart.to_html()
+
+    def test_save(self):
+        """Image saving."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_html_file_path = Path(tmpdir) / "test.html"
+            temp_json_file_path = Path(tmpdir) / "test.json"
+
+            image = aframexr.Image(URL)
+            image.save(str(temp_html_file_path))
+            image.save(str(temp_json_file_path))
+
+            assert temp_html_file_path.exists()
+            assert temp_json_file_path.exists()

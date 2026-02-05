@@ -229,6 +229,22 @@ class TestMarkPointOK(unittest.TestCase):
         concatenated_chart.to_html()
         self.assertTrue(_points_are_inside_chart_volume(concatenated_chart))
 
+    def test_save(self):
+        """Mark point saving."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_html_file_path = Path(tmpdir) / "test.html"
+            temp_json_file_path = Path(tmpdir) / "test.json"
+
+            point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
+            point_chart.save(str(temp_html_file_path))
+            point_chart.save(str(temp_json_file_path))
+
+            assert temp_html_file_path.exists()
+            assert temp_json_file_path.exists()
+
 
 class TestMarkPointError(unittest.TestCase):
     """Mark point error tests."""

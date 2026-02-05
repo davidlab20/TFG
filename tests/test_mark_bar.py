@@ -218,6 +218,21 @@ class TestMarkBarOK(unittest.TestCase):
         self.assertTrue(_bars_bases_are_on_x_axis(concatenated_chart))
         self.assertTrue(_bars_height_does_not_exceed_max_height(concatenated_chart))
 
+    def test_save(self):
+        """Bars chart saving."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_html_file_path = Path(tmpdir) / "test.html"
+            temp_json_file_path = Path(tmpdir) / "test.json"
+
+            bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+            bars_chart.save(str(temp_html_file_path))
+            bars_chart.save(str(temp_json_file_path))
+
+            assert temp_html_file_path.exists()
+
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""

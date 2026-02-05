@@ -166,6 +166,22 @@ class TestMarkArcOK(unittest.TestCase):
         concatenated_chart.to_html()
         self.assertTrue(_slices_are_well_placed(concatenated_chart))
 
+    def test_save(self):
+        """Pie chart saving."""
+        import tempfile
+        from pathlib import Path
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            temp_html_file_path = Path(tmpdir) / "test.html"
+            temp_json_file_path = Path(tmpdir) / "test.json"
+
+            pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+            pie_chart.save(str(temp_html_file_path))
+            pie_chart.save(str(temp_json_file_path))
+
+            assert temp_html_file_path.exists()
+            assert temp_json_file_path.exists()
+
 
 class TestMarkArcError(unittest.TestCase):
     """Pie chart error tests."""
