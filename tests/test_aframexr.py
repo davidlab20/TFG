@@ -63,3 +63,10 @@ class TestAframexrError(unittest.TestCase):
             bad_chart_type = 'bad_mark'
             aframexr.Chart.from_dict({'data': {'url': ''}, 'mark': bad_chart_type, 'encoding': ''}).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['MARK_TYPE'].format(mark_type=bad_chart_type))
+
+    def test_save_invalid_type_format(self):
+        """Verify that the error is raised when the save type is invalid."""
+        with self.assertRaises(ValueError) as error:
+            bad_file_format = 'good_file.bad_format'
+            aframexr.Chart().save(bad_file_format)
+        self.assertEqual(str(error.exception), 'Invalid file format')
