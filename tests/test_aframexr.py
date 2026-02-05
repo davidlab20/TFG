@@ -48,7 +48,7 @@ class TestAframexrError(unittest.TestCase):
     def test_invalid_chart_specifications_not_data_having_mark(self):
         """Verify that the error is raised when chart specifications do not have field "data" having mark type."""
         with self.assertRaises(ValueError) as error:
-            aframexr.Chart.from_dict({'mark': ''}).to_html()
+            aframexr.Chart.from_dict({'mark': ''}).show()  # Using show() to cover this method
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_NOT_IN_SPECS'])
 
     def test_invalid_chart_specifications_not_mark_element(self):
