@@ -9,70 +9,78 @@
     <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.6.4/docs/scripts/main.min.js"></script>
 </head>
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
-        <a-entity id="user">
-    
-            <!-- Camera -->
-            <a-camera id="camera" position="0 2 0" active="true" wasd-controls="acceleration: 35"></a-camera>
-    
-            <!-- VR controllers -->
-            <a-entity id="right-hand" laser-controls="hand: right"
-                raycaster="objects: [data-raycastable]"
-                line="color: yellow; opacity: 0.8">
-            </a-entity>
-    
-            <a-entity id="left-hand" laser-controls="hand: left"
-                teleport-controls="cameraRig: #user; teleportOrigin: #camera; type: parabolic; maxLength: 10;
-                    collisionEntities: .navmesh; startEvents: thumbstickdown; endEvents: thumbstickup;">
-            </a-entity>
+<a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
+
+    <!-- Rig que se moverá al teletransportar -->
+    <a-entity id="cameraRig" position="0 0 0">
+
+        <!-- Cámara -->
+        <a-camera id="camera" position="0 1.6 0" wasd-controls="acceleration: 35"></a-camera>
+
+        <!-- Mano derecha: láser para interacción -->
+        <a-entity id="right-hand" laser-controls="hand: right"
+                  raycaster="objects: [data-raycastable]"
+                  line="color: yellow; opacity: 0.8">
         </a-entity>
-    
-        <!-- HUD -->
-        <a-entity id="HUD" position="0 0 0" visible="false">
-            <a-plane height="1" width="2.5" shader="flat" color="grey"></a-plane>
-            <a-text id="HUD-text" value="" align="center"></a-text>
+
+        <!-- Mano izquierda: teletransporte -->
+        <a-entity id="left-hand" laser-controls="hand: left"
+                  teleport-controls="cameraRig: #cameraRig; teleportOrigin: #camera; type: parabolic;
+                                     maxLength: 10; collisionEntities: .navmesh;
+                                     startEvents: thumbstickdown; endEvents: thumbstickup">
         </a-entity>
-        
-        <!-- Teleport ground -->
-        <a-plane class="navmesh" width="50" height="50" rotation="-90 0 0" color="#7BC8A4"></a-plane>
 
-        <!-- Environment -->
-        <a-entity environment="preset: default"></a-entity>
+    </a-entity>
 
-        <!-- Elements -->
-        <a-entity position="-2.5 0.0 -3.0" rotation="0.0 0.0 0.0">
-			<a-sphere color="blue" info="leon : 10" position="0.5 2.0 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="ibiza : 15" position="0.9444 2.75 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="cordoba : 3" position="1.3889 0.95 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="toledo : 18" position="1.8333 3.2 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="altea : 4" position="2.2778 1.1 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="arosa : 12" position="2.7222 2.3 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="alhambra : 5" position="3.1667 1.25 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="600 : 20" position="3.6111 3.5 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="127 : 2" position="4.0556 0.8 -1.0" radius="0.5" data-raycastable></a-sphere>
-			<a-sphere color="blue" info="panda : 13" position="4.5 2.45 -1.0" radius="0.5" data-raycastable></a-sphere>
+    <!-- HUD -->
+    <a-entity id="HUD" position="0 0 0" visible="false">
+        <a-plane height="1" width="2.5" shader="flat" color="grey"></a-plane>
+        <a-text id="HUD-text" value="" align="center"></a-text>
+    </a-entity>
 
-			<!-- X-axis -->
-			<a-entity line="start: 0 0 0; end: 5.0 0 0; color: black"></a-entity>
-			<a-text position="0.5 0.01 0.5" rotation="-90 0 -90" value="leon" align="left"></a-text>
-			<a-text position="0.9444 0.01 0.5" rotation="-90 0 -90" value="ibiza" align="left"></a-text>
-			<a-text position="1.3889 0.01 0.5" rotation="-90 0 -90" value="cordoba" align="left"></a-text>
-			<a-text position="1.8333 0.01 0.5" rotation="-90 0 -90" value="toledo" align="left"></a-text>
-			<a-text position="2.2778 0.01 0.5" rotation="-90 0 -90" value="altea" align="left"></a-text>
-			<a-text position="2.7222 0.01 0.5" rotation="-90 0 -90" value="arosa" align="left"></a-text>
-			<a-text position="3.1667 0.01 0.5" rotation="-90 0 -90" value="alhambra" align="left"></a-text>
-			<a-text position="3.6111 0.01 0.5" rotation="-90 0 -90" value="600" align="left"></a-text>
-			<a-text position="4.0556 0.01 0.5" rotation="-90 0 -90" value="127" align="left"></a-text>
-			<a-text position="4.5 0.01 0.5" rotation="-90 0 -90" value="panda" align="left"></a-text>
+    <!-- Suelo de teletransporte -->
+    <a-plane class="navmesh" width="50" height="50" rotation="-90 0 0" color="#7BC8A4"></a-plane>
 
-			<!-- Y-axis -->
-			<a-entity line="start: 0 0 0; end: 0 4 0; color: black"></a-entity>
-			<a-text position="-0.5 0.25 0" rotation="0 0 0" value="0.0" align="right"></a-text>
-			<a-text position="-0.5 1.1875 0" rotation="0 0 0" value="5.0" align="right"></a-text>
-			<a-text position="-0.5 2.125 0" rotation="0 0 0" value="10.0" align="right"></a-text>
-			<a-text position="-0.5 3.0625 0" rotation="0 0 0" value="15.0" align="right"></a-text>
-			<a-text position="-0.5 4.0 0" rotation="0 0 0" value="20.0" align="right"></a-text>
-		</a-entity>
-    </a-scene>
+    <!-- Entorno -->
+    <a-entity environment="preset: default"></a-entity>
+
+    <!-- Elementos y ejes -->
+    <a-entity position="-2.5 0.0 -3.0">
+
+        <!-- Esferas -->
+        <a-sphere color="blue" info="leon : 10" position="0.5 2.0 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="ibiza : 15" position="0.9444 2.75 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="cordoba : 3" position="1.3889 0.95 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="toledo : 18" position="1.8333 3.2 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="altea : 4" position="2.2778 1.1 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="arosa : 12" position="2.7222 2.3 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="alhambra : 5" position="3.1667 1.25 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="600 : 20" position="3.6111 3.5 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="127 : 2" position="4.0556 0.8 -1.0" radius="0.5" data-raycastable></a-sphere>
+        <a-sphere color="blue" info="panda : 13" position="4.5 2.45 -1.0" radius="0.5" data-raycastable></a-sphere>
+
+        <!-- Ejes -->
+        <a-entity line="start: 0 0 0; end: 5.0 0 0; color: black"></a-entity>
+        <a-text position="0.5 0.01 0.5" rotation="-90 0 -90" value="leon" align="left"></a-text>
+        <a-text position="0.9444 0.01 0.5" rotation="-90 0 -90" value="ibiza" align="left"></a-text>
+        <a-text position="1.3889 0.01 0.5" rotation="-90 0 -90" value="cordoba" align="left"></a-text>
+        <a-text position="1.8333 0.01 0.5" rotation="-90 0 -90" value="toledo" align="left"></a-text>
+        <a-text position="2.2778 0.01 0.5" rotation="-90 0 -90" value="altea" align="left"></a-text>
+        <a-text position="2.7222 0.01 0.5" rotation="-90 0 -90" value="arosa" align="left"></a-text>
+        <a-text position="3.1667 0.01 0.5" rotation="-90 0 -90" value="alhambra" align="left"></a-text>
+        <a-text position="3.6111 0.01 0.5" rotation="-90 0 -90" value="600" align="left"></a-text>
+        <a-text position="4.0556 0.01 0.5" rotation="-90 0 -90" value="127" align="left"></a-text>
+        <a-text position="4.5 0.01 0.5" rotation="-90 0 -90" value="panda" align="left"></a-text>
+
+        <a-entity line="start: 0 0 0; end: 0 4 0; color: black"></a-entity>
+        <a-text position="-0.5 0.25 0" value="0.0" align="right"></a-text>
+        <a-text position="-0.5 1.1875 0" value="5.0" align="right"></a-text>
+        <a-text position="-0.5 2.125 0" value="10.0" align="right"></a-text>
+        <a-text position="-0.5 3.0625 0" value="15.0" align="right"></a-text>
+        <a-text position="-0.5 4.0 0" value="20.0" align="right"></a-text>
+
+    </a-entity>
+
+</a-scene>
 </body>
 </html>
