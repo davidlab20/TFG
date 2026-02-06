@@ -42,6 +42,7 @@ ERROR_MESSAGES = {
     'ELEMENT_TYPE': 'Invalid element type: {element}',
     'ENCODING_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "encoding"',
     'ENCODING_TYPE': 'Invalid encoding type: {encoding_type}',
+    'MARK_AND_ELEMENT_IN_SPECS': 'Specifications cannot contain both "mark" and "element"; they are mutually exclusive',
     'MARK_AND_ELEMENT_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "mark" or "element"',
     'MARK_TYPE': 'Invalid mark type: {mark_type}',
     'NOT_3_AXES_POSITION_OR_ROTATION': 'The {pos_or_rot}: {pos_or_rot_value} is not correct. Must be "x y z"',

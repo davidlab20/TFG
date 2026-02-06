@@ -127,7 +127,10 @@ class AframeXRValidator:
                 AframeXRValidator.validate_chart_specs(chart_specs)  # Validate each chart specification
             return
 
-        if 'mark' in specs:  # Chart
+        if 'mark' in specs and 'element' in specs:
+            raise ValueError(ERROR_MESSAGES['MARK_AND_ELEMENT_IN_SPECS'])
+
+        elif 'mark' in specs:  # Chart
             if 'data' not in specs:
                 raise ValueError(ERROR_MESSAGES['DATA_NOT_IN_SPECS'])
             _validate_data(specs['data'])
