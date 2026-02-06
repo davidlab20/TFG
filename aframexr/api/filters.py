@@ -19,10 +19,6 @@ class FilterTransform:
         """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
         return {'filter': f'datum.{self.field} {self.operator} {self.value}'}
 
-    def equation_to_string(self):
-        """Returns a string representation about the equation of the filter."""
-        return f'{self.field} {self.operator} {self.value}'
-
     # Creating filters
     @staticmethod
     def from_string(equation: str):
