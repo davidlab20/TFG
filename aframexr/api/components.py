@@ -216,18 +216,9 @@ class Chart(TopLevelMixin):
         if data is not None: self._define_data(data)
         if position is not None: self._specifications.update({'position': position})
         if rotation is not None: self._specifications.update({'rotation': rotation})
-
-        if depth is not None:
-            AframeXRValidator.validate_positive_number('depth', depth)
-            self._specifications.update({'depth': depth})
-
-        if height is not None:
-            AframeXRValidator.validate_positive_number('height', height)
-            self._specifications.update({'height': height})
-
-        if width is not None:
-            AframeXRValidator.validate_positive_number('width', width)
-            self._specifications.update({'width': width})
+        if depth is not None: self._specifications.update({'depth': depth})
+        if height is not None: self._specifications.update({'height': height})
+        if width is not None: self._specifications.update({'width': width})
 
     # Types of charts
     def mark_arc(self, radius: float = None):

@@ -153,6 +153,15 @@ class AframeXRValidator:
             AframeXRValidator.validate_type('specs.rotation', specs['rotation'], str)
             _validate_3_axes_numerical_values('rotation', specs['rotation'])
 
+        if 'depth' in specs:
+            AframeXRValidator.validate_positive_number('depth', specs['depth'])
+
+        if 'height' in specs:
+            AframeXRValidator.validate_positive_number('height', specs['height'])
+
+        if 'width' in specs:
+            AframeXRValidator.validate_positive_number('width', specs['width'])
+
         if 'transform' in specs:
             _validate_transform(specs['transform'])
 

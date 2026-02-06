@@ -260,7 +260,7 @@ class TestMarkArcError(unittest.TestCase):
         """Pie chart error when depth is incorrect."""
         for d in NOT_GREATER_THAN_0_DEPTHS:
             with self.assertRaises(ValueError) as error:
-                aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales')
+                aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales').to_html()
             self.assertEqual(
                 str(error.exception),
                 ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='depth')
