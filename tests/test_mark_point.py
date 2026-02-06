@@ -203,6 +203,16 @@ class TestMarkPointOK(unittest.TestCase):
                 self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
                 self.assertTrue(_points_are_inside_chart_volume(point_chart))
 
+    def test_several_filters(self):
+        """Mark point with several filters' creation."""
+        point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
+                       .transform_filter(FILTER_EQUATIONS[0]))
+        for eq in FILTER_EQUATIONS[1:]:
+            point_chart.transform_filter(eq).to_html()
+
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+        self.assertTrue(_points_are_inside_chart_volume(point_chart))
+
     def test_aggregate(self):
         """Mark point changing aggregate creation."""
         for a in AGGREGATES:
