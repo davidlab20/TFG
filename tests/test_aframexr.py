@@ -19,6 +19,13 @@ class TestAframexrError(unittest.TestCase):
             )
         )
 
+    def test_data_has_values_and_url(self):
+        """Verify that the error is raised when having fields "values" and "url" in data."""
+        with self.assertRaises(ValueError) as error:
+            bad_data_specifications = {'data': {'url': '', 'values': ''}, 'mark': 'bar', 'encoding': {}}
+            aframexr.Chart.from_dict(bad_data_specifications).to_html()
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_VALUES_AND_URL_IN_SPECS'])
+
     def test_data_has_not_field_data_url(self):
         """Verify that the error is raised when data has not field "data" or "url"."""
         with self.assertRaises(ValueError) as error:
