@@ -90,6 +90,13 @@ class TestAframexrError(unittest.TestCase):
             aframexr.Chart.from_dict({'data': {'url': ''}, 'mark': bad_chart_type, 'encoding': ''}).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['MARK_TYPE'].format(mark_type=bad_chart_type))
 
+    def test_invalid_element_type(self):
+        """Verify that the error is raised when the element type is invalid."""
+        with self.assertRaises(ValueError) as error:
+            bad_element_type = 'bad_element_type'
+            aframexr.Chart.from_dict({'element': bad_element_type}).to_html()
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ELEMENT_TYPE'].format(element=bad_element_type))
+
     def test_save_invalid_type_format(self):
         """Verify that the error is raised when the save type is invalid."""
         with self.assertRaises(ValueError) as error:
