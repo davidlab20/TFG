@@ -21,10 +21,9 @@
                 line="color: yellow; opacity: 0.8">
             </a-entity>
     
-            <a-entity id="left-hand" laser-controls="hand: left"
-                line="color: yellow; opacity: 0.8"
-                teleport-controls="cameraRig: #user; teleportOrigin: #camera;
-                    startEvents: thumbstickdown; endEvents: thumbstickup;">
+            <a-entity id="left-hand" hand-controls="left"
+                teleport-controls="cameraRig: #user; teleportOrigin: #camera; type: parabolic;
+                    collisionEntities: .navmesh; startEvents: thumbstickdown; endEvents: thumbstickup;">
             </a-entity>
         </a-entity>
     
