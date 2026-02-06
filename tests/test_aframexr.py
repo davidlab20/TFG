@@ -45,6 +45,12 @@ class TestAframexrError(unittest.TestCase):
             )
         )
 
+    def test_mark_and_element_in_specs(self):
+        """Verify that the error is raised when both "mark" and "element" are in chart specifications."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart.from_dict({'mark': '', 'element': ''}).to_html()
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['MARK_AND_ELEMENT_IN_SPECS'])
+
     def test_NULL_series(self):
         """Verify that the error is raised when having NULL series."""
         with self.assertRaises(ValueError) as error:
