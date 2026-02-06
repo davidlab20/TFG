@@ -21,13 +21,13 @@
             <a-entity id="right-hand" laser-controls="hand: right"
                 raycaster="objects: [data-raycastable]"
                 line="color: yellow; opacity: 0.8"
-                teleport-controls="cameraRig: #cameraRig; teleportOrigin: #camera; button: trigger; collisionEntities: #ground">
+                teleport-controls="cameraRig: #cameraRig; teleportOrigin: #camera; button: trigger; collisionEntities: .teleportable">
             </a-entity>
     
             <a-entity id="left-hand" laser-controls="hand: left"
                 raycaster="objects: [data-raycastable]"
                 line="color: yellow; opacity: 0.8"
-                teleport-controls="cameraRig: #cameraRig; teleportOrigin: #camera; button: trigger; collisionEntities: #ground">
+                teleport-controls="cameraRig: #cameraRig; teleportOrigin: #camera; button: trigger; collisionEntities: .teleportable">
             </a-entity>
         </a-entity>
     
@@ -38,7 +38,7 @@
         </a-entity>
         
         <!-- Teleport ground -->
-        <a-plane id="ground" rotation="-90 0 0" width="20" height="20" visible="false"></a-plane>
+        <a-plane id="ground" rotation="-90 0 0" width="20" height="20" color="#7BC8A4" opacity="0.5" class="teleportable"></a-plane>
 
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
