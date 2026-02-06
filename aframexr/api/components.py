@@ -397,9 +397,6 @@ class Chart(TopLevelMixin):
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         aggreg_chart = self.copy()
 
-        if len(kwargs) == 0:  # At least one aggregation needs to be defined in kwargs
-            raise TypeError('transform_aggregate() missing required aggregate fields.')
-
         aggregates_to_dict = []
         for as_field, aggregate_formula in kwargs.items():
             field, aggregate_op = AggregatedFieldDef.split_operator_field(str(aggregate_formula))
