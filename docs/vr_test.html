@@ -21,8 +21,8 @@
                 line="color: yellow; opacity: 0.8">
             </a-entity>
     
-            <a-entity id="left-hand" hand-controls="left"
-                teleport-controls="cameraRig: #user; teleportOrigin: #camera; type: parabolic;
+            <a-entity id="left-hand" laser-controls="hand: left"
+                teleport-controls="cameraRig: #user; teleportOrigin: #camera; type: parabolic; maxLength: 10;
                     collisionEntities: .navmesh; startEvents: thumbstickdown; endEvents: thumbstickup;">
             </a-entity>
         </a-entity>
@@ -34,7 +34,7 @@
         </a-entity>
         
         <!-- Teleport ground -->
-        <a-plane class="navmesh" width="50" height="50" rotation="-90 0 0" visible="false"></a-plane>
+        <a-plane class="navmesh" width="50" height="50" rotation="-90 0 0" color="#7BC8A4"></a-plane>
 
         <!-- Environment -->
         <a-entity environment="preset: default"></a-entity>
