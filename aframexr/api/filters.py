@@ -12,7 +12,7 @@ class FilterTransform:
         self.field = field
         self.operator = operator
         self.value = value
-        self._magic_method: str = ''  # Will be filled by child classes with its method (e.g. __eq__)
+        self._magic_method: str = ''  # Must be defined by child classes with its method (e.g. __eq__)
 
     # Exporting equation formats
     def equation_to_dict(self):
@@ -54,8 +54,8 @@ class FilterTransform:
     # Filter data
     def get_filtered_data(self, data: DataFrame) -> DataFrame:
         """Filters and returns the data."""
-        if not self._magic_method:  # Should never enter here
-            raise RuntimeError('Magic method was not defined.')
+        if not self._magic_method:  # pragma: no cover
+            raise RuntimeError(f'Unreachable code. Magic method was not defined in {self.__class__.__name__} class')
 
         try:
             condition = getattr(pl.col(self.field), self._magic_method)(self.value)
