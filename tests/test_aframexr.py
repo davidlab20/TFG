@@ -8,8 +8,8 @@ class TestAframexrError(unittest.TestCase):
     """General ERROR tests."""
     def test_from_dict_error_validate_type(self):
         """Verify that the error is raised when using from_dict with no dictionary."""
+        invalid_specs = 'not_a_dict'
         with self.assertRaises(TypeError) as error:
-            invalid_specs = 'not_a_dict'
             # noinspection PyTypeChecker
             aframexr.Chart.from_dict(specs=invalid_specs)
         self.assertEqual(
@@ -21,22 +21,22 @@ class TestAframexrError(unittest.TestCase):
 
     def test_data_has_values_and_url(self):
         """Verify that the error is raised when having fields "values" and "url" in data."""
+        bad_data_specifications = {'data': {'url': '', 'values': ''}, 'mark': 'bar', 'encoding': {}}
         with self.assertRaises(ValueError) as error:
-            bad_data_specifications = {'data': {'url': '', 'values': ''}, 'mark': 'bar', 'encoding': {}}
             aframexr.Chart.from_dict(bad_data_specifications).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_VALUES_AND_URL_IN_SPECS'])
 
     def test_data_has_not_field_data_url(self):
         """Verify that the error is raised when data has not field "data" or "url"."""
+        bad_data_specifications = {'data': {}, 'mark': 'bar', 'encoding': {}}  # Same occurs with other marks
         with self.assertRaises(ValueError) as error:
-            bad_data_specifications = {"data": {}, "mark": "bar", "encoding": {}}  # Same occurs with other marks
             aframexr.Chart.from_dict(bad_data_specifications).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS'])
 
     def test_data_of_invalid_type(self):
         """Verify that the error is raised when data has invalid type."""
+        err_data = 'invalid data type'
         with self.assertRaises(TypeError) as error:
-            err_data = 'invalid data type'
             aframexr.Chart(err_data)
         self.assertEqual(
             str(error.exception),
@@ -53,12 +53,8 @@ class TestAframexrError(unittest.TestCase):
 
     def test_NULL_series(self):
         """Verify that the error is raised when having NULL series."""
+        data = [{"id": 1, "value": None}, {"id": 2, "value": None}, {"id": 3, "value": None}]
         with self.assertRaises(ValueError) as error:
-            data = [
-                {"id": 1, "value": None},
-                {"id": 2, "value": None},
-                {"id": 3, "value": None}
-            ]
             aframexr.Chart(aframexr.Data(data)).mark_bar().encode(x='id', y='value').to_html()
         self.assertEqual(str(error.exception), 'Unknown dtype: Null.')
 
@@ -71,9 +67,9 @@ class TestAframexrError(unittest.TestCase):
 
     def test_add_error_not_isinstance_TopLevelMixin(self):
         """Verify that the error is raised when adding one chart to other thing."""
+        one = aframexr.Chart(aframexr.URLData(''))
+        other = 2
         with self.assertRaises(TypeError) as error:
-            one = aframexr.Chart(aframexr.URLData(''))
-            other = 2
             one + other
         self.assertEqual(str(error.exception), f"Cannot add {type(other).__name__} to {type(one).__name__}.")
 
@@ -91,21 +87,21 @@ class TestAframexrError(unittest.TestCase):
 
     def test_invalid_chart_type(self):
         """Verify that the error is raised when the chart type is invalid."""
+        bad_chart_type = 'bad_mark'
         with self.assertRaises(ValueError) as error:
-            bad_chart_type = 'bad_mark'
             aframexr.Chart.from_dict({'data': {'url': ''}, 'mark': bad_chart_type, 'encoding': ''}).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['MARK_TYPE'].format(mark_type=bad_chart_type))
 
     def test_invalid_element_type(self):
         """Verify that the error is raised when the element type is invalid."""
+        bad_element_type = 'bad_element_type'
         with self.assertRaises(ValueError) as error:
-            bad_element_type = 'bad_element_type'
             aframexr.Chart.from_dict({'element': bad_element_type}).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['ELEMENT_TYPE'].format(element=bad_element_type))
 
     def test_save_invalid_type_format(self):
         """Verify that the error is raised when the save type is invalid."""
+        bad_file_format = 'good_file.bad_format'
         with self.assertRaises(ValueError) as error:
-            bad_file_format = 'good_file.bad_format'
             aframexr.Chart().save(bad_file_format)
         self.assertEqual(str(error.exception), 'Invalid file format')
