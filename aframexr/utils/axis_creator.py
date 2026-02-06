@@ -135,7 +135,7 @@ class AxisCreator:
             axis_specs['labels_rotation'] = _Z_AXIS_LABELS_ROTATION
             axis_specs['labels_align'] = 'right'
         else:  # pragma: no cover (this method is only called by inner code methods; should be OK)
-            raise RuntimeError('Unreachable code. Axis must be x or y or z.')
+            raise RuntimeError('Unreachable code. Axis must be x or y or z')
 
         axis_specs['labels_values'] = labels_values.to_list()
         return axis_specs
