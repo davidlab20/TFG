@@ -24,7 +24,7 @@ class TestAframexrError(unittest.TestCase):
         with self.assertRaises(ValueError) as error:
             bad_data_specifications = {"data": {}, "mark": "bar", "encoding": {}}  # Same occurs with other marks
             aframexr.Chart.from_dict(bad_data_specifications).to_html()
-        self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_AND_URL_NOT_IN_SPECS'])
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS'])
 
     def test_data_of_invalid_type(self):
         """Verify that the error is raised when data has invalid type."""

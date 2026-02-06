@@ -25,7 +25,7 @@ def _validate_data(data: dict) -> None:
     """Raises TypeError or ValueError if data is invalid."""
     AframeXRValidator.validate_type('specs.data', data, dict)
     if 'values' in data and 'url' in data:
-        raise ValueError(ERROR_MESSAGES['DATA_AND_URL_IN_SPECS'])
+        raise ValueError(ERROR_MESSAGES['DATA_WITH_VALUES_AND_URL_IN_SPECS'])
 
     if 'values' in data:
         values = data['values']
@@ -37,7 +37,7 @@ def _validate_data(data: dict) -> None:
         AframeXRValidator.validate_type('specs.data.url', data['url'], str)
 
     else:
-        raise ValueError(ERROR_MESSAGES['DATA_AND_URL_NOT_IN_SPECS'])
+        raise ValueError(ERROR_MESSAGES['DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS'])
 
 
 def _validate_element(element: str) -> None:

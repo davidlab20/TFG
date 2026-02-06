@@ -36,8 +36,8 @@ DEFAULT_POINT_RADIUS = 0.5  # Default point radius
 ERROR_MESSAGES = {
     'AGGREGATE_OPERATION': 'Invalid aggregate operation: {operation}',
     'AGGREGATE_OPERATION_NOT_IN_AGGREGATE': 'Aggregate must contain key "op"',
-    'DATA_AND_URL_IN_SPECS': 'Data cannot contain both "values" and "url"; they are mutually exclusive',
-    'DATA_AND_URL_NOT_IN_SPECS': 'Data must contain key "values" or "url"',
+    'DATA_WITH_VALUES_AND_URL_IN_SPECS': 'Data cannot contain both "values" and "url"; they are mutually exclusive',
+    'DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS': 'Data must contain key "values" or "url"',
     'DATA_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "data"',
     'ELEMENT_TYPE': 'Invalid element type: {element}',
     'ENCODING_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "encoding"',
