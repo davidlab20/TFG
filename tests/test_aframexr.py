@@ -49,6 +49,13 @@ class TestAframexrError(unittest.TestCase):
             aframexr.Chart(aframexr.Data(data)).mark_bar().encode(x='id', y='value').to_html()
         self.assertEqual(str(error.exception), 'Unknown dtype: Null.')
 
+    def test_there_is_no_filter_for_equation(self):
+        """Verify that the error is raised when there is no filter for given equation."""
+        invalid_equation = 'invalid_equation'
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart().transform_filter(invalid_equation)
+        self.assertEqual(str(error.exception), f'There is no filter for equation: {invalid_equation}')
+
     def test_add_error_not_isinstance_TopLevelMixin(self):
         """Verify that the error is raised when adding one chart to other thing."""
         with self.assertRaises(TypeError) as error:
