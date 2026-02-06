@@ -116,7 +116,7 @@ class AxisCreator:
             coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
             labels_values = axis_data.unique(maintain_order=True)
         else:  # pragma: no cover (Encoding type must have been checked before)
-            raise RuntimeError(f'Unreachable code: Check encoding type: {axis_encoding}')
+            raise RuntimeError(f'Unreachable code. Check encoding type: {axis_encoding}')
 
         axis_specs['start'] = f'{x_offset} {y_offset} {z_offset}'
         if axis == 'x':
@@ -134,8 +134,8 @@ class AxisCreator:
             axis_specs['labels_pos'] = (f'{LABELS_X_DELTA} {LABELS_Y_DELTA} ' + coords.cast(pl.String)).to_list()
             axis_specs['labels_rotation'] = _Z_AXIS_LABELS_ROTATION
             axis_specs['labels_align'] = 'right'
-        else:
-            raise ValueError('Axis must be x or y or z.')
+        else:  # pragma: no cover (this method is only called by inner code methods; should be OK)
+            raise RuntimeError('Unreachable code. Axis must be x or y or z.')
 
         axis_specs['labels_values'] = labels_values.to_list()
         return axis_specs
