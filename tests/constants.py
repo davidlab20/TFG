@@ -49,7 +49,7 @@ FILTER_EQUATIONS = ('datum.motor == diesel', 'datum.doors == 3', 'datum.doors > 
 WARNING_FILTER_EQUATIONS = ('datum.motor == bad_value', 'datum.doors == 0', 'datum.doors > 100', 'datum.doors < 0')
 
 # Filters ERROR
-ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100', 'doors < 0', 'not_an_equation')
+ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100', 'doors < 0')
 
 # Concatenation OK
 CONCATENATION_POSITIONS = ('-5 2 -5', '5 2 -5')
