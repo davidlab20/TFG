@@ -115,8 +115,8 @@ class AxisCreator:
         elif axis_encoding == 'nominal':
             coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
             labels_values = axis_data.unique(maintain_order=True)
-        else:
-            raise ValueError(f'Invalid encoding type: {axis_encoding}.')
+        else:  # pragma: no cover (Encoding type must have been checked before)
+            raise RuntimeError(f'Unreachable code: Check encoding type: {axis_encoding}')
 
         axis_specs['start'] = f'{x_offset} {y_offset} {z_offset}'
         if axis == 'x':
