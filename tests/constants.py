@@ -44,6 +44,7 @@ NOT_NUMERIC_POSITIONS_ROTATIONS = ('1 1 a', '1 a 1', '1 a a', 'a 1 1', 'a 1 a', 
 
 # Filters OK
 FILTER_EQUATIONS = ('datum.motor == diesel', 'datum.doors == 3', 'datum.doors > 4', 'datum.doors < 4')
+SEVERAL_FILTER_EQUATIONS = ('datum.motor == electric', 'datum.color == red', 'datum.sales > 10')
 
 # Filters WARNING
 WARNING_FILTER_EQUATIONS = ('datum.motor == bad_value', 'datum.doors == 0', 'datum.doors > 100', 'datum.doors < 0')

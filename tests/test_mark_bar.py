@@ -192,8 +192,9 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_several_filters(self):
         """Bars chart with several filters' creation."""
-        bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(FILTER_EQUATIONS[0])
-        for eq in FILTER_EQUATIONS[1:]:
+        bars_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+                      .transform_filter(SEVERAL_FILTER_EQUATIONS[0]))
+        for eq in SEVERAL_FILTER_EQUATIONS[1:]:
             bars_chart.transform_filter(eq).to_html()
 
         self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))

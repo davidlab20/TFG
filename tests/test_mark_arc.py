@@ -143,8 +143,8 @@ class TestMarkArcOK(unittest.TestCase):
     def test_several_filters(self):
         """Pie chart with several filters' creation."""
         pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
-                     .transform_filter(FILTER_EQUATIONS[0]))
-        for eq in FILTER_EQUATIONS[1:]:
+                     .transform_filter(SEVERAL_FILTER_EQUATIONS[0]))
+        for eq in SEVERAL_FILTER_EQUATIONS[1:]:
             pie_chart.transform_filter(eq).to_html()
 
         self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
