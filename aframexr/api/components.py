@@ -209,25 +209,13 @@ class Chart(TopLevelMixin):
         else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
             raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
 
-    def _define_position(self, position: str):
-        """Defines the position field in the specifications."""
-        AframeXRValidator.validate_3_axes_numerical_values('position', position)
-        self._specifications.update({'position': position})
-        return self
-
-    def _define_rotation(self, rotation: str):
-        """Defines the rotation field in the specifications."""
-        AframeXRValidator.validate_3_axes_numerical_values('rotation', rotation)
-        self._specifications.update({'rotation': rotation})
-        return self
-
     def __init__(self, data: Data | URLData | DataFrame = None, depth: float = None,
                  height: float = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
-        if position is not None: self._define_position(position)
-        if rotation is not None: self._define_rotation(rotation)
+        if position is not None: self._specifications.update({'position': position})
+        if rotation is not None: self._specifications.update({'rotation': rotation})
 
         if depth is not None:
             AframeXRValidator.validate_positive_number('depth', depth)
@@ -375,8 +363,8 @@ class Chart(TopLevelMixin):
                    rotation: str = None):
         """Modify general properties of the chart."""
         if data is not None: self._define_data(data)
-        if position is not None: self._define_position(position)
-        if rotation is not None: self._define_rotation(rotation)
+        if position is not None: self._specifications.update({'position': position})
+        if rotation is not None: self._specifications.update({'rotation': rotation})
 
         return self
 
