@@ -403,7 +403,7 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_filter_error(self):
         """Bars chart filter error."""
-        for f in ERROR_FILTER_EQUATIONS:
+        for f in SYNTAX_ERROR_FILTER_EQUATIONS:
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
                 filt_chart.to_html()

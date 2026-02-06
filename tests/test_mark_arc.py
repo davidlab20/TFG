@@ -345,7 +345,7 @@ class TestMarkArcError(unittest.TestCase):
 
     def test_filter_error(self):
         """Pie chart filter error."""
-        for f in ERROR_FILTER_EQUATIONS:
+        for f in SYNTAX_ERROR_FILTER_EQUATIONS:
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.to_html()
