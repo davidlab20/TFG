@@ -4,7 +4,7 @@ import copy
 import polars as pl
 
 from polars import Series
-from typing import Literal, Final
+from typing import Literal
 
 from .constants import *
 
@@ -13,9 +13,9 @@ AXIS_DICT_TEMPLATE = {'start': None, 'end': None, 'labels_pos': [], 'labels_valu
                       'labels_align': None}
 """Template for each axis."""
 
-_X_AXIS_LABELS_ROTATION: Final = '-90 0 -90'
-_Y_AXIS_LABELS_ROTATION: Final = '0 0 0'
-_Z_AXIS_LABELS_ROTATION: Final = '-90 0 0'
+_X_AXIS_LABELS_ROTATION = '-90 0 -90'
+_Y_AXIS_LABELS_ROTATION = '0 0 0'
+_Z_AXIS_LABELS_ROTATION = '-90 0 0'
 
 
 def _get_labels_coords_for_quantitative_axis(axis_data: Series, axis_size: float) -> Series:
