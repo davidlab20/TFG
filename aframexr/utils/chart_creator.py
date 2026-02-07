@@ -117,8 +117,8 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
                                 f'{groupby}, otherwise that fields will disappear.'
                             )
                     else:
-                        groupby = list(encoding_channels)  # Use the encoding channels as groupby
-                    raw_data = aggregate_object.get_aggregated_data(raw_data, groupby)
+                        groupby = encoding_channels  # Use the encoding channels as groupby
+                    raw_data = aggregate_object.get_aggregated_data(raw_data, list(groupby))
 
     # Aggregate in encoding
     encoding_channels_values = list(chart_specs['encoding'].values())
