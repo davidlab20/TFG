@@ -145,6 +145,15 @@ class AframeXRValidator:
         elif 'element' in specs:  # Single element
             _validate_element(specs['element'])
 
+            if 'color' in specs:
+                AframeXRValidator.validate_type('specs.color', specs['color'], str)
+            if 'radius' in specs:
+                AframeXRValidator.validate_positive_number('specs.radius', specs['radius'])
+            if 'scale' in specs:
+                _validate_3_axes_numerical_values('specs.scale', specs['scale'])
+            if 'src' in specs:
+                AframeXRValidator.validate_type('specs.src', specs['src'], str)
+
         else:
             raise ValueError(ERROR_MESSAGES['MARK_AND_ELEMENT_NOT_IN_SPECS'])
 
