@@ -27,8 +27,8 @@ class TestAframexrError(unittest.TestCase):
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_VALUES_AND_URL_IN_SPECS'])
 
     def test_data_has_not_field_data_url(self):
-        """Verify that the error is raised when data has not field "data" or "url"."""
-        bad_data_specifications = {'data': {}, 'mark': 'bar', 'encoding': {}}  # Same occurs with other marks
+        """Verify that the error is raised when data has no field "data" or "url"."""
+        bad_data_specifications = {'data': {}, 'mark': 'bar', 'encoding': {}}  # The same occurs with other marks
         with self.assertRaises(ValueError) as error:
             aframexr.Chart.from_dict(bad_data_specifications).to_html()
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS'])
@@ -66,7 +66,7 @@ class TestAframexrError(unittest.TestCase):
         self.assertEqual(str(error.exception), f'There is no filter for equation: {invalid_equation}')
 
     def test_add_error_not_isinstance_TopLevelMixin(self):
-        """Verify that the error is raised when adding one chart to other thing."""
+        """Verify that the error is raised when adding one chart to another thing."""
         one = aframexr.Chart(aframexr.URLData(''))
         other = 2
         with self.assertRaises(TypeError) as error:
@@ -74,7 +74,7 @@ class TestAframexrError(unittest.TestCase):
         self.assertEqual(str(error.exception), f"Cannot add {type(other).__name__} to {type(one).__name__}.")
 
     def test_invalid_chart_specifications_not_data_having_mark(self):
-        """Verify that the error is raised when chart specifications do not have field "data" having mark type."""
+        """Verify that the error is raised when chart specifications do not have field "data" having "mark"."""
         with self.assertRaises(ValueError) as error:
             aframexr.Chart.from_dict({'mark': ''}).show()  # Using show() to cover this method
         self.assertEqual(str(error.exception), ERROR_MESSAGES['DATA_NOT_IN_SPECS'])
