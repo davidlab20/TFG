@@ -57,7 +57,7 @@ def _validate_encoding(encoding: dict):
 
 
 def _validate_mark(mark: str | dict) -> None:
-    """Raises TypeError or ValueError if mark is invalid."""
+    """Raises TypeError or ValueError if "mark" is invalid."""
     AframeXRValidator.validate_type('specs.mark', mark, (str, dict))
 
     mark_type = mark.get('type') if isinstance(mark, dict) else mark
@@ -67,7 +67,7 @@ def _validate_mark(mark: str | dict) -> None:
 
 def _validate_mark_encoding(mark: str | dict, encoding: dict) -> None:
     """
-    Raises ValueError if mark and encoding combination is invalid.
+    Raises ValueError if "mark" and "encoding" combination is invalid.
 
     Notes
     -----
