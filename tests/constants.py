@@ -5,7 +5,7 @@ import pandas as pd
 from aframexr.api.data import Data, URLData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
-# ----- GENERAL -----
+# ===== GENERAL =====
 # Data OK
 URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
 LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
@@ -61,7 +61,7 @@ ALL_MARK_DEPTHS_HEIGHTS_WIDTHS = (5, 10, 20)
 # Depths ERROR
 NOT_GREATER_THAN_0_NUMBERS = (-1, 0)
 
-# ----- MARK ARC -----
+# ===== MARK ARC =====
 # Radius OK
 MARK_ARC_RADIUS = (0.5, 1, 1.5)
 
@@ -72,7 +72,7 @@ NOT_GREATER_THAN_0_MARK_ARC_RADIUS = (-1, 0)
 NON_EXISTING_MARK_ARC_ENCODINGS = ({'color': 'model', 'theta': 'bad_key'}, {'color': 'bad_key', 'theta': 'sales'})
 NOT_VALID_MARK_ARC_ENCODINGS = ({'color': 'model'}, {'theta': 'sales'}, {'x': 'model', 'y': 'sales'})
 
-# ----- MARK BAR / MARK POINT -----
+# ===== MARK BAR / MARK POINT =====
 # Sizes OK
 MARK_BAR_POINT_SIZES = (0.25, 0.5, 1)
 
@@ -91,11 +91,11 @@ MARK_POINT_ENCODINGS = ({'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'm
 NON_EXISTING_MARK_BAR_POINT_ENCODINGS = ({'x': 'model', 'y': 'bad_key'}, {'x': 'bad_key', 'y': 'sales'})
 NOT_VALID_MARK_BAR_POINT_ENCODINGS = ({'x': 'model'}, {'y': 'sales'}, {'z': 'motor'}, {'color': 'motor'})
 
-# ----- MARK GLTF / MARK IMAGE -----
+# ===== MARK GLTF / MARK IMAGE =====
 # Scales OK
 MARK_GLTF_SCALES = ('-2  1  -1', '2 2 2', ' 2 2  2   ')
 
-# ----- MARK IMAGE -----
+# ===== MARK IMAGE =====
 # Widths and heights OK
 MARK_IMAGE_WIDTHS_HEIGHTS = (0.5, 1, 1.5, 2, 5, 10)
 
