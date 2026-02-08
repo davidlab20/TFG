@@ -56,7 +56,7 @@ SYNTAX_ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100',
 CONCATENATION_POSITIONS = ('-5 2 -5', '5 2 -5')
 
 # Depths OK
-ALL_MARK_DEPTHS = (5, 10, 20)
+ALL_MARK_DEPTHS_HEIGHTS_WIDTHS = (5, 10, 20)
 
 # Depths ERROR
 NOT_GREATER_THAN_0_NUMBERS = (-1, 0)
