@@ -61,6 +61,9 @@ ALL_MARK_DEPTHS_HEIGHTS_WIDTHS = (5, 10, 20)
 # Depths ERROR
 NOT_GREATER_THAN_0_NUMBERS = (-1, 0)
 
+# ===== SIMPLE ELEMENTS =====
+SIMPLE_ELEMENTS_COLORS = ('red', 'green', 'blue')
+
 # ===== MARK ARC =====
 # Radius OK
 MARK_ARC_RADIUS = (0.5, 1, 1.5)
