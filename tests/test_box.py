@@ -43,13 +43,13 @@ class TestBoxOK(unittest.TestCase):
 
     def test_position(self):
         """Box with specific position creation."""
-        for p in POSITIONS:
+        for p in POSITIONS + POSITION_FORMATS:
             box = aframexr.Box(position=p)
             box.to_html()
 
     def test_rotation(self):
         """Box with specific rotation creation."""
-        for r in ROTATIONS:
+        for r in ROTATIONS + ROTATION_FORMATS:
             box = aframexr.Box(rotation=r)
             box.to_html()
 
