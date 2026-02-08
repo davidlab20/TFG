@@ -149,7 +149,7 @@ class TestMarkPointOK(unittest.TestCase):
 
     def test_depth(self):
         """Mark point changing depth creation."""
-        for d in ALL_MARK_DEPTHS:
+        for d in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             print(d)
             point_chart = aframexr.Chart(DATA, depth=d).mark_point().encode(x='model', y='sales')
             point_chart.to_html()
@@ -356,7 +356,7 @@ class TestMarkPointError(unittest.TestCase):
 
     def test_depth_error(self):
         """Mark point error when depth is incorrect."""
-        for d in NOT_GREATER_THAN_0_DEPTHS:
+        for d in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, depth=d).mark_point().encode(x='model', y='sales').to_html()
             self.assertEqual(

@@ -85,7 +85,7 @@ class TestMarkArcOK(unittest.TestCase):
 
     def test_depth(self):
         """Pie chart changing depth creation."""
-        for d in ALL_MARK_DEPTHS:
+        for d in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             pie_chart = aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales')
             pie_chart.to_html()
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
@@ -258,7 +258,7 @@ class TestMarkArcError(unittest.TestCase):
 
     def test_depth_error(self):
         """Pie chart error when depth is incorrect."""
-        for d in NOT_GREATER_THAN_0_DEPTHS:
+        for d in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, depth=d).mark_arc().encode(color='model', theta='sales').to_html()
             self.assertEqual(

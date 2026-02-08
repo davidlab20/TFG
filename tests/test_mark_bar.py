@@ -136,7 +136,7 @@ class TestMarkBarOK(unittest.TestCase):
 
     def test_depth(self):
         """Bars chart changing depth creation."""
-        for d in ALL_MARK_DEPTHS:
+        for d in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, depth=d).mark_bar().encode(x='model', y='sales')
             bars_chart.to_html()
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart))
@@ -345,7 +345,7 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_depth_error(self):
         """Bars chart error when depth is incorrect."""
-        for d in NOT_GREATER_THAN_0_DEPTHS:
+        for d in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, depth=d).mark_bar().encode(x='model', y='sales').to_html()
             self.assertEqual(
