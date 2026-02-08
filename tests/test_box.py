@@ -20,8 +20,9 @@ class TestBoxOK(unittest.TestCase):
 
     def test_color(self):
         """Box with specific color creation."""
-        box = aframexr.Box(color='red')
-        box.to_html()
+        for c in SIMPLE_ELEMENTS_COLORS:
+            box = aframexr.Box(color=c)
+            box.to_html()
 
     def test_depth(self):
         """Box with specific depth creation."""
