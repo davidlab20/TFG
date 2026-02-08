@@ -13,6 +13,11 @@ class TestBoxOK(unittest.TestCase):
         box = aframexr.Box()
         box.to_html()
 
+    def test_from_dict(self):
+        """Box creation using form_dict() method."""
+        box = aframexr.Box.from_dict(aframexr.Box().to_dict())
+        box.to_html()
+
     def test_from_json(self):
         """Box creation using form_json() method."""
         box = aframexr.Box.from_json(aframexr.Box().to_json())
