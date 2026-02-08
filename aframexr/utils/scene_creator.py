@@ -16,7 +16,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         <a-entity id="user">
     
             <!-- Camera -->
-            <a-camera id="camera" position="0 2 0" active="true" wasd-controls="acceleration: 35"></a-camera>
+            <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
     
             <!-- VR controllers -->
             <a-entity id="right-hand" laser-controls="hand: right"
