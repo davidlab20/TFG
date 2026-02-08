@@ -32,7 +32,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     
         <!-- HUD -->
         <a-entity id="HUD" position="0 0 0" visible="false">
-            <a-plane height="1" width="2.5" shader="flat" color="grey"></a-plane>
+            <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
             <a-text id="HUD-text" value="" align="center"></a-text>
         </a-entity>
 
