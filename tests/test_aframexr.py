@@ -73,6 +73,12 @@ class TestAframexrError(unittest.TestCase):
             one + other
         self.assertEqual(str(error.exception), f"Cannot add {type(other).__name__} to {type(one).__name__}.")
 
+    def test_abstract_class_ElementCreator(self):
+        """Verify that the error is raised when creating an ElementCreator object."""
+        with self.assertRaises(TypeError) as error:
+            aframexr.ElementCreator({})
+        self.assertEqual(str(error.exception), 'ElementCreator is abstract')
+
     def test_invalid_chart_specifications_not_data_having_mark(self):
         """Verify that the error is raised when chart specifications do not have field "data" having "mark"."""
         with self.assertRaises(ValueError) as error:
