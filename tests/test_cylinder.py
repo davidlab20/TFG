@@ -84,3 +84,11 @@ class TestCylinderERROR(unittest.TestCase):
                 param_name='specs.color', expected_type=str.__name__, current_type=type(not_an_string).__name__
             )
         )
+
+    def test_radius_error(self):
+        """Cylinder with specific radius creation error."""
+        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+            with self.assertRaises(ValueError) as error:
+                cylinder = aframexr.Cylinder(radius=r)
+                cylinder.to_html()
+            self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='specs.radius'))
