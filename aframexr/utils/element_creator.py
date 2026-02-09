@@ -56,6 +56,16 @@ class BoxCreator(ElementCreator):
         self._width = element_specs.get('width')
 
 
+class ConeCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-cone{attributes}></a-cone>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._height = element_specs.get('height')
+        self.radius_bottom = element_specs.get('radius_bottom')
+        self.radius_top = element_specs.get('radius_top')
+
+
 class CylinderCreator(ElementCreator):
     _ELEMENT_HTML = '<a-cylinder side="double"{attributes}></a-cylinder>'
 
@@ -95,6 +105,7 @@ class SphereCreator(ElementCreator):
 
 # Add creator classes to CREATOR_MAP dynamically
 CREATOR_MAP.update({'box': BoxCreator})
+CREATOR_MAP.update({'cone': ConeCreator})
 CREATOR_MAP.update({'cylinder': CylinderCreator})
 CREATOR_MAP.update({'gltf': GLTFCreator})
 CREATOR_MAP.update({'image': ImageCreator})

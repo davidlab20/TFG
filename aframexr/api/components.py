@@ -473,6 +473,15 @@ class Box(Element):
         super().__init__(color=color, depth=depth, height=height, position=position, rotation=rotation, width=width)
 
 
+class Cone(Element):
+    """Simple cone."""
+
+    def __init__(self, color: str = None, height: float = None, position: str = None, radius_bottom: float = None,
+                 radius_top: float = None):
+        super().__init__(color=color, height=height, position=position, radius_bottom=radius_bottom,
+                         radius_top=radius_top)
+
+
 class Cylinder(Element):
     """Simple cylinder."""
 
