@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.6"
+__generated_with = "0.19.9"
 app = marimo.App(width="medium")
 
 
@@ -14,7 +14,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 async def _():
-    # Install necessary packages only when running in WASM (browser) mode.
+    # Install the necessary packages only when running in WASM (browser) mode.
     import sys
 
     if sys.platform == 'emscripten':  # WASM mode
@@ -103,6 +103,7 @@ def _(aframexr, json, urllib):
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
