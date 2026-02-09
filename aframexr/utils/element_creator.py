@@ -12,6 +12,9 @@ class ElementCreator:
     """
 
     def __init__(self, element_specs: dict):
+        if type(self) is ElementCreator:
+            raise TypeError(f'{self.__class__.__name__} is abstract')
+
         self._attributes = {
             key: value for key, value in element_specs.items()
             if value is not None and key != 'element'
