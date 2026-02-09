@@ -62,8 +62,8 @@ class ConeCreator(ElementCreator):
     def __init__(self, element_specs: dict):
         super().__init__(element_specs)
         self._height = element_specs.get('height')
-        self.radius_bottom = element_specs.get('radius_bottom')
-        self.radius_top = element_specs.get('radius_top')
+        self._radius_bottom = element_specs.get('radius_bottom')
+        self._radius_top = element_specs.get('radius_top')
 
 
 class CylinderCreator(ElementCreator):
