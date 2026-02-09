@@ -5,7 +5,7 @@ AVAILABLE_AGGREGATES = {'count', 'max', 'median', 'mean', 'min', 'std', 'sum', '
 AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 AVAILABLE_MARKS = {'arc', 'bar', 'point'}
-AVAILABLE_SINGLE_ELEMENTS = {'box', 'cone', 'cylinder', 'gltf', 'image', 'sphere'}
+AVAILABLE_SINGLE_ELEMENTS = {'box', 'cone', 'cylinder', 'dodecahedron', 'gltf', 'icosahedron', 'image', 'sphere'}
 
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
 X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)

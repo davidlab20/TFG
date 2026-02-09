@@ -490,11 +490,25 @@ class Cylinder(Element):
         super().__init__(color=color, height=height, position=position, radius=radius, rotation=rotation)
 
 
+class Dodecahedron(Element):
+    """Simple dodecahedron."""
+
+    def __init__(self, color: str = None, position: str = None, radius: float = None):
+        super().__init__(color=color, position=position, radius=radius)
+
+
 class GLTF(Element):
     """GLTF model."""
 
     def __init__(self, src: str, scale: str = None, position: str = None, rotation: str = None):
         super().__init__(src=src, scale=scale, position=position, rotation=rotation)
+
+
+class Icosahedron(Element):
+    """Simple icosahedron."""
+
+    def __init__(self, color: str = None, position: str = None, radius: float = None):
+        super().__init__(color=color, position=position, radius=radius)
 
 
 class Image(Element):

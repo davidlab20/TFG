@@ -76,6 +76,14 @@ class CylinderCreator(ElementCreator):
         self._theta_length = element_specs.get('theta_length')
 
 
+class DodecahedronCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-dodecahedron{attributes}></a-dodecahedron>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._radius = element_specs.get('radius')
+
+
 class GLTFCreator(ElementCreator):
     _ELEMENT_HTML = '<a-gltf-model{attributes}></a-gltf-model>'
 
@@ -83,6 +91,14 @@ class GLTFCreator(ElementCreator):
         super().__init__(element_specs)
         self._scale = element_specs.get('scale')
         self._src = element_specs.get('src')
+
+
+class IcosahedronCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-icosahedron{attributes}></a-icosahedron>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+        self._radius = element_specs.get('radius')
 
 
 class ImageCreator(ElementCreator):
@@ -107,6 +123,8 @@ class SphereCreator(ElementCreator):
 CREATOR_MAP.update({'box': BoxCreator})
 CREATOR_MAP.update({'cone': ConeCreator})
 CREATOR_MAP.update({'cylinder': CylinderCreator})
+CREATOR_MAP.update({'dodecahedron': DodecahedronCreator})
 CREATOR_MAP.update({'gltf': GLTFCreator})
+CREATOR_MAP.update({'icosahedron': IcosahedronCreator})
 CREATOR_MAP.update({'image': ImageCreator})
 CREATOR_MAP.update({'sphere': SphereCreator})
