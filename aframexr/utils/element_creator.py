@@ -91,6 +91,10 @@ class TetrahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-tetrahedron{attributes}></a-tetrahedron>'
 
 
+class TextCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-text{attributes}></a-text>'
+
+
 # Add creator classes to CREATOR_MAP dynamically
 CREATOR_MAP.update({'box': BoxCreator})
 CREATOR_MAP.update({'cone': ConeCreator})
@@ -103,3 +107,4 @@ CREATOR_MAP.update({'octahedron': OctahedronCreator})
 CREATOR_MAP.update({'plane': PlaneCreator})
 CREATOR_MAP.update({'sphere': SphereCreator})
 CREATOR_MAP.update({'tetrahedron': TetrahedronCreator})
+CREATOR_MAP.update({'text': TextCreator})

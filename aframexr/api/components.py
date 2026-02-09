@@ -523,3 +523,9 @@ class Sphere(Element):
 class Tetrahedron(Element):
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
+
+
+class Text(Element):
+    def __init__(self, value: str, align: Literal['center', 'left', 'right'] = None, color: str = None,
+                 position: str = None, rotation: str = None, scale: str = None):
+        super().__init__(align=align, color=color, position=position, rotation=rotation, value=value, scale=scale)
