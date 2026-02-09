@@ -100,16 +100,18 @@ class TorusCreator(ElementCreator):
 
 
 # Add creator classes to CREATOR_MAP dynamically
-CREATOR_MAP.update({'box': BoxCreator})
-CREATOR_MAP.update({'cone': ConeCreator})
-CREATOR_MAP.update({'cylinder': CylinderCreator})
-CREATOR_MAP.update({'dodecahedron': DodecahedronCreator})
-CREATOR_MAP.update({'gltf': GLTFCreator})
-CREATOR_MAP.update({'icosahedron': IcosahedronCreator})
-CREATOR_MAP.update({'image': ImageCreator})
-CREATOR_MAP.update({'octahedron': OctahedronCreator})
-CREATOR_MAP.update({'plane': PlaneCreator})
-CREATOR_MAP.update({'sphere': SphereCreator})
-CREATOR_MAP.update({'tetrahedron': TetrahedronCreator})
-CREATOR_MAP.update({'text': TextCreator})
-CREATOR_MAP.update({'torus': TorusCreator})
+CREATOR_MAP.update({
+    'box': BoxCreator,
+    'cone': ConeCreator,
+    'cylinder': CylinderCreator,
+    'dodecahedron': DodecahedronCreator,
+    'gltf': GLTFCreator,
+    'icosahedron': IcosahedronCreator,
+    'image': ImageCreator,
+    'octahedron': OctahedronCreator,
+    'plane': PlaneCreator,
+    'sphere': SphereCreator,
+    'tetrahedron': TetrahedronCreator,
+    'text': TextCreator,
+    'torus': TorusCreator,
+})
