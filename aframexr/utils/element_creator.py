@@ -79,6 +79,10 @@ class OctahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-octahedron{attributes}></a-octahedron>'
 
 
+class PlaneCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-plane side="double"{attributes}></a-plane>'
+
+
 class SphereCreator(ElementCreator):
     _ELEMENT_HTML = '<a-sphere{attributes}></a-sphere>'
 
@@ -92,4 +96,5 @@ CREATOR_MAP.update({'gltf': GLTFCreator})
 CREATOR_MAP.update({'icosahedron': IcosahedronCreator})
 CREATOR_MAP.update({'image': ImageCreator})
 CREATOR_MAP.update({'octahedron': OctahedronCreator})
+CREATOR_MAP.update({'plane': PlaneCreator})
 CREATOR_MAP.update({'sphere': SphereCreator})
