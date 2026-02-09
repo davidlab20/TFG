@@ -35,6 +35,9 @@ POSITIONS = ('0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2
 POSITION_FORMATS = ('1 1 1', '1  1  1', '  1 1 1  ', '  1  1  1  ')
 
 # Radius OK
+RADIUS = (0.5, 1, 1.5)
+
+# Radius ERROR
 NOT_GREATER_THAN_0_RADIUS = (-1, 0)
 
 # Rotations OK
@@ -68,9 +71,6 @@ NOT_GREATER_THAN_0_NUMBERS = (-1, 0)
 SIMPLE_ELEMENTS_COLORS = ('red', 'green', 'blue')
 
 # ===== MARK ARC =====
-# Radius OK
-MARK_ARC_RADIUS = (0.5, 1, 1.5)
-
 # Encodings ERROR
 NON_EXISTING_MARK_ARC_ENCODINGS = ({'color': 'model', 'theta': 'bad_key'}, {'color': 'bad_key', 'theta': 'sales'})
 NOT_VALID_MARK_ARC_ENCODINGS = ({'color': 'model'}, {'theta': 'sales'}, {'x': 'model', 'y': 'sales'})

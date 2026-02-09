@@ -37,13 +37,13 @@ class TestSphereOK(unittest.TestCase):
 
     def test_radius(self):
         """Sphere with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             sphere = aframexr.Sphere(radius=r)
             sphere.to_html()
 
     def test_all_parameters(self):
         """Sphere creation with all parameters specified."""
-        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, MARK_ARC_RADIUS):
+        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, RADIUS):
             sphere = aframexr.Sphere(color=c, position=p, radius=r)
             sphere.to_html()
 

@@ -43,7 +43,7 @@ class TestCylinderOK(unittest.TestCase):
 
     def test_radius(self):
         """Cylinder with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             cylinder = aframexr.Cylinder(radius=r)
             cylinder.to_html()
 
@@ -55,7 +55,7 @@ class TestCylinderOK(unittest.TestCase):
 
     def test_all_parameters(self):
         """Cylinder creation with all parameters specified."""
-        for c, h, p, ra, ro in zip(SIMPLE_ELEMENTS_COLORS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS, POSITIONS, MARK_ARC_RADIUS,
+        for c, h, p, ra, ro in zip(SIMPLE_ELEMENTS_COLORS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS, POSITIONS, RADIUS,
                                    ROTATIONS):
             cylinder = aframexr.Cylinder(color=c, height=h, position=p, radius=ra, rotation=ro)
             cylinder.to_html()

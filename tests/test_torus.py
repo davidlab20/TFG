@@ -38,13 +38,13 @@ class TestTorusOK(unittest.TestCase):
 
     def test_radius(self):
         """Torus with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             torus = aframexr.Torus(radius=r)
             torus.to_html()
 
     def test_radius_tubular(self):
         """Torus with specific radius tubular creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             torus = aframexr.Torus(radius_tubular=r)
             torus.to_html()
 
@@ -56,7 +56,7 @@ class TestTorusOK(unittest.TestCase):
 
     def test_all_parameters(self):
         """Torus creation with all parameters specified."""
-        for c, p, rad, rt, rot in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, MARK_ARC_RADIUS, MARK_ARC_RADIUS, ROTATIONS):
+        for c, p, rad, rt, rot in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, RADIUS, RADIUS, ROTATIONS):
             torus = aframexr.Torus(color=c, position=p, radius=rad, radius_tubular=rt, rotation=rot)
             torus.to_html()
 

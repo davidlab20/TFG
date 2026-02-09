@@ -37,13 +37,13 @@ class TestTetrahedronOK(unittest.TestCase):
 
     def test_radius(self):
         """Tetrahedron with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             tetrahedron = aframexr.Tetrahedron(radius=r)
             tetrahedron.to_html()
 
     def test_all_parameters(self):
         """Tetrahedron creation with all parameters specified."""
-        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, MARK_ARC_RADIUS):
+        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, RADIUS):
             tetrahedron = aframexr.Tetrahedron(color=c, position=p, radius=r)
             tetrahedron.to_html()
 

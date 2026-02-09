@@ -43,20 +43,20 @@ class TestConeOK(unittest.TestCase):
 
     def test_radius_bottom(self):
         """Cone with specific bottom's radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             cone = aframexr.Cone(radius_bottom=r)
             cone.to_html()
 
     def test_radius_top(self):
         """Cone with specific top's radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             cone = aframexr.Cone(radius_top=r)
             cone.to_html()
 
     def test_all_parameters(self):
         """Cone creation with all parameters specified."""
-        for c, h, p, rb, rt in zip(SIMPLE_ELEMENTS_COLORS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS, POSITIONS, MARK_ARC_RADIUS,
-                                   MARK_ARC_RADIUS):
+        for c, h, p, rb, rt in zip(SIMPLE_ELEMENTS_COLORS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS, POSITIONS, RADIUS,
+                                   RADIUS):
             cone = aframexr.Cone(color=c, height=h, position=p, radius_bottom=rb, radius_top=rt)
             cone.to_html()
 

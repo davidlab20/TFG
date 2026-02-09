@@ -37,13 +37,13 @@ class TestOctahedronOK(unittest.TestCase):
 
     def test_radius(self):
         """Octahedron with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             octahedron = aframexr.Octahedron(radius=r)
             octahedron.to_html()
 
     def test_all_parameters(self):
         """Octahedron creation with all parameters specified."""
-        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, MARK_ARC_RADIUS):
+        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, RADIUS):
             octahedron = aframexr.Octahedron(color=c, position=p, radius=r)
             octahedron.to_html()
 

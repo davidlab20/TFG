@@ -37,13 +37,13 @@ class TestDodecahedronOK(unittest.TestCase):
 
     def test_radius(self):
         """Dodecahedron with specific radius creation."""
-        for r in MARK_ARC_RADIUS:
+        for r in RADIUS:
             dodecahedron = aframexr.Dodecahedron(radius=r)
             dodecahedron.to_html()
 
     def test_all_parameters(self):
         """Dodecahedron creation with all parameters specified."""
-        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, MARK_ARC_RADIUS):
+        for c, p, r in zip(SIMPLE_ELEMENTS_COLORS, POSITIONS, RADIUS):
             dodecahedron = aframexr.Dodecahedron(color=c, position=p, radius=r)
             dodecahedron.to_html()
 
