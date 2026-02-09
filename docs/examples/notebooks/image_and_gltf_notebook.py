@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.6"
+__generated_with = "0.19.9"
 app = marimo.App(width="medium")
 
 
@@ -14,7 +14,7 @@ def _(mo):
 
 @app.cell(hide_code=True)
 async def _():
-    # Install necessary packages only when running in WASM (browser) mode.
+    # Install the necessary packages only when running in WASM (browser) mode.
     import sys
 
     if sys.platform == 'emscripten':  # WASM mode
@@ -26,32 +26,32 @@ async def _():
 @app.cell
 def _():
     import aframexr
+
     return (aframexr,)
 
 
 @app.cell
 def _(aframexr):
-    image_url = aframexr.URLData('https://davidlab20.github.io/TFG/imgs/logo.png')
+    image_url = 'https://davidlab20.github.io/TFG/imgs/logo.png'
 
-    image_chart = aframexr.Chart(image_url, position='0 2 -5').mark_image(height=3, width=3)
-    image_chart.show()
+    image = aframexr.Image(image_url, position='0 2 -5', height=3, width=3)
+    image.show()
     return
 
 
 @app.cell
 def _(aframexr):
-    gltf_url = aframexr.URLData(
-        url='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/refs/heads/main/Models/AntiqueCamera/glTF/AntiqueCamera.gltf'
-    )
+    gltf_url ='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/refs/heads/main/Models/AntiqueCamera/glTF/AntiqueCamera.gltf'
 
-    gltf_chart = aframexr.Chart(gltf_url, position='0 0 -4', rotation='0 30 0').mark_gltf(scale='0.5 0.5 0.5')
-    gltf_chart.show()
+    gltf = aframexr.GLTF(gltf_url, position='0 0 -4', rotation='0 30 0', scale='0.5 0.5 0.5')
+    gltf.show()
     return
 
 
 @app.cell
 def _():
     import marimo as mo
+
     return (mo,)
 
 
