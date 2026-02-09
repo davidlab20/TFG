@@ -297,7 +297,7 @@ class TestMarkArcError(unittest.TestCase):
 
     def test_radius_error(self):
         """Pie chart radius error."""
-        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+        for r in NOT_GREATER_THAN_0_RADIUS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_arc(radius=r).encode(color='model', theta='sales')
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='radius'))

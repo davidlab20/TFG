@@ -74,7 +74,7 @@ class TestTetrahedronERROR(unittest.TestCase):
 
     def test_radius_error(self):
         """Tetrahedron with specific radius creation error."""
-        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+        for r in NOT_GREATER_THAN_0_RADIUS:
             with self.assertRaises(ValueError) as error:
                 tetrahedron = aframexr.Tetrahedron(radius=r)
                 tetrahedron.to_html()

@@ -34,6 +34,9 @@ NOT_VALID_AGGREGATES = ('bad_aggregate_1', 'bad_aggregate_2', 'bad_aggregate_3')
 POSITIONS = ('0 0 0', '0 0 2', '0 2 0', '0 2 2', '2 0 0', '2 0 2', '2 2 0', '2 2 2')
 POSITION_FORMATS = ('1 1 1', '1  1  1', '  1 1 1  ', '  1  1  1  ')
 
+# Radius OK
+NOT_GREATER_THAN_0_RADIUS = (-1, 0)
+
 # Rotations OK
 ROTATIONS = ('0 0 0', '0 0 30', '0 30 0', '0 30 30', '30 0 0', '30 0 30', '30 30 0', '30 30 30')
 ROTATION_FORMATS = ('30 30 30', '30  30  30', '  30 30 30  ', '  30  30  30  ')
@@ -67,9 +70,6 @@ SIMPLE_ELEMENTS_COLORS = ('red', 'green', 'blue')
 # ===== MARK ARC =====
 # Radius OK
 MARK_ARC_RADIUS = (0.5, 1, 1.5)
-
-# Radius ERROR
-NOT_GREATER_THAN_0_MARK_ARC_RADIUS = (-1, 0)
 
 # Encodings ERROR
 NON_EXISTING_MARK_ARC_ENCODINGS = ({'color': 'model', 'theta': 'bad_key'}, {'color': 'bad_key', 'theta': 'sales'})

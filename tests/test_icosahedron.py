@@ -74,7 +74,7 @@ class TestIcosahedronERROR(unittest.TestCase):
 
     def test_radius_error(self):
         """Icosahedron with specific radius creation error."""
-        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+        for r in NOT_GREATER_THAN_0_RADIUS:
             with self.assertRaises(ValueError) as error:
                 icosahedron = aframexr.Icosahedron(radius=r)
                 icosahedron.to_html()

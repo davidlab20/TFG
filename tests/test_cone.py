@@ -87,7 +87,7 @@ class TestConeERROR(unittest.TestCase):
 
     def test_radius_bottom_error(self):
         """Cone with specific bottom's radius creation error."""
-        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+        for r in NOT_GREATER_THAN_0_RADIUS:
             with self.assertRaises(ValueError) as error:
                 cone = aframexr.Cone(radius_bottom=r)
                 cone.to_html()
@@ -98,7 +98,7 @@ class TestConeERROR(unittest.TestCase):
 
     def test_radius_top_error(self):
         """Cone with specific top's radius creation error."""
-        for r in NOT_GREATER_THAN_0_MARK_ARC_RADIUS:
+        for r in NOT_GREATER_THAN_0_RADIUS:
             with self.assertRaises(ValueError) as error:
                 cone = aframexr.Cone(radius_top=r)
                 cone.to_html()
