@@ -150,10 +150,18 @@ class AframeXRValidator:
                 AframeXRValidator.validate_type('specs.color', specs['color'], str)
             if 'radius' in specs:
                 AframeXRValidator.validate_positive_number('specs.radius', specs['radius'])
+            if 'radius_bottom' in specs:
+                AframeXRValidator.validate_positive_number('specs.radius_bottom', specs['radius_bottom'])
+            if 'radius_top' in specs:
+                AframeXRValidator.validate_positive_number('specs.radius_top', specs['radius_top'])
+            if 'radius_tubular' in specs:
+                AframeXRValidator.validate_positive_number('specs.radius_tubular', specs['radius_tubular'])
             if 'scale' in specs:
                 _validate_3_axes_numerical_values('specs.scale', specs['scale'])
             if 'src' in specs:
                 AframeXRValidator.validate_type('specs.src', specs['src'], str)
+            if 'value' in specs:
+                AframeXRValidator.validate_type('specs.value', specs['value'], str)
 
         else:
             raise ValueError(ERROR_MESSAGES['MARK_AND_ELEMENT_NOT_IN_SPECS'])
