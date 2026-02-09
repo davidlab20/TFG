@@ -518,3 +518,8 @@ class Plane(Element):
 class Sphere(Element):
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
+
+
+class Tetrahedron(Element):
+    def __init__(self, color: str = None, position: str = None, radius: float = None):
+        super().__init__(color=color, position=position, radius=radius)
