@@ -747,6 +747,8 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
 
 # Add classes to CREATOR_MAP
-CREATOR_MAP.update({'arc': ArcChartCreator})
-CREATOR_MAP.update({'bar': BarChartCreator})
-CREATOR_MAP.update({'point': PointChartCreator})
+CREATOR_MAP.update({
+    'arc': ArcChartCreator,
+    'bar': BarChartCreator,
+    'point': PointChartCreator,
+})
