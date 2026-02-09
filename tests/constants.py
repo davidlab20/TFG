@@ -82,9 +82,6 @@ MARK_BAR_POINT_SIZES = (0.25, 0.5, 1)
 # Heights OK
 MARK_BAR_POINT_HEIGHTS_WIDTHS = (5, 10, 20)
 
-# Sizes and heights ERROR
-NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS = (-1, 0)
-
 # Encodings OK
 MARK_BAR_ENCODINGS = ({'x': 'model', 'y': 'sales'}, {'x': 'model', 'y': 'sales', 'z': 'motor'})
 MARK_POINT_ENCODINGS = ({'x': 'model', 'y': 'sales', 'color': 'motor'}, {'x': 'model', 'y': 'sales', 'size': 'doors:Q'},

@@ -349,7 +349,7 @@ class TestMarkPointError(unittest.TestCase):
 
     def test_size_error(self):
         """Mark point size error."""
-        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for s in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_point(size=s).encode(x='model', y='sales')
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='size'))
@@ -366,14 +366,14 @@ class TestMarkPointError(unittest.TestCase):
 
     def test_height_error(self):
         """Mark point height error."""
-        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for h in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales').to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='height'))
 
     def test_width_error(self):
         """Mark point width error."""
-        for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for w in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, width=w).mark_point().encode(x='model', y='sales').to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='width'))

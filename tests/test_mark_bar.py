@@ -338,7 +338,7 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_size_error(self):
         """Bars chart size error."""
-        for s in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for s in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='size'))
@@ -355,14 +355,14 @@ class TestMarkBarError(unittest.TestCase):
 
     def test_height_error(self):
         """Bars chart height error."""
-        for h in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for h in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales').to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='height'))
 
     def test_width_error(self):
         """Bars chart width error."""
-        for w in NOT_GREATER_THAN_0_MARK_BAR_POINT_SIZES_HEIGHTS_WIDTHS:
+        for w in NOT_GREATER_THAN_0_NUMBERS:
             with self.assertRaises(ValueError) as error:
                 aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales').to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='width'))
