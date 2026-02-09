@@ -7,6 +7,7 @@ from .element_creator import ElementCreator
 
 class ChartsHTMLCreator:
     """Charts HTML creator class."""
+
     @staticmethod
     def _create_chart_html(chart_specs: dict) -> str:
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']

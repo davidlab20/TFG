@@ -23,6 +23,7 @@ class Data:
     >>> data_format_as_string = '[{"a": 1, "b": 2}, {"a": 2, "b": 4}]'
     >>> data = aframexr.Data.from_json(data_format_as_string)
     """
+
     def __init__(self, values: list[dict]):
         AframeXRValidator.validate_type('values', values, list)
         self.values = values
@@ -51,5 +52,6 @@ class URLData:
     >>> url = '...'  # The URL of the file storing the data
     >>> data = aframexr.URLData(url)
     """
+
     def __init__(self, url: str):
         self.url = url

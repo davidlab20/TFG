@@ -20,6 +20,7 @@ class Encoding(ABC):
     groupby: list | None (optional)
         The fields of the aggrupation.
     """
+
     @abstractmethod
     def __init__(self, field: str | None = None, aggregate: str | None = None, axis: bool | None = True,
                  encoding_type: str | None = None, groupby: list | None = None):

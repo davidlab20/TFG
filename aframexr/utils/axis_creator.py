@@ -69,6 +69,7 @@ def _get_labels_values_for_quantitative_axis(axis_data: Series) -> Series:
 
 class AxisCreator:
     """Axis creator class."""
+
     @staticmethod
     def create_axis_html(start: str | None, end: str | None) -> str:
         """

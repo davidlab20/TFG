@@ -47,7 +47,6 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 
 
 class SceneCreator:
-
     @staticmethod
     def create_scene(specs: dict):
         """

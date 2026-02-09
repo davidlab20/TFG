@@ -8,6 +8,7 @@ from ..utils.validators import AframeXRValidator
 
 class FilterTransform:
     """FilterTransform base class."""
+
     def __init__(self, field: str, operator: str, value: str | float):
         self.field = field
         self.operator = operator
@@ -67,6 +68,7 @@ class FilterTransform:
 
 class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
+
     def __init__(self, field: str, equal: str | float):
         operator = '=='
         super().__init__(field, operator, equal)
@@ -109,6 +111,7 @@ class FieldEqualPredicate(FilterTransform):
 
 class FieldGTPredicate(FilterTransform):
     """Greater than predicate filter class."""
+
     def __init__(self, field: str, gt: float):
         operator = '>'
         super().__init__(field, operator, gt)
@@ -149,6 +152,7 @@ class FieldGTPredicate(FilterTransform):
 
 class FieldLTPredicate(FilterTransform):
     """Lower than predicate filter class."""
+
     def __init__(self, field: str, lt: float):
         operator = '<'
         super().__init__(field, operator, lt)

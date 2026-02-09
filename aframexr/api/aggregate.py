@@ -8,6 +8,7 @@ from ..utils.validators import AframeXRValidator
 
 class AggregatedFieldDef:
     """Aggregated field definition."""
+
     def __init__(self, op: str, field: str, as_field: str = ''):
         AframeXRValidator.validate_aggregate_operation(op)
         self.op = op

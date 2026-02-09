@@ -135,6 +135,7 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
 
 class ChartCreator:
     """Chart creator base class"""
+
     def __init__(self, chart_specs: dict):
         base_position = chart_specs.get('position', DEFAULT_CHART_POS)
         [self._base_x, self._base_y, self._base_z] = [float(pos) for pos in base_position.split()]  # Base position
@@ -199,6 +200,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
     -----
     XYZ-axes are processed instantly when creating this class or derivatives.
     """
+
     _AXIS_SIZE_MAP = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
     _AXIS_BAR_SIZE_ALIAS_MAP = {'x': 'width', 'y': 'height', 'z': 'depth'}
 
@@ -359,6 +361,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
 
 class NonAxisChannelChartCreator(ChartCreator):
     """Chart creator base class for charts that have channels but do not have XYZ axis."""
+
     def get_axes_specs(self):
         """Returns a Series with the specifications for each axis of the chart."""
         return {}  # Returns an empty dictionary, because it has no axis
@@ -367,6 +370,7 @@ class NonAxisChannelChartCreator(ChartCreator):
 # Second-level subclasses of ChartCreator.
 class ArcChartCreator(NonAxisChannelChartCreator):
     """Arc chart creator class."""
+
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)
@@ -462,6 +466,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
 class BarChartCreator(XYZAxisChannelChartCreator):
     """Bar chart creator class."""
+
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._bar_size_if_nominal_axis: float | None = chart_specs['mark'].get('size') \
@@ -595,6 +600,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
 
 class PointChartCreator(XYZAxisChannelChartCreator):
     """Point chart creator class."""
+
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._max_radius: float = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
