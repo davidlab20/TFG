@@ -17,8 +17,8 @@ class ElementCreator:
             if value is not None and key != 'element'
         }
 
-    @staticmethod
-    def create_object(element_type: str, element_specs: dict) -> 'ElementCreator':
+    @classmethod
+    def create_object(cls, element_type: str, element_specs: dict) -> 'ElementCreator':
         """
         Returns an ElementCreator instance depending on element specifications.
         Notes
