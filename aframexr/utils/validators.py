@@ -1,8 +1,9 @@
 """AframeXR validators"""
 
 from .constants import (
-    AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, AVAILABLE_MARKS, AVAILABLE_SINGLE_ELEMENTS, ERROR_MESSAGES
+    AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, AVAILABLE_MARKS, ERROR_MESSAGES
 )
+from .element_creator import CREATOR_MAP
 
 
 def _validate_3_axes_numerical_values(param_name: str, param_value: str) -> None:
@@ -44,7 +45,7 @@ def _validate_element(element: str) -> None:
     """Raises TypeError or ValueError if element is invalid."""
     AframeXRValidator.validate_type('specs.element', element, str)
 
-    if element not in AVAILABLE_SINGLE_ELEMENTS:
+    if element not in CREATOR_MAP.keys():
         raise ValueError(ERROR_MESSAGES['ELEMENT_TYPE'].format(element=element))
 
 

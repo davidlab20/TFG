@@ -93,6 +93,12 @@ class ImageCreator(ElementCreator):
     def __init__(self, element_specs: dict):
         super().__init__(element_specs)
 
+class OctahedronCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-octahedron{attributes}></a-octahedron>'
+
+    def __init__(self, element_specs: dict):
+        super().__init__(element_specs)
+
 
 class SphereCreator(ElementCreator):
     _ELEMENT_HTML = '<a-sphere{attributes}></a-sphere>'
@@ -109,4 +115,5 @@ CREATOR_MAP.update({'dodecahedron': DodecahedronCreator})
 CREATOR_MAP.update({'gltf': GLTFCreator})
 CREATOR_MAP.update({'icosahedron': IcosahedronCreator})
 CREATOR_MAP.update({'image': ImageCreator})
+CREATOR_MAP.update({'octahedron': OctahedronCreator})
 CREATOR_MAP.update({'sphere': SphereCreator})

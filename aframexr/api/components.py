@@ -504,6 +504,11 @@ class Image(Element):
         super().__init__(src=src, height=height, position=position, rotation=rotation, width=width)
 
 
+class Octahedron(Element):
+    def __init__(self, color: str = None, position: str = None, radius: float = None):
+        super().__init__(color=color, position=position, radius=radius)
+
+
 class Sphere(Element):
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
