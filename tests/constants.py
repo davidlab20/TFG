@@ -99,8 +99,5 @@ NOT_VALID_MARK_BAR_POINT_ENCODINGS = ({'x': 'model'}, {'y': 'sales'}, {'z': 'mot
 MARK_GLTF_SCALES = ('-2  1  -1', '2 2 2', ' 2 2  2   ')
 
 # ===== MARK IMAGE =====
-# Widths and heights OK
-MARK_IMAGE_WIDTHS_HEIGHTS = (0.5, 1, 1.5, 2, 5, 10)
-
 # Widths and heights ERROR
 NOT_GREATER_THAN_0_MARK_IMAGE_WIDTHS_HEIGHTS = (-1, 0)

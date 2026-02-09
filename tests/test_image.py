@@ -61,17 +61,17 @@ class TestMarkImageOK(unittest.TestCase):
 
     def test_width(self):
         """Image changing width creation."""
-        for w in MARK_IMAGE_WIDTHS_HEIGHTS:
+        for w in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             aframexr.Image(URL, width=w).to_html()
 
     def test_height(self):
         """Image changing height creation."""
-        for h in MARK_IMAGE_WIDTHS_HEIGHTS:
+        for h in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             aframexr.Image(URL, height=h).to_html()
 
     def test_position_rotation_width_height(self):
         """Image changing position, rotation, width and height creation."""
-        for p, r, w, h in zip(POSITIONS, ROTATIONS, MARK_IMAGE_WIDTHS_HEIGHTS, MARK_IMAGE_WIDTHS_HEIGHTS):
+        for p, r, w, h in zip(POSITIONS, ROTATIONS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS, ALL_MARK_DEPTHS_HEIGHTS_WIDTHS):
             aframexr.Image(URL, position=p, rotation=r, width=w, height=h).to_html()
 
     def test_concatenation(self):
