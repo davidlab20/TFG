@@ -1,4 +1,5 @@
 """AframeXR validators"""
+from typing import Literal
 
 from .constants import (
     AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, AVAILABLE_MARKS, ERROR_MESSAGES
@@ -20,6 +21,13 @@ def _validate_3_axes_numerical_values(param_name: str, param_value: str) -> None
             float(axis)
         except ValueError:
             raise ValueError(f'The {param_name} values must be numeric.')
+
+
+def _validate_align(align: Literal['center', 'left', 'right']) -> None:
+    """Raises TypeError or ValueError if align is invalid."""
+    AframeXRValidator.validate_type('specs.align', align, str)
+    if align not in ('center', 'left', 'right'):
+        raise ValueError(ERROR_MESSAGES['ALIGN'].format(align=align))
 
 
 def _validate_data(data: dict) -> None:
@@ -146,6 +154,8 @@ class AframeXRValidator:
         elif 'element' in specs:  # Single element
             _validate_element(specs['element'])
 
+            if 'align' in specs:
+                _validate_align(specs['align'])
             if 'color' in specs:
                 AframeXRValidator.validate_type('specs.color', specs['color'], str)
             if 'radius' in specs:

@@ -33,6 +33,7 @@ DEFAULT_POINT_RADIUS = 0.5  # Default point radius
 
 # ========== ERROR MESSAGES ==========
 ERROR_MESSAGES = {
+    'ALIGN': "Invalid align property: {align}. Must be one of ['center', 'left', 'right']",
     'AGGREGATE_OPERATION': 'Invalid aggregate operation: {operation}',
     'AGGREGATE_OPERATION_NOT_IN_AGGREGATE': 'Aggregate must contain key "op"',
     'DATA_WITH_VALUES_AND_URL_IN_SPECS': 'Data cannot contain both "values" and "url"; they are mutually exclusive',
