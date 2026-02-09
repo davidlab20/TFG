@@ -48,63 +48,36 @@ class ElementCreator:
 class BoxCreator(ElementCreator):
     _ELEMENT_HTML = '<a-box{attributes}></a-box>'
 
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
-
 
 class ConeCreator(ElementCreator):
     _ELEMENT_HTML = '<a-cone{attributes}></a-cone>'
-
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
 
 
 class CylinderCreator(ElementCreator):
     _ELEMENT_HTML = '<a-cylinder side="double"{attributes}></a-cylinder>'
 
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
-
 
 class DodecahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-dodecahedron{attributes}></a-dodecahedron>'
-
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
 
 
 class GLTFCreator(ElementCreator):
     _ELEMENT_HTML = '<a-gltf-model{attributes}></a-gltf-model>'
 
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
-
 
 class IcosahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-icosahedron{attributes}></a-icosahedron>'
-
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
 
 
 class ImageCreator(ElementCreator):
     _ELEMENT_HTML = '<a-image{attributes}></a-image>'
 
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
-
 class OctahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-octahedron{attributes}></a-octahedron>'
-
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
 
 
 class SphereCreator(ElementCreator):
     _ELEMENT_HTML = '<a-sphere{attributes}></a-sphere>'
-
-    def __init__(self, element_specs: dict):
-        super().__init__(element_specs)
 
 
 # Add creator classes to CREATOR_MAP dynamically
