@@ -95,6 +95,10 @@ class TextCreator(ElementCreator):
     _ELEMENT_HTML = '<a-text{attributes}></a-text>'
 
 
+class TorusCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-torus{attributes}></a-torus>'
+
+
 # Add creator classes to CREATOR_MAP dynamically
 CREATOR_MAP.update({'box': BoxCreator})
 CREATOR_MAP.update({'cone': ConeCreator})
@@ -108,3 +112,4 @@ CREATOR_MAP.update({'plane': PlaneCreator})
 CREATOR_MAP.update({'sphere': SphereCreator})
 CREATOR_MAP.update({'tetrahedron': TetrahedronCreator})
 CREATOR_MAP.update({'text': TextCreator})
+CREATOR_MAP.update({'torus': TorusCreator})

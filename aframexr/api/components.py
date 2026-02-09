@@ -529,3 +529,10 @@ class Text(Element):
     def __init__(self, value: str, align: Literal['center', 'left', 'right'] = None, color: str = None,
                  position: str = None, rotation: str = None, scale: str = None):
         super().__init__(align=align, color=color, position=position, rotation=rotation, value=value, scale=scale)
+
+
+class Torus(Element):
+    def __init__(self, color: str = None, position: str = None, radius: float = None, radius_tabular: float = None,
+                 rotation: str = None):
+        super().__init__(color=color, position=position, radius=radius, radius_tabular=radius_tabular,
+                         rotation=rotation)
