@@ -466,16 +466,12 @@ class Element(TopLevelMixin, ABC):
 
 # Single elements
 class Box(Element):
-    """Simple box."""
-
     def __init__(self, color: str = None, depth: float = None, height: float = None, position: str = None,
                  rotation: str = None, width: float = None):
         super().__init__(color=color, depth=depth, height=height, position=position, rotation=rotation, width=width)
 
 
 class Cone(Element):
-    """Simple cone."""
-
     def __init__(self, color: str = None, height: float = None, position: str = None, radius_bottom: float = None,
                  radius_top: float = None):
         super().__init__(color=color, height=height, position=position, radius_bottom=radius_bottom,
@@ -483,43 +479,31 @@ class Cone(Element):
 
 
 class Cylinder(Element):
-    """Simple cylinder."""
-
     def __init__(self, color: str = None, height: float = None, position: str = None, radius: float = None,
                  rotation: str = None):
         super().__init__(color=color, height=height, position=position, radius=radius, rotation=rotation)
 
 
 class Dodecahedron(Element):
-    """Simple dodecahedron."""
-
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
 
 
 class GLTF(Element):
-    """GLTF model."""
-
     def __init__(self, src: str, scale: str = None, position: str = None, rotation: str = None):
         super().__init__(src=src, scale=scale, position=position, rotation=rotation)
 
 
 class Icosahedron(Element):
-    """Simple icosahedron."""
-
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
 
 
 class Image(Element):
-    """Image."""
-
     def __init__(self, src: str, height: float = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__(src=src, height=height, position=position, rotation=rotation, width=width)
 
 
 class Sphere(Element):
-    """Simple sphere."""
-
     def __init__(self, color: str = None, position: str = None, radius: float = None):
         super().__init__(color=color, position=position, radius=radius)
