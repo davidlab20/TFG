@@ -16,9 +16,6 @@ from .axis_creator import AxisCreator
 from .constants import *
 from .element_creator import BoxCreator, CylinderCreator, ElementCreator, SphereCreator
 
-GROUP_DICT_TEMPLATE = {'pos': '', 'rotation': ''}  # Can be copied using copy.copy(), no mutable objects
-"""Group dictionary template for group base specifications creation."""
-
 CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, classes are added at the end of this file
 
 
