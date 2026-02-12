@@ -1,56 +1,84 @@
 """AframeXR filters"""
 
 import polars as pl
+from abc import ABC, abstractmethod
 from polars import DataFrame
 
 from ..utils.validators import AframeXRValidator
 
 
-class FilterTransform:
-    """FilterTransform base class."""
+OPERATOR_MAP: dict[str, type['FilterTransform']] = {}  # Operator map, classes are added at the end of this file
 
-    def __init__(self, field: str, operator: str, value: str | float):
+
+class FilterTransform(ABC):
+    """FilterTransform base class."""
+    _operator: str = ''
+    _magic_method: str = ''  # Must be defined by child classes with its method (e.g. __eq__)
+
+    @abstractmethod
+    def __init__(self, field: str, value: str | float):
         self.field = field
-        self.operator = operator
         self.value = value
-        self._magic_method: str = ''  # Must be defined by child classes with its method (e.g. __eq__)
 
     # Exporting equation formats
-    def equation_to_dict(self):
+    @abstractmethod
+    def to_dict(self):
         """Returns a dictionary about the equation of the filter with the syntaxis of the JSON specifications."""
-        return {'filter': f'datum.{self.field} {self.operator} {self.value}'}
 
     # Creating filters
     @staticmethod
-    def from_string(equation: str):
+    def from_equation(equation: str):
+        AframeXRValidator.validate_type('equation', equation, str)
+
+        parts = equation.split()
+        if len(parts) != 3:
+            raise SyntaxError('Incorrect syntax, must be datum.{field} {operator} {value}')
+
+        field, op, value = parts
+
+        try:
+            value = float(value)
+        except ValueError:
+            pass
+
+        if op in OPERATOR_MAP:
+            if not field.startswith('datum.'):
+                raise SyntaxError('Incorrect syntax, must be datum.{field} {operator} {value}')
+            return OPERATOR_MAP[op](field.removeprefix('datum.'), value)
+        else:
+            raise ValueError(f'There is no filter for equation: {equation}')
+
+    @staticmethod
+    def from_dict(filter_specs: dict):
         """
-        Creates a child filter object from the given equation.
+        Creates a child filter object from the given filter's specifications.
 
         Parameters
         ----------
-        equation : str
-            Equation to parse.
+        filter_specs : dict
+            Filter specifications.
 
         Raises
         ------
         TypeError
-            If equation is not a string.
+            If equation is not a dictionary.
         ValueError
-            If the equation of the filter is not correct.
+            If the specifications of the filter is not correct.
 
         Notes
         -----
         Suppose equation is a string for posterior calls of from_string of child filters.
         """
-        AframeXRValidator.validate_type('equation', equation, str)
-        if '==' in equation:  # Equation is of type field == value
-            return FieldEqualPredicate.from_string(equation)
-        if '>' in equation:  # Equation is of type field > value
-            return FieldGTPredicate.from_string(equation)
-        if '<' in equation:  # Equation is of type field < value
-            return FieldLTPredicate.from_string(equation)
+        AframeXRValidator.validate_type('equation', filter_specs, dict)
+
+        if 'equal' in filter_specs:  # Equation is of type field == value
+            return FieldEqualPredicate(filter_specs['field'], filter_specs['equal'])
+        if 'gt' in filter_specs:  # Equation is of type field > value
+            return FieldGTPredicate(filter_specs['field'], filter_specs['gt'])
+        if 'lt' in filter_specs:  # Equation is of type field < value
+            return FieldLTPredicate(filter_specs['field'], filter_specs['lt'])
         else:
-            raise ValueError(f'There is no filter for equation: {equation}')
+            raise ValueError(f'There is no filter for specifications: {filter_specs}')
 
     # Filter data
     def get_filtered_data(self, data: DataFrame) -> DataFrame:
@@ -70,122 +98,41 @@ class FieldEqualPredicate(FilterTransform):
     """Equal predicate filter class."""
 
     def __init__(self, field: str, equal: str | float):
-        operator = '=='
-        super().__init__(field, operator, equal)
+        self._operator = '=='
         self._magic_method = '__eq__'  # Magic method
+        super().__init__(field, equal)
 
-    @staticmethod
-    def from_string(equation: str):
-        """
-        Creates a FieldEqualPredicate from the equation string receiving.
-
-        Parameters
-        ----------
-        equation : str
-            Equation to parse.
-
-        Raises
-        ------
-        SyntaxError
-            If equation has an incorrect syntax.
-
-        Notes
-        -----
-        Should receive equation as a string (as it has been called from FilterTransform).
-        """
-        if len(equation.split('==')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field} == {value}')
-        field = equation.split('==')[0].strip()
-
-        if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field} == {value}')
-        field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
-        value = equation.split('==')[1].strip()
-        try:
-            value = int(value) if int(value) == float(value) else float(value)  # Try to convert value into a number
-        except ValueError:
-            pass  # Remain value as string
-
-        return FieldEqualPredicate(field, value)
+    def to_dict(self):
+        return {'field': self.field, 'equal': self.value}
 
 
 class FieldGTPredicate(FilterTransform):
     """Greater than predicate filter class."""
 
     def __init__(self, field: str, gt: float):
-        operator = '>'
-        super().__init__(field, operator, gt)
+        self._operator = '>'
         self._magic_method = '__gt__'  # Magic method
+        super().__init__(field, gt)
 
-    @staticmethod
-    def from_string(equation: str):
-        """
-        Creates a FieldGTPredicate from the equation string receiving.
-
-        Parameters
-        ----------
-        equation : str
-            Equation to parse.
-
-        Raises
-        ------
-        SyntaxError
-            If equation has an incorrect syntax.
-
-        Notes
-        -----
-        Should receive equation as a string (as it has been called from FilterTransform).
-        """
-        if len(equation.split('>')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field} > {value}')
-        field = equation.split('>')[0].strip()
-
-        if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field} > {value}')
-        field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
-        value = float(equation.split('>')[1].strip())
-        if int(value) == float(value):
-            value = int(value)
-
-        return FieldGTPredicate(field, value)
+    def to_dict(self):
+        return {'field': self.field, 'gt': self.value}
 
 
 class FieldLTPredicate(FilterTransform):
     """Lower than predicate filter class."""
 
     def __init__(self, field: str, lt: float):
-        operator = '<'
-        super().__init__(field, operator, lt)
+        self._operator = '<'
         self._magic_method = '__lt__'  # Magic method
+        super().__init__(field, lt)
 
-    @staticmethod
-    def from_string(equation: str):
-        """
-        Creates a FieldLTPredicate from the equation string receiving.
+    def to_dict(self):
+        return {'field': self.field, 'lt': self.value}
 
-        Parameters
-        ----------
-        equation : str
-            Equation to parse.
 
-        Raises
-        ------
-        SyntaxError
-            If equation has an incorrect syntax.
-
-        Notes
-        -----
-        Should receive equation as a string (as it has been called from FilterTransform).
-        """
-        if len(equation.split('<')) != 2:
-            raise SyntaxError('Incorrect syntax, must be datum.{field} < {value}')
-        field = equation.split('<')[0].strip()
-
-        if not 'datum.' in field:  # The word 'datum.' is not in the field
-            raise SyntaxError('Incorrect syntax, must be datum.{field} < {value}')
-        field = field.replace('datum.', '')  # Delete the 'datum.' part of the field
-        value = float(equation.split('<')[1].strip())
-        if int(value) == float(value):
-            value = int(value)
-
-        return FieldLTPredicate(field, value)
+# Add classes to OPERATOR_MAP
+OPERATOR_MAP.update({
+    '==': FieldEqualPredicate,
+    '>': FieldGTPredicate,
+    '<': FieldLTPredicate,
+})
