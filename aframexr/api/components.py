@@ -23,6 +23,32 @@ from .filters import FilterTransform
 from ..utils.scene_creator import SceneCreator
 from ..utils.validators import AframeXRValidator
 
+class Parameter:
+    def __init__(self, name: str, select: dict):
+        AframeXRValidator.validate_type('name', name, str)
+        AframeXRValidator.validate_type('select', select, dict)
+
+        self._name = name
+        self._select_config = select
+
+    def to_specs(self):
+        return {
+            'name': self._name,
+            'select': self._select_config
+        }
+
+    def to_dict(self) -> dict:
+        return {'param': self._name}
+
+# Selections
+def selection_point(name: str, fields: list) -> Parameter:
+    """Add selection to the chart."""
+    AframeXRValidator.validate_type('name', name, str)
+    AframeXRValidator.validate_type('fields', fields, list)
+
+    select_config = {'type': 'point', 'fields': fields}
+    return Parameter(name=name, select=select_config)
+
 
 class TopLevelMixin:
     """Top level chart class."""
@@ -222,6 +248,13 @@ class Chart(TopLevelMixin):
         if height is not None: self._specifications.update({'height': height})
         if width is not None: self._specifications.update({'width': width})
 
+    def add_params(self, *params: Parameter):
+        for p in params:
+            AframeXRValidator.validate_type('params', p, Parameter)
+
+        if 'params' not in self._specifications:
+            self._specifications.update({'params': [p.to_specs() for p in params]})
+
     # Types of charts
     def mark_arc(self, radius: float = None):
         """
@@ -394,19 +427,19 @@ class Chart(TopLevelMixin):
             aggreg_chart._specifications['transform'].append(aggregate_specs)
         return aggreg_chart
 
-    def transform_filter(self, equation_filter: str | FilterTransform):
+    def transform_filter(self, equation_filter: str | FilterTransform | Parameter):
         """
         Filters the chart with the given transformation.
 
         Parameters
         ----------
-        equation_filter : str | FilterTransform
-            The equation string of the filter transformation, or a Filter object (see Examples).
+        equation_filter : str | FilterTransform | Parameter
+            The equation string of the filter transformation, a Filter object (see Examples) or Parameter object.
 
         Raises
         ------
         TypeError
-            If equation is not a string or a Filter object.
+            If equation is not a string, a Filter object or a Parameter object.
 
         Notes
         -----
@@ -435,20 +468,24 @@ class Chart(TopLevelMixin):
         >>> #filtered_chart.show()
         """
         # Validate the type of equation_filter and get a filter object from the equation_filter
-        AframeXRValidator.validate_type('equation_filter', equation_filter, (str, FilterTransform))
+        AframeXRValidator.validate_type(
+            'equation_filter', equation_filter, (str, FilterTransform, Parameter)
+        )
         if isinstance(equation_filter, str):
-            filter_transform = FilterTransform.from_string(equation_filter)
-        else:  # FilterTransform object
+            filter_transform = FilterTransform.from_equation(equation_filter)
+        elif isinstance(equation_filter, (FilterTransform, Parameter)):
             filter_transform = equation_filter
+        else:  # pragma: no cover
+            raise RuntimeError('Unreachable code. Parameter should have been validated before')
 
         # Create a copy of the chart (in case of assignation, to preserve the main chart)
         filt_chart = self.copy()
 
         # Add the information of the filter object to the specifications
         if not filt_chart._specifications.get('transform'):  # First time filtering the chart
-            filt_chart._specifications.update({'transform': [filter_transform.equation_to_dict()]})  # Create field
+            filt_chart._specifications.update({'transform': [{'filter': filter_transform.to_dict()}]})
         else:  # Not the first filter of the chart
-            filt_chart._specifications['transform'].append(filter_transform.equation_to_dict())  # Add filter to field
+            filt_chart._specifications['transform'].append({'filter': filter_transform.to_dict()})
         return filt_chart  # Returns the copy of the chart
 
 
