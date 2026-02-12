@@ -185,8 +185,7 @@ class ChartCreator:
 
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
-        group_specs = copy.copy(GROUP_DICT_TEMPLATE)  # Shallow copy because the template has no mutable objects.
-        group_specs.update({
+        group_specs = {
             'position': f'{self._base_x} {self._base_y} {self._base_z}',
             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'
         })
