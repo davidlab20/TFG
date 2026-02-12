@@ -188,7 +188,10 @@ class ChartCreator:
         group_specs = {
             'position': f'{self._base_x} {self._base_y} {self._base_z}',
             'rotation': f'{self._x_rotation} {self._y_rotation} {self._z_rotation}'
-        })
+        }
+
+        if hasattr(self, '_selection'):
+            group_specs.update({'selection_affects_to': self._selection['name']})
         return group_specs
 
 
