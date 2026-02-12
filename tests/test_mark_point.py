@@ -197,7 +197,7 @@ class TestMarkPointOK(unittest.TestCase):
     def test_filter(self):
         """Mark point changing filter creation."""
         for eq in FILTER_EQUATIONS:
-            for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
+            for f in [eq, FilterTransform.from_equation(eq)]:  # Filter using equation and using FilterTransform object
                 point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
                 point_chart.to_html()
                 self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
@@ -411,7 +411,10 @@ class TestMarkPointError(unittest.TestCase):
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
                 filt_chart.to_html()
-            self.assertEqual(str(warning.warning), f'Data does not contain values for the filter: {f}.')
+            self.assertEqual(
+                str(warning.warning),
+                f'Data does not contain values for the filter: {FilterTransform.from_equation(f).to_dict()}.'
+            )
 
     def test_filter_error(self):
         """Mark point filter error."""
@@ -419,9 +422,7 @@ class TestMarkPointError(unittest.TestCase):
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
                 filt_chart.to_html()
-            self.assertIn(str(error.exception), ['Incorrect syntax, must be datum.{field} == {value}',
-                                            'Incorrect syntax, must be datum.{field} > {value}',
-                                            'Incorrect syntax, must be datum.{field} < {value}'])
+            self.assertEqual(str(error.exception), 'Incorrect syntax, must be datum.{field} {operator} {value}')
 
     def test_aggregate_error(self):
         """Mark point aggregate error."""

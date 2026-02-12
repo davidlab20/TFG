@@ -134,7 +134,7 @@ class TestMarkArcOK(unittest.TestCase):
     def test_filter(self):
         """Pie chart changing filter creation."""
         for eq in FILTER_EQUATIONS:
-            for f in [eq, FilterTransform.from_string(eq)]:  # Filter using equation and using FilterTransform object
+            for f in [eq, FilterTransform.from_equation(eq)]:  # Filter using equation and using FilterTransform object
                 pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 pie_chart.to_html()
                 self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart))
@@ -341,7 +341,10 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertWarns(UserWarning) as warning:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.to_html()
-            self.assertEqual(str(warning.warning), f'Data does not contain values for the filter: {f}.')
+            self.assertEqual(
+                str(warning.warning),
+                f'Data does not contain values for the filter: {FilterTransform.from_equation(f).to_dict()}.'
+            )
 
     def test_filter_error(self):
         """Pie chart filter error."""
@@ -349,9 +352,7 @@ class TestMarkArcError(unittest.TestCase):
             with self.assertRaises(SyntaxError) as error:
                 filt_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').transform_filter(f)
                 filt_chart.to_html()
-            self.assertIn(str(error.exception), ['Incorrect syntax, must be datum.{field} == {value}',
-                                            'Incorrect syntax, must be datum.{field} > {value}',
-                                            'Incorrect syntax, must be datum.{field} < {value}'])
+            self.assertEqual(str(error.exception), 'Incorrect syntax, must be datum.{field} {operator} {value}')
 
     def test_aggregate_error(self):
         """Pie chart aggregate error."""
