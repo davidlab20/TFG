@@ -13,11 +13,10 @@ class ChartsHTMLCreator:
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
 
         # Chart HTML
-        chart_html = ''
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
-        chart_html += '<a-entity{attributes}>\n'.format(
+        chart_html = '<a-entity{attributes}>\n'.format(
             attributes=''.join(f' {key.replace("_", "-")}="{value}"' for key, value in group_specs.items())
         )
         elements = chart_object.get_elements()  # Get the specifications for each element of the chart
