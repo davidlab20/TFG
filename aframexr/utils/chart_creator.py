@@ -1,6 +1,5 @@
 """AframeXR charts creator"""
 
-import copy
 import io
 import json
 import os
