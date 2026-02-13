@@ -343,7 +343,7 @@ class TestMarkArcError(unittest.TestCase):
                 filt_chart.to_html()
             self.assertEqual(
                 str(warning.warning),
-                f'Data does not contain values for the filter: {FilterTransform.from_equation(f).to_dict()}.'
+                f'Data does not contain values for the filter: {FilterTransform.from_equation(f).to_dict()}'
             )
 
     def test_filter_error(self):
