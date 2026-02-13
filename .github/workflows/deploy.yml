@@ -32,6 +32,7 @@ jobs:
               marimo export html-wasm rotated_chart_notebook.py -o rotated-chart-notebook.html --mode edit
               marimo export html-wasm image_and_gltf_notebook.py -o image-and-gltf-notebook.html --mode edit
               marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
+              marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
