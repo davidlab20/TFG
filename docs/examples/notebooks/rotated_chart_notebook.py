@@ -1,7 +1,7 @@
 import marimo
 
-__generated_with = "0.19.9"
-app = marimo.App(width="medium")
+__generated_with = "0.19.11"
+app = marimo.App(width="medium", app_title="Rotated charts notebook")
 
 
 @app.cell(hide_code=True)
