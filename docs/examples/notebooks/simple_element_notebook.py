@@ -33,14 +33,6 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(rf"""
-    ---
-    """)
-    return
-
-
-@app.cell(hide_code=True)
-def _(mo):
-    mo.md(rf"""
     ## Box
     """)
     return
