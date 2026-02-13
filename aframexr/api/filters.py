@@ -64,10 +64,6 @@ class FilterTransform(ABC):
             If equation is not a dictionary.
         ValueError
             If the specifications of the filter is not correct.
-
-        Notes
-        -----
-        Suppose equation is a string for posterior calls of from_string of child filters.
         """
         AframeXRValidator.validate_type('equation', filter_specs, dict)
 
