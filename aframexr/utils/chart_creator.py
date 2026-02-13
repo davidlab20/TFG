@@ -89,10 +89,17 @@ def _get_raw_data(chart_specs: dict) -> DataFrame:
 
         for filter_transformation in transform_field:  # The first transformations are the filters
             if filter_transformation.get('filter'):
-                filter_object = FilterTransform.from_string(filter_transformation['filter'])
+                filter_specs = filter_transformation['filter']
+                if isinstance(filter_specs, str):
+                    filter_object = FilterTransform.from_equation(filter_specs)
+                elif isinstance(filter_specs, dict):
+                    filter_object = FilterTransform.from_dict(filter_transformation['filter'])
+                else:  # pragma: no cover (should never enter here, as filter specs should have been validated)
+                    raise RuntimeError('Unreachable code. Filter specifications should have been validated earlier')
+
                 raw_data = filter_object.get_filtered_data(raw_data)
                 if raw_data.is_empty():  # Data does not contain any value for the filter
-                    warnings.warn(f'Data does not contain values for the filter: {filter_transformation["filter"]}.')
+                    warnings.warn(f'Data does not contain values for the filter: {filter_transformation["filter"]}')
 
         for non_filter_transf in transform_field:  # Non-filter transformations
             groupby = set(non_filter_transf.get('groupby')) if non_filter_transf.get('groupby') else set()
