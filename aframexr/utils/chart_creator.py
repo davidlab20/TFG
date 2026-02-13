@@ -622,8 +622,8 @@ class PointChartCreator(XYZAxisChannelChartCreator):
                                    encoding_type: str) -> Series:
         """Returns a Series containing the coordinates for each point of the chart, for the given axis."""
         attr_name = self._AXIS_SIZE_MAP.get(axis_name)
-        if not attr_name:
-            raise ValueError(f"Axis must be x, y or z, not {axis_name}.")
+        if not attr_name:  # pragma: no cover (this method is internally called)
+            raise RuntimeError('Unreachable code. Parameter axis_name is not correct')
 
         axis_size = getattr(self, attr_name)  # Get axis dimensions depending on the given axis
 
