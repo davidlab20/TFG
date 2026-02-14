@@ -16,27 +16,29 @@ class ChartsHTMLCreator:
         chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
 
         group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
-        chart_html = '<a-entity{attributes}>\n'.format(
+        chart_html = '<a-entity{attributes}>'.format(
             attributes=''.join(f' {key.replace("_", "-")}="{value}"' for key, value in group_specs.items())
-        )
+        ) + "  <!-- Chart's box (modify this values if you want to change position or rotation) -->\n"
+        chart_html += f'\t\t\t<a-entity position="{chart_object.get_relative_bottom_left_corner_position()}">\n'
         elements = chart_object.get_elements()  # Get the specifications for each element of the chart
         for element in elements:
-            chart_html += '\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
+            chart_html += '\t\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
 
         # Axis HTML
         axes_specs = chart_object.get_axes_specs()
 
         for ax, ax_specs in axes_specs.items():
-            chart_html += f'\n\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
-            chart_html += '\t\t\t' + AxisCreator.create_axis_html(ax_specs['start'], ax_specs['end']) + '\n'
+            chart_html += f'\n\t\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
+            chart_html += '\t\t\t\t' + AxisCreator.create_axis_html(ax_specs['start'], ax_specs['end']) + '\n'
             for label_pos, label_value in zip(ax_specs['labels_pos'], ax_specs['labels_values']):
                 label_rotation = ax_specs['labels_rotation']
                 label_align = ax_specs['labels_align']
-                chart_html += '\t\t\t' + AxisCreator.create_label_html(
+                chart_html += '\t\t\t\t' + AxisCreator.create_label_html(
                     label_pos, label_rotation, label_value, label_align
                 ) + '\n'
 
-        # Close the group
+        # Close the groups
+        chart_html += '\t\t\t</a-entity>\n'
         chart_html += '\t\t</a-entity>\n\t\t'
         return chart_html
 

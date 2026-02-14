@@ -186,6 +186,12 @@ class ChartCreator:
 
         return CREATOR_MAP[chart_type](chart_specs)
 
+    def get_relative_bottom_left_corner_position(self) -> str:
+        """Returns the relative position of the bottom left corner of the chart."""
+        # Only XYZAxisChannelChartCreator objects has that attribute, if not return '0 0 0'
+        return getattr(self, '_relative_bottom_left_corner_position', '0 0 0')
+
+
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
         group_specs = {
@@ -258,9 +264,11 @@ class XYZAxisChannelChartCreator(ChartCreator):
         if self._chart_depth is None:  # User did not define chart depth
             self._chart_depth = _calculate_axis_size(self._z_data, DEFAULT_CHART_DEPTH)
 
-        self._base_x -= self._chart_width / 2  # Correct position of x-axis
-        self._base_y -= self._chart_height / 2  # Correct position of y-axis
-        self._base_z += self._chart_depth / 2  # Correct position of z-axis
+        self._relative_bottom_left_corner_position = (
+            f'{-self._chart_width / 2} '
+            f'{-self._chart_height / 2} '
+            f'{self._chart_depth / 2}'
+        )
 
     def get_axes_specs(self) -> dict:
         """Returns a dictionary with the specifications for each axis of the chart."""
