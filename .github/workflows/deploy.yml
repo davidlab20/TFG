@@ -35,6 +35,10 @@ jobs:
               marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
               marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
 
+          - name: ❌ Remove convert_notebooks_py_to_ipynb.py file from GitHub Pages
+            working-directory: docs/examples/notebooks
+            run: rm -f convert_notebooks_py_to_ipynb.py  # Remove from GitHub Pages
+
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
