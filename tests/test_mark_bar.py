@@ -5,7 +5,7 @@ import unittest
 from bs4 import BeautifulSoup
 
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import DEFAULT_CHART_HEIGHT, ERROR_MESSAGES, PRECISION_DECIMALS
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, DEFAULT_CHART_HEIGHT, ERROR_MESSAGES, PRECISION_DECIMALS
 from tests.constants import *  # Constants used for testing
 
 
@@ -236,6 +236,11 @@ class TestMarkBarOK(unittest.TestCase):
         self.assertTrue(_bars_bases_are_on_x_axis(concatenated_chart))
         self.assertTrue(_bars_height_does_not_exceed_max_height(concatenated_chart))
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').to_html(environment=e)
+
     def test_save(self):
         """Bars chart saving."""
         import tempfile
@@ -431,3 +436,12 @@ class TestMarkBarError(unittest.TestCase):
 
         self.assertRegex(str(error.exception), r'Encoding channel\(s\) .* must be defined in aggregate .*'
                                                r', otherwise that fields will disappear.')
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            bars_chart.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

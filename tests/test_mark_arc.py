@@ -4,7 +4,7 @@ import unittest
 
 from bs4 import BeautifulSoup
 
-from aframexr import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from aframexr.api.filters import FilterTransform
 from tests.constants import *  # Constants used for testing
 
@@ -183,6 +183,11 @@ class TestMarkArcOK(unittest.TestCase):
 
         concatenated_chart.to_html()
         self.assertTrue(_slices_are_well_placed(concatenated_chart))
+
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').to_html(environment=e)
 
     def test_save(self):
         """Pie chart saving."""
@@ -372,3 +377,12 @@ class TestMarkArcError(unittest.TestCase):
 
         self.assertRegex(str(error.exception), r'Encoding channel\(s\) .* must be defined in aggregate .*'
                                                r', otherwise that fields will disappear.')
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            pie_chart.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

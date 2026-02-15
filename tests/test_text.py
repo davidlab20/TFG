@@ -2,7 +2,7 @@ import aframexr
 import unittest
 from typing import Literal, get_args
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -71,6 +71,11 @@ class TestTextOK(unittest.TestCase):
             concatenated_chart += aframexr.Text(value=TEXT_CONTENT, position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Text(value=TEXT_CONTENT).to_html(environment=e)
+
 
 class TestTextERROR(unittest.TestCase):
     """Tests for text creation error."""
@@ -110,3 +115,12 @@ class TestTextERROR(unittest.TestCase):
                     pos_or_rot='specs.scale', pos_or_rot_value=s
                 )
             )
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        text = aframexr.Text(value=TEXT_CONTENT)
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            text.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

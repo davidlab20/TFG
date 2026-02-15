@@ -1,7 +1,7 @@
 import aframexr
 import unittest
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -67,6 +67,11 @@ class TestConeOK(unittest.TestCase):
             concatenated_chart += aframexr.Cone(position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Cone().to_html(environment=e)
+
 
 class TestConeERROR(unittest.TestCase):
     """Tests for cone creation errors."""
@@ -106,3 +111,12 @@ class TestConeERROR(unittest.TestCase):
                 str(error.exception),
                 ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='specs.radius_top')
             )
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        cone = aframexr.Cone()
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            cone.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

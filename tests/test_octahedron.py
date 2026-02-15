@@ -1,7 +1,7 @@
 import aframexr
 import unittest
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -54,6 +54,11 @@ class TestOctahedronOK(unittest.TestCase):
             concatenated_chart += aframexr.Octahedron(position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Octahedron().to_html(environment=e)
+
 
 class TestOctahedronERROR(unittest.TestCase):
     """Tests for octahedron creation error."""
@@ -79,3 +84,12 @@ class TestOctahedronERROR(unittest.TestCase):
                 octahedron = aframexr.Octahedron(radius=r)
                 octahedron.to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='specs.radius'))
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        octahedron = aframexr.Octahedron()
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            octahedron.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

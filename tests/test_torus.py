@@ -1,8 +1,7 @@
 import aframexr
 import unittest
-from typing import Literal, get_args
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -67,6 +66,11 @@ class TestTorusOK(unittest.TestCase):
             concatenated_chart += aframexr.Torus(position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Torus().to_html(environment=e)
+
 
 class TestTorusERROR(unittest.TestCase):
     """Tests for torus creation error."""
@@ -103,3 +107,12 @@ class TestTorusERROR(unittest.TestCase):
                 str(error.exception),
                 ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='specs.radius_tubular')
             )
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        torus = aframexr.Torus()
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            torus.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

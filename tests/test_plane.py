@@ -1,7 +1,7 @@
 import aframexr
 import unittest
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -67,6 +67,11 @@ class TestPlaneOK(unittest.TestCase):
             concatenated_chart += aframexr.Plane(position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Plane().to_html(environment=e)
+
 
 class TestPlaneERROR(unittest.TestCase):
     """Tests for plane creation error."""
@@ -84,3 +89,12 @@ class TestPlaneERROR(unittest.TestCase):
                 param_name='specs.color', expected_type=str.__name__, current_type=type(not_an_string).__name__
             )
         )
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        plane = aframexr.Plane()
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            plane.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))

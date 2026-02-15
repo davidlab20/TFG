@@ -1,6 +1,8 @@
 import aframexr
 import unittest
 
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS
+
 from tests.constants import *
 
 URL = 'https://davidlab20.github.io/TFG/imgs/logo.png'
@@ -81,6 +83,11 @@ class TestMarkImageOK(unittest.TestCase):
             concatenated_chart += aframexr.Image(URL, position=pos)
 
         concatenated_chart.to_html()
+
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Image(URL).to_html(environment=e)
 
     def test_save(self):
         """Image saving."""

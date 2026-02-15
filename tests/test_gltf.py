@@ -1,14 +1,17 @@
 import aframexr
 import unittest
 
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS
+
 from tests.constants import *
 
 URL = ('https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/refs/heads/main/Models/AntiqueCamera/'
-        'glTF/AntiqueCamera.gltf')
+       'glTF/AntiqueCamera.gltf')
 
 
 class TestMarkGLTFOK(unittest.TestCase):
     """Mark GLTF OK tests."""
+
     def test_simple(self):
         """Simple GLTF creation."""
         aframexr.GLTF(URL).to_html()
@@ -77,6 +80,11 @@ class TestMarkGLTFOK(unittest.TestCase):
             concatenated_chart += aframexr.GLTF(URL, position=pos)
 
         concatenated_chart.to_html()
+
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.GLTF(URL).to_html(environment=e)
 
     def test_save(self):
         """GLTF saving."""

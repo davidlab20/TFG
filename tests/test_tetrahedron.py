@@ -1,7 +1,7 @@
 import aframexr
 import unittest
 
-from aframexr.utils.constants import ERROR_MESSAGES
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, ERROR_MESSAGES
 from .constants import *
 
 
@@ -54,6 +54,11 @@ class TestTetrahedronOK(unittest.TestCase):
             concatenated_chart += aframexr.Tetrahedron(position=p)
         concatenated_chart.to_html()
 
+    def test_environment(self):
+        """Scene creation with personalized environment."""
+        for e in AVAILABLE_ENVIRONMENTS:
+            aframexr.Tetrahedron().to_html(environment=e)
+
 
 class TestTetrahedronERROR(unittest.TestCase):
     """Tests for tetrahedron creation error."""
@@ -79,3 +84,12 @@ class TestTetrahedronERROR(unittest.TestCase):
                 tetrahedron = aframexr.Tetrahedron(radius=r)
                 tetrahedron.to_html()
             self.assertEqual(str(error.exception), ERROR_MESSAGES['POSITIVE_NUMBER'].format(param_name='specs.radius'))
+
+    def test_environment_error(self):
+        """Scene creation with invalid personalized environment."""
+        environment = 'bad_environment'
+        tetrahedron = aframexr.Tetrahedron()
+        with self.assertRaises(ValueError) as error:
+            # noinspection PyTypeChecker
+            tetrahedron.to_html(environment=environment)
+        self.assertEqual(str(error.exception), ERROR_MESSAGES['ENVIRONMENT'].format(environment=environment))
