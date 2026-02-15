@@ -1,8 +1,9 @@
 """AframeXR validators"""
+
 from typing import Literal
 
 from .constants import (
-    AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, AVAILABLE_MARKS, ERROR_MESSAGES
+    AVAILABLE_AGGREGATES, AVAILABLE_ENCODING_TYPES, AVAILABLE_ENVIRONMENTS, AVAILABLE_MARKS, ERROR_MESSAGES
 )
 from .element_creator import CREATOR_MAP
 
@@ -183,6 +184,11 @@ class AframeXRValidator:
         if 'rotation' in specs:
             AframeXRValidator.validate_type('specs.rotation', specs['rotation'], str)
             _validate_3_axes_numerical_values('rotation', specs['rotation'])
+
+        if 'environment' in specs:
+            AframeXRValidator.validate_type('specs.environment', specs['environment'], str)
+            if specs['environment'] not in AVAILABLE_ENVIRONMENTS:
+                raise ValueError(ERROR_MESSAGES['ENVIRONMENT'].format(environment=specs['environment']))
 
         if 'depth' in specs:
             AframeXRValidator.validate_positive_number('depth', specs['depth'])
