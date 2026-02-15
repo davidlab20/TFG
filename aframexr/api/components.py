@@ -36,7 +36,7 @@ class TopLevelMixin:
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
             warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
 
-            return HTML(self.show())
+            return self.show()
 
     # Concatenating charts
     def __add__(self, other):
@@ -149,7 +149,7 @@ class TopLevelMixin:
     'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
     'osiris'] = 'default'):
         """Show the scene in the notebook."""
-        return (
+        return HTML(
             '<iframe '
             f'srcdoc="{html.escape(self.to_html(environment), quote=True)}" '  # Raw HTML escaped
             'width="100%" '  # Adjust to maximum width
