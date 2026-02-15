@@ -47,6 +47,11 @@ jobs:
               commit_message: 'Update .ipynb notebooks for MyBinder [skip ci]'
               branch: main
               file_pattern: 'docs/examples/notebooks/*.ipynb'
+              commit_user_name: github-actions[bot]
+              commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+              git_push: true
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
           - name: ❌ Remove convert_notebooks_py_to_ipynb.py file from GitHub Pages
             working-directory: docs/examples/notebooks
