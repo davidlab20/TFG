@@ -5,7 +5,7 @@ import subprocess
 
 try:
     # Convert all .py notebooks into .ipynb notebooks for MyBinder
-    py_files = glob.glob('*.py')
+    py_files = glob.glob('*_notebook.py')
     if py_files:
         subprocess.run(['jupytext', '--to', 'notebook'] + py_files, check=True)
         print('Converted notebooks into .ipynb')
