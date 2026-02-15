@@ -4,6 +4,8 @@
 AVAILABLE_AGGREGATES = {'count', 'max', 'median', 'mean', 'min', 'std', 'sum', 'var'}
 AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
+AVAILABLE_ENVIRONMENTS = {'default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine',
+                          'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry', 'osiris'}
 AVAILABLE_MARKS = {'arc', 'bar', 'point'}
 
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
@@ -42,6 +44,7 @@ ERROR_MESSAGES = {
     'ELEMENT_TYPE': 'Invalid element type: {element}',
     'ENCODING_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "encoding"',
     'ENCODING_TYPE': 'Invalid encoding type: {encoding_type}',
+    'ENVIRONMENT': 'Invalid environment: {environment}',
     'MARK_AND_ELEMENT_IN_SPECS': 'Specifications cannot contain both "mark" and "element"; they are mutually exclusive',
     'MARK_AND_ELEMENT_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "mark" or "element"',
     'MARK_TYPE': 'Invalid mark type: {mark_type}',

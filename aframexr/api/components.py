@@ -32,16 +32,11 @@ class TopLevelMixin:
 
     def _repr_html_(self):
         """Returns the iframe HTML for showing the scene in the notebook."""
-        return (
-            '<iframe '
-            f'srcdoc="{html.escape(self.to_html(), quote=True)}" '  # Raw HTML escaped
-            'width="100%" '  # Adjust to maximum width
-            'height="400" '  # Height of the iframe
-            'style="border:none;" '
-            'sandbox="allow-scripts allow-forms allow-same-origin" '
-            'loading="lazy" '  # For optimization
-            '></iframe>'
-        )
+        with warnings.catch_warnings():
+            # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
+            warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
+
+            return HTML(self.show())
 
     # Concatenating charts
     def __add__(self, other):
@@ -116,7 +111,9 @@ class TopLevelMixin:
         return chart
 
     # Exporting charts
-    def save(self, fp: str, file_format: Literal['json', 'html'] = None):
+    def save(self, fp: str, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
+    'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron',
+    'japan', 'dream', 'volcano', 'starry', 'osiris'] = 'default'):
         """
         Saves the chart into a file, supported formats are JSON and HTML.
 
@@ -127,6 +124,8 @@ class TopLevelMixin:
         file_format : str (optional)
             Format of the file could be ['html', 'json'].
             If no format is specified, the chart will be saved depending on the file extension.
+        environment : str (optional)
+            Environment of the scene.
 
         Raises
         ------
@@ -136,22 +135,30 @@ class TopLevelMixin:
         AframeXRValidator.validate_type('fp', fp, str)
         if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
-                file.write(self.to_html())
+                file.write(self.to_html(environment=environment))
         elif file_format == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
+                self._specifications['environment'] = environment
                 AframeXRValidator.validate_chart_specs(self._specifications)
                 json.dump(self._specifications, file, indent=4)
         else:
             raise ValueError('Invalid file format')
 
     # Showing the scene
-    def show(self):
+    def show(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai',
+    'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
+    'osiris'] = 'default'):
         """Show the scene in the notebook."""
-        with warnings.catch_warnings():
-            # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
-            warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
-
-            return HTML(self._repr_html_())
+        return (
+            '<iframe '
+            f'srcdoc="{html.escape(self.to_html(environment), quote=True)}" '  # Raw HTML escaped
+            'width="100%" '  # Adjust to maximum width
+            'height="400" '  # Height of the iframe
+            'style="border:none;" '
+            'sandbox="allow-scripts allow-forms allow-same-origin" '
+            'loading="lazy" '  # For optimization
+            '></iframe>'
+        )
 
     # Chart formats
     def to_dict(self) -> dict:
@@ -159,10 +166,14 @@ class TopLevelMixin:
         AframeXRValidator.validate_chart_specs(self._specifications)
         return self._specifications
 
-    def to_html(self) -> str:
+    def to_html(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland',
+    'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
+    'osiris'] = 'default') -> str:
         """Returns the HTML representation of the scene."""
-        AframeXRValidator.validate_chart_specs(self._specifications)
-        return SceneCreator.create_scene(self._specifications)
+        specs_copy = self._specifications.copy()  # Create a copy of the specifications for not modifying base specs
+        specs_copy['environment'] = environment
+        AframeXRValidator.validate_chart_specs(specs_copy)
+        return SceneCreator.create_scene(specs_copy)
 
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""

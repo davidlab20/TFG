@@ -37,7 +37,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
         </a-entity>
 
         <!-- Environment -->
-        <a-entity environment="preset: default"></a-entity>
+        <a-entity environment="preset: {environment}"></a-entity>
 
         <!-- Elements -->
         {elements}
@@ -56,15 +56,7 @@ class SceneCreator:
         ----------
         specs : dict
             Specifications of the elements composing the scene.
-
-        Raises
-        ------
-        TypeError
-            If specs is not a dictionary.
-
-        Notes
-        -----
-        Suppose that specs is a dictionary for posterior method calls of ChartsHTMLCreator.
         """
+        environment = specs.get('environment', 'default')
         elements_html = ChartsHTMLCreator.create_charts_html(specs)
-        return HTML_SCENE_TEMPLATE.format(elements=elements_html)
+        return HTML_SCENE_TEMPLATE.format(environment=environment, elements=elements_html)
