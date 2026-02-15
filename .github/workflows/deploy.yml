@@ -16,23 +16,32 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Install marimo
-            run: pip install marimo
+          - name: Install marimo and jupytext
+            run: pip install marimo jupytext
 
           - name: 📄 Export Get Started notebooks
             working-directory: docs/get_started
-            run:  marimo export html-wasm --show-code get_started_notebook.py -o get-started-notebook.html --mode run
+            run: |
+              marimo export html-wasm --show-code get_started_notebook.py -o get-started-notebook.html --mode run
+              jupytext --to notebook get_started_notebook.py  # Convert to .ipynb for MyBinder
 
           - name: 📄 Export Example notebooks
             working-directory: docs/examples/notebooks
             run: |
               marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
+              jupytext --to notebook simple_chart_notebook.py
               marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
+              jupytext --to notebook multiple_chart_notebook.py
               marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
+              jupytext --to notebook filtered_chart_notebook.py
               marimo export html-wasm rotated_chart_notebook.py -o rotated-chart-notebook.html --mode edit
+              jupytext --to notebook rotated_chart_notebook.py
               marimo export html-wasm image_and_gltf_notebook.py -o image-and-gltf-notebook.html --mode edit
+              jupytext --to notebook image_and_gltf_notebook.py
               marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
+              jupytext --to notebook aggregated_chart_notebook.py
               marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
+              jupytext --to notebook simple_element_notebook.py
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
