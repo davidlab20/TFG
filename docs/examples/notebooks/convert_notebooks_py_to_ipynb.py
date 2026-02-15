@@ -3,8 +3,6 @@
 import glob
 import subprocess
 
-NOTEBOOKS_DIR = ''
-
 try:
     # Convert all .py notebooks into .ipynb notebooks for MyBinder
     py_files = glob.glob('*.py')
