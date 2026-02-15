@@ -49,7 +49,6 @@ jobs:
               file_pattern: 'docs/examples/notebooks/*.ipynb'
               commit_user_name: github-actions[bot]
               commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-              git_push: true
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
