@@ -4,7 +4,7 @@ import glob
 import os
 import subprocess
 
-NOTEBOOKS_DIR = 'docs/examples/notebooks'
+NOTEBOOKS_DIR = ''
 
 try:
     # Change into docs/examples/notebooks/ directory
