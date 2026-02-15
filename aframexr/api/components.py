@@ -30,7 +30,7 @@ class TopLevelMixin:
     def __init__(self, specs: dict):
         self._specifications = specs
 
-    def _repr_html_(self):
+    def _repr_html_(self):  # pragma: no cover (as this method is called in notebooks)
         """Returns the iframe HTML for showing the scene in the notebook."""
         with warnings.catch_warnings():
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
