@@ -37,8 +37,10 @@
         <a-entity environment="preset: default" hide-on-enter-ar></a-entity>
 
         <!-- Elements -->
-        <a-gltf-model id="a_colocar" position="0 2 -4" src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/refs/heads/main/2.0/AnimatedCube/glTF/AnimatedCube.gltf"
-                      scale="0.4 0.4 0.4" animation-mixer></a-gltf-model>
+        <a-entity id="a_colocar">
+          <a-plane width="0.2" height="0.2" rotation="-90 0 0" material="color: grey"></a-plane>
+          <a-gltf-model src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/refs/heads/main/2.0/AnimatedCube/glTF/AnimatedCube.gltf" scale="0.05 0.05 0.05" position="0 0.05 0" animation-mixer></a-gltf-model>
+        </a-entity>
     </a-scene>
 </body>
 </html>
