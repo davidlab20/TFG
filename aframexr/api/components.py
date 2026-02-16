@@ -30,9 +30,23 @@ class TopLevelMixin:
     def __init__(self, specs: dict):
         self._specifications = specs
 
+    def _generate_iframe_html(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest',
+    'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
+    'osiris'] = 'default'):
+        return (
+            '<iframe '
+            f'srcdoc="{html.escape(self.to_html(environment), quote=True)}" '  # Raw HTML escaped
+            'width="100%" '  # Adjust to maximum width
+            'height="400" '  # Height of the iframe
+            'style="border:none;" '
+            'sandbox="allow-scripts allow-forms allow-same-origin" '
+            'loading="lazy" '  # For optimization
+            '></iframe>'
+        )
+
     def _repr_html_(self):  # pragma: no cover (as this method is called in notebooks)
         """Returns the iframe HTML for showing the scene in the notebook."""
-        return self.show()
+        return self._generate_iframe_html()
 
     # Concatenating charts
     def __add__(self, other):
@@ -149,16 +163,7 @@ class TopLevelMixin:
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
             warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
 
-            return HTML(
-                '<iframe '
-                f'srcdoc="{html.escape(self.to_html(environment), quote=True)}" '  # Raw HTML escaped
-                'width="100%" '  # Adjust to maximum width
-                'height="400" '  # Height of the iframe
-                'style="border:none;" '
-                'sandbox="allow-scripts allow-forms allow-same-origin" '
-                'loading="lazy" '  # For optimization
-                '></iframe>'
-            )
+            return HTML(self._generate_iframe_html(environment=environment))
 
     # Chart formats
     def to_dict(self) -> dict:
