@@ -8,22 +8,52 @@
     <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.0/docs/scripts/main.min.js"></script>
 </head>
+<script>
+AFRAME.registerComponent('mode-manager', {
+  init: function () {
+    const camera = document.querySelector('#camera');
+    const scene = this.el;
+    const user = document.querySelector('#user');
+    const environment = document.querySelector('[environment]');
+    const chart = document.querySelector('#chart');
+
+    scene.addEventListener('enter-vr', () => {
+
+      if (scene.is('ar-mode')) {
+        console.log("Modo AR");
+
+        // Desactivar entorno
+        if (environment) environment.setAttribute('visible', false);
+
+        // Desactivar movimiento WASD
+        if (user) user.removeAttribute('movement-controls');
+        camera.removeAttribute('wasd-controls');
+
+        // Colocar gráfico delante del usuario
+        chart.setAttribute('position', {x: 0, y: -1.2, z: -2});
+      }
+
+      else {
+        console.log("Modo VR");
+
+        if (environment) environment.setAttribute('visible', true);
+      }
+    });
+
+    scene.addEventListener('exit-vr', () => {
+      console.log("Modo escritorio");
+      camera.setAttribute('wasd-controls', 'acceleration: 35');
+      chart.setAttribute('position', '0 2 -4');
+      if (environment) environment.setAttribute('visible', true);
+      if (user) user.setAttribute('movement-controls', 'speed: 0.1');
+    });
+  }
+});
+</script>
+
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" xr-mode-ui="XRMode: xr"
-        webxr="requiredFeatures: local-floor, hit-test" ar-hit-test="target: #a_colocar;">
-
-        <a-entity id="a_colocar">
-        <a-entity rotation="-90 0 0"
-            animation="property: rotation; to: -90 360 0; loop: true; dur: 10000"
-            geometry="primitive: plane; width: 0.5; height: 0.5"
-            material="color: grey">
-          <a-entity position="0 0 0.1"
-              geometry="primitive: box; height: 0.2; width: 0.2; depth: 0.2"
-              material="color: blue">
-          </a-entity>
-        </a-entity>
-      </a-entity>
-
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" xr-mode-ui="enabled: true"
+        webxr="requiredFeatures: local-floor; optionalFeatures: hit-test" mode-manager>
         <a-entity id="user" movement-controls="speed: 0.1">
 
             <!-- Camera -->
@@ -51,7 +81,7 @@
         <a-entity environment="preset: default"></a-entity>
 
         <!-- Elements -->
-        <a-entity position="0.0 2.0 -4.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+        <a-entity id="chart" position="0.0 2.0 -4.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
 			<a-entity position="-2.5 -2.0 1.0">
 				<a-sphere info="leon : 10" position="0.5 2.0 -1.0" radius="0.5" color="blue" data-raycastable></a-sphere>
 				<a-sphere info="ibiza : 15" position="0.9444 2.75 -1.0" radius="0.5" color="blue" data-raycastable></a-sphere>
