@@ -10,7 +10,20 @@
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" xr-mode-ui="XRMode: xr"
-        webxr="requiredFeatures: local-floor">
+        webxr="requiredFeatures: local-floor, hit-test" ar-hit-test="target: #a_colocar;">
+
+        <a-entity id="a_colocar">
+        <a-entity rotation="-90 0 0"
+            animation="property: rotation; to: -90 360 0; loop: true; dur: 10000"
+            geometry="primitive: plane; width: 0.5; height: 0.5"
+            material="color: grey">
+          <a-entity position="0 0 0.1"
+              geometry="primitive: box; height: 0.2; width: 0.2; depth: 0.2"
+              material="color: blue">
+          </a-entity>
+        </a-entity>
+      </a-entity>
+
         <a-entity id="user" movement-controls="speed: 0.1">
 
             <!-- Camera -->
