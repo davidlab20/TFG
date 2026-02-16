@@ -52,7 +52,7 @@ AFRAME.registerComponent('mode-manager', {
 </script>
 
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" xr-mode-ui="enabled: true"
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" xr-mode-ui="XRMode: xr"
         webxr="requiredFeatures: local-floor; optionalFeatures: hit-test" mode-manager>
         <a-entity id="user" movement-controls="speed: 0.1">
 
