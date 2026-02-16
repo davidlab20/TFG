@@ -10,7 +10,8 @@
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
-        <a-entity id="user" movement-controls="controls: keyboard, gamepad, trackpad; speed: 0.05">
+        <a-entity id="user" movement-controls="controls: keyboard, gamepad, trackpad; speed: 0.05; gamepadSpeed: 0.15;
+            rotationSensitivity: 0.3">
     
             <!-- Camera -->
             <a-camera id="camera" position="0 1.6 0" active="true" look-controls></a-camera>
