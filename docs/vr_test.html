@@ -17,14 +17,12 @@
             <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
 
             <!-- VR controllers with Super Hands -->
-            <a-entity id="right-hand" laser-controls="hand: right"
-                super-hands="grab: true; stretch: true; scale: 1.5"
+            <a-entity id="right-hand" super-hands="grab: true; stretch: true; scale: 1.5"
                 raycaster="objects: [data-raycastable]"
                 line="color: yellow; opacity: 0.8">
             </a-entity>
 
-            <a-entity id="left-hand" laser-controls="hand: left"
-                super-hands="grab: true; stretch: true; scale: 1.5"
+            <a-entity id="left-hand" super-hands="grab: true; stretch: true; scale: 1.5"
                 raycaster="objects: [data-raycastable]"
                 line="color: yellow; opacity: 0.8">
             </a-entity>
