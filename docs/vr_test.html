@@ -10,11 +10,10 @@
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
-        <a-entity id="user" wasd-controls="acceleration: 35" movement-controls="controls: gamepad, trackpad; speed: 0.15"
-            snap-turn-controls="turnSize: 30; cooldown: 250">
-    
+        <a-entity id="user" movement-controls="fly: false; speed: 0.1; constrainToNavMesh: false; joystickEnabled: true">
+
             <!-- Camera -->
-            <a-camera id="camera" position="0 1.6 0" active="true" look-controls></a-camera>
+            <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
     
             <!-- VR controllers -->
             <a-entity id="right-hand" laser-controls="hand: right"
