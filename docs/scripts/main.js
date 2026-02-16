@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.object3D.getWorldPosition(cameraPos);
         HUD.object3D.lookAt(cameraPos);
 
-	    targetElement.setAttribute('scale', '1.1 1.1');  // Size the scale up
+	    targetElement.setAttribute('scale', '1.1 1.1 1');  // Size the scale up
 
 	    // Update HUD text attributes
         const value = targetElement.getAttribute('info');
