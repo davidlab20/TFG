@@ -20,14 +20,12 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
             <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
     
             <!-- VR controllers -->
-            <a-entity id="right-hand" laser-controls="hand: right"
-                raycaster="objects: [data-raycastable]"
-                line="color: yellow; opacity: 0.8">
+            <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable]"
+                      line="color: yellow; opacity: 0.8">
             </a-entity>
     
-            <a-entity id="left-hand" laser-controls="hand: left"
-                raycaster="objects: [data-raycastable]"
-                line="color: yellow; opacity: 0.8">
+            <a-entity laser-controls="hand: left" raycaster="objects: [data-raycastable]"
+                      line="color: yellow; opacity: 0.8">
             </a-entity>
         </a-entity>
     
