@@ -20,8 +20,19 @@ from .aggregate import AggregatedFieldDef
 from .data import Data, URLData
 from .encoding import Encoding, X, Y, Z
 from .filters import FilterTransform
+from .parameter import Parameter
 from ..utils.scene_creator import SceneCreator
 from ..utils.validators import AframeXRValidator
+
+
+# Selections
+def selection_point(name: str, fields: list) -> Parameter:
+    """Add selection to the chart."""
+    AframeXRValidator.validate_type('name', name, str)
+    AframeXRValidator.validate_type('fields', fields, list)
+
+    select_config = {'type': 'point', 'fields': fields}
+    return Parameter(name=name, select=select_config)
 
 
 class TopLevelMixin:
@@ -238,6 +249,20 @@ class Chart(TopLevelMixin):
         if height is not None: self._specifications.update({'height': height})
         if width is not None: self._specifications.update({'width': width})
 
+    # Parameters
+    def add_params(self, *params: Parameter):
+        for p in params:
+            AframeXRValidator.validate_type('params', p, Parameter)
+
+        if 'params' not in self._specifications:
+            self._specifications['params'] = []
+
+        self._specifications['params'].extend(
+            [p.to_specs() for p in params]
+        )
+
+        return self
+
     # Types of charts
     def mark_arc(self, radius: float = None):
         """
@@ -410,19 +435,19 @@ class Chart(TopLevelMixin):
             aggreg_chart._specifications['transform'].append(aggregate_specs)
         return aggreg_chart
 
-    def transform_filter(self, equation_filter: str | FilterTransform):
+    def transform_filter(self, equation_filter: str | FilterTransform | Parameter):
         """
         Filters the chart with the given transformation.
 
         Parameters
         ----------
-        equation_filter : str | FilterTransform
-            The equation string of the filter transformation or a Filter object (see Examples).
+        equation_filter : str | FilterTransform | Parameter
+            The equation string of the filter transformation, a Filter object (see Examples) or Parameter object.
 
         Raises
         ------
         TypeError
-            If equation is not a string or a Filter object.
+            If equation is not a string, a Filter object or a Parameter object.
 
         Notes
         -----
@@ -452,11 +477,11 @@ class Chart(TopLevelMixin):
         """
         # Validate the type of equation_filter and get a filter object from the equation_filter
         AframeXRValidator.validate_type(
-            'equation_filter', equation_filter, (str, FilterTransform)
+            'equation_filter', equation_filter, (str, FilterTransform, Parameter)
         )
         if isinstance(equation_filter, str):
             filter_transform = FilterTransform.from_equation(equation_filter)
-        elif isinstance(equation_filter, FilterTransform):
+        elif isinstance(equation_filter, (FilterTransform, Parameter)):
             filter_transform = equation_filter
         else:  # pragma: no cover
             raise RuntimeError('Unreachable code. Parameter should have been validated before')
