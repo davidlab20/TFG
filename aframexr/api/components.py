@@ -68,27 +68,11 @@ class TopLevelMixin:
         if not isinstance(other, TopLevelMixin):
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}.")
 
-        self_specs = self._specifications
-        other_specs = other._specifications
-
-        # Extract params
-        self_params = self_specs.pop('params', [])
-        other_params = other_specs.pop('params', [])
-
-        # Extract concat
-        one_concat = self_specs.get('concat', [self_specs])
-        other_concat = other_specs.get('concat', [other_specs])
-
-        # New specifications
-        new_specs = {
-            'concat': one_concat + other_concat
-        }
-        all_params = {p['name']: p for p in self_params + other_params}
-        if all_params:
-            new_specs['params'] = list(all_params.values())
+        self_specs_list = self._specifications.get('concat', [self._specifications])
+        other_specs_list = other._specifications.get('concat', [other._specifications])
 
         copy_of_the_chart = self.copy()  # Create a copy to modify
-        copy_of_the_chart._specifications = new_specs
+        copy_of_the_chart._specifications = {'concat': self_specs_list + other_specs_list}
         return copy_of_the_chart
 
     # Copy of the chart
