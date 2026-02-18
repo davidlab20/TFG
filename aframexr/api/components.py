@@ -72,8 +72,8 @@ class TopLevelMixin:
         other_specs = other._specifications
 
         # Extract params
-        self_params = self_specs.get('params', [])
-        other_params = other_specs.get('params', [])
+        self_params = self_specs.pop('params', [])
+        other_params = other_specs.pop('params', [])
 
         # Extract concat
         one_concat = self_specs.get('concat', [self_specs])
