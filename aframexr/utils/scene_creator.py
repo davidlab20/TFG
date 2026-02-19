@@ -13,7 +13,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.0/docs/scripts/main.min.js"></script>
 </head>
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="requiredFeatures: local-floor">
+    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
         <a-entity id="user" movement-controls="speed: 0.1">
     
             <!-- Camera -->
