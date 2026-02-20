@@ -95,6 +95,29 @@ def _(bars):
     return
 
 
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ## Filter using dynamic filters
+    """)
+    return
+
+
+@app.cell
+def _(aframexr, data):
+    # Create a param (selection)
+    param = aframexr.selection_point('param1', fields=['motor'])
+
+    # Create both charts
+    chart = aframexr.Chart(data, position='0 2 -4').mark_bar().encode(x='motor', y='sum(sales)').add_params(param)
+    dynamic_chart = aframexr.Chart(data, position='5 2 -4').mark_arc().encode(color='model', theta='sales').transform_filter(param)
+
+    # Concatenate and show charts
+    final_chart = chart + dynamic_chart
+    final_chart.show()
+    return
+
+
 @app.cell
 def _():
     import marimo as mo
