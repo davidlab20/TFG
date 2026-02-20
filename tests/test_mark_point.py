@@ -24,6 +24,7 @@ def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> boo
             return False
     return True
 
+
 def _points_are_inside_chart_volume(point_chart: aframexr.Chart, depth: float = None) -> bool:
     """Verify that no point exceeds the volume dimensions of the chart."""
     soup = BeautifulSoup(point_chart.to_html(), 'lxml')
@@ -67,6 +68,7 @@ def _points_are_inside_chart_volume(point_chart: aframexr.Chart, depth: float = 
 
 class TestMarkPointOK(unittest.TestCase):
     """Mark point OK tests."""
+
     def test_simple(self):
         """Simple mark point creation."""
         point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
@@ -217,7 +219,7 @@ class TestMarkPointOK(unittest.TestCase):
         """Mark point changing aggregate creation."""
         for a in AGGREGATES:
             point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='new_field')
-                         .transform_aggregate(new_field=f'{a}(sales)'))
+                           .transform_aggregate(new_field=f'{a}(sales)'))
             point_chart.to_html()
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart))
@@ -230,8 +232,8 @@ class TestMarkPointOK(unittest.TestCase):
     def test_aggregate_position_rotation_size_height_width_filter(self):
         """Mark point changing position, rotation size, height, width and filter creation."""
         for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
-                                          MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
-                                          FILTER_EQUATIONS):
+                                       MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
+                                       FILTER_EQUATIONS):
             point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_point(size=s)
                            .encode(x='model', y='agg').transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart.to_html()
@@ -281,6 +283,7 @@ class TestMarkPointOK(unittest.TestCase):
 
 class TestMarkPointError(unittest.TestCase):
     """Mark point error tests."""
+
     def test_load_data_url_error(self):
         """Mark point load data url error."""
         with self.assertRaises(IOError) as error:
