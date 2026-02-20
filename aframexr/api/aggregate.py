@@ -46,7 +46,7 @@ class AggregatedFieldDef:
         """Returns the aggregated data."""
         try:
             if self.op == 'count':
-                expression = pl.count().alias(self.as_field)  # Counts the rows per group
+                expression = pl.len().alias(self.as_field)  # Counts the rows per group
             else:
                 expression = getattr(  # Take the polars method of column "self.field" and operation "self.op"
                     pl.col(self.field),  # Take the column (field)
