@@ -104,6 +104,8 @@ def _validate_transform(transform: list[dict]) -> None:
 
         if t.get('filter'):
             AframeXRValidator.validate_type('specs.transform.filter', t['filter'], dict)
+            if 'param' in t['filter']:
+                AframeXRValidator.validate_type('specs.transform.filter.param', t['filter']['param'], str)
 
         elif t.get('aggregate'):
             AframeXRValidator.validate_type('specs.transform.aggregate', t['aggregate'], list)
