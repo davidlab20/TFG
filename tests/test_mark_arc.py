@@ -138,6 +138,16 @@ class TestMarkArcOK(unittest.TestCase):
                 self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_html))
                 self.assertTrue(_slices_are_well_placed(pie_chart_html))
 
+    def test_dynamic_filter(self):
+        """Pie chart with dynamic filter creation."""
+        pie_chart_1 = aframexr.Chart(DATA).mark_arc().encode(color='motor', theta='sales').add_params(DYNAMIC_FILTER)
+        pie_chart_2 = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
+                       .transform_filter(DYNAMIC_FILTER))
+        final_chart = pie_chart_1 + pie_chart_2
+        final_chart_html = final_chart.to_html()
+        self.assertTrue(_slices_are_well_placed(final_chart_html))
+
+
     def test_several_filters(self):
         """Pie chart with several filters' creation."""
         pie_chart = (aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')

@@ -2,6 +2,7 @@
 
 import pandas as pd
 
+from aframexr.api.components import selection_point
 from aframexr.api.data import Data, URLData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
@@ -49,6 +50,7 @@ NOT_3AXIS_POSITIONS_ROTATIONS = (' ', '1', '1 1', '1 1 1 1')
 NOT_NUMERIC_POSITIONS_ROTATIONS = ('1 1 a', '1 a 1', '1 a a', 'a 1 1', 'a 1 a', 'a a 1', 'a a a')
 
 # Filters OK
+DYNAMIC_FILTER = selection_point('param_name', fields=['motor'])
 FILTER_EQUATIONS = ('datum.motor == diesel', 'datum.doors == 3', 'datum.doors > 4', 'datum.doors < 4')
 SEVERAL_FILTER_EQUATIONS = ('datum.motor == electric', 'datum.color == red', 'datum.sales > 10')
 

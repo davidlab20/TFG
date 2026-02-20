@@ -202,6 +202,13 @@ class TestMarkPointOK(unittest.TestCase):
                 self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
                 self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
+    def test_dynamic_filter(self):
+        """Mark point with dynamic filter creation."""
+        point_chart_1 = aframexr.Chart(DATA).mark_point().encode(x='motor', y='sales').add_params(DYNAMIC_FILTER)
+        point_chart_2 = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(DYNAMIC_FILTER)
+        final_chart = point_chart_1 + point_chart_2
+        final_chart.to_html()
+
     def test_several_filters(self):
         """Mark point with several filters' creation."""
         point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')

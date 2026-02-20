@@ -191,6 +191,15 @@ class TestMarkBarOK(unittest.TestCase):
                 self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
                 self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
+    def test_dynamic_filter(self):
+        """Bars chart with dynamic filter creation."""
+        bars_chart_1 = aframexr.Chart(DATA).mark_bar().encode(x='motor', y='sales').add_params(DYNAMIC_FILTER)
+        bars_chart_2 = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(DYNAMIC_FILTER)
+        final_chart = bars_chart_1 + bars_chart_2
+        final_chart_html = final_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(final_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(final_chart_html, final_chart))
+
     def test_several_filters(self):
         """Bars chart with several filters' creation."""
         bars_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
