@@ -1,6 +1,5 @@
 """AframeXR axis creator"""
 
-import copy
 import polars as pl
 
 from polars import Series
@@ -8,10 +7,6 @@ from typing import Literal
 
 from .constants import *
 
-
-AXIS_DICT_TEMPLATE = {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': '',
-                      'labels_align': None}
-"""Template for each axis."""
 
 _X_AXIS_LABELS_ROTATION = '-90 0 -90'
 _Y_AXIS_LABELS_ROTATION = '0 0 0'
@@ -108,7 +103,8 @@ class AxisCreator:
     def create_axis_specs(axis: Literal['x', 'y', 'z'], axis_data: Series, axis_encoding: str, axis_size: float,
                           elements_coords: Series, x_offset: float, y_offset: float, z_offset: float) -> dict:
         """Returns the axis specifications for x, y or z axis depending on its encoding."""
-        axis_specs = copy.deepcopy(AXIS_DICT_TEMPLATE)
+        axis_specs = {'start': None, 'end': None, 'labels_pos': [], 'labels_values': [], 'labels_rotation': '',
+                      'labels_align': None}
 
         if axis_encoding == 'quantitative':
             coords = _get_labels_coords_for_quantitative_axis(axis_data, axis_size)
