@@ -90,7 +90,7 @@ def _(aframexr, json, urllib):
 
 @app.cell
 def _(bars):
-    filtered_bar = bars.transform_filter('datum.motor==diesel')
+    filtered_bar = bars.transform_filter('datum.motor == diesel')
     filtered_bar.show()
     return
 
