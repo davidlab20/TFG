@@ -36,11 +36,12 @@ def _bars_bases_are_on_x_axis(bars_chart_html: str) -> bool:
                 return False  # Y-pos plus half its height must be the same as the x-axis y-coordinate
     return True
 
-def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
+
+def _bars_height_does_not_exceed_max_height(bars_chart_html: str, bars_chart: aframexr.Chart) -> bool:
     """Verify that every bar height does not exceed the maximum height."""
     max_height = float(bars_chart.to_dict().get('height', DEFAULT_CHART_HEIGHT))
 
-    soup = BeautifulSoup(bars_chart.to_html(), 'lxml')
+    soup = BeautifulSoup(bars_chart_html, 'lxml')
     bars = soup.find_all('a-box')
     for b in bars:
         bar_height = float(b['height'])  # Total height of the bar
@@ -54,12 +55,13 @@ def _bars_height_does_not_exceed_max_height(bars_chart: aframexr.Chart) -> bool:
 
 class TestMarkBarOK(unittest.TestCase):
     """Bars chart OK tests."""
+
     def test_simple(self):
         """Simple bars chart creation."""
         bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
-
-        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+        bars_chart_html = bars_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_simple_with_pandas_not_installed(self):
         """Simple bars chart creation without having pandas installed."""
@@ -75,9 +77,9 @@ class TestMarkBarOK(unittest.TestCase):
             importlib.reload(aframexr)
 
             bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
             import aframexr.api.components as components
             self.assertIsNone(components.pd)
@@ -87,108 +89,107 @@ class TestMarkBarOK(unittest.TestCase):
         """Bars chart using from_json() method creation."""
         json_string = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').to_json()
         bars_chart = aframexr.Chart.from_json(json_string)
+        bars_chart_html = bars_chart.to_html()
 
-        # noinspection PyTypeChecker
-        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-        # noinspection PyTypeChecker
-        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))  # type: ignore
         self.assertEqual(bars_chart.to_json(), json_string)
 
     def test_data_format(self):
         """Bars chart changing data format creation."""
         for d in DATA_FORMATS:
             bars_chart = aframexr.Chart(d).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_position(self):
         """Bars chart changing position creation."""
         for p in POSITIONS:
             bars_chart = aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_position_format(self):
         """Bars chart changing position format creation."""
         for p in POSITION_FORMATS:
             bars_chart = aframexr.Chart(DATA, position=p).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_rotation(self):
         """Bars chart changing rotation creation."""
         for r in ROTATIONS:
             bars_chart = aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_rotation_format(self):
         """Bars chart changing rotation format creation."""
         for r in ROTATION_FORMATS:
             bars_chart = aframexr.Chart(DATA, rotation=r).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_depth(self):
         """Bars chart changing depth creation."""
         for d in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, depth=d).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_height(self):
         """Bars chart changing height creation."""
         for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, height=h).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_width(self):
         """Bars chart changing width creation."""
         for w in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             bars_chart = aframexr.Chart(DATA, width=w).mark_bar().encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_size(self):
         """Bars chart changing size creation."""
         for s in MARK_BAR_POINT_SIZES:
             bars_chart = aframexr.Chart(DATA).mark_bar(size=s).encode(x='model', y='sales')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_encoding(self):
         """Bars chart changing encoding creation."""
         for e in MARK_BAR_ENCODINGS:
             bars_chart = aframexr.Chart(DATA).mark_bar().encode(**e)
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_encoding_with_no_Y_axis_displayed(self):
         """Bars chart creation with no Y-axis displayed."""
         bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y=aframexr.Y('sales', axis=None))
-
-        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+        bars_chart_html = bars_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_filter(self):
         """Bars chart changing filter creation."""
         for eq in FILTER_EQUATIONS:
             for f in [eq, FilterTransform.from_equation(eq)]:  # Filter using equation and using FilterTransform object
                 bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').transform_filter(f)
-
-                self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-                self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+                bars_chart_html = bars_chart.to_html()
+                self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+                self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_several_filters(self):
         """Bars chart with several filters' creation."""
@@ -197,33 +198,34 @@ class TestMarkBarOK(unittest.TestCase):
         for eq in SEVERAL_FILTER_EQUATIONS[1:]:
             bars_chart.transform_filter(eq)
 
-        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+        bars_chart_html = bars_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_aggregate(self):
         """Bar chart changing aggregates creation."""
         for a in AGGREGATES:
             bars_chart = (aframexr.Chart(DATA).mark_bar().encode(x='model', y='new_field')
-                         .transform_aggregate(new_field=f'{a}(sales)'))
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+                          .transform_aggregate(new_field=f'{a}(sales)'))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
             bars_chart_2 = aframexr.Chart(DATA).mark_bar().encode(x='model', y=f'{a}(sales)')
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2))
+            bars_chart_2_html = bars_chart_2.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2_html, bars_chart_2))
 
     def test_aggregate_position_rotation_size_height_width_filter(self):
         """Bars chart changing position, rotation size, height, width and filter creation."""
         for a, p, r, s, h, w, f in zip(AGGREGATES, POSITIONS, ROTATIONS, MARK_BAR_POINT_SIZES,
-                                          MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
-                                          FILTER_EQUATIONS):
+                                       MARK_BAR_POINT_HEIGHTS_WIDTHS, MARK_BAR_POINT_HEIGHTS_WIDTHS,
+                                       FILTER_EQUATIONS):
             bars_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_bar(size=s)
                           .encode(x='model', y='agg').transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart))
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_concatenation(self):
         """Bars chart concatenation creation."""
@@ -232,14 +234,17 @@ class TestMarkBarOK(unittest.TestCase):
         for pos in CONCATENATION_POSITIONS[1:]:
             concatenated_chart += aframexr.Chart(DATA, position=pos).mark_bar().encode(x='model', y='sales')
 
-
-        self.assertTrue(_bars_bases_are_on_x_axis(concatenated_chart.to_html()))
-        self.assertTrue(_bars_height_does_not_exceed_max_height(concatenated_chart))
+        concatenated_chart_html = concatenated_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(concatenated_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(concatenated_chart_html, concatenated_chart))
 
     def test_environment(self):
         """Scene creation with personalized environment."""
         for e in AVAILABLE_ENVIRONMENTS:
-            aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').to_html(environment=e)
+            bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales')
+            bars_chart_html = bars_chart.to_html(environment=e)
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_save(self):
         """Bars chart saving."""
@@ -262,13 +267,14 @@ class TestMarkBarOK(unittest.TestCase):
         bars_chart = aframexr.Chart().mark_bar().encode(x='model', y='sales')
         for p, r in zip(POSITIONS, ROTATIONS):
             bars_chart_2 = bars_chart.properties(data=DATA, position=p, rotation=r)
-
-            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2.to_html()))
-            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2))
+            bars_chart_2_html = bars_chart_2.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2_html, bars_chart_2))
 
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""
+
     def test_load_data_url_error(self):
         """Bars chart load data url error."""
         with self.assertRaises(IOError) as error:
