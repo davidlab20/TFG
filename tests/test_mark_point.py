@@ -9,11 +9,11 @@ from aframexr.utils.validators import ERROR_MESSAGES
 from tests.constants import *  # Constants used for testing
 
 
-def _every_radius_does_not_exceed_max_radius(point_chart: aframexr.Chart) -> bool:
+def _every_radius_does_not_exceed_max_radius(point_chart_html: str, point_chart: aframexr.Chart) -> bool:
     """Verify that every point radius does not exceed the maximum radius."""
     max_radius = point_chart.to_dict()['mark'].get('max_radius', DEFAULT_POINT_RADIUS)
 
-    soup = BeautifulSoup(point_chart.to_html(), 'lxml')
+    soup = BeautifulSoup(point_chart_html, 'lxml')
     points = soup.find_all('a-sphere')
     for p in points:
         point_radius = float(p['radius'])  # Radius of the sphere
@@ -73,7 +73,7 @@ class TestMarkPointOK(unittest.TestCase):
         """Simple mark point creation."""
         point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
         point_chart_html = point_chart.to_html()
-        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
         self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_simple_with_pandas_not_installed(self):
@@ -91,7 +91,7 @@ class TestMarkPointOK(unittest.TestCase):
 
             point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
             import aframexr.api.components as components
@@ -103,7 +103,7 @@ class TestMarkPointOK(unittest.TestCase):
         json_string = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').to_json()
         point_chart = aframexr.Chart.from_json(json_string)
         point_chart_html = point_chart.to_html()
-        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))  # type: ignore
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))  # type: ignore
         self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
         self.assertEqual(point_chart.to_json(), json_string)
 
@@ -112,7 +112,7 @@ class TestMarkPointOK(unittest.TestCase):
         for d in DATA_FORMATS:
             point_chart = aframexr.Chart(d).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_position(self):
@@ -120,7 +120,7 @@ class TestMarkPointOK(unittest.TestCase):
         for p in POSITIONS:
             point_chart = aframexr.Chart(DATA, position=p).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_position_format(self):
@@ -128,7 +128,7 @@ class TestMarkPointOK(unittest.TestCase):
         for p in POSITION_FORMATS:
             point_chart = aframexr.Chart(DATA, position=p).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_rotation(self):
@@ -136,7 +136,7 @@ class TestMarkPointOK(unittest.TestCase):
         for r in ROTATIONS:
             point_chart = aframexr.Chart(DATA, rotation=r).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_rotation_format(self):
@@ -144,7 +144,7 @@ class TestMarkPointOK(unittest.TestCase):
         for r in ROTATION_FORMATS:
             point_chart = aframexr.Chart(DATA, rotation=r).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_depth(self):
@@ -152,7 +152,7 @@ class TestMarkPointOK(unittest.TestCase):
         for d in ALL_MARK_DEPTHS_HEIGHTS_WIDTHS:
             point_chart = aframexr.Chart(DATA, depth=d).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html, depth=d))
 
     def test_height(self):
@@ -160,7 +160,7 @@ class TestMarkPointOK(unittest.TestCase):
         for h in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             point_chart = aframexr.Chart(DATA, height=h).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_width(self):
@@ -168,7 +168,7 @@ class TestMarkPointOK(unittest.TestCase):
         for w in MARK_BAR_POINT_HEIGHTS_WIDTHS:
             point_chart = aframexr.Chart(DATA, width=w).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_size(self):
@@ -176,7 +176,7 @@ class TestMarkPointOK(unittest.TestCase):
         for s in MARK_BAR_POINT_SIZES:
             point_chart = aframexr.Chart(DATA).mark_point(size=s).encode(x='model', y='sales')
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_encoding(self):
@@ -184,14 +184,14 @@ class TestMarkPointOK(unittest.TestCase):
         for e in MARK_POINT_ENCODINGS:
             point_chart = aframexr.Chart(DATA).mark_point().encode(**e)
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_encoding_with_no_Y_axis_displayed(self):
         """Mark point creation with no Y-axis displayed."""
         point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y=aframexr.Y('sales', axis=None))
-        point_chart.to_html()
-        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+        point_chart_html = point_chart.to_html()
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
 
     def test_filter(self):
         """Mark point changing filter creation."""
@@ -199,7 +199,7 @@ class TestMarkPointOK(unittest.TestCase):
             for f in [eq, FilterTransform.from_equation(eq)]:  # Filter using equation and using FilterTransform object
                 point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales').transform_filter(f)
                 point_chart_html = point_chart.to_html()
-                self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+                self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
                 self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_several_filters(self):
@@ -210,7 +210,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart.transform_filter(eq)
 
         point_chart_html = point_chart.to_html()
-        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+        self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
         self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_aggregate(self):
@@ -219,12 +219,12 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = (aframexr.Chart(DATA).mark_point().encode(x='model', y='new_field')
                            .transform_aggregate(new_field=f'{a}(sales)'))
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
             point_chart_2 = aframexr.Chart(DATA).mark_point().encode(x='model', y=f'{a}(sales)')
             point_chart_2_html = point_chart_2.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2_html, point_chart_2))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_2_html))
 
     def test_aggregate_position_rotation_size_height_width_filter(self):
@@ -235,7 +235,7 @@ class TestMarkPointOK(unittest.TestCase):
             point_chart = (aframexr.Chart(DATA, position=p, rotation=r, height=h, width=w).mark_point(size=s)
                            .encode(x='model', y='agg').transform_filter(f).transform_aggregate(agg=f'{a}(sales)'))
             point_chart_html = point_chart.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_concatenation(self):
@@ -253,7 +253,7 @@ class TestMarkPointOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             point_chart = aframexr.Chart(DATA).mark_point().encode(x='model', y='sales')
             point_chart_html = point_chart.to_html(environment=e)
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
     def test_save(self):
@@ -278,7 +278,7 @@ class TestMarkPointOK(unittest.TestCase):
         for p, r in zip(POSITIONS, ROTATIONS):
             point_chart_2 = point_chart.properties(data=DATA, position=p, rotation=r)
             point_chart_2_html = point_chart_2.to_html()
-            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2))
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_2_html, point_chart_2))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_2_html))
 
 
