@@ -10,7 +10,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.1/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.0/docs/scripts/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.1/docs/scripts/main.min.js"></script>
 </head>
 <body>
     <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
