@@ -95,6 +95,16 @@ def _validate_mark_encoding(mark: str | dict, encoding: dict) -> None:
             raise ValueError(ERROR_MESSAGES['PARAM_NOT_SPECIFIED_IN_MARK_ARC'].format(param='theta'))
 
 
+def _validate_params(params: list) -> None:
+    """Raises TypeError or ValueError if params are invalid."""
+    AframeXRValidator.validate_type('specs.params', params, list)
+
+    for p in params:
+        AframeXRValidator.validate_type('specs.params.param', p, dict)
+        if not 'name' in p:
+            raise ValueError(ERROR_MESSAGES['NAME_NOT_IN_PARAM'])
+
+
 def _validate_transform(transform: list[dict]) -> None:
     """Raises TypeError or ValueError if transform is invalid."""
     AframeXRValidator.validate_type('specs.transform', transform, list)
@@ -153,6 +163,9 @@ class AframeXRValidator:
             _validate_encoding(specs['encoding'])
 
             _validate_mark_encoding(specs['mark'], specs['encoding'])
+
+            if 'params' in specs:
+                _validate_params(specs['params'])
 
         elif 'element' in specs:  # Single element
             _validate_element(specs['element'])
