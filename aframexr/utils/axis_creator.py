@@ -20,21 +20,13 @@ def _get_labels_coords_for_quantitative_axis(axis_data: Series, axis_size: float
     if unique_values == 1:  # All the values are the same
         return Series([axis_size / 2])  # Only one tick is placed in the axis
 
-    if axis_data.dtype == pl.String:  # Axis data contains nominal values, but user wants to encode as quantitative
-        coords = pl.linear_space(  # Equally spaced values
+    num_samples = unique_values if axis_data.dtype == pl.String else DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS
+    return pl.linear_space(  # Equally spaced values
             start=START_LABEL_OFFSET,  # Offset for the lowest label (for not being on the ground)
             end=axis_size,
-            num_samples=unique_values,  # Same number of ticks as unique categories
+            num_samples=num_samples,
             eager=True  # Returns a Series
         )
-    else:
-        coords = pl.linear_space(  # Equally spaced values
-            start=START_LABEL_OFFSET,  # Offset for the lowest label (for not being on the ground)
-            end=axis_size,
-            num_samples=DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS,
-            eager=True  # Returns a Series
-        )
-    return coords
 
 def _get_labels_values_for_quantitative_axis(axis_data: Series) -> Series:
     """Returns the values for the labels of the quantitative axis."""
