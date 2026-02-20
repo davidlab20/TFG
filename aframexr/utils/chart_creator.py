@@ -1,10 +1,6 @@
 """AframeXR charts creator"""
 
-import io
-import json
-import os
 import polars as pl
-import urllib.request, urllib.error
 import warnings
 
 from itertools import cycle, islice
@@ -30,112 +26,6 @@ def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
     return encoding_type
 
 
-def _get_data_from_url(url: str) -> DataFrame:
-    """Loads the data from the URL (could be a local path) and returns it as a DataFrame."""
-    if url.startswith(('http://', 'https://')):  # Data is stored in a URL
-        try:
-            with urllib.request.urlopen(url, timeout=10) as response:
-                file_type = response.info().get_content_type()
-                data = io.BytesIO(response.read())  # For polars
-        except urllib.error.URLError:
-            raise IOError(f'Could not load data from URL: {url}.')
-    else:  # Data is stored in a local file
-        path = os.path.normpath(url)
-        if not os.path.exists(path):
-            raise FileNotFoundError(f'Local file "{path}" was not found.')
-
-        data = open(path, 'rb')
-        _, file_type = os.path.splitext(path)
-        file_type = file_type.lower()
-
-    try:
-        if 'csv' in file_type:  # Data is in CSV format
-            df_data = pl.read_csv(data)
-        elif 'json' in file_type:
-            json_data = json.load(data)
-            df_data = DataFrame(json_data)
-        else:
-            raise ValueError(f'Unsupported file type: {file_type}.')
-
-        return df_data
-    except ValueError:
-        raise  # To raise previous ValueError
-    except Exception as e:
-        raise IOError(f'Error when processing data. Error: {e}.')
-
-    finally:
-        if data and not url.startswith(('http', 'https')):
-            data.close()  # Close the file
-
-
-def _get_raw_data(chart_specs: dict) -> DataFrame:
-    """Returns the raw data from the chart specifications, transformed if necessary."""
-    # Get the raw data of the chart
-    data_field = chart_specs['data']
-    if data_field.get('url'):  # Data is stored in a file
-        raw_data = _get_data_from_url(data_field['url'])
-    elif data_field.get('values'):  # Data is stored as the raw data
-        json_data = data_field['values']
-        raw_data = DataFrame(json_data)
-    else:  # pragma: no cover (should never enter here, as chart_specs should have previously been validated)
-        raise RuntimeError('Unreachable code: chart_specs should have been validated earlier')
-
-    # Transform data (if necessary)
-    from ..api.aggregate import AggregatedFieldDef  # To avoid circular import error
-    from ..api.filters import FilterTransform
-
-    transform_field = chart_specs.get('transform')
-    if transform_field:
-
-        for filter_transformation in transform_field:  # The first transformations are the filters
-            if filter_transformation.get('filter'):
-                filter_specs = filter_transformation['filter']
-                if isinstance(filter_specs, str):
-                    filter_object = FilterTransform.from_equation(filter_specs)
-                elif isinstance(filter_specs, dict):
-                    filter_object = FilterTransform.from_dict(filter_transformation['filter'])
-                else:  # pragma: no cover (should never enter here, as filter specs should have been validated)
-                    raise RuntimeError('Unreachable code. Filter specifications should have been validated earlier')
-
-                raw_data = filter_object.get_filtered_data(raw_data)
-                if raw_data.is_empty():  # Data does not contain any value for the filter
-                    warnings.warn(f'Data does not contain values for the filter: {filter_transformation["filter"]}')
-
-        for non_filter_transf in transform_field:  # Non-filter transformations
-            groupby = set(non_filter_transf.get('groupby')) if non_filter_transf.get('groupby') else set()
-            if non_filter_transf.get('aggregate'):
-                for aggregate in non_filter_transf.get('aggregate'):
-                    aggregate_object = AggregatedFieldDef.from_dict(aggregate)
-
-                    encoding_channels = {  # Using a set to have the possibility of getting differences
-                        ch_spec['field'] for ch_spec in chart_specs['encoding'].values()  # Take the encoding channels
-                        if ch_spec['field'] != aggregate_object.as_field  # Except the aggregate field channel
-                    }
-
-                    if groupby:
-                        not_defined_channels = encoding_channels - set(groupby)  # Difference between sets
-                        if not_defined_channels:  # There are channels in encoding_channels not defined in groupby
-                            raise ValueError(
-                                f'Encoding channel(s) "{not_defined_channels}" must be defined in aggregate groupby: '
-                                f'{groupby}, otherwise that fields will disappear.'
-                            )
-                    else:
-                        groupby = encoding_channels  # Use the encoding channels as groupby
-                    raw_data = aggregate_object.get_aggregated_data(raw_data, list(groupby))
-
-    # Aggregate in encoding
-    encoding_channels_values = list(chart_specs['encoding'].values())
-    groupby_fields = [ch['field'] for ch in encoding_channels_values if not ch.get('aggregate')]
-
-    for ch in encoding_channels_values:
-        aggregate_op = ch.get('aggregate')
-        if aggregate_op is not None:
-            aggregate_object = AggregatedFieldDef(aggregate_op, ch['field'])
-            raw_data = aggregate_object.get_aggregated_data(raw_data, groupby_fields)
-
-    return raw_data
-
-
 class ChartCreator:
     """Chart creator base class"""
 
@@ -145,14 +35,34 @@ class ChartCreator:
         self._encoding = chart_specs.get('encoding')  # Encoding and parameters of the chart
         rotation = chart_specs.get('rotation', DEFAULT_CHART_ROTATION)  # Rotation of the chart
         [self._x_rotation, self._y_rotation, self._z_rotation] = [float(rot) for rot in rotation.split()]
-        self._raw_data = _get_raw_data(chart_specs)  # Raw data
+        self._params = chart_specs.get('params', [])  # Metadata parameters
+        self._process_params()
+        self._raw_data = DataFrame(chart_specs['data']['values'])
         # Each self._{channel} attributes must be named by child classes
+
+    def _add_selection_to_specs(self, specs: dict) -> None:
+        if not getattr(self, "_selection", None):
+            return
+
+        param_name = self._selection['name']
+        select_fields = self._selection['fields']
+
+        expressions = [pl.lit(param_name)] + [
+            pl.col(f).cast(pl.Utf8).fill_null("")
+            for f in select_fields
+        ]
+        specs['activates_param'] = self._raw_data.select(
+            pl.concat_str(expressions, separator="__")
+        ).to_series().to_list()
 
     def _process_channels(self, *channels_name: str):
         """
         Process and stores the necessary channels' information.
         Must have defined self._{ch}_data and self._{ch}_encoding.
         """
+        if self._raw_data.is_empty():
+            return
+
         for ch in channels_name:
             if self._encoding.get(ch):
                 channel_encoding = self._encoding[ch]
@@ -177,6 +87,14 @@ class ChartCreator:
                         setattr(self, f'_{ch}_data', data)
                 except pl.exceptions.ColumnNotFoundError:
                     raise KeyError(f'Data has no field "{field}" for {ch}-channel.')
+
+    def _process_params(self):
+        for p in self._params:
+            if 'select' in p and p['select']['type'] == 'point':
+                self._selection = {
+                    'name': p['name'],
+                    'fields': p['select'].get('fields', [])
+                }
 
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
@@ -418,7 +336,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         element_colors = Series(islice(colors, self._color_data.len()))  # Take self._color_data.len() colors
         return element_colors.alias('color')
 
-    def get_elements(self) -> list[ElementCreator]:
+    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
         """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
@@ -460,7 +378,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        temp_df = DataFrame({
+        temp_dict = {
             'info': info,
             'depth': depth,
             'position': pl.select(pl.concat_str(
@@ -471,10 +389,17 @@ class ArcChartCreator(NonAxisChannelChartCreator):
             'theta_start': theta_starts,
             'theta_length': theta_lengths,
             'color': colors
-        })
-        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
+        }
 
-        return [CylinderCreator(specification) for specification in elements_specs]
+        # Selection
+        self._add_selection_to_specs(temp_dict)
+
+        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
+
+        return [
+            CylinderCreator(specification, filtered_by_params=filtered_by_params)
+            for specification in elements_specs
+        ]
 
 
 class BarChartCreator(XYZAxisChannelChartCreator):
@@ -547,7 +472,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         bars_colors = Series(islice(colors, self._raw_data.height))  # Take self._raw_data rows colors from the cycle
         return bars_colors.alias('color')
 
-    def get_elements(self) -> list[ElementCreator]:
+    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
         """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
@@ -593,7 +518,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        temp_df = DataFrame({
+        temp_dict = {
             'info': info,
             'position': pl.select(pl.concat_str(
                 [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
@@ -603,10 +528,17 @@ class BarChartCreator(XYZAxisChannelChartCreator):
             'height': bar_heights,
             'depth': bar_depths,
             'color': colors
-        })
-        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
+        }
 
-        return [BoxCreator(specification) for specification in elements_specs]
+        # Selection
+        self._add_selection_to_specs(temp_dict)
+
+        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
+
+        return [
+            BoxCreator(specification, filtered_by_params=filtered_by_params)
+            for specification in elements_specs
+        ]
 
     # Using get_axis_scpecs() from parent class
 
@@ -696,7 +628,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             points_radius = (self._size_data / max_value) * self._max_radius
         return points_radius.alias('radius')
 
-    def get_elements(self) -> list[ElementCreator]:
+    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
         """Returns a list of each element composing the chart."""
         if self._raw_data.is_empty():  # There is no data to display
             return []
@@ -728,7 +660,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._z_elements_coordinates = -(self._z_offset + z_coordinates)  # Negative to go deep
         self._z_offset *= -1  # Negative offset (to go deep)
 
-        # # Information display
+        # Information display
         info_series = []
         if self._x_data is not None:
             info_series.append(self._x_data.cast(pl.String))
@@ -743,7 +675,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         ).fill_null('?').alias('id')).to_series()
 
         # Return values
-        temp_df = DataFrame({
+        temp_dict = {
             'info': info,
             'position': pl.select(pl.concat_str(
                 [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
@@ -751,10 +683,17 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             ).alias('position')).to_series(),
             'radius': radius,
             'color': colors,
-        })
-        elements_specs = temp_df.to_dicts()  # Transform DataFrame into a list of dictionaries
+        }
 
-        return [SphereCreator(specifications) for specifications in elements_specs]
+        # Selection
+        self._add_selection_to_specs(temp_dict)
+
+        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
+
+        return [
+            SphereCreator(specifications, filtered_by_params=filtered_by_params)
+            for specifications in elements_specs
+        ]
 
     # Using get_axis_scpecs() from parent class
 

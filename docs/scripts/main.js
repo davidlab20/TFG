@@ -1,8 +1,10 @@
 // Wait for the scene content to load completely
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
+	let activeSubcharts = {};
 	const HUD = document.getElementById('HUD');
 	const HUDText = document.getElementById('HUD-text');
+	const interactiveAframeElements = 'a-box, a-cylinder, a-sphere'
 
 	// Display information about the element
 	function displayInfo(event) {
@@ -55,9 +57,42 @@ document.addEventListener('DOMContentLoaded', () => {
 	    HUD.setAttribute('visible', 'false');  // Hide HUD display
 	}
 
-    const interactiveElements = document.querySelectorAll('a-box, a-cylinder, a-sphere');
+	// Subcharts
+	function displaySubchart(event) {
+	    const paramName = event.target.getAttribute('activates-param');
+	    const groupName = paramName.split('__')[0]  // Format is {groupName}__{values}
+
+	    // Initialize group if not existing
+	    if (!activeSubcharts[groupName]) {
+            activeSubcharts[groupName] = [];
+        }
+
+	    activeSubcharts[groupName].forEach(chart => {
+            chart.setAttribute('visible', 'false');
+
+            // Remove data-raycastable for every children of the subchart
+            const children = chart.querySelectorAll(interactiveAframeElements);
+            children.forEach(child => child.removeAttribute('data-raycastable'));
+        });
+
+        activeSubcharts[groupName] = [];  // Clean actual group subcharts
+
+        const targetCharts = document.querySelectorAll(`[param-name='${paramName}']`);
+        targetCharts.forEach(chart => {
+            chart.setAttribute('visible', 'true');
+
+            // Add data-raycastable for every children of the subchart
+            const children = chart.querySelectorAll(interactiveAframeElements);
+            children.forEach(child => child.setAttribute('data-raycastable', ''));
+
+            activeSubcharts[groupName].push(chart);
+        });
+	}
+
+    const interactiveElements = document.querySelectorAll(interactiveAframeElements);
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', displayInfo);
         element.addEventListener('mouseleave', returnToOriginal);
+        element.addEventListener('click', displaySubchart);
     });
 });

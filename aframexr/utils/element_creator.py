@@ -11,7 +11,9 @@ class ElementCreator:
         * The method get_element_html() automatically adds a leading space if there are attributes.
     """
 
-    def __init__(self, element_specs: dict):
+    def __init__(self, element_specs: dict, filtered_by_params: bool = False):
+        self._filtered_by_params = filtered_by_params
+
         if type(self) is ElementCreator:
             raise TypeError(f'{self.__class__.__name__} is abstract')
 
@@ -42,7 +44,8 @@ class ElementCreator:
             for key, value in self._attributes.items()
         )
 
-        if 'info' in self._attributes:  # Add interaction if there is information to display
+        # Add interaction if there is information to display and the element is not part of a subchart
+        if 'info' in self._attributes and not self._filtered_by_params:
             attributes += ' data-raycastable'
 
         return self._ELEMENT_HTML.format(attributes=attributes)

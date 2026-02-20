@@ -48,6 +48,7 @@ ERROR_MESSAGES = {
     'MARK_AND_ELEMENT_IN_SPECS': 'Specifications cannot contain both "mark" and "element"; they are mutually exclusive',
     'MARK_AND_ELEMENT_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "mark" or "element"',
     'MARK_TYPE': 'Invalid mark type: {mark_type}',
+    'NAME_NOT_IN_PARAM': 'Param specs must contain key "name"',
     'NOT_3_AXES_POSITION_OR_ROTATION': 'The {pos_or_rot}: {pos_or_rot_value} is not correct. Must be "x y z"',
     'NOT_ALL_DATA_VALUES_ARE_DICT': 'Data field "values" must be a list of dictionaries',
     'NOT_ALL_ENCODINGS_ARE_DICT': 'Encoding channels must be dictionaries',
