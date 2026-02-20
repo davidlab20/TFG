@@ -17,9 +17,7 @@ class AggregatedFieldDef:
             raise ValueError(f'Parameter "field" cannot be empty using {op}.')
         self.field = field
 
-        if not as_field:
-            as_field = field
-        self.as_field = as_field
+        self.as_field = as_field or field
 
     # Import
     @staticmethod
