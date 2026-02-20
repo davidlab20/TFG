@@ -14,7 +14,10 @@
     },
     "transform": [
         {
-            "filter": "datum.motor==diesel"
+            "filter": {
+              "field": "motor",
+              "equal": "diesel"
+            }
         }
     ]
 }
