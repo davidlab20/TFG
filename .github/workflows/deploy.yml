@@ -8,6 +8,14 @@ on:
   workflow_dispatch:
 
 jobs:
+    start-mybinder-build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Access to the repository's URL in MyBinder
+          # Use -L for redirections and "&" for continuing with the next actions
+          run: curl -L https://mybinder.org/v2/gh/davidlab20/TFG/${{ github.sha }} &
+
     build:
         runs-on: ubuntu-latest
 
