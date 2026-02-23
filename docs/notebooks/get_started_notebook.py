@@ -34,7 +34,7 @@ def _():
 @app.cell
 def _(aframexr):
     # Load the data having the URL of the JSON file
-    url = "https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/data/data.json"
+    url = "https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json"
     data = aframexr.URLData(url)  # Create an URLData object
 
     # Create the chart
