@@ -26,7 +26,7 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Install marimo and jinja2
+          - name: Install marimo, jinja2 and jupytext
             run: pip install marimo jinja2
 
           - name: Build Jinja2 pages
@@ -41,12 +41,19 @@ jobs:
               marimo export html-wasm --show-code get_started_notebook.py -o ../${OUTPUT_DIR}/notebooks/get-started-notebook.html --mode run
 
               marimo export html-wasm simple_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple-chart-notebook.html --mode edit
+              jupytext --to notebook simple_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple_chart_notebook.ipynb
               marimo export html-wasm multiple_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/multiple-chart-notebook.html --mode edit
+              jupytext --to notebook multiple_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/multiple_chart_notebook.ipynb
               marimo export html-wasm filtered_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/filtered-chart-notebook.html --mode edit
+              jupytext --to notebook filtered_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/filtered_chart_notebook.ipynb
               marimo export html-wasm rotated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/rotated-chart-notebook.html --mode edit
+              jupytext --to notebook rotated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/rotated_chart_notebook.ipynb
               marimo export html-wasm image_and_gltf_notebook.py -o ../${OUTPUT_DIR}/notebooks/image-and-gltf-notebook.html --mode edit
+              jupytext --to notebook image_and_gltf_notebook.py -o ../${OUTPUT_DIR}/notebooks/image_and_gltf_notebook.ipynb
               marimo export html-wasm aggregated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/aggregated-chart-notebook.html --mode edit
+              jupytext --to notebook aggregated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/aggregated_chart_notebook.ipynb
               marimo export html-wasm simple_element_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple-element-notebook.html --mode edit
+              jupytext --to notebook simple_element_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple_element_notebook.ipynb
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
