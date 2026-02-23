@@ -40,10 +40,6 @@ jobs:
                 [[ "$nb" == "get_started_notebook.py" ]] && mode="run"
                 marimo export html-wasm "$nb" -o ../${OUTPUT_DIR}/notebooks/$name.html --mode $mode
               done
-              
-              ls -l ../${OUTPUT_DIR}/notebooks
-              echo "Generated files:"
-              ls -1
 
           - name: Build Jinja2 pages
             working-directory: docs
@@ -53,6 +49,10 @@ jobs:
             uses: actions/upload-pages-artifact@v3
             with:
                 path: docs/${{ env.OUTPUT_DIR }}
+
+          - name: Check files
+            working-directory: docs/${{ env.OUTPUT_DIR }}
+            run: ls -la
 
     deploy:
         needs: build
