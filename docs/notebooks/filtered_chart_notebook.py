@@ -79,7 +79,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, json, urllib):
-    with urllib.request.urlopen('https://raw.githack.com/davidlab20/TFG/main/static/data/data.json') as file_data:
+    with urllib.request.urlopen('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json') as file_data:
         data_json = json.load(file_data)
         data2 = aframexr.Data(data_json)
 
