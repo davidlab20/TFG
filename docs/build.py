@@ -1,27 +1,22 @@
-import argparse
+import os
 import shutil
 
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
-# ===== COMMAND LINE ARGUMENTS =====
-parser = argparse.ArgumentParser(description='Build pages with Jinja2')
-parser.add_argument(
-    '--production',
-    action='store_true',
-    help='Production mode (for GitHub Pages). If not generating for local.'
-)
-args = parser.parse_args()
-
 # ===== CONFIG =====
 BASE_DIR = Path(__file__).parent.resolve()
 TEMPLATES_DIR = BASE_DIR / 'templates'
-OUTPUT_DIR = BASE_DIR / 'github_pages'
+OUTPUT_DIR = BASE_DIR / os.getenv('OUTPUT_DIR', 'github_pages')  # Use environment variable
 STATIC_DIR = BASE_DIR / 'static'
 OUTPUT_STATIC_DIR = OUTPUT_DIR / 'static'
 
 # ===== ENVIRONMENT =====
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
+
+if OUTPUT_DIR.exists():
+    shutil.rmtree(OUTPUT_DIR)
+
 OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 # ===== PAGES' TITLES =====
@@ -33,8 +28,9 @@ TITLES = {
     'user_guide/api.html': 'API Reference',
 }
 
-# ===== Generate pages =====
-BASE_URL = '/TFG/' if args.production else ''
+# ===== GENERATE PAGES =====
+repo_name = os.environ.get('GITHUB_REPOSITORY', '').split('/')[-1]  # GitHub Actions define GITHUB_REPOSITORY
+BASE_URL = f'/{repo_name}/' if repo_name else ''
 for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
     if '_layouts' in html_file.parts:
         continue  # Exclude _layouts/
