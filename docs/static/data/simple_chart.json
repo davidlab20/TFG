@@ -1,6 +1,6 @@
 {
     "data": {
-        "url": "https://davidlab20.github.io/TFG/examples/data/data.json"
+        "url": "https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/data/data.json"
     },
     "position": "0 2 -6",
     "mark": {
