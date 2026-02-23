@@ -1,8 +1,8 @@
 import argparse
-import os
 import shutil
 
 from jinja2 import Environment, FileSystemLoader
+from pathlib import Path
 
 # ===== COMMAND LINE ARGUMENTS =====
 parser = argparse.ArgumentParser(description='Build pages with Jinja2')
@@ -14,52 +14,50 @@ parser.add_argument(
 args = parser.parse_args()
 
 # ===== CONFIG =====
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'templates')
-
-if args.production:  # GitHub Pages
-    BASE_URL = '/TFG/'
-    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'github_pages')
-else:  # Local
-    BASE_URL = ''
-    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), 'local_pages')
-
-OUTPUT_STATIC_DIR = os.path.join(OUTPUT_DIR, 'static')
+BASE_DIR = Path(__file__).parent.resolve()
+TEMPLATES_DIR = BASE_DIR / 'templates'
+OUTPUT_DIR = BASE_DIR / 'github_pages'
+STATIC_DIR = BASE_DIR / 'static'
+OUTPUT_STATIC_DIR = OUTPUT_DIR / 'static'
 
 # ===== ENVIRONMENT =====
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
-# ===== PAGES =====
-PAGES = [
-    {
-        'template': 'index.html',
-        'title': '3D Visualization in Python',
-    },
-]
+# ===== PAGES' TITLES =====
+TITLES = {
+    'index.html': '3D Visualization in Python',
+    'get_started/index.html': 'Getting Started',
+    'examples/index.html': 'Examples',
+    'user_guide/user-guide.html': 'User Guide',
+    'user_guide/api.html': 'API Reference',
+}
 
 # ===== Generate pages =====
-for page in PAGES:
-    full_output_path = os.path.join(OUTPUT_DIR, page['template'])
-    output_dir = os.path.dirname(full_output_path)
+BASE_URL = '/TFG/' if args.production else ''
+for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
+    if '_layouts' in html_file.parts:
+        continue  # Exclude _layouts/
 
-    os.makedirs(output_dir, exist_ok=True)
+    rel_path = html_file.relative_to(TEMPLATES_DIR).as_posix()
+    output_path = OUTPUT_DIR / rel_path
 
-    template = env.get_template(page['template'])
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    context = {'title': page['title'], 'base_url': BASE_URL}
+    template = env.get_template(rel_path)
+    context = {
+        'base_url': BASE_URL,
+        'title': TITLES.get(rel_path, html_file.stem.replace('-', ' ').title())
+    }
 
-    # Render
     html = template.render(**context)
-    with open(full_output_path, 'w', encoding='utf-8') as f:
-        f.write(html)
-    print(f'Wrote {full_output_path}')
+    output_path.write_text(html, encoding='utf-8')
+    print(f"Wrote {output_path}")
 
 # ===== COPY STATIC FILES =====
-if os.path.exists(STATIC_DIR):
-    if os.path.exists(OUTPUT_STATIC_DIR):
+if STATIC_DIR.exists():
+    if OUTPUT_STATIC_DIR.exists():
         shutil.rmtree(OUTPUT_STATIC_DIR)
     shutil.copytree(STATIC_DIR, OUTPUT_STATIC_DIR)
-    print(f'Copied static files to {OUTPUT_STATIC_DIR}')
+    print(f"Copied static files to {OUTPUT_STATIC_DIR}")
 
