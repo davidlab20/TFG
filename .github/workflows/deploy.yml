@@ -18,6 +18,8 @@ jobs:
 
     build:
         runs-on: ubuntu-latest
+        env:
+          OUTPUT_DIR: github_pages
 
         steps:
           # Checkout and install dependencies
@@ -30,24 +32,23 @@ jobs:
           - name: 📄 Export notebooks
             working-directory: docs/notebooks
             run: |
-              marimo export html-wasm --show-code get_started_notebook.py -o get-started-notebook.html --mode run
+              mkdir -p ../${OUTPUT_DIR}/notebooks
 
-              marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
-              marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
-              marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
-              marimo export html-wasm rotated_chart_notebook.py -o rotated-chart-notebook.html --mode edit
-              marimo export html-wasm image_and_gltf_notebook.py -o image-and-gltf-notebook.html --mode edit
-              marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
-              marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
+              for nb in *_notebook.py; do
+                name=$(basename "$nb" .py | tr '_' '-')  # Notebook name (without extension and replacing '_' with '-')
+                mode="edit"
+                [[ "$nb" == "get_started_notebook.py" ]] && mode="run"
+                marimo export html-wasm "$nb" -o ../${OUTPUT_DIR}/notebooks/$name.html --mode $mode
+              done
 
           - name: Build Jinja2 pages
             working-directory: docs
-            run: python3 build.py --production
+            run: python3 build.py
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
-                path: docs/github_pages
+                path: docs/${{ env.OUTPUT_DIR }}
 
     deploy:
         needs: build
