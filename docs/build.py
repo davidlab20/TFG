@@ -52,12 +52,12 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
 
     html = template.render(**context)
     output_path.write_text(html, encoding='utf-8')
-    print(f"Wrote {output_path}")
+    print(f'Wrote {output_path}')
 
 # ===== COPY STATIC FILES =====
 if STATIC_DIR.exists():
     if OUTPUT_STATIC_DIR.exists():
         shutil.rmtree(OUTPUT_STATIC_DIR)
     shutil.copytree(STATIC_DIR, OUTPUT_STATIC_DIR)
-    print(f"Copied static files to {OUTPUT_STATIC_DIR}")
+    print(f'Copied static files to {OUTPUT_STATIC_DIR}')
 
