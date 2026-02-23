@@ -52,7 +52,7 @@ jobs:
 
           - name: Check files
             working-directory: docs/${{ env.OUTPUT_DIR }}
-            run: ls -la notebooks
+            run: ls -la
 
     deploy:
         needs: build
