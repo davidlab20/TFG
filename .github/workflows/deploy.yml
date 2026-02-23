@@ -66,5 +66,4 @@ jobs:
               id: deployment
               uses: actions/deploy-pages@v4
               with:
-                path: docs/${{ env.OUTPUT_DIR }}
-                artifact_name: github-pages
+                  artifact_name: github-pages
