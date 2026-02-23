@@ -30,7 +30,7 @@ TITLES = {
 
 # ===== GENERATE PAGES =====
 repo_name = os.environ.get('GITHUB_REPOSITORY', '').split('/')[-1]  # GitHub Actions define GITHUB_REPOSITORY
-BASE_URL = f'/{repo_name}/' if repo_name else ''
+BASE_URL = f'/{repo_name}/' if repo_name else './'
 for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
     if '_layouts' in html_file.parts:
         continue  # Exclude _layouts/
@@ -39,6 +39,9 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
     output_path = OUTPUT_DIR / rel_path
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    rel_depth = len(html_file.relative_to(TEMPLATES_DIR).parents) - 1
+    BASE_URL = '../' * rel_depth
 
     template = env.get_template(rel_path)
     context = {
