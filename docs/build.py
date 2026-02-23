@@ -40,6 +40,7 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    # Calculate relative depth depending on file's depth
     rel_depth = len(html_file.relative_to(TEMPLATES_DIR).parents) - 1
     BASE_URL = '../' * rel_depth
 
