@@ -43,7 +43,7 @@ def _(aframexr):
 def _(aframexr):
     gltf_url ='https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/refs/heads/main/Models/AntiqueCamera/glTF/AntiqueCamera.gltf'
 
-    gltf = aframexr.GLTF(gltf_url, position='0 0 -4', rotation='0 30 0', scale='0.5 0.5 0.5')
+    gltf = aframexr.GLTF(gltf_url, position='0 0.1 -4', rotation='0 30 0', scale='0.5 0.5 0.5')
     gltf.show()
     return
 
