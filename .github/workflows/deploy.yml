@@ -24,17 +24,14 @@ jobs:
           - name: Checkout
             uses: actions/checkout@v4
 
-          - name: Install marimo
-            run: pip install marimo
+          - name: Install marimo and jinja2
+            run: pip install marimo jinja2
 
-          - name: 📄 Export Get Started notebooks
-            working-directory: docs/get_started
+          - name: 📄 Export notebooks
+            working-directory: docs/notebooks
             run: |
               marimo export html-wasm --show-code get_started_notebook.py -o get-started-notebook.html --mode run
 
-          - name: 📄 Export Example notebooks
-            working-directory: docs/examples/notebooks
-            run: |
               marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
               marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
               marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
@@ -43,10 +40,14 @@ jobs:
               marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
               marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
 
+          - name: Build Jinja2 pages
+            working-directory: docs
+            run: python3 build.py --production
+
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
-                path: docs/
+                path: docs/github_pages
 
     deploy:
         needs: build
