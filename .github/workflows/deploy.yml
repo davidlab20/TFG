@@ -27,7 +27,7 @@ jobs:
             uses: actions/checkout@v4
 
           - name: Install marimo, jinja2 and jupytext
-            run: pip install marimo jinja2
+            run: pip install marimo jinja2 jupytext
 
           - name: Build Jinja2 pages
             working-directory: docs
