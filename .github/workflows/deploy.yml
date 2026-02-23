@@ -38,15 +38,15 @@ jobs:
             run: |
               mkdir -p ../${OUTPUT_DIR}/notebooks
 
-              marimo export html-wasm --show-code get_started_notebook.py -o get-started-notebook.html --mode run
+              marimo export html-wasm --show-code get_started_notebook.py -o ../${{ env.OUTPUT_DIR }}/get-started-notebook.html --mode run
 
-              marimo export html-wasm simple_chart_notebook.py -o simple-chart-notebook.html --mode edit
-              marimo export html-wasm multiple_chart_notebook.py -o multiple-chart-notebook.html --mode edit
-              marimo export html-wasm filtered_chart_notebook.py -o filtered-chart-notebook.html --mode edit
-              marimo export html-wasm rotated_chart_notebook.py -o rotated-chart-notebook.html --mode edit
-              marimo export html-wasm image_and_gltf_notebook.py -o image-and-gltf-notebook.html --mode edit
-              marimo export html-wasm aggregated_chart_notebook.py -o aggregated-chart-notebook.html --mode edit
-              marimo export html-wasm simple_element_notebook.py -o simple-element-notebook.html --mode edit
+              marimo export html-wasm simple_chart_notebook.py -o ../${{ env.OUTPUT_DIR }}/simple-chart-notebook.html --mode edit
+              marimo export html-wasm multiple_chart_notebook.py -o ../${{ env.OUTPUT_DIR }}/multiple-chart-notebook.html --mode edit
+              marimo export html-wasm filtered_chart_notebook.py -o ../${{ env.OUTPUT_DIR }}/filtered-chart-notebook.html --mode edit
+              marimo export html-wasm rotated_chart_notebook.py -o ../${{ env.OUTPUT_DIR }}/rotated-chart-notebook.html --mode edit
+              marimo export html-wasm image_and_gltf_notebook.py -o ../${{ env.OUTPUT_DIR }}/image-and-gltf-notebook.html --mode edit
+              marimo export html-wasm aggregated_chart_notebook.py -o ../${{ env.OUTPUT_DIR }}/aggregated-chart-notebook.html --mode edit
+              marimo export html-wasm simple_element_notebook.py -o ../${{ env.OUTPUT_DIR }}/simple-element-notebook.html --mode edit
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
