@@ -32,7 +32,7 @@ def _():
 
 @app.cell
 def _(aframexr):
-    image_url = 'https://davidlab20.github.io/TFG/imgs/logo.png'
+    image_url = 'https://raw.githubusercontent.com/davidlab20/TFG/main/static/imgs/logo.png'
 
     image = aframexr.Image(image_url, position='0 2 -5', height=3, width=3)
     image.show()

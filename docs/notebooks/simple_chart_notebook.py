@@ -53,7 +53,7 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = aframexr.Data.from_json(data_str)  # Raw data
-    url_data = aframexr.URLData('https://davidlab20.github.io/TFG/examples/data/data.json')
+    url_data = aframexr.URLData('https://raw.githubusercontent.com/davidlab20/TFG/main/static/data/data.json')
     return aframexr, data, json, url_data, urllib
 
 
@@ -92,7 +92,7 @@ def _(aframexr, url_data):
 @app.cell
 def _(aframexr, json, urllib):
     # Import a chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen("https://davidlab20.github.io/TFG/examples/data/simple_chart.json") as json_chart:
+    with urllib.request.urlopen('https://raw.githubusercontent.com/davidlab20/TFG/main/static/data/simple_chart.json') as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = aframexr.Chart.from_dict(json_specs)
