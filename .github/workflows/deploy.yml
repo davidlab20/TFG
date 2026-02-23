@@ -29,6 +29,10 @@ jobs:
           - name: Install marimo and jinja2
             run: pip install marimo jinja2
 
+          - name: Build Jinja2 pages
+            working-directory: docs
+            run: python3 build.py
+
           - name: 📄 Export notebooks
             working-directory: docs/notebooks
             run: |
@@ -41,18 +45,10 @@ jobs:
                 marimo export html-wasm "$nb" -o ../${OUTPUT_DIR}/notebooks/$name.html --mode $mode
               done
 
-          - name: Build Jinja2 pages
-            working-directory: docs
-            run: python3 build.py
-
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
                 path: docs/${{ env.OUTPUT_DIR }}
-
-          - name: Check files
-            working-directory: docs/${{ env.OUTPUT_DIR }}
-            run: ls -laR
 
     deploy:
         needs: build
