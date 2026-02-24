@@ -44,7 +44,7 @@ class Data:
 
 class UrlData:
     """
-    URLData class.
+    UrlData class.
 
     Examples
     --------

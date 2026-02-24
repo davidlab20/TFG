@@ -204,7 +204,7 @@ class Chart(TopLevelMixin):
     Parameters
     ----------
     data : Data | UrlData
-        Data or URLData object of the data.
+        Data or UrlData object of the data.
     depth : float (optional)
         Depth of the chart. If not defined, using DEFAULT_CHART_DEPTH.
     height : float (optional)
