@@ -42,7 +42,7 @@ class Data:
         return json.dumps(self.values)
 
 
-class URLData:
+class UrlData:
     """
     URLData class.
 
@@ -50,7 +50,7 @@ class URLData:
     --------
     >>> import aframexr
     >>> url = '...'  # The URL of the file storing the data
-    >>> data = aframexr.URLData(url)
+    >>> data = aframexr.UrlData(url)
     """
 
     def __init__(self, url: str):

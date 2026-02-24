@@ -41,7 +41,7 @@ class TestAframexrError(unittest.TestCase):
         self.assertEqual(
             str(error.exception),
             ERROR_MESSAGES['TYPE'].format(
-                param_name='data', expected_type='Data or URLData or DataFrame', current_type=type(err_data).__name__
+                param_name='data', expected_type='Data or UrlData or DataFrame', current_type=type(err_data).__name__
             )
         )
 
@@ -67,7 +67,7 @@ class TestAframexrError(unittest.TestCase):
 
     def test_add_error_not_isinstance_TopLevelMixin(self):
         """Verify that the error is raised when adding one chart to another thing."""
-        one = aframexr.Chart(aframexr.URLData(''))
+        one = aframexr.Chart(aframexr.UrlData(''))
         other = 2
         with self.assertRaises(TypeError) as error:
             one + other

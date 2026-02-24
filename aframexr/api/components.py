@@ -17,7 +17,7 @@ from IPython.display import HTML
 from typing import Literal
 
 from .aggregate import AggregatedFieldDef
-from .data import Data, URLData
+from .data import Data, UrlData
 from .encoding import Encoding, X, Y, Z
 from .filters import FilterTransform
 from .parameter import Parameter
@@ -203,7 +203,7 @@ class Chart(TopLevelMixin):
 
     Parameters
     ----------
-    data : Data | URLData
+    data : Data | UrlData
         Data or URLData object of the data.
     depth : float (optional)
         Depth of the chart. If not defined, using DEFAULT_CHART_DEPTH.
@@ -226,19 +226,19 @@ class Chart(TopLevelMixin):
         If depth, height, position, rotation or width is invalid.
     """
 
-    def _define_data(self, data: Data | URLData | DataFrame):
+    def _define_data(self, data: Data | UrlData | DataFrame):
         """Defines the data field in the specifications."""
-        AframeXRValidator.validate_type('data', data, (Data, URLData, DataFrame))
+        AframeXRValidator.validate_type('data', data, (Data, UrlData, DataFrame))
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
-        elif isinstance(data, URLData):
+        elif isinstance(data, UrlData):
             self._specifications.update({'data': {'url': data.url}})
         elif pd is not None and isinstance(data, pd.DataFrame):
             self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
         else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
             raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
 
-    def __init__(self, data: Data | URLData | DataFrame = None, depth: float = None,
+    def __init__(self, data: Data | UrlData | DataFrame = None, depth: float = None,
                  height: float = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__({})  # Initiate specifications
 
@@ -393,7 +393,7 @@ class Chart(TopLevelMixin):
 
         return self
 
-    def properties(self, data: Data | URLData | DataFrame = None, position: str = None,
+    def properties(self, data: Data | UrlData | DataFrame = None, position: str = None,
                    rotation: str = None):
         """Modify general properties of the chart."""
         if data is not None: self._define_data(data)
@@ -461,7 +461,7 @@ class Chart(TopLevelMixin):
         *Using transform_filter() giving the equation string:*
 
         >>> import aframexr
-        >>> data = aframexr.URLData('./data.json')
+        >>> data = aframexr.UrlData('./data.json')
         >>> chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
         >>> filtered_chart = chart.transform_filter('datum.motor == diesel')
         >>> #filtered_chart.show()
@@ -469,7 +469,7 @@ class Chart(TopLevelMixin):
         *Using transform_filter() giving a Filter object*
 
         >>> import aframexr
-        >>> data = aframexr.URLData('./data.json')
+        >>> data = aframexr.UrlData('./data.json')
         >>> chart = aframexr.Chart(data).mark_bar().encode(x='model', y='sales')
         >>> filter_object = aframexr.FieldEqualPredicate(field='motor', equal='diesel')
         >>> filtered_chart = chart.transform_filter(filter_object)

@@ -3,14 +3,14 @@
 import pandas as pd
 
 from aframexr.api.components import selection_point
-from aframexr.api.data import Data, URLData
+from aframexr.api.data import Data, UrlData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
 # ===== GENERAL =====
 # Data OK
-URL_DATA = URLData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/static/data/data.json')  # Data as URL
-LOCAL_PATH_CSV_DATA = URLData('../docs/static/data/data.csv')  # Local CSV file
-LOCAL_PATH_JSON_DATA = URLData('../docs/static/data/data.json')  # Local JSON data
+URL_DATA = UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/static/data/data.json')  # Data as URL
+LOCAL_PATH_CSV_DATA = UrlData('../docs/static/data/data.csv')  # Local CSV file
+LOCAL_PATH_JSON_DATA = UrlData('../docs/static/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 AFRAMEXR_DATA = Data(DATA.to_dict(orient='records'))  # To test Data.__init__() method
 AFRAMEXR_DATA_2 = Data.from_json(AFRAMEXR_DATA.to_json())  # To test Data.from_json() and Data.to_json() methods
@@ -20,10 +20,10 @@ DATA_FORMATS = (ALL_NEGATIVE_DATA, DATA, AFRAMEXR_DATA, AFRAMEXR_DATA_2, POSITIV
                 LOCAL_PATH_JSON_DATA, URL_DATA)
 
 # Data ERROR
-NON_EXISTING_URL_DATA = URLData('https://bad_url.bad_url')
-NON_EXISTING_LOCAL_PATH = URLData('../bad_path')
-BAD_FILE_FORMAT = URLData('bad_file.bad_extension')
-EMPTY_FILE = URLData('empty_file.csv')
+NON_EXISTING_URL_DATA = UrlData('https://bad_url.bad_url')
+NON_EXISTING_LOCAL_PATH = UrlData('../bad_path')
+BAD_FILE_FORMAT = UrlData('bad_file.bad_extension')
+EMPTY_FILE = UrlData('empty_file.csv')
 
 # Aggregates OK
 AGGREGATES = AVAILABLE_AGGREGATES - {'std', 'var'}  # Remove problematic aggregates for our data

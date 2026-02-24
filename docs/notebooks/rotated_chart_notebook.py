@@ -27,7 +27,7 @@ async def _():
 def _():
     import aframexr
 
-    data = aframexr.URLData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
+    data = aframexr.UrlData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
     return aframexr, data
 
 

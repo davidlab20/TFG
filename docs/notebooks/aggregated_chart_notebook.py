@@ -32,7 +32,7 @@ def _():
 
 @app.cell
 def _(aframexr):
-    csv_data = aframexr.URLData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/aggregate_data.csv')
+    csv_data = aframexr.UrlData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/aggregate_data.csv')
     return (csv_data,)
 
 

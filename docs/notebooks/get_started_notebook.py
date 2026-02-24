@@ -35,7 +35,7 @@ def _():
 def _(aframexr):
     # Load the data having the URL of the JSON file
     url = "https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json"
-    data = aframexr.URLData(url)  # Create an URLData object
+    data = aframexr.UrlData(url)  # Create an UrlData object
 
     # Create the chart
     chart = aframexr.Chart(data, position="0 2 -5").mark_bar().encode(x="model", y="sales")

@@ -53,7 +53,7 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = aframexr.Data.from_json(data_str)  # Raw data
-    url_data = aframexr.URLData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
+    url_data = aframexr.UrlData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
     return aframexr, data, json, url_data, urllib
 
 
@@ -67,7 +67,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, url_data):
-    # Pie chart with data as URLData object
+    # Pie chart with data as UrlData object
     pieChartJSON = aframexr.Chart(url_data, position='0 2 -5').mark_arc().encode(color='model', theta='sales')
     pieChartJSON.show()
     return
@@ -83,7 +83,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, url_data):
-    # Bars chart with data as URLData object
+    # Bars chart with data as UrlData object
     barsChartJSON = aframexr.Chart(url_data, position='0 2 -5').mark_bar().encode(x='model', y='sales')
     barsChartJSON.show()
     return
