@@ -25,16 +25,6 @@ from ..utils.scene_creator import SceneCreator
 from ..utils.validators import AframeXRValidator
 
 
-# Selections
-def selection_point(name: str, fields: list) -> Parameter:
-    """Add selection to the chart."""
-    AframeXRValidator.validate_type('name', name, str)
-    AframeXRValidator.validate_type('fields', fields, list)
-
-    select_config = {'type': 'point', 'fields': fields}
-    return Parameter(name=name, select=select_config)
-
-
 class TopLevelMixin:
     """Top level chart class."""
 

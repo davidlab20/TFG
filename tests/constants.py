@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from aframexr.api.components import selection_point
+from aframexr.api.parameter import selection_point
 from aframexr.api.data import Data, UrlData
 from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
