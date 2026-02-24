@@ -8,9 +8,9 @@ from aframexr.utils.constants import AVAILABLE_AGGREGATES
 
 # ===== GENERAL =====
 # Data OK
-URL_DATA = URLData('https://davidlab20.github.io/TFG/examples/data/data.json')  # Data as URL
-LOCAL_PATH_CSV_DATA = URLData('../docs/examples/data/data.csv')  # Local CSV file
-LOCAL_PATH_JSON_DATA = URLData('../docs/examples/data/data.json')  # Local JSON data
+URL_DATA = URLData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/static/data/data.json')  # Data as URL
+LOCAL_PATH_CSV_DATA = URLData('../docs/static/data/data.csv')  # Local CSV file
+LOCAL_PATH_JSON_DATA = URLData('../docs/static/data/data.json')  # Local JSON data
 DATA = pd.read_json(URL_DATA.url)  # Data as pandas.DataFrame
 AFRAMEXR_DATA = Data(DATA.to_dict(orient='records'))  # To test Data.__init__() method
 AFRAMEXR_DATA_2 = Data.from_json(AFRAMEXR_DATA.to_json())  # To test Data.from_json() and Data.to_json() methods
