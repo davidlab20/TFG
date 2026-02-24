@@ -31,7 +31,7 @@ jobs:
 
           - name: Build Jinja2 pages
             working-directory: docs
-            run: python3 build.py
+            run: python3 build_jinja2_pages.py
 
           - name: 📄 Export notebooks
             working-directory: docs/notebooks
