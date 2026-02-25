@@ -6,10 +6,10 @@ from pathlib import Path
 
 # ===== CONFIG =====
 BASE_DIR = Path(__file__).parent.resolve()
-TEMPLATES_DIR = BASE_DIR / 'templates'
 OUTPUT_DIR = BASE_DIR / os.getenv('OUTPUT_DIR', 'github_pages')  # Use environment variable
-STATIC_DIR = BASE_DIR / 'static'
 OUTPUT_STATIC_DIR = OUTPUT_DIR / 'static'
+STATIC_DIR = BASE_DIR / 'static'
+TEMPLATES_DIR = BASE_DIR / 'templates'
 
 # ===== ENVIRONMENT =====
 env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
