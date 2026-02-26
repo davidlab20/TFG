@@ -13,69 +13,29 @@
 <body>
 
 <!-- Heading -->
-<div style="background-color: darkOrange" class="bg-gradient">
-  <div class="container-fluid">
-    <div class="row">
+<div class="bg-gradient d-flex align-items-center justify-content-between px-4" style="background-color: darkorange;">
 
-      <!-- Logo -->
-      <a class="col-auto text-light ms-4" href="{{ base_url }}index.html">
-        <img style="width: auto; height: 75px" src="{{ base_url }}static/imgs/logo.png" alt="Logo">
-      </a>
+  <!-- Logo -->
+  <a href="{{ base_url }}index.html" class="d-flex align-items-center">
+    <img src="{{ base_url }}static/imgs/logo.png" alt="Logo" height="75">
+  </a>
 
-      <!-- Menu options -->
-      <div class="col m-auto mt-4 text-light text-center h5">
-        <div class="row justify-content-center">
-
-          <div class="col-auto">
-            <p><a href="{{ base_url }}get_started/index.html" class="link-body-emphasis link-offset-2
-                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
-              Get started
-            </a></p>
-          </div>
-
-          <div class="col-auto">
-            <p><a href="{{ base_url }}examples/index.html" class="link-body-emphasis link-offset-2
-                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
-              Examples
-            </a></p>
-          </div>
-
-          <div class="col-auto">
-            <p><a href="{{ base_url }}user_guide/user-guide.html" class="link-body-emphasis link-offset-2
-                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
-              User guide
-            </a></p>
-          </div>
-
-          <div class="col-auto">
-            <p><a href="{{ base_url }}user_guide/api.html" class="link-body-emphasis link-offset-2
-                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
-              API
-            </a></p>
-          </div>
-
-          <div class="col-auto">
-            <p><a href="{{ base_url }}about.html" class="link-body-emphasis link-offset-2
-                            link-underline-opacity-0 link-underline-opacity-75-hover text-light">
-              About
-            </a></p>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Link icons -->
-      <div class="col-2 m-auto text-light text-center">
-
-        <div>
-          <a href="https://github.com/davidlab20/TFG">
-            <i class="bi-github h2 text-light"></i>
-          </a>
-        </div>
-
-      </div>
-    </div>
+  <!-- Menu -->
+  <div class="d-flex gap-4 h5">
+    <a href="{{ base_url }}get_started/index.html" class="text-light text-decoration-none">Get started</a>
+    <a href="{{ base_url }}examples/index.html" class="text-light text-decoration-none">Examples</a>
+    <a href="{{ base_url }}user_guide/user-guide.html" class="text-light text-decoration-none">User guide</a>
+    <a href="{{ base_url }}user_guide/api.html" class="text-light text-decoration-none">API</a>
+    <a href="{{ base_url }}about.html" class="text-light text-decoration-none">About</a>
   </div>
+
+  <!-- Link icons -->
+  <div class="d-flex align-items-center gap-3">
+    <a href="https://github.com/davidlab20/TFG" class="text-light fs-3">
+      <i class="bi bi-github"></i>
+    </a>
+  </div>
+
 </div>
 
 <main class="container-fluid">
