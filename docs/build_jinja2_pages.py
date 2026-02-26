@@ -24,8 +24,8 @@ OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 NOTEBOOKS = [
     {
         'title': file_name.replace('_', ' ').title(),
-        'marimo_name': file_name.replace('_', '-').replace('.py', '.html'),
-        'mybinder_name': file_name.replace('.py', '.ipynb')
+        'marimo_name': file_name.replace('_', '-') + '.html',
+        'mybinder_name': file_name + '.ipynb'
     }
     for nb in NOTEBOOKS_DIR.rglob('*_notebook.py')
     for file_name in [nb.stem]
