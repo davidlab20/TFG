@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Convert all .py notebooks to .ipynb
-jupytext --to notebook docs/examples/notebooks/*_notebook.py
+jupytext --to notebook docs/notebooks/*_notebook.py
