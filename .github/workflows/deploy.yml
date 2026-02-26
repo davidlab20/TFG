@@ -52,14 +52,6 @@ jobs:
             with:
                 path: docs/${{ env.OUTPUT_DIR }}
 
-    start-mybinder-build:
-      runs-on: ubuntu-latest
-
-      steps:
-        - name: Access to the repository's URL in MyBinder
-          # Use -L for redirections
-          run: curl -L https://mybinder.org/v2/gh/davidlab20/TFG/${{ github.sha }}
-
     deploy:
         needs: build
         runs-on: ubuntu-latest
@@ -77,3 +69,11 @@ jobs:
               uses: actions/deploy-pages@v4
               with:
                   artifact_name: github-pages
+
+    start-mybinder-build:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Access to the repository's URL in MyBinder
+          # Use -L for redirections
+          run: curl -L https://mybinder.org/v2/gh/davidlab20/TFG/${{ github.sha }}
