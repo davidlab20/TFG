@@ -3,150 +3,125 @@
 {% block content %}
 
 <!-- Package summary -->
-<div>
-  <div class="container mb-4">
-    <div class="row">
-      <div class="col-md-6">
+<div class="col-md-8 mx-auto mb-4">
 
-        <!-- Title -->
-        <div class="my-3">
-          <div>
-            <p class="fw-bold display-5">AframeXR Python: 3D visualization in Python</p>
-          </div>
-        </div>
-
-        <!-- Summary -->
-        <div class="mb-5">
-          <h5 class="fst-normal"><b>AframeXR Python</b> is a 3D visualization library in Python using
-            Marimo notebooks. With very similar sintaxis to Vega-Altair library and Vega-lite
-            grammar, so you can import your graphics and display them in 3D.</h5>
-        </div>
-
+  <div class="row">
+    <!-- Title + Summary -->
+    <div class="col-md-6">
+      <div class="my-3">
+        <p class="fw-bold display-5">AframeXR Python: 3D visualization in Python</p>
       </div>
+      <div class="mb-5">
+        <h5 class="fst-normal"><b>AframeXR Python</b> is a 3D visualization library in Python using Marimo notebooks.
+          With syntax similar to Vega-Altair and Vega-Lite grammar, you can import your graphics and display them in 3D.
+        </h5>
+      </div>
+    </div>
 
-      <!-- Import code -->
-      <div class="col-md-6 m-auto">
-        <div class="card bg-dark">
-          <div class="card-body text-white">
-            <span style="color: orange;">import</span> aframexr
-          </div>
+    <!-- Import code -->
+    <div class="col-md-6 d-flex justify-content-center align-items-center">
+      <div class="card bg-dark w-100">
+        <div class="card-body text-white">
+          <span style="color: orange;">import</span> aframexr
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- Page button links -->
-  <div class="container-fluid bg-light">
-    <div class="container">
-      <div class="row row-cols-1 row-cols-lg-2">
+  <div class="bg-light py-3">
+    <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
 
-        <a href="{{ base_url }}get_started/index.html" class="btn">
-          <div class="card text-start btn btn-light">
-            <div class="card-body">
-              <h5 class="card-title fw-bold">Getting started</h5>
-              <p class="card-text">Get started with the AframeXR Python's library with an easy example
-                of how to create a simple chart.</p>
-            </div>
+      <a href="{{ base_url }}get_started/index.html" class="btn col">
+        <div class="card text-start btn btn-light h-100">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">Getting started</h5>
+            <p class="card-text">Get started with AframeXR Python library with an easy example of how to create a simple chart.</p>
           </div>
-        </a>
+        </div>
+      </a>
 
-        <a href="{{ base_url }}examples/index.html" class="btn">
-          <div class="card text-start btn btn-light">
-            <div class="card-body">
-              <h5 class="card-title fw-bold">Examples</h5>
-              <p class="card-text">Review more examples about the different usages and visualizations
-                that you can create in 3D using AframeXR Python library in Marimo editable notebooks.</p>
-            </div>
+      <a href="{{ base_url }}examples/index.html" class="btn col">
+        <div class="card text-start btn btn-light h-100">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">Examples</h5>
+            <p class="card-text">Explore different usages and 3D visualizations you can create using AframeXR in Marimo notebooks.</p>
           </div>
-        </a>
+        </div>
+      </a>
 
-        <a href="{{ base_url }}user_guide/user-guide.html" class="col btn">
-          <div class="card text-start btn btn-light">
-            <div class="card-body">
-              <h5 class="card-title fw-bold">User guide</h5>
-              <p class="card-text">See more information about the different possibilities and
-                functions that AframeXR Python library has.</p>
-            </div>
+      <a href="{{ base_url }}user_guide/user-guide.html" class="btn col">
+        <div class="card text-start btn btn-light h-100">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">User guide</h5>
+            <p class="card-text">Learn about the various possibilities and functions of the AframeXR Python library.</p>
           </div>
-        </a>
+        </div>
+      </a>
 
-        <a href="{{ base_url }}user_guide/api.html" class="col btn">
-          <div class="card text-start btn btn-light">
-            <div class="card-body">
-              <h5 class="card-title fw-bold">API</h5>
-              <p class="card-text">More detailed information about the different methods and classes
-                that have AframeXR Python library.</p>
-            </div>
+      <a href="{{ base_url }}user_guide/api.html" class="btn col">
+        <div class="card text-start btn btn-light h-100">
+          <div class="card-body">
+            <h5 class="card-title fw-bold">API</h5>
+            <p class="card-text">Detailed information about the methods and classes available in AframeXR.</p>
           </div>
-        </a>
+        </div>
+      </a>
 
-      </div>
     </div>
   </div>
-</div>
 
-<!-- Usages section -->
-<section>
-  <div class="container my-3">
-    <!-- Title -->
-    <div class="row">
-      <div class="col-12">
-        <div class="text-center text-lg-start mb-4 mb-lg-0">
+  <!-- Usages section -->
+  <section>
+    <div class="my-3">
+      <div class="row mb-4">
+        <div class="col-12 text-center text-lg-start">
           <h2 class="fw-bold display-5">Usages</h2>
         </div>
       </div>
-    </div>
 
-    <!-- Different usages -->
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 pb-xl-3 text-center">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4 text-center">
 
-      <div class="col mb-3 border-end border-2 border-dark-subtle">
-        <div class="card border-0">
-          <div class="card-body">
-            <div>
+        <div class="col mb-3 border-end border-2 border-dark-subtle">
+          <div class="card border-0 h-100">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <i class="bi-vr display-1 text-dark my-3"></i>
               <p class="h2 mt-4">VR Visualization</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="col mb-3 border-end border-2 border-dark-subtle">
-        <div class="card border-0">
-          <div class="card-body">
-            <div>
+        <div class="col mb-3 border-end border-2 border-dark-subtle">
+          <div class="card border-0 h-100">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <i class="bi-file-text display-1 text-dark my-3"></i>
               <p class="h2 mt-4">Marimo notebooks</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="col mb-3 border-end border-2 border-dark-subtle">
-        <div class="card border-0">
-          <div class="card-body">
-            <div>
+        <div class="col mb-3 border-end border-2 border-dark-subtle">
+          <div class="card border-0 h-100">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <i class="bi-badge-3d display-1 text-dark my-3"></i>
               <p class="h2 mt-4">3D browser visualization</p>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="col mb-3">
-        <div class="card border-0">
-          <div class="card-body">
-            <div>
+        <div class="col mb-3">
+          <div class="card border-0 h-100">
+            <div class="card-body d-flex flex-column justify-content-center align-items-center">
               <i class="bi-hand-index display-1 text-dark my-3"></i>
               <p class="h2 mt-4">Chart interaction</p>
             </div>
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
+</div>
 
 {% endblock %}
