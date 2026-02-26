@@ -6,6 +6,7 @@ from pathlib import Path
 
 # ===== CONFIG =====
 BASE_DIR = Path(__file__).parent.resolve()
+NOTEBOOKS_DIR = BASE_DIR / 'notebooks'
 OUTPUT_DIR = BASE_DIR / os.getenv('OUTPUT_DIR', 'github_pages')  # Use environment variable
 OUTPUT_STATIC_DIR = OUTPUT_DIR / 'static'
 STATIC_DIR = BASE_DIR / 'static'
@@ -18,6 +19,17 @@ if OUTPUT_DIR.exists():
     shutil.rmtree(OUTPUT_DIR)
 
 OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
+
+# ===== NOTEBOOKS =====
+NOTEBOOKS = [
+    {
+        'title': file_name.replace('_', ' ').title(),
+        'marimo_name': file_name.replace('_', '-').replace('.py', '.html'),
+        'mybinder_name': file_name.replace('.py', '.ipynb')
+    }
+    for nb in NOTEBOOKS_DIR.rglob('*_notebook.py')
+    for file_name in [nb.stem]
+]
 
 # ===== PAGES' TITLES =====
 TITLES = {
@@ -47,7 +59,8 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):  # Recursive
     template = env.get_template(rel_path)
     context = {
         'base_url': BASE_URL,
-        'title': TITLES.get(rel_path, html_file.stem.replace('-', ' ').title())
+        'title': TITLES.get(rel_path, html_file.stem.replace('-', ' ').title()),
+        'notebooks': NOTEBOOKS,
     }
 
     html = template.render(**context)
