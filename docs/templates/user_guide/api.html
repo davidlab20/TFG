@@ -1,4 +1,20 @@
 {% extends "_layouts/base.html" %}
 
 {% block content %}
+<h1 class="fw-bold display-4 mb-4">API Reference</h1>
+
+<div class="row row-cols-1 g-4">
+  {% for item in api_items %}
+  <div class="col">
+    <div class="card h-100 shadow-sm rounded-3 border-2 p-3">
+      <h5 class="fw-bold">{{ item.name }}</h5>
+      {% if item.signature %}<pre class="text-muted">{{ item.signature }}</pre>{% endif %}
+      <p class="text-secondary">{{ item.docstring | replace('\n', '<br>') | safe }}</p>
+      {% if item.args %}
+      <p>ARGS: {% for arg in item.args %}{{ arg }} {% endfor %}</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
 {% endblock %}
