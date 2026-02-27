@@ -5,42 +5,42 @@ from .entities_html_creator import ChartsHTMLCreator
 HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>VR Scene</title>
-    <meta charset="utf-8">
-    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.1/dist/aframe-extras.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.1/docs/scripts/main.min.js"></script>
+  <title>VR Scene</title>
+  <meta charset="utf-8">
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.1/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.1/docs/scripts/main.min.js"></script>
 </head>
 <body>
-    <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
-        <a-entity id="user" movement-controls="speed: 0.1">
-    
-            <!-- Camera -->
-            <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
-    
-            <!-- VR controllers -->
-            <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable]"
-                      line="color: yellow; opacity: 0.8">
-            </a-entity>
-    
-            <a-entity laser-controls="hand: left" raycaster="objects: [data-raycastable]"
-                      line="color: yellow; opacity: 0.8">
-            </a-entity>
-        </a-entity>
-    
-        <!-- HUD -->
-        <a-entity id="HUD" visible="false">
-            <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
-            <a-text id="HUD-text" align="center"></a-text>
-        </a-entity>
+  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
+    <a-entity id="user" movement-controls="speed: 0.1">
 
-        <!-- Environment -->
-        <a-entity environment="preset: {environment}"></a-entity>
+      <!-- Camera -->
+      <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 35"></a-camera>
 
-        <!-- Elements -->
-        {elements}
-    </a-scene>
+      <!-- VR controllers -->
+      <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable]"
+                line="color: yellow; opacity: 0.8">
+      </a-entity>
+
+      <a-entity laser-controls="hand: left" raycaster="objects: [data-raycastable]"
+                line="color: yellow; opacity: 0.8">
+      </a-entity>
+    </a-entity>
+
+    <!-- HUD -->
+    <a-entity id="HUD" visible="false">
+      <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
+      <a-text id="HUD-text" align="center"></a-text>
+    </a-entity>
+
+    <!-- Environment -->
+    <a-entity environment="preset: {environment}"></a-entity>
+
+    <!-- Elements -->
+    {elements}
+  </a-scene>
 </body>
 </html>"""
 
