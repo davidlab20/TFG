@@ -44,7 +44,7 @@ jobs:
             working-directory: docs
             run: |
               if [ -f vr_test.html ]; then
-                cp vr_test.html ../${OUTPUT_DIR}/
+                cp vr_test.html ${OUTPUT_DIR}/
               fi
 
           - name: 📦 Upload Pages Artifact
