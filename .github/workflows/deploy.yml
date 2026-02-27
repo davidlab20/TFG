@@ -71,9 +71,9 @@ jobs:
                   artifact_name: github-pages
 
     start-mybinder-build:
+      needs: deploy
       runs-on: ubuntu-latest
 
       steps:
         - name: Access to the repository's URL in MyBinder
-          # Use -L for redirections
-          run: curl -L https://mybinder.org/v2/gh/davidlab20/TFG/${{ github.sha }}
+          run: curl -X POST https://mybinder.org/build/gh/davidlab20/TFG/HEAD
