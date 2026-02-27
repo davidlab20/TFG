@@ -40,6 +40,13 @@ jobs:
               marimo export html-wasm aggregated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/aggregated-chart-notebook.html --mode edit
               marimo export html-wasm simple_element_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple-element-notebook.html --mode edit
 
+          - name: Add vr_test.html to GitHub Pages
+            working-directory: docs
+            run: |
+              if [ -f vr_test.html ]; then
+                cp vr_test.html ../${OUTPUT_DIR}/
+              fi
+
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
