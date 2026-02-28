@@ -19,7 +19,7 @@ class ElementCreator:
 
         self._attributes = {
             key: value for key, value in element_specs.items()
-            if value is not None and key not in ['element', 'environment']
+            if value is not None and key not in {'element', 'environment'}
         }
 
     @classmethod
