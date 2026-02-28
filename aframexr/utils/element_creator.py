@@ -52,7 +52,7 @@ class ElementCreator:
 
 
 class BoxCreator(ElementCreator):
-    _ELEMENT_HTML = '<a-box{attributes}></a-box>'
+    _ELEMENT_HTML = '<a-box{attributes} side="double"></a-box>'
 
 
 class ConeCreator(ElementCreator):
