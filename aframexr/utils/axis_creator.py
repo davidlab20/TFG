@@ -89,7 +89,7 @@ class AxisCreator:
         align : Literal['left', 'center', 'right']
             The alignment of the label. The default is 'left'.
         """
-        return f'<a-text position="{pos}" rotation="{rotation}" value="{value}" align="{align}"></a-text>'
+        return f'<a-text position="{pos}" rotation="{rotation}" value="{value}" align="{align}" scale="1.5 1.5 1.5"></a-text>'
 
     @staticmethod
     def create_axis_specs(axis: Literal['x', 'y', 'z'], axis_data: Series, axis_encoding: str, axis_size: float,
