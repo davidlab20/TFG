@@ -55,7 +55,7 @@ info_box = aframexr.Box(
     depth=_INFO_BOX_DEPTH, height=_INFO_BOX_HEIGHT, width=_INFO_BOX_WIDTH,
 )
 info_text = aframexr.Text(
-    'This is a simple box chart.\n\n\nRaycaster:\nPlace mouse on bars to\ndisplay more information.',
+    'Simple box chart.\n\n\nRaycaster:\nPlace mouse on bars to\ndisplay more information.',
     position=f'{info_box_pos[0]} {info_box_pos[1]} {info_box_pos[2] + _INFO_BOX_DEPTH / 2 + 0.1}',
     rotation=_INFO_BOX_ROTATION,
     align='center',
