@@ -4,17 +4,62 @@
   <title>VR Scene</title>
   <meta charset="utf-8">
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
-  <script>
-    delete AFRAME.components["grabbable"];
-    delete AFRAME.components["hoverable"];
-    delete AFRAME.components["stretchable"];
-    delete AFRAME.components["draggable"];
-    delete AFRAME.components["droppable"];
-  </script>
   <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.1/dist/aframe-extras.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
-  <script src="https://unpkg.com/super-hands@3.0.6/dist/super-hands.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.1/docs/scripts/main.min.js"></script>
+	<script>
+		// Additional components
+		AFRAME.registerComponent('simple-drag', {
+			schema: {
+				delay: {type: 'number', default: 500}  // Milliseconds
+			},
+
+			init() {
+				this.hovered = null;
+				this.grabbed = null;
+				this.pressTimer = null;
+				this.isLongPress = false;
+
+				this.el.addEventListener('raycaster-intersection', e => {
+					this.hovered = e.detail.els[0];
+				});
+
+				this.el.addEventListener('raycaster-intersection-cleared', () => {
+					this.hovered = null;
+				});
+
+				this.el.addEventListener('selectstart', () => {
+					if (!this.hovered) return;
+
+					this.isLongPress = false;
+
+					this.pressTimer = setTimeout(() => {
+						this.isLongPress = true;
+						this.grabbed = this.hovered;
+
+						this.el.object3D.attach(this.grabbed.object3D);
+					}, this.data.delay);
+				});
+
+				this.el.addEventListener('selectend', () => {
+
+					// Not long press
+					if (!this.isLongPress && this.hovered) {
+						this.hovered.emit('click');
+					}
+
+					// Long press
+					if (this.grabbed) {
+						this.el.sceneEl.object3D.attach(this.grabbed.object3D);
+						this.grabbed = null;
+					}
+
+					clearTimeout(this.pressTimer);
+					this.pressTimer = null;
+				});
+			}
+		});
+	</script>
 </head>
 <body>
   <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
@@ -24,11 +69,13 @@
       <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 15"></a-camera>
 
       <!-- VR controllers -->
-      <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable]"
+      <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable], .movable" simple-drag="delay: 500"
                 line="color: yellow; opacity: 0.8">
       </a-entity>
 
-      <a-entity hand-controls="hand: left" super-hands sphere-collider="objects: .interactable; radius: 0.15"></a-entity>
+      <a-entity laser-controls="hand: left" raycaster="objects: [data-raycastable], .movable" simple-drag="delay: 500"
+                line="color: yellow; opacity: 0.8">
+      </a-entity>
     </a-entity>
 
     <!-- HUD -->
@@ -43,18 +90,18 @@
     <!-- Elements -->
     <a-box color="lightGreen" depth="25" height="8" position="0 4.1 -6.25" width="30" side="double"></a-box>
 		<a-box color="darkSlateGray" depth="6" height="0.3" position="-9 0.15 -8" width="8" side="double"></a-box>
-		<a-entity position="-9.0 2.3 -8.0" rotation="0.0 0.0 0.0" class="interactable" hoverable grabbable stretchable draggable droppable>  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+		<a-entity position="-9.0 2.3 -8.0" rotation="0.0 0.0 0.0" class="movable">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
 			<a-entity position="-3.0 -2.0 1.0">
 				<a-box info="leon : 10" position="0.3 1.0 -1.0" width="0.6" height="2.0" depth="2.0" color="green" data-raycastable side="double"></a-box>
-				<a-box info="ibiza : 15" position="0.9 1.5 -1.0" width="0.6" height="3.0" depth="2.0" color="cyan" data-raycastable side="double"></a-box>
-				<a-box info="cordoba : 3" position="1.5 0.3 -1.0" width="0.6" height="0.6" depth="2.0" color="red" data-raycastable side="double"></a-box>
-				<a-box info="toledo : 18" position="2.1 1.8 -1.0" width="0.6" height="3.6" depth="2.0" color="blue" data-raycastable side="double"></a-box>
-				<a-box info="altea : 4" position="2.7 0.4 -1.0" width="0.6" height="0.8" depth="2.0" color="yellow" data-raycastable side="double"></a-box>
-				<a-box info="arosa : 12" position="3.3 1.2 -1.0" width="0.6" height="2.4" depth="2.0" color="magenta" data-raycastable side="double"></a-box>
+				<a-box info="ibiza : 15" position="0.9 1.5 -1.0" width="0.6" height="3.0" depth="2.0" color="blue" data-raycastable side="double"></a-box>
+				<a-box info="cordoba : 3" position="1.5 0.3 -1.0" width="0.6" height="0.6" depth="2.0" color="magenta" data-raycastable side="double"></a-box>
+				<a-box info="toledo : 18" position="2.1 1.8 -1.0" width="0.6" height="3.6" depth="2.0" color="yellow" data-raycastable side="double"></a-box>
+				<a-box info="altea : 4" position="2.7 0.4 -1.0" width="0.6" height="0.8" depth="2.0" color="red" data-raycastable side="double"></a-box>
+				<a-box info="arosa : 12" position="3.3 1.2 -1.0" width="0.6" height="2.4" depth="2.0" color="cyan" data-raycastable side="double"></a-box>
 				<a-box info="alhambra : 5" position="3.9 0.5 -1.0" width="0.6" height="1.0" depth="2.0" color="green" data-raycastable side="double"></a-box>
-				<a-box info="600 : 20" position="4.5 2.0 -1.0" width="0.6" height="4.0" depth="2.0" color="cyan" data-raycastable side="double"></a-box>
-				<a-box info="127 : 2" position="5.1 0.2 -1.0" width="0.6" height="0.4" depth="2.0" color="red" data-raycastable side="double"></a-box>
-				<a-box info="panda : 13" position="5.7 1.3 -1.0" width="0.6" height="2.6" depth="2.0" color="blue" data-raycastable side="double"></a-box>
+				<a-box info="600 : 20" position="4.5 2.0 -1.0" width="0.6" height="4.0" depth="2.0" color="blue" data-raycastable side="double"></a-box>
+				<a-box info="127 : 2" position="5.1 0.2 -1.0" width="0.6" height="0.4" depth="2.0" color="magenta" data-raycastable side="double"></a-box>
+				<a-box info="panda : 13" position="5.7 1.3 -1.0" width="0.6" height="2.6" depth="2.0" color="yellow" data-raycastable side="double"></a-box>
 
 				<!-- X-axis -->
 				<a-entity line="start: 0 0 0; end: 6 0 0; color: black"></a-entity>
@@ -78,7 +125,7 @@
 				<a-text value="20.0" position="-0.5 4.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
 			</a-entity>
 		</a-entity>
-		
+
 		<a-box depth="0.1" height="1.5" position="-4.0 1.05 -5.05" width="3" side="double"></a-box>
 		<a-text align="center" color="black" position="-4.0 1.05 -5.0" value="TIP:
 
@@ -87,7 +134,7 @@ display more information."></a-text>
 		<a-plane side="double" color="white" position="-9 5.0 -8" width="6"></a-plane>
 		<a-text align="center" color="black" position="-9 5.0 -8" value="Simple bar chart" scale="1.5 1.5 1.5"></a-text>
 		<a-box color="darkSlateGray" depth="5" height="0.3" position="7 0.15 -8" width="8" side="double"></a-box>
-		<a-entity position="7.0 2.3 -8.0" rotation="0.0 0.0 0.0" class="interactable" hoverable grabbable stretchable draggable droppable>  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+		<a-entity position="7.0 2.3 -8.0" rotation="0.0 0.0 0.0" class="movable">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
 			<a-entity position="-3.0 -2.0 0.5">
 				<a-sphere info="leon : 10" position="0.5 2.0 -0.5" radius="0.5" color="blue" data-raycastable></a-sphere>
 				<a-sphere info="ibiza : 15" position="1.0556 2.75 -0.5" radius="0.5" color="blue" data-raycastable></a-sphere>
