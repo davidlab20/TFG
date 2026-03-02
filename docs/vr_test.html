@@ -13,26 +13,35 @@
 				this.grabbed = null;
 				this.offset = new THREE.Vector3();
 
+				const grab = (intersected) => {
+						if (!intersected) return;
+						const obj = intersected.object.el;
+						if (!obj.classList.contains('movable')) return;
+
+						this.grabbed = obj;
+
+						const controllerPos = new THREE.Vector3();
+						this.el.object3D.getWorldPosition(controllerPos);
+
+						const objectPos = new THREE.Vector3();
+						this.grabbed.object3D.getWorldPosition(objectPos);
+
+						this.offset.copy(objectPos).sub(controllerPos);
+				};
+
+				// VR events
 				this.el.addEventListener('gripdown', () => {
-					const intersected = this.el.components.raycaster?.intersections[0];
-					if (!intersected) return;
-					const obj = intersected.object.el;
-					if (!obj.classList.contains('movable')) return;
-
-					this.grabbed = obj;
-
-					const controllerPos = new THREE.Vector3();
-					this.el.object3D.getWorldPosition(controllerPos);
-
-					const objectPos = new THREE.Vector3();
-					this.grabbed.object3D.getWorldPosition(objectPos);
-
-					this.offset.copy(objectPos).sub(controllerPos);
+						const intersected = this.el.components.raycaster?.intersections[0];
+						grab(intersected);
 				});
+				this.el.addEventListener('gripup', () => { this.grabbed = null; });
 
-				this.el.addEventListener('gripup', () => {
-					this.grabbed = null;
+				// Mouse events
+				this.el.addEventListener('mousedown', (evt) => {
+						const intersected = evt.detail.intersectedEl;
+						grab({ object: intersected?.object3D });
 				});
+				this.el.addEventListener('mouseup', () => { this.grabbed = null; });
 			},
 
 			tick() {
