@@ -12,7 +12,7 @@ from polars import DataFrame
 
 from .axis_creator import AxisCreator
 from .chart_creator import ChartCreator
-from .element_creator import ElementCreator
+from .element_creator import ElementCreator, TextCreator
 
 
 @lru_cache  # Use come cache for increasing performance
@@ -175,11 +175,10 @@ class ChartsHTMLCreator:
             chart_html += f'\n\t\t\t\t<!-- {ax.upper()}-axis -->\n'  # Added HTML comment for better visualization
             chart_html += '\t\t\t\t' + AxisCreator.create_axis_html(ax_specs['start'], ax_specs['end']) + '\n'
             for label_pos, label_value in zip(ax_specs['labels_pos'], ax_specs['labels_values']):
-                label_rotation = ax_specs['labels_rotation']
-                label_align = ax_specs['labels_align']
-                chart_html += '\t\t\t\t' + AxisCreator.create_label_html(
-                    label_pos, label_rotation, label_value, label_align
-                ) + '\n'
+                chart_html += '\t\t\t\t' + TextCreator({
+                    'value': label_value, 'position': label_pos, 'rotation': ax_specs['labels_rotation'],
+                    'align': ax_specs['labels_align'], 'scale': '1.5 1.5 1.5'
+                }).get_element_html() + '\n'
 
         # Close the groups
         chart_html += '\t\t\t</a-entity>\n'

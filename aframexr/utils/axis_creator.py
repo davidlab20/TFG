@@ -74,24 +74,6 @@ class AxisCreator:
         return f'<a-entity line="start: {start}; end: {end}; color: black"></a-entity>'
 
     @staticmethod
-    def create_label_html(pos: str, rotation: str, value: str, align: Literal['left', 'center', 'right']) -> str:
-        """
-        Create a text with the value of the label in the correct position and returns its HTML.
-
-        Parameters
-        ----------
-        pos : str
-            The position of the label.
-        rotation : str
-            The rotation of the label (for better visualization).
-        value : str
-            The value of the label.
-        align : Literal['left', 'center', 'right']
-            The alignment of the label. The default is 'left'.
-        """
-        return f'<a-text position="{pos}" rotation="{rotation}" value="{value}" align="{align}" scale="1.5 1.5 1.5"></a-text>'
-
-    @staticmethod
     def create_axis_specs(axis: Literal['x', 'y', 'z'], axis_data: Series, axis_encoding: str, axis_size: float,
                           elements_coords: Series, x_offset: float, y_offset: float, z_offset: float) -> dict:
         """Returns the axis specifications for x, y or z axis depending on its encoding."""
