@@ -15,7 +15,7 @@
 				this.offset = new THREE.Vector3();
 
 				this.el.addEventListener('raycaster-intersection', e => {
-					this.hovered = e.detail.els.find(el => el.classList.contains('movable') && el.hasAttribute('data-raycastable')) || null;
+					this.hovered = e.detail.els.find(el => el.classList.contains('movable')) || null;
 				});
 
 				this.el.addEventListener('raycaster-intersection-cleared', () => {
