@@ -380,7 +380,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         # Return values
         temp_dict = {
             'info': info,
-            'depth': depth,
+            'height': depth,  # Using height, as pie's slices are rotated cylinders
             'position': pl.select(pl.concat_str(
                 [x_coordinates, y_coordinates, z_coordinates],
                 separator=' '

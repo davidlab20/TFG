@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
             z_offset = radius;
         } else if (targetElement.tagName.toLowerCase() === 'a-cylinder') {  // Pie chart
             let radius = parseFloat(targetElement.getAttribute('radius'));
-            let depth = parseFloat(targetElement.getAttribute('depth'));
+            let depth = parseFloat(targetElement.getAttribute('height'));  // Using height, slices are rotated cylinders
             y_offset = radius;
-            z_offset = depth;
+            z_offset = depth / 2;
         }
 
 		// Update HUD attributes
