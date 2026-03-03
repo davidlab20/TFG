@@ -60,7 +60,7 @@ charts.append(platform_1), charts.append(chart_1), charts.append(title_box), cha
 
 # Chart 2
 _CHART_2_DEPTH = 0.5
-_CHART_2_RADIUS =2
+_CHART_2_RADIUS = 2
 
 _GROUND_CENTER_POS_X_2 = 0
 
