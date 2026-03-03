@@ -1,11 +1,23 @@
-beautifulsoup4>=4.14.0
+# Package main dependencies
 IPython>=9.8.0
-jinja2>=3.1.0
-jupytext>=1.19.0
-lxml>=6.0.0
-marimo>=0.18.0
-notebook>=7.5.0
-pandas>=2.3.0
 polars>=1.36.0
+
+# Package optional dependencies
+pandas>=2.3.0
+
+# Testing
+beautifulsoup4>=4.14.0
+lxml>=6.0.0
 pytest>=9.0.0
 pytest-cov>=7.0.0
+
+# GitHub Pages
+jinja2>=3.1.0
+marimo>=0.18.0
+
+# Local HTTPS server (to view scenes using VR devices without redeploying in GitHub Pages)
+cryptography>=46.0.0
+
+# For MyBinder
+jupytext>=1.19.0
+notebook>=7.5.0
