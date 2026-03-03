@@ -14,7 +14,7 @@ room = aframexr.Box(
 # ===== CHARTS =====
 data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/static/data/data.json')
 
-_PLATFORMS_CONFIG = {'height': 0.3, 'additional_depth': 4, 'additional_width': 2, 'color': 'darkSlateGray'}
+_PLATFORMS_CONFIG = {'height': 0.2, 'additional_depth': 4, 'additional_width': 2, 'color': 'darkSlateGray'}
 
 charts = []
 
