@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let z_offset = 0;
         if (targetElement.tagName.toLowerCase() === 'a-box') {  // Bars chart
             let height = parseFloat(targetElement.getAttribute('height'));
-            const depth = parseFloat(targetElement.getAttribute('depth'));
+            let depth = parseFloat(targetElement.getAttribute('depth'));
             y_offset = height / 2;
             z_offset = depth / 2;
         } else if (targetElement.tagName.toLowerCase() === 'a-sphere') {  // Point chart
@@ -29,8 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
             z_offset = radius;
         } else if (targetElement.tagName.toLowerCase() === 'a-cylinder') {  // Pie chart
             let radius = parseFloat(targetElement.getAttribute('radius'));
+            let depth = parseFloat(targetElement.getAttribute('depth'));
             y_offset = radius;
-            z_offset = 0;
+            z_offset = depth;
         }
 
 		// Update HUD attributes
