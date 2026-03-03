@@ -110,7 +110,7 @@ chart_3 = aframexr.Chart(
     data,
     position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] + _CHART_3_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
     depth=_CHART_3_DEPTH, height=_CHART_3_HEIGHT, width=_CHART_3_WIDTH
-).mark_point().encode(x='model', y='sales')
+).mark_point(size=0.4).encode(x='model', y='sales')
 
 title_box = aframexr.Plane(
     position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] + _CHART_3_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
