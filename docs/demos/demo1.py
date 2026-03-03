@@ -23,15 +23,15 @@ _CHART_1_DEPTH = 2
 _CHART_1_HEIGHT = 4
 _CHART_1_WIDTH = 6
 
-_GROUND_CENTER_POS_X_1 = -9
-_GROUND_CENTER_POS_Z_1 = -8
+_GROUND_CENTER_POS_X_1 = -10
+_GROUND_CENTER_POS_Z = -15
 
 _INFO_BOX_1_DEPTH = 0.1
 _INFO_BOX_1_HEIGHT = 1.5
 _INFO_BOX_1_WIDTH = 3
 
 platform_1 = aframexr.Box(
-    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z_1}',
+    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z}',
     depth=_CHART_1_DEPTH + _PLATFORMS_CONFIG['additional_depth'],
     height=_PLATFORMS_CONFIG['height'],
     width=_CHART_1_WIDTH + _PLATFORMS_CONFIG['additional_width'],
@@ -39,82 +39,107 @@ platform_1 = aframexr.Box(
 )
 chart_1 = aframexr.Chart(
     data,
-    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT / 2} {_GROUND_CENTER_POS_Z_1}',
+    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
     depth=_CHART_1_DEPTH, height=_CHART_1_HEIGHT, width=_CHART_1_WIDTH
 ).mark_bar().encode(x='model', y='sales')
 
-info_box_pos = [
-    _GROUND_CENTER_POS_X_1 + _CHART_1_WIDTH / 2 + _PLATFORMS_CONFIG['additional_width'],
-    _INFO_BOX_1_HEIGHT / 2 + _PLATFORMS_CONFIG['height'],
-    _GROUND_CENTER_POS_Z_1 + _CHART_1_DEPTH / 2 + _PLATFORMS_CONFIG["additional_depth"] / 2 - _INFO_BOX_1_DEPTH / 2
-]
-info_box = aframexr.Box(
-    position=f'{info_box_pos[0]} {info_box_pos[1]} {info_box_pos[2]}',
-    depth=_INFO_BOX_1_DEPTH, height=_INFO_BOX_1_HEIGHT, width=_INFO_BOX_1_WIDTH,
-)
-info_text = aframexr.Text(
-    'TIP:\n\nPlace mouse on bars to\ndisplay more information.',
-    position=f'{info_box_pos[0]} {info_box_pos[1]} {info_box_pos[2] + _INFO_BOX_1_DEPTH / 2}',
-    align='center',
-    color='black',
-)
 title_box = aframexr.Plane(
-    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z_1}',
+    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
     width=_CHART_1_WIDTH,
     color='white',
 )
 title_text = aframexr.Text(
-    'Simple bar chart',
-    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z_1}',
+    'BAR CHART',
+    position=f'{_GROUND_CENTER_POS_X_1} {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
     align='center',
     color='black',
     scale='1.5 1.5 1.5',
 )
 
-charts.append(platform_1), charts.append(chart_1), charts.append(info_box), charts.append(info_text), charts.append(title_box), charts.append(title_text)
+charts.append(platform_1), charts.append(chart_1), charts.append(title_box), charts.append(title_text)
 
 # Chart 2
-_CHART_2_DEPTH = 1
-_CHART_2_HEIGHT = 4
-_CHART_2_WIDTH = 6
+_CHART_2_DEPTH = 0.5
+_CHART_2_RADIUS =2
 
-_GROUND_CENTER_POS_X_2 = 7
-_GROUND_CENTER_POS_Z_2 = -8
-
-_INFO_BOX_2_DEPTH = 0.1
-_INFO_BOX_2_HEIGHT = 2
-_INFO_BOX_2_WIDTH = 3
+_GROUND_CENTER_POS_X_2 = 0
 
 platform_2 = aframexr.Box(
-    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z_2}',
+    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z}',
     depth=_CHART_2_DEPTH + _PLATFORMS_CONFIG['additional_depth'],
     height=_PLATFORMS_CONFIG['height'],
-    width=_CHART_2_WIDTH + _PLATFORMS_CONFIG['additional_width'],
+    width=_CHART_2_RADIUS + _PLATFORMS_CONFIG['additional_width'],
     color=_PLATFORMS_CONFIG['color'],
 )
 chart_2 = aframexr.Chart(
     data,
-    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] + _CHART_2_HEIGHT / 2} {_GROUND_CENTER_POS_Z_2}',
-    depth=_CHART_2_DEPTH, height=_CHART_2_HEIGHT, width=_CHART_2_WIDTH
-).mark_point().encode(x='model', y='sales')
+    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] + _CHART_2_RADIUS + 0.1} {_GROUND_CENTER_POS_Z}',
+    depth=_CHART_2_DEPTH
+).mark_arc(radius=_CHART_2_RADIUS).encode(color='model', theta='sales')
 
-info_box_pos = [
-    _GROUND_CENTER_POS_X_2 + _CHART_2_WIDTH / 2 + _PLATFORMS_CONFIG['additional_width'],
-    _INFO_BOX_2_HEIGHT / 2 + _PLATFORMS_CONFIG['height'],
-    _GROUND_CENTER_POS_Z_2 + _CHART_2_DEPTH / 2 + _PLATFORMS_CONFIG["additional_depth"] / 2 - _INFO_BOX_2_DEPTH / 2
-]
-info_box = aframexr.Box(
-    position=f'{info_box_pos[0]} {info_box_pos[1]} {info_box_pos[2]}',
-    depth=_INFO_BOX_2_DEPTH, height=_INFO_BOX_2_HEIGHT, width=_INFO_BOX_2_WIDTH,
+title_box = aframexr.Plane(
+    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] + _CHART_2_RADIUS * 2 + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
+    width=_CHART_2_RADIUS * 2,
+    color='white',
 )
-info_text = aframexr.Text(
-    'Simple point chart.\n\n\nRaycaster:\nPlace mouse on spheres to\ndisplay more information.',
-    position=f'{info_box_pos[0]} {info_box_pos[1]} {info_box_pos[2] + _INFO_BOX_2_DEPTH / 2}',
+title_text = aframexr.Text(
+    'PIE CHART',
+    position=f'{_GROUND_CENTER_POS_X_2} {_PLATFORMS_CONFIG['height'] + _CHART_2_RADIUS * 2 + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
     align='center',
     color='black',
+    scale='1.5 1.5 1.5',
 )
 
-charts.append(platform_2), charts.append(chart_2), charts.append(info_box), charts.append(info_text)
+charts.append(platform_2), charts.append(chart_2), charts.append(title_box), charts.append(title_text)
+
+# Chart 3
+_CHART_3_DEPTH = 1
+_CHART_3_HEIGHT = 4
+_CHART_3_WIDTH = 6
+
+_GROUND_CENTER_POS_X_3 = 10
+
+platform_3 = aframexr.Box(
+    position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z}',
+    depth=_CHART_3_DEPTH + _PLATFORMS_CONFIG['additional_depth'],
+    height=_PLATFORMS_CONFIG['height'],
+    width=_CHART_3_WIDTH + _PLATFORMS_CONFIG['additional_width'],
+    color=_PLATFORMS_CONFIG['color'],
+)
+chart_3 = aframexr.Chart(
+    data,
+    position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] + _CHART_3_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
+    depth=_CHART_3_DEPTH, height=_CHART_3_HEIGHT, width=_CHART_3_WIDTH
+).mark_point().encode(x='model', y='sales')
+
+title_box = aframexr.Plane(
+    position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] + _CHART_3_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
+    width=_CHART_3_WIDTH,
+    color='white',
+)
+title_text = aframexr.Text(
+    'POINT CHART',
+    position=f'{_GROUND_CENTER_POS_X_3} {_PLATFORMS_CONFIG['height'] + _CHART_3_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
+    align='center',
+    color='black',
+    scale='1.5 1.5 1.5',
+)
+
+charts.append(platform_3), charts.append(chart_3), charts.append(title_box), charts.append(title_text)
+
+# Title
+main_plane = aframexr.Plane(
+    position=f'0 {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5 + 2} {_GROUND_CENTER_POS_Z}',
+    height=2, width=25,
+)
+main_text = aframexr.Text(
+    'SIMPLE CHARTS',
+    position=f'0 {_PLATFORMS_CONFIG['height'] + _CHART_1_HEIGHT + 0.2 + 0.5 + 2} {_GROUND_CENTER_POS_Z}',
+    align='center',
+    scale='7 7 7',
+    color='black',
+)
+charts.append(main_plane), charts.append(main_text)
 
 # ===== SCENE =====
 scene = room
