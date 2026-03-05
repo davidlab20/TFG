@@ -121,6 +121,15 @@ class TopLevelMixin:
         AframeXRValidator.validate_chart_specs(chart._specifications)
         return chart
 
+    # Movable
+    def movable(self):
+        """Make the entity movable."""
+        if 'concat' in self._specifications:
+            raise ValueError('Concatenated charts cannot be movable.')
+
+        self._specifications.setdefault('movable', True)
+        return self
+
     # Exporting charts
     def save(self, fp: str, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
     'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron',
@@ -385,11 +394,6 @@ class Chart(TopLevelMixin):
 
         return self
 
-    def movable(self):
-        """Make the chart movable."""
-        self._specifications['movable'] = True
-        return self
-
     def properties(self, data: Data | UrlData | DataFrame = None, position: str = None,
                    rotation: str = None):
         """Modify general properties of the chart."""
@@ -504,11 +508,6 @@ class Element(TopLevelMixin, ABC):
             {key: value for key, value in kwargs.items()
              if value is not None}
         )
-
-    def movable(self):
-        """Make the element movable."""
-        self._specifications['movable'] = True
-        return self
 
 
 # Single elements
