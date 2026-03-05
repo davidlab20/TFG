@@ -134,9 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	    activeSubcharts[groupName].forEach(chart => {
             chart.setAttribute('visible', 'false');
 
-            // Remove data-raycastable for every children of the subchart
+            // Remove raycastable for every children of the subchart
             const children = chart.querySelectorAll(interactiveAframeElements);
-            children.forEach(child => child.removeAttribute('data-raycastable'));
+            children.forEach(child => child.removeAttribute('raycastable'));
         });
 
         activeSubcharts[groupName] = [];  // Clean actual group subcharts
@@ -145,9 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
         targetCharts.forEach(chart => {
             chart.setAttribute('visible', 'true');
 
-            // Add data-raycastable for every children of the subchart
+            // Add raycastable for every children of the subchart
             const children = chart.querySelectorAll(interactiveAframeElements);
-            children.forEach(child => child.setAttribute('data-raycastable', ''));
+            children.forEach(child => child.setAttribute('raycastable', ''));
 
             activeSubcharts[groupName].push(chart);
         });

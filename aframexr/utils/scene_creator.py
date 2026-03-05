@@ -13,19 +13,17 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
   <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.4/docs/static/scripts/main.min.js"></script>
 </head>
 <body>
-  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [data-raycastable]" webxr="optionalFeatures: local-floor">
+  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [raycastable]" drag-controls="mode: cursor"
+           webxr="optionalFeatures: local-floor">
     <a-entity id="user" movement-controls="speed: 0.1">
 
       <!-- Camera -->
       <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 15"></a-camera>
 
       <!-- VR controllers -->
-      <a-entity laser-controls="hand: right" raycaster="objects: [data-raycastable]"
-                line="color: yellow; opacity: 0.8">
+      <a-entity laser-controls="hand: right" raycaster="objects: [raycastable]" drag-controls="mode: vr">
       </a-entity>
-
-      <a-entity laser-controls="hand: left" raycaster="objects: [data-raycastable]"
-                line="color: yellow; opacity: 0.8">
+      <a-entity laser-controls="hand: left" raycaster="objects: [raycastable]" drag-controls="mode: vr">
       </a-entity>
     </a-entity>
 
