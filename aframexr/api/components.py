@@ -231,11 +231,11 @@ class Chart(TopLevelMixin):
             'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> because of DataFrame
         )
         if isinstance(data, Data):
-            self._specifications.update({'data': {'values': data.values}})
+            self._specifications['data'] = {'values': data.values}
         elif isinstance(data, UrlData):
-            self._specifications.update({'data': {'url': data.url}})
+            self._specifications['data'] = {'url': data.url}
         elif pd is not None and isinstance(data, pd.DataFrame):
-            self._specifications.update({'data': {'values': data.to_dict(orient='records')}})
+            self._specifications['data'] = {'values': data.to_dict(orient='records')}
         else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
             raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
 
@@ -244,11 +244,11 @@ class Chart(TopLevelMixin):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
-        if position is not None: self._specifications.update({'position': position})
-        if rotation is not None: self._specifications.update({'rotation': rotation})
-        if depth is not None: self._specifications.update({'depth': depth})
-        if height is not None: self._specifications.update({'height': height})
-        if width is not None: self._specifications.update({'width': width})
+        if position is not None: self._specifications['position'] = position
+        if rotation is not None: self._specifications['rotation'] = rotation
+        if depth is not None: self._specifications['depth'] = depth
+        if height is not None: self._specifications['height'] = height
+        if width is not None: self._specifications['width'] = width
 
     # Parameters
     def add_params(self, *params: Parameter):
@@ -274,11 +274,11 @@ class Chart(TopLevelMixin):
         radius : float (optional)
             Outer radius of the pie chart. If not specified, using DEFAULT_PIE_RADIUS. Must be greater than 0.
         """
-        self._specifications.update({'mark': {'type': 'arc'}})
+        self._specifications['mark'] = {'type': 'arc'}
 
         if radius is not None:
             AframeXRValidator.validate_positive_number('radius', radius)
-            self._specifications['mark'].update({'radius': radius})
+            self._specifications['mark']['radius'] = radius
 
         return self
 
@@ -296,11 +296,11 @@ class Chart(TopLevelMixin):
         ValueError
             If defined size is not greater than 0.
         """
-        self._specifications.update({'mark': {'type': 'bar'}})
+        self._specifications['mark'] = {'type': 'bar'}
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
-            self._specifications['mark'].update({'size': size})
+            self._specifications['mark']['size'] = size
 
         return self
 
@@ -318,11 +318,11 @@ class Chart(TopLevelMixin):
         ValueError
             If size is not greater than 0.
         """
-        self._specifications.update({'mark': {'type': 'point'}})
+        self._specifications['mark'] = {'type': 'point'}
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
-            self._specifications['mark'].update({'max_radius': size})
+            self._specifications['mark']['max_radius'] = size
 
         return self
 
@@ -359,25 +359,25 @@ class Chart(TopLevelMixin):
         # Verify the type of the arguments and store the filled parameters
         if color is not None:
             AframeXRValidator.validate_type('color', color, str)
-            filled_params.update({'color': color})
+            filled_params['color'] = color
         if size is not None:
             AframeXRValidator.validate_type('size', size, str)
-            filled_params.update({'size': size})
+            filled_params['size'] = size
         if theta is not None:
             AframeXRValidator.validate_type('theta', theta, str)
-            filled_params.update({'theta': theta})
+            filled_params['theta'] = theta
         if x is not None:
             AframeXRValidator.validate_type('x', x, (str, X))
-            filled_params.update({'x': x})
+            filled_params['x'] = x
         if y is not None:
             AframeXRValidator.validate_type('y', y, (str, Y))
-            filled_params.update({'y': y})
+            filled_params['y'] = y
         if z is not None:
             AframeXRValidator.validate_type('z', z, (str, Z))
-            filled_params.update({'z': z})
+            filled_params['z'] = z
 
         # Do the encoding
-        self._specifications.update({'encoding': {}})
+        self._specifications['encoding'] = {}
         for param_key in filled_params:
             param_value = filled_params[param_key]
             if isinstance(param_value, Encoding):
@@ -386,11 +386,11 @@ class Chart(TopLevelMixin):
                 formula, encoding_type = Encoding.split_field_and_encoding(param_value)
                 field, aggregate_op = AggregatedFieldDef.split_operator_field(formula)
 
-                self._specifications['encoding'].update({param_key: {'field': field}})
+                self._specifications['encoding'][param_key] = {'field': field}
                 if aggregate_op:
-                    self._specifications['encoding'][param_key].update({'aggregate': aggregate_op})
+                    self._specifications['encoding'][param_key]['aggregate'] = aggregate_op
                 if encoding_type:
-                    self._specifications['encoding'][param_key].update({'type': encoding_type})
+                    self._specifications['encoding'][param_key]['type'] = encoding_type
 
         return self
 
@@ -398,8 +398,8 @@ class Chart(TopLevelMixin):
                    rotation: str = None):
         """Modify general properties of the chart."""
         if data is not None: self._define_data(data)
-        if position is not None: self._specifications.update({'position': position})
-        if rotation is not None: self._specifications.update({'rotation': rotation})
+        if position is not None: self._specifications['position'] = position
+        if rotation is not None: self._specifications['rotation'] = rotation
 
         return self
 
@@ -431,7 +431,7 @@ class Chart(TopLevelMixin):
             aggregate_specs['groupby'] = groupby
 
         if not aggreg_chart._specifications.get('transform'):  # First time filtering the chart (create field)
-            aggreg_chart._specifications.update({'transform': [aggregate_specs]})
+            aggreg_chart._specifications['transform'] = [aggregate_specs]
         else:  # Not the first filter of the chart (add to aggregates)
             aggreg_chart._specifications['transform'].append(aggregate_specs)
         return aggreg_chart
@@ -492,7 +492,7 @@ class Chart(TopLevelMixin):
 
         # Add the information of the filter object to the specifications
         if not filt_chart._specifications.get('transform'):  # First time filtering the chart
-            filt_chart._specifications.update({'transform': [{'filter': filter_transform.to_dict()}]})
+            filt_chart._specifications['transform'] = [{'filter': filter_transform.to_dict()}]
         else:  # Not the first filter of the chart
             filt_chart._specifications['transform'].append({'filter': filter_transform.to_dict()})
         return filt_chart  # Returns the copy of the chart
