@@ -1,5 +1,7 @@
 """AframeXR elements creator"""
 
+from .constants import ENTITY_IS_MOVABLE
+
 CREATOR_MAP: dict[str, type['ElementCreator']] = {}  # Creator map of elements, classes are added at the end of the file
 
 
@@ -19,7 +21,7 @@ class ElementCreator:
 
         self._attributes = {
             key: value for key, value in element_specs.items()
-            if value is not None and key not in {'element', 'environment'}
+            if value is not None and key not in {'element', 'environment', 'movable'}
         }
 
     @classmethod
@@ -35,7 +37,7 @@ class ElementCreator:
 
         return CREATOR_MAP[element_type](element_specs)
 
-    def get_element_html(self) -> str:
+    def get_element_html(self, is_movable: bool = ENTITY_IS_MOVABLE) -> str:
         if self._ELEMENT_HTML == '':  # pragma: no cover (all classes should have inner _ELEMENT_HTML constant defined)
             raise RuntimeError('Attribute _ELEMENT_HTML was not initialized')
 
@@ -44,9 +46,11 @@ class ElementCreator:
             for key, value in self._attributes.items()
         )
 
-        # Add interaction if there is information to display and the element is not part of a subchart
-        if 'info' in self._attributes and not self._filtered_by_params:
-            attributes += ' data-raycastable'
+        has_info = 'info' in self._attributes and not self._filtered_by_params
+        if is_movable:
+            attributes += ' movable raycastable'
+        elif has_info:
+            attributes += ' raycastable'
 
         return self._ELEMENT_HTML.format(attributes=attributes)
 

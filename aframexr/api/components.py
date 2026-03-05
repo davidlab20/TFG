@@ -385,6 +385,11 @@ class Chart(TopLevelMixin):
 
         return self
 
+    def movable(self):
+        """Make the chart movable."""
+        self._specifications['movable'] = True
+        return self
+
     def properties(self, data: Data | UrlData | DataFrame = None, position: str = None,
                    rotation: str = None):
         """Modify general properties of the chart."""
@@ -499,6 +504,11 @@ class Element(TopLevelMixin, ABC):
             {key: value for key, value in kwargs.items()
              if value is not None}
         )
+
+    def movable(self):
+        """Make the element movable."""
+        self._specifications['movable'] = True
+        return self
 
 
 # Single elements

@@ -12,6 +12,7 @@ from polars import DataFrame
 
 from .axis_creator import AxisCreator
 from .chart_creator import ChartCreator
+from .constants import ENTITY_IS_MOVABLE
 from .element_creator import ElementCreator, TextCreator
 
 
@@ -147,7 +148,8 @@ class ChartsHTMLCreator:
     """Charts HTML creator class."""
 
     @staticmethod
-    def _create_chart_html(chart_specs: dict, param_name: str = None, param_values: dict = None) -> str:
+    def _create_chart_html(chart_specs: dict, param_name: str = None, param_values: dict = None,
+                           is_movable: bool = ENTITY_IS_MOVABLE) -> str:
         chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
 
         # Chart HTML
@@ -156,6 +158,8 @@ class ChartsHTMLCreator:
 
         filtered_by_params = False
         attributes = ''.join(f' {key.replace("_", "-")}="{value}"' for key, value in group_specs.items())
+        if is_movable:
+            attributes += ' movable'  # For drag-controls
         if param_name is not None and param_values is not None:
             filtered_by_params = True
             param_values_str = '__'.join(f'{value}' for value in param_values.values())
@@ -186,10 +190,10 @@ class ChartsHTMLCreator:
         return chart_html
 
     @staticmethod
-    def _create_element_html(element_specs: dict) -> str:
+    def _create_element_html(element_specs: dict, is_movable: bool = ENTITY_IS_MOVABLE) -> str:
         element_type = element_specs['element']
         element_object = ElementCreator.create_object(element_type, element_specs)
-        return element_object.get_element_html()
+        return element_object.get_element_html(is_movable=is_movable)
 
     @staticmethod
     def _create_entity_html(chart_specs: dict, scene_params_map: dict) -> str:
@@ -209,6 +213,8 @@ class ChartsHTMLCreator:
 
         Suppose that the parameters are correct for method calls of ChartCreator and AxisCreator.
         """
+        is_movable = chart_specs.get('movable', ENTITY_IS_MOVABLE)
+
         if 'mark' in chart_specs:  # Chart
             raw_data, chart_params_names = _get_raw_data_and_params(chart_specs)
 
@@ -228,7 +234,7 @@ class ChartsHTMLCreator:
                     param_combinations = _get_param_combinations(raw_data, param_specs)
                     if not param_combinations:
                         chart_specs['data'] = {'values': raw_data.to_dicts()}
-                        charts_html.append(ChartsHTMLCreator._create_chart_html(chart_specs))
+                        charts_html.append(ChartsHTMLCreator._create_chart_html(chart_specs, is_movable=is_movable))
                     else:
                         for combination in param_combinations:
                             new_data = raw_data
@@ -238,7 +244,7 @@ class ChartsHTMLCreator:
                             charts_html.append(
                                 ChartsHTMLCreator._create_chart_html(
                                     {**chart_specs, 'data': {'values': new_data.to_dicts()}},
-                                    param_name=param_name, param_values=combination
+                                    param_name=param_name, param_values=combination, is_movable=is_movable
                                 )
                             )
 
@@ -246,10 +252,10 @@ class ChartsHTMLCreator:
 
             else:
                 chart_specs['data'] = {'values': raw_data.to_dicts()}
-                html = ChartsHTMLCreator._create_chart_html(chart_specs)
+                html = ChartsHTMLCreator._create_chart_html(chart_specs, is_movable=is_movable)
 
         elif 'element' in chart_specs:  # Single element
-            html = ChartsHTMLCreator._create_element_html(chart_specs)
+            html = ChartsHTMLCreator._create_element_html(chart_specs, is_movable=is_movable)
 
         else:  # pragma: no cover (should never enter here, as chart_specs should have previously been validated)
             raise RuntimeError('Unreachable code: chart_specs should have been validated earlier')
