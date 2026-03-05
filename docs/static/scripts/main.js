@@ -1,3 +1,65 @@
+AFRAME.registerComponent('drag-controls', {
+    schema: {
+        mode: { type: 'string', default: 'cursor' }  // Options: cursor / vr
+    },
+
+    init: function () {
+        this.grabbed = null;
+        this.offset = new THREE.Vector3();
+        this.distance = 0;
+
+        const el = this.el;  // Controller
+
+        const startGrab = (evt) => {
+            const raycaster = el.components.raycaster;
+            if (!raycaster) return;
+
+            const hits = raycaster.intersections;
+            if (!hits.length) return;
+
+            // Grab the parent with attribute 'movable'
+            let grabbedEl = hits[0].object.el;
+            while (grabbedEl && !grabbedEl.hasAttribute('movable')) {
+                grabbedEl = grabbedEl.parentEl;
+            }
+            if (!grabbedEl) return;
+
+            this.grabbed = grabbedEl;
+            this.distance = hits[0].distance;
+
+            const hitPoint = hits[0].point;
+            const objPos = this.grabbed.object3D.position;
+            this.offset.copy(objPos).sub(hitPoint);
+        };
+
+        const stopGrab = () => {
+            this.grabbed = null;
+        };
+
+        if (this.data.mode === 'cursor') {  // Desktop
+            el.addEventListener('mousedown', startGrab);
+            el.addEventListener('mouseup', stopGrab);
+        }
+
+        if (this.data.mode === 'vr') {  // VR controls
+            el.addEventListener('gripdown', startGrab);
+            el.addEventListener('gripup', stopGrab);
+        }
+    },
+
+    tick: function () {
+        if (!this.grabbed) return;
+
+        const ray = this.el.components.raycaster.raycaster.ray;
+        const pos = new THREE.Vector3();
+        pos.copy(ray.origin);
+        pos.add(ray.direction.clone().multiplyScalar(this.distance));  // position = origin + direction * distance
+        pos.add(this.offset);
+
+        this.grabbed.object3D.position.copy(pos);  // Move the object in the new position
+    }
+});
+
 // Wait for the scene content to load completely
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
@@ -61,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Subcharts
 	function displaySubchart(event) {
 	    const paramName = event.target.getAttribute('activates-param');
+	    if (!paramName) return;
 	    const groupName = paramName.split('__')[0]  // Format is {groupName}__{values}
 
 	    // Initialize group if not existing
