@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const targetElement = event.target;
 	    targetElement.setAttribute('scale', '1.1 1.1 1');  // Size the scale up
         const value = targetElement.getAttribute('info');
-        if (!value) return;
+        if (!value) return;  // Return if the target element has not attribute 'info' (for movable objects)
 
         const camera = document.getElementById('camera');
         targetElement.object3D.updateMatrixWorld();
