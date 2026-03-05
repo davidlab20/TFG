@@ -218,7 +218,9 @@ class Chart(TopLevelMixin):
 
     def _define_data(self, data: Data | UrlData | DataFrame):
         """Defines the data field in the specifications."""
-        AframeXRValidator.validate_type('data', data, (Data, UrlData, DataFrame))
+        AframeXRValidator.validate_type(
+            'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> because of DataFrame
+        )
         if isinstance(data, Data):
             self._specifications.update({'data': {'values': data.values}})
         elif isinstance(data, UrlData):
