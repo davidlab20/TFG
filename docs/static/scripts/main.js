@@ -71,6 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Display information about the element
 	function displayInfo(event) {
 		const targetElement = event.target;
+	    targetElement.setAttribute('scale', '1.1 1.1 1');  // Size the scale up
+        const value = targetElement.getAttribute('info');
+        if (!value) return;
+
         const camera = document.getElementById('camera');
         targetElement.object3D.updateMatrixWorld();
         camera.object3D.updateMatrixWorld();
@@ -107,10 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.object3D.getWorldPosition(cameraPos);
         HUD.object3D.lookAt(cameraPos);
 
-	    targetElement.setAttribute('scale', '1.1 1.1 1');  // Size the scale up
-
 	    // Update HUD text attributes
-        const value = targetElement.getAttribute('info');
         HUDText.setAttribute('value', value);
 	}
 
