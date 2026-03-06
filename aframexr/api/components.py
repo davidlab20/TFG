@@ -58,12 +58,12 @@ class TopLevelMixin:
         if not isinstance(other, TopLevelMixin):
             raise TypeError(f"Cannot add {type(other).__name__} to {type(self).__name__}.")
 
-        self_specs_list = self._specifications.get('concat', [self._specifications])
-        other_specs_list = other._specifications.get('concat', [other._specifications])
+        self_specs_list = copy.deepcopy(self._specifications.get('concat', [self._specifications]))
+        other_specs_list = copy.deepcopy(other._specifications.get('concat', [other._specifications]))
 
-        copy_of_the_chart = self.copy()  # Create a copy to modify
-        copy_of_the_chart._specifications = {'concat': self_specs_list + other_specs_list}
-        return copy_of_the_chart
+        new = self.copy()  # Create a copy to modify
+        new._specifications = {'concat': self_specs_list + other_specs_list}
+        return new
 
     # Copy of the chart
     def __deepcopy__(self, memo):
@@ -79,7 +79,7 @@ class TopLevelMixin:
 
     # Importing charts
     @staticmethod
-    def from_dict(specs: dict) -> 'Chart':
+    def from_dict(specs: dict) -> 'TopLevelMixin':
         """
         Import the chart from the JSON dict specifications.
 
@@ -95,7 +95,7 @@ class TopLevelMixin:
         """
         AframeXRValidator.validate_type('specs', specs, dict)
         chart = Chart()
-        chart._specifications = specs
+        chart._specifications = copy.deepcopy(specs)
         return chart
 
     @staticmethod
@@ -117,18 +117,19 @@ class TopLevelMixin:
         """
         AframeXRValidator.validate_type('specs', specs, str)
         chart = Chart()
-        chart._specifications = json.loads(specs)
+        chart._specifications = copy.deepcopy(json.loads(specs))
         AframeXRValidator.validate_chart_specs(chart._specifications)
         return chart
 
     # Movable
     def movable(self):
         """Make the entity movable."""
-        if 'concat' in self._specifications:
+        self_copy = self.copy()
+        if 'concat' in self_copy._specifications:
             raise ValueError('Concatenated charts cannot be movable.')
 
-        self._specifications.setdefault('movable', True)
-        return self
+        self_copy._specifications['movable'] = True
+        return self_copy
 
     # Exporting charts
     def save(self, fp: str, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
@@ -153,14 +154,17 @@ class TopLevelMixin:
             If file_format is invalid.
         """
         AframeXRValidator.validate_type('fp', fp, str)
+        self_copy = self.copy()
+
         if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
-                file.write(self.to_html(environment=environment))
+                file.write(self_copy.to_html(environment=environment))
         elif file_format == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
-                self._specifications['environment'] = environment
-                AframeXRValidator.validate_chart_specs(self._specifications)
-                json.dump(self._specifications, file, indent=4)
+                specs = self_copy.to_dict()
+                specs['environment'] = environment
+                AframeXRValidator.validate_chart_specs(specs)
+                json.dump(specs, file, indent=4)
         else:
             raise ValueError('Invalid file format')
 
@@ -173,27 +177,28 @@ class TopLevelMixin:
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
             warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
 
-            return HTML(self._generate_iframe_html(environment=environment))
+            self_copy = self.copy()
+            return HTML(self_copy._generate_iframe_html(environment=environment))
 
     # Chart formats
     def to_dict(self) -> dict:
         """Returns the scene specifications as a dictionary."""
         AframeXRValidator.validate_chart_specs(self._specifications)
-        return self._specifications
+        return copy.deepcopy(self._specifications)
 
     def to_html(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland',
     'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
     'osiris'] = 'default') -> str:
         """Returns the HTML representation of the scene."""
-        specs_copy = self._specifications.copy()  # Create a copy of the specifications for not modifying base specs
-        specs_copy['environment'] = environment
-        AframeXRValidator.validate_chart_specs(specs_copy)
-        return SceneCreator.create_scene(specs_copy)
+        self_copy = self.copy()
+        self_copy._specifications['environment'] = environment
+        AframeXRValidator.validate_chart_specs(self_copy._specifications)
+        return SceneCreator.create_scene(self_copy._specifications)
 
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""
         AframeXRValidator.validate_chart_specs(self._specifications)
-        return json.dumps(self._specifications)
+        return json.dumps(self.to_dict())
 
 
 class Chart(TopLevelMixin):
@@ -252,17 +257,19 @@ class Chart(TopLevelMixin):
 
     # Parameters
     def add_params(self, *params: Parameter):
+        self_copy = self.copy()
+
         for p in params:
             AframeXRValidator.validate_type('params', p, Parameter)
 
-        if 'params' not in self._specifications:
-            self._specifications['params'] = []
+        if 'params' not in self_copy._specifications:
+            self_copy._specifications['params'] = []
 
-        self._specifications['params'].extend(
+        self_copy._specifications['params'].extend(
             [p.to_specs() for p in params]
         )
 
-        return self
+        return self_copy
 
     # Types of charts
     def mark_arc(self, radius: float = None):
@@ -274,13 +281,15 @@ class Chart(TopLevelMixin):
         radius : float (optional)
             Outer radius of the pie chart. If not specified, using DEFAULT_PIE_RADIUS. Must be greater than 0.
         """
-        self._specifications['mark'] = {'type': 'arc'}
+        self_copy = self.copy()
+
+        self_copy._specifications['mark'] = {'type': 'arc'}
 
         if radius is not None:
             AframeXRValidator.validate_positive_number('radius', radius)
-            self._specifications['mark']['radius'] = radius
+            self_copy._specifications['mark']['radius'] = radius
 
-        return self
+        return self_copy
 
     def mark_bar(self, size: float = None):
         """
@@ -296,13 +305,15 @@ class Chart(TopLevelMixin):
         ValueError
             If defined size is not greater than 0.
         """
-        self._specifications['mark'] = {'type': 'bar'}
+        self_copy = self.copy()
+
+        self_copy._specifications['mark'] = {'type': 'bar'}
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
-            self._specifications['mark']['size'] = size
+            self_copy._specifications['mark']['size'] = size
 
-        return self
+        return self_copy
 
     def mark_point(self, size: float = None):
         """
@@ -318,13 +329,15 @@ class Chart(TopLevelMixin):
         ValueError
             If size is not greater than 0.
         """
-        self._specifications['mark'] = {'type': 'point'}
+        self_copy = self.copy()
+
+        self_copy._specifications['mark'] = {'type': 'point'}
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
-            self._specifications['mark']['max_radius'] = size
+            self_copy._specifications['mark']['max_radius'] = size
 
-        return self
+        return self_copy
 
     # Parameters of the chart
     def encode(self, color: str = None, size: str = None, theta: str = None, x: str | X = None, y: str | Y = None,
@@ -377,31 +390,34 @@ class Chart(TopLevelMixin):
             filled_params['z'] = z
 
         # Do the encoding
-        self._specifications['encoding'] = {}
+        self_copy = self.copy()
+
+        encoding = self_copy._specifications.setdefault('encoding', {})  # For merging possible further encodings
         for param_key in filled_params:
             param_value = filled_params[param_key]
             if isinstance(param_value, Encoding):
-                self._specifications['encoding'].update(param_value.to_dict())
+                encoding.update(param_value.to_dict())
             else:
                 formula, encoding_type = Encoding.split_field_and_encoding(param_value)
                 field, aggregate_op = AggregatedFieldDef.split_operator_field(formula)
-
-                self._specifications['encoding'][param_key] = {'field': field}
+                encoding[param_key] = {'field': field}
                 if aggregate_op:
-                    self._specifications['encoding'][param_key]['aggregate'] = aggregate_op
+                    encoding[param_key]['aggregate'] = aggregate_op
                 if encoding_type:
-                    self._specifications['encoding'][param_key]['type'] = encoding_type
+                    encoding[param_key]['type'] = encoding_type
 
-        return self
+        return self_copy
 
     def properties(self, data: Data | UrlData | DataFrame = None, position: str = None,
                    rotation: str = None):
         """Modify general properties of the chart."""
-        if data is not None: self._define_data(data)
-        if position is not None: self._specifications['position'] = position
-        if rotation is not None: self._specifications['rotation'] = rotation
+        self_copy = self.copy()
 
-        return self
+        if data is not None: self_copy._define_data(data)
+        if position is not None: self_copy._specifications['position'] = position
+        if rotation is not None: self_copy._specifications['rotation'] = rotation
+
+        return self_copy
 
     # Modifying data
     def transform_aggregate(self, groupby: list = None, **kwargs):
