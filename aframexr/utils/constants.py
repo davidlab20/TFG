@@ -15,6 +15,8 @@ X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axi
 LABELS_X_DELTA = -0.5  # Variation in the x-axis between the labels and the axis (add to y and z axis pos for label pos)
 LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis (add to x and z axis pos for label pos)
 
+LABELS_SCALE = '1.5 1.5 1.5'
+
 # ----- DEFAULTS -----
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart

@@ -12,7 +12,7 @@ from polars import DataFrame
 
 from .axis_creator import AxisCreator
 from .chart_creator import ChartCreator
-from .constants import ENTITY_IS_MOVABLE
+from .constants import ENTITY_IS_MOVABLE, LABELS_SCALE
 from .element_creator import ElementCreator, TextCreator
 
 
@@ -181,7 +181,7 @@ class ChartsHTMLCreator:
             for label_pos, label_value in zip(ax_specs['labels_pos'], ax_specs['labels_values']):
                 chart_html += '\t\t\t\t' + TextCreator({
                     'value': label_value, 'position': label_pos, 'rotation': ax_specs['labels_rotation'],
-                    'align': ax_specs['labels_align'], 'scale': '1.5 1.5 1.5'
+                    'align': ax_specs['labels_align'], 'scale': LABELS_SCALE
                 }).get_element_html() + '\n'
 
         # Close the groups
