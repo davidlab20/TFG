@@ -104,13 +104,13 @@ class ChartCreator:
         if self._color_encoding and self._color_encoding != 'nominal':
             raise ValueError(f'Color encoding type must be nominal, got "{self._color_encoding}".')
 
-        if self._color_data is None:  # Bubbles plot (same color for all points)
+        if self._color_data is None:
             points_colors = pl.repeat(
                 value=DEFAULT_ELEMENTS_COLOR_IN_CHART,
                 n=self._raw_data.height,  # Number of rows in data
                 eager=True  # Returns a Series
             )
-        else:  # Scatter plot (same color for each type of point)
+        else:
             unique_categories = self._color_data.unique(maintain_order=True).to_list()
             mapping_dict = dict(zip(
                 unique_categories,  # Dict keys
