@@ -39,6 +39,8 @@ class ChartCreator:
         self._process_params()
         self._raw_data = DataFrame(chart_specs['data']['values'])
 
+        self._elements_colors_all = chart_specs['mark'].get('color', DEFAULT_ELEMENTS_COLOR_IN_CHART) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_ELEMENTS_COLOR_IN_CHART
         self._color_data: Series | None = None
         self._color_encoding: str = ''
 
@@ -108,7 +110,7 @@ class ChartCreator:
 
         if self._color_data is None:
             points_colors = pl.repeat(
-                value=DEFAULT_ELEMENTS_COLOR_IN_CHART,
+                value=self._elements_colors_all,
                 n=self._raw_data.height,  # Number of rows in data
                 eager=True  # Returns a Series
             )

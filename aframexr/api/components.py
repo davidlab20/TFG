@@ -291,12 +291,14 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
-    def mark_bar(self, size: float = None):
+    def mark_bar(self, color: str = None, size: float = None):
         """
         Bars chart.
 
         Parameters
         ----------
+        color: str (optional)
+            Color of the bars. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
         size : float (optional)
             Width of the bars. If not specified, bars will be adjusted automatically. Must be greater than 0.
 
@@ -309,18 +311,24 @@ class Chart(TopLevelMixin):
 
         self_copy._specifications['mark'] = {'type': 'bar'}
 
+        if color is not None:
+            AframeXRValidator.validate_type('color', color, str)
+            self_copy._specifications['mark']['color'] = color
+
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
             self_copy._specifications['mark']['size'] = size
 
         return self_copy
 
-    def mark_point(self, size: float = None):
+    def mark_point(self, color: str = None, size: float = None):
         """
         Scatter plot and bubble chart.
 
         Parameters
         ----------
+        color: str (optional)
+            Color of the spheres. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
         size : float (optional)
             Maximum radius of the point. If not specified, using DEFAULT_POINT_RADIUS. Must be greater than 0.
 
@@ -332,6 +340,10 @@ class Chart(TopLevelMixin):
         self_copy = self.copy()
 
         self_copy._specifications['mark'] = {'type': 'point'}
+
+        if color is not None:
+            AframeXRValidator.validate_type('color', color, str)
+            self_copy._specifications['mark']['color'] = color
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
