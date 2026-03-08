@@ -433,7 +433,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
             bars_axis_size = 2 * coordinates  # Multiplied by 2 because of how boxes are created
         else:
             if encoding_type == 'quantitative':
-                coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(
+                coordinates = 0.5 * self.set_elems_coordinates_for_quantitative_axis(  # Half because of bar's creation
                     axis_data=axis_data,
                     axis_size=axis_size,
                     extremes_offset=0  # The greatest bar reaches axis size
