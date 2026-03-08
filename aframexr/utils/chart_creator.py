@@ -9,7 +9,7 @@ from typing import Literal
 
 from .axis_creator import AxisCreator
 from .constants import *
-from .element_creator import BoxCreator, CylinderCreator, ElementCreator, SphereCreator
+from .element_creator import BoxCreator, CylinderCreator, ElementCreator, PlaneCreator, SphereCreator, TextCreator
 
 CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, classes are added at the end of this file
 
@@ -147,6 +147,9 @@ class ChartCreator:
 
         return group_specs
 
+    def get_legend_elements(self, filtered_by_params: bool = False) -> list[ElementCreator]:
+        return []  # This method is redefined in charts that could have legend
+
 
 # First-level subclasses of ChartCreator.
 class XYZAxisChannelChartCreator(ChartCreator):
@@ -256,6 +259,38 @@ class XYZAxisChannelChartCreator(ChartCreator):
             axis_specs.update({'z': z_axis_specs})
 
         return axis_specs
+
+    def get_legend_elements(self, filtered_by_params: bool = False) -> list[ElementCreator]:
+        """Returns a list for the elements of the legend."""
+        if self._color_data is None:
+            return []
+
+        color_mapping = {}
+        colors = self._set_elements_colors()
+        for m, c in zip(self._color_data, colors):
+            color_mapping.setdefault(m, c)
+
+        center_x_pos = self._chart_width + LEGEND_WIDTH - 1
+
+        # Plane
+        plane_height = LEGEND_HEIGHT_PER_ELEMENT * len(color_mapping)
+        plane = PlaneCreator({
+            'position': f'{center_x_pos} {self._chart_height / 2} 0',
+            'height': plane_height, 'width': LEGEND_WIDTH
+        }, filtered_by_params=filtered_by_params)
+
+        # Text
+        text_base_y = self._chart_height / 2 - plane_height / 2 + LEGEND_HEIGHT_PER_ELEMENT / 2
+        text = [
+            TextCreator({
+                'position': f'{center_x_pos} {text_base_y + LEGEND_HEIGHT_PER_ELEMENT * index} 0',
+                'value': item[0].title(), 'color': item[1],
+                'align': 'center', 'scale': LABELS_SCALE
+            }, filtered_by_params=filtered_by_params)
+            for index, item in enumerate(color_mapping.items())
+        ]
+
+        return [plane, *text]
 
     @staticmethod
     def set_elems_coordinates_for_quantitative_axis(axis_data: Series, axis_size: float,

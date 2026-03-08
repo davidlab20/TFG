@@ -184,6 +184,13 @@ class ChartsHTMLCreator:
                     'align': ax_specs['labels_align'], 'scale': LABELS_SCALE
                 }).get_element_html() + '\n'
 
+        # Legend
+        legend_elements = chart_object.get_legend_elements(filtered_by_params=filtered_by_params)
+        if legend_elements:
+            chart_html += f'\n\t\t\t\t<!-- Legend -->\n'  # Added HTML comment for better visualization
+            for element in legend_elements:
+                chart_html += '\t\t\t\t' + element.get_element_html() + '\n'
+
         # Close the groups
         chart_html += '\t\t\t</a-entity>\n'
         chart_html += '\t\t</a-entity>\n\t\t'

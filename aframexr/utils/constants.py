@@ -29,6 +29,9 @@ DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
 
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
+LEGEND_WIDTH = 3  # Width of the legend
+LEGEND_HEIGHT_PER_ELEMENT = 0.6  # Legend's height per element in the legend
+
 PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
 
 # Bar chart
