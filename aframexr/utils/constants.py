@@ -37,7 +37,7 @@ DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 
 # Point chart
-DEFAULT_POINT_COLOR = "blue"  # Default point color
+DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
 
 # ========== ERROR MESSAGES ==========
