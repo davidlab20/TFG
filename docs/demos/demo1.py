@@ -14,12 +14,12 @@ room = aframexr.Box(
 # ===== CHARTS =====
 data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/static/data/data.json')
 
-_CHART_DEPTH = 2
+_CHART_DEPTH = 1
 _CHART_HEIGHT = 4
 _CHART_WIDTH = 6
 BASE = aframexr.Chart(data, depth=_CHART_DEPTH, height=_CHART_HEIGHT, width=_CHART_WIDTH)
 
-_PLATFORMS_CONFIG = {'height': 0.2, 'additional_depth': 4, 'additional_width': 2, 'color': 'darkSlateGray'}
+_PLATFORMS_CONFIG = {'height': 0.2, 'additional_depth': 4, 'additional_width': 3, 'color': 'darkSlateGray'}
 
 _GROUND_CENTER_POS_Z = -15
 
@@ -35,7 +35,7 @@ bar_platform = aframexr.Box(
     width=_CHART_WIDTH + _PLATFORMS_CONFIG['additional_width'],
     color=_PLATFORMS_CONFIG['color'],
 )
-bar_chart = BASE.mark_bar().encode(x='model', y='sales').properties(
+bar_chart = BASE.mark_bar(color='red').encode(x='model', y='sales').properties(
     position=f'{_CENTER_X_POS_BAR} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}'
 )
 
@@ -94,7 +94,7 @@ point_platform = aframexr.Box(
     width=_CHART_WIDTH + _PLATFORMS_CONFIG['additional_width'],
     color=_PLATFORMS_CONFIG['color'],
 )
-point_chart = BASE.mark_point(size=0.4).encode(x='model', y='sales').properties(
+point_chart = BASE.mark_point(color='green').encode(x='model', y='sales').properties(
     position=f'{_CENTER_X_POS_POINT} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}'
 )
 
@@ -127,50 +127,21 @@ main_text = aframexr.Text(
 )
 charts.append(main_plane), charts.append(main_text)
 
-# ===== ELEMENTS =====
-_GROUND_CENTER_POS_Z_ELEMENTS = -5
-_ELEMENTS_COLOR = 'lightBlue'
-
-elements = [
-    aframexr.Box(position=f'-15 1 {_GROUND_CENTER_POS_Z_ELEMENTS}'),
-    aframexr.Cone(position=f'-12 1 {_GROUND_CENTER_POS_Z_ELEMENTS}'),
-    aframexr.Cylinder(position=f'-9 1 {_GROUND_CENTER_POS_Z_ELEMENTS}'),
-    aframexr.Dodecahedron(position=f'-6 1 {_GROUND_CENTER_POS_Z_ELEMENTS}'),
-    aframexr.GLTF(
-        'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/refs/heads/main/Models/AntiqueCamera/glTF/AntiqueCamera.gltf',
-        position=f'-'
-    ),
-    aframexr.Icosahedron(),
-    aframexr.Image('https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/imgs/logo.png'),
-    aframexr.Octahedron(),
-    aframexr.Plane(),
-    aframexr.Sphere(),
-    aframexr.Tetrahedron(),
-    aframexr.Text('Simple text'),
-    aframexr.Torus()
-]
-
-# Box
-_BOX_CENTER_X_POS = -10
-_BOX_DEPTH = _BOX_HEIGHT = _BOX_WIDTH = 2
-
-box_platform = aframexr.Box(
-    position=f'{_BOX_CENTER_X_POS} {_PLATFORMS_CONFIG['height'] / 2} {_GROUND_CENTER_POS_Z_ELEMENTS}',
-    depth=_BOX_DEPTH + _PLATFORMS_CONFIG['additional_depth'],
+# ===== CHARTS =====
+scatter_platform = aframexr.Box(
+    position=f'{0} {_PLATFORMS_CONFIG['height'] / 2} {-5}',
+    depth=_CHART_DEPTH + _PLATFORMS_CONFIG['additional_depth'],
     height=_PLATFORMS_CONFIG['height'],
-    width=_BOX_WIDTH + _PLATFORMS_CONFIG['additional_width'],
+    width=_CHART_WIDTH + _PLATFORMS_CONFIG['additional_width'],
     color=_PLATFORMS_CONFIG['color'],
 )
-box = aframexr.Box(
-    position=f'{_BOX_CENTER_X_POS} {_PLATFORMS_CONFIG['height'] + _BOX_HEIGHT / 2} {_GROUND_CENTER_POS_Z_ELEMENTS}',
-    depth=_BOX_DEPTH, height=_BOX_HEIGHT, width=_BOX_WIDTH,
-    color=_ELEMENTS_COLOR,
+scatter_plot = BASE.mark_point(size=0.35).encode(x='model', y='sales', color='motor').properties(
+    position=f'0 {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} -5'
 )
 
 # ===== SCENE =====
-scene = room
+scene = room + scatter_plot + scatter_platform
 for chart in charts:
     scene += chart
-scene += box_platform + box
 
 scene.save('demo.html')
