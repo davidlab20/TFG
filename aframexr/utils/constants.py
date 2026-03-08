@@ -29,6 +29,9 @@ DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if 
 
 PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
 
+# Bar chart
+DEFAULT_BAR_PADDING = 0.2  # Default padding in bar chart
+
 # Pie chart
 DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
