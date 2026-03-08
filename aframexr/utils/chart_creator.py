@@ -131,7 +131,7 @@ class ChartCreator:
         return CREATOR_MAP[chart_type](chart_specs)
 
     def get_relative_bottom_left_corner_position(self) -> str:
-        """Returns the relative position of the bottom left corner of the chart."""
+        """Returns the relative position for the bottom left corner of the chart."""
         # Only XYZAxisChannelChartCreator objects has that attribute, if not return '0 0 0'
         return getattr(self, '_relative_bottom_left_corner_position', '0 0 0')
 
