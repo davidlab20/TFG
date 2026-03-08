@@ -25,6 +25,8 @@ DEFAULT_CHART_DEPTH = 2  # Default depth of the chart
 DEFAULT_CHART_HEIGHT = 4  # Default height of the chart
 DEFAULT_CHART_WIDTH = 4  # Default width of the chart
 
+DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
+
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
 PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
@@ -37,7 +39,6 @@ DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 
 # Point chart
-DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
 DEFAULT_POINT_RADIUS = 0.5  # Default point radius
 
 # ========== ERROR MESSAGES ==========
