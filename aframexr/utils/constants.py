@@ -42,7 +42,7 @@ DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 
 # Point chart
-DEFAULT_POINT_RADIUS = 0.5  # Default point radius
+DEFAULT_POINT_RADIUS = 0.4  # Default point radius
 
 # ========== ERROR MESSAGES ==========
 ERROR_MESSAGES = {
