@@ -106,7 +106,7 @@ class ChartCreator:
 
         if self._color_data is None:  # Bubbles plot (same color for all points)
             points_colors = pl.repeat(
-                value=DEFAULT_POINT_COLOR,
+                value=DEFAULT_ELEMENTS_COLOR_IN_CHART,
                 n=self._raw_data.height,  # Number of rows in data
                 eager=True  # Returns a Series
             )
