@@ -41,6 +41,8 @@ class ChartCreator:
 
         self._color_data: Series | None = None
         self._color_encoding: str = ''
+
+        self._chart_depth = chart_specs.get('depth')  # Maximum depth of the chart
         # Each self._{channel} attributes must be named by child classes
 
     def _add_selection_to_specs(self, specs: dict) -> None:
@@ -161,7 +163,6 @@ class XYZAxisChannelChartCreator(ChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._chart_depth = chart_specs.get('depth')  # Maximum depth of the chart
         self._chart_height = chart_specs.get('height')  # Maximum height of the chart
         self._chart_width = chart_specs.get('width')  # Maximum width of the chart
 
@@ -375,7 +376,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
         # Depth
         depth = pl.repeat(
-            value=self._depth,
+            value=self._chart_depth,
             n=data_length,
             eager=True  # Returns a Series
         ).alias('depth')
