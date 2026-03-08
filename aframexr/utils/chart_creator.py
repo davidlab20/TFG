@@ -180,7 +180,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
         self._z_encoding: str = ''
         self._z_offset: float = 0
 
-        self._process_channels('x', 'y', 'z')  # Process and set self._{axis} attributes
+        self._process_channels('color', 'x', 'y', 'z')  # Process and set self._{axis} attributes
 
     def _correct_axes_position(self, elem_size: float | None) -> None:
         """
