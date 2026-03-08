@@ -17,6 +17,9 @@ LABELS_Y_DELTA = 0.01  # Variation in the y-axis between the labels and the axis
 
 LABELS_SCALE = '1.5 1.5 1.5'
 
+LEGEND_WIDTH = 3  # Width of the legend
+LEGEND_HEIGHT_PER_ELEMENT = 0.6  # Legend's height per element in the legend
+
 # ----- DEFAULTS -----
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
@@ -28,9 +31,6 @@ DEFAULT_CHART_WIDTH = 4  # Default width of the chart
 DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
 
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
-
-LEGEND_WIDTH = 3  # Width of the legend
-LEGEND_HEIGHT_PER_ELEMENT = 0.6  # Legend's height per element in the legend
 
 PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
 
