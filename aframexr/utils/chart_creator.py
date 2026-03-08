@@ -551,7 +551,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
             for specification in elements_specs
         ]
 
-    # Using get_axis_scpecs() from parent class
+    # Using get_axis_specs() from parent class
 
 
 class PointChartCreator(XYZAxisChannelChartCreator):
@@ -680,7 +680,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             for specifications in elements_specs
         ]
 
-    # Using get_axis_scpecs() from parent class
+    # Using get_axis_specs() from parent class
 
 
 # Add classes to CREATOR_MAP
