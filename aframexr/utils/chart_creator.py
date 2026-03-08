@@ -330,7 +330,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._depth = chart_specs.get('depth', DEFAULT_CHART_DEPTH)
         self._radius = chart_specs['mark'].get('radius', DEFAULT_PIE_RADIUS) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_PIE_RADIUS
         self._set_rotation()
