@@ -38,6 +38,9 @@ class ChartCreator:
         self._params = chart_specs.get('params', [])  # Metadata parameters
         self._process_params()
         self._raw_data = DataFrame(chart_specs['data']['values'])
+
+        self._color_data: Series | None = None
+        self._color_encoding: str = ''
         # Each self._{channel} attributes must be named by child classes
 
     def _add_selection_to_specs(self, specs: dict) -> None:
@@ -95,6 +98,29 @@ class ChartCreator:
                     'name': p['name'],
                     'fields': p['select'].get('fields', [])
                 }
+
+    def _set_elements_colors(self) -> Series:
+        """Returns a Series of the color for each element composing the chart."""
+        if self._color_encoding and self._color_encoding != 'nominal':
+            raise ValueError(f'Color encoding type must be nominal, got "{self._color_encoding}".')
+
+        if self._color_data is None:  # Bubbles plot (same color for all points)
+            points_colors = pl.repeat(
+                value=DEFAULT_POINT_COLOR,
+                n=self._raw_data.height,  # Number of rows in data
+                eager=True  # Returns a Series
+            )
+        else:  # Scatter plot (same color for each type of point)
+            unique_categories = self._color_data.unique(maintain_order=True).to_list()
+            mapping_dict = dict(zip(
+                unique_categories,  # Dict keys
+                list(islice(  # Dict values
+                    cycle(AVAILABLE_COLORS),  # Color cycle
+                    len(unique_categories)  # Moduled to category codes
+                ))
+            ))
+            points_colors = self._color_data.replace(list(mapping_dict.keys()), list(mapping_dict.values()))
+        return points_colors.alias('color')
 
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
@@ -309,9 +335,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
             if isinstance(chart_specs['mark'], dict) else DEFAULT_PIE_RADIUS
         self._set_rotation()
 
-        self._color_data: Series | None = None
-        self._color_encoding: str = ''
-
         self._theta_data: Series | None = None
         self._theta_encoding: str = ''
 
@@ -329,12 +352,6 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         theta_length = (360 / sum_data) * abs_theta_data  # Series of theta lengths (in degrees)
         theta_start = theta_length.cum_sum().shift(1).fill_null(0)  # Accumulative sum (first value is 0)
         return theta_start.alias('theta_start'), theta_length.alias('theta_length')
-
-    def _set_elements_colors(self) -> Series:
-        """Returns a Series of the color for each element composing the chart."""
-        colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
-        element_colors = Series(islice(colors, self._color_data.len()))  # Take self._color_data.len() colors
-        return element_colors.alias('color')
 
     def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
         """Returns a list of each element composing the chart."""
@@ -451,7 +468,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                     else:  # Bars do not overlap with user's defined size
                         bar_size = self._bar_size_if_nominal_axis  # Use user's defined size
                 else:  # User did not define bars' size
-                    bar_size = axis_size / axis_data.n_unique()  # Adjust bars' axis size automatically
+                    bar_size = axis_size / axis_data.n_unique() * (1 - DEFAULT_BAR_PADDING)  # Adjust bars' axis size
 
                 coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=axis_data, axis_size=axis_size,
@@ -465,12 +482,6 @@ class BarChartCreator(XYZAxisChannelChartCreator):
             else:
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')
         return coordinates.alias(f'{axis_name}_coordinates'), bars_axis_size.alias(bars_size_alias)
-
-    def _set_bars_colors(self) -> Series:
-        """Returns a Series of the color for each bar composing the bar chart."""
-        colors = cycle(AVAILABLE_COLORS)  # Color cycle iterator
-        bars_colors = Series(islice(colors, self._raw_data.height))  # Take self._raw_data rows colors from the cycle
-        return bars_colors.alias('color')
 
     def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
         """Returns a list of each element composing the chart."""
@@ -501,7 +512,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         self._z_offset *= -1  # Negative offset (to go deep)
 
         # Color
-        colors = self._set_bars_colors()
+        colors = self._set_elements_colors()
 
         # Information display
         info_series = []
@@ -552,9 +563,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_RADIUS
         self._correct_axes_position(elem_size=self._max_radius)
 
-        self._color_data: Series | None = None
-        self._color_encoding: str = ''
-
         self._size_data: Series | None = None
         self._size_encoding: str = ''
 
@@ -589,29 +597,6 @@ class PointChartCreator(XYZAxisChannelChartCreator):
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')
         return coordinates.alias(f'{axis_name}_coordinates')
 
-    def _set_points_colors(self) -> Series:
-        """Returns a Series of the color for each point composing the scatter plot."""
-        if self._color_encoding and self._color_encoding != 'nominal':
-            raise ValueError(f'Color encoding type must be nominal, got "{self._color_encoding}".')
-
-        if self._color_data is None:  # Bubbles plot (same color for all points)
-            points_colors = pl.repeat(
-                value=DEFAULT_POINT_COLOR,
-                n=self._raw_data.height,  # Number of rows in data
-                eager=True  # Returns a Series
-            )
-        else:  # Scatter plot (same color for each type of point)
-            unique_categories = self._color_data.unique(maintain_order=True).to_list()
-            mapping_dict = dict(zip(
-                unique_categories,  # Dict keys
-                list(islice(  # Dict values
-                    cycle(AVAILABLE_COLORS),  # Color cycle
-                    len(unique_categories)  # Moduled to category codes
-                ))
-            ))
-            points_colors = self._color_data.replace(list(mapping_dict.keys()), list(mapping_dict.values()))
-        return points_colors.alias('color')
-
     def _set_points_radius(self) -> Series:
         """Returns a Series of the radius for each point composing the bubble chart."""
         if self._size_encoding and self._size_encoding != 'quantitative':
@@ -635,7 +620,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
         # Channels
         self._process_channels('color', 'size')  # Process and set self._{ch} attributes
-        colors = self._set_points_colors()
+        colors = self._set_elements_colors()
         radius = self._set_points_radius()
 
         x_coordinates = self._set_points_coords_in_axis(
