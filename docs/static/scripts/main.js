@@ -78,13 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const camera = document.getElementById('camera');
 
-        // Punto exacto donde el raycaster toca el objeto
+        // Intersection point
         const intersection = event.detail.intersection;
         if (!intersection) return;
 
         const point = intersection.point.clone();
 
-        // Posicionar HUD en el punto del ratón
         HUD.setAttribute('position', {
             x: point.x,
             y: point.y + 0.2,
