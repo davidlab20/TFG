@@ -45,6 +45,8 @@ class ChartCreator:
         self._color_encoding: str = ''
 
         self._chart_depth = chart_specs.get('depth')  # Maximum depth of the chart
+
+        self._title = chart_specs.get('title')
         # Each self._{channel} attributes must be named by child classes
 
     def _add_selection_to_specs(self, specs: dict) -> None:
@@ -151,6 +153,39 @@ class ChartCreator:
 
     def get_legend_elements(self, filtered_by_params: bool = False) -> list[ElementCreator]:
         return []  # This method is redefined in charts that could have legend
+
+    def get_title_elements(self, filtered_by_params: bool = False) -> list[ElementCreator]:
+        if not self._title:
+            return []
+
+        # Relative title position
+        if getattr(self, '_chart_width', None) is not None and getattr(self, '_chart_height', None) is not None:
+            chart_height = getattr(self, '_chart_height')
+            chart_width = getattr(self, '_chart_width')
+            rotation = '0 0 0'
+            title_position = f'{chart_width / 2} {chart_height + PLANE_TITLE_SEPARATION + PLANE_TITLE_HEIGHT / 2} 0'
+        elif getattr(self, '_radius', None) is not None:  # Pie chart
+            chart_height = chart_width = getattr(self, '_radius') * 2
+            rotation = '90 0 0'  # Invert pie chart's rotation (-90 0 0)
+            title_position = f'0 0 {chart_height / 2 + PLANE_TITLE_SEPARATION + PLANE_TITLE_HEIGHT / 2}'  # Z-axis
+        else:  # pragma: no cover
+            raise RuntimeError('Unreachable code')
+
+        plane = PlaneCreator(
+            {
+                'position': title_position, 'rotation': rotation, 'height': PLANE_TITLE_HEIGHT, 'width': chart_width
+             },
+            filtered_by_params=filtered_by_params
+        )
+        text = TextCreator(
+            {
+                'position': title_position, 'rotation': rotation, 'value': self._title, 'color': TITLE_TEXT_COLOR,
+                'align': 'center', 'scale': TITLE_TEXT_SCALE
+            },
+            filtered_by_params=filtered_by_params
+        )
+
+        return [plane, text]
 
 
 # First-level subclasses of ChartCreator.

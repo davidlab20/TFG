@@ -20,6 +20,11 @@ LABELS_SCALE = '1.5 1.5 1.5'
 LEGEND_WIDTH = 3  # Width of the legend
 LEGEND_HEIGHT_PER_ELEMENT = 0.6  # Legend's height per element in the legend
 
+PLANE_TITLE_HEIGHT = 1  # Height of the title's plane
+PLANE_TITLE_SEPARATION = 0.5  # Separation between the chart and the title
+TITLE_TEXT_COLOR = 'black'
+TITLE_TEXT_SCALE = '2 2 2'
+
 # ----- DEFAULTS -----
 # General
 DEFAULT_CHART_POS = '0 0 0'  # Default position of the chart
