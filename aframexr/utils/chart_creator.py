@@ -598,7 +598,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         super().__init__(chart_specs)
         self._max_radius: float = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_RADIUS
-        self._correct_axes_position(elem_size=self._max_radius)
+        self._correct_axes_position(elem_size=self._max_radius * 2)
 
         self._size_data: Series | None = None
         self._size_encoding: str = ''
