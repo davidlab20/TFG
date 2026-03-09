@@ -432,7 +432,7 @@ class Chart(TopLevelMixin):
         if depth is not None: self_copy._specifications['depth'] = depth
         if height is not None: self_copy._specifications['height'] = height
         if width is not None: self_copy._specifications['width'] = width
-        if title is not None: self._specifications['title'] = title
+        if title is not None: self_copy._specifications['title'] = title
 
         return self_copy
 
