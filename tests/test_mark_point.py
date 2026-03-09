@@ -38,7 +38,7 @@ def _points_are_inside_chart_volume(point_chart_html: str, depth: float = None) 
     for p in points:
         pos = p['position'].split()
         x, y, z = float(pos[0]), float(pos[1]), float(pos[2])
-        radius = float(p.get('radius', '0'))
+        radius = float(p.get('radius', '1'))
 
         # X-axis
         if (x - radius) < 0 or (x + radius) > chart_width:
