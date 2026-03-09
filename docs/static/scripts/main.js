@@ -1,6 +1,6 @@
 AFRAME.registerComponent('drag-controls', {
     schema: {
-        mode: { type: 'string', default: 'cursor' }  // Options: cursor / vr
+        mode: { type: 'string', default: 'cursor' }  // Options: 'cursor' or 'vr'
     },
 
     init: function () {
@@ -8,7 +8,7 @@ AFRAME.registerComponent('drag-controls', {
         this.offset = new THREE.Vector3();
         this.distance = 0;
 
-        const el = this.el;  // Controller
+        const el = this.el;  // Controller entity
 
         const startGrab = (evt) => {
             const raycaster = el.components.raycaster;
@@ -17,7 +17,7 @@ AFRAME.registerComponent('drag-controls', {
             const hits = raycaster.intersections;
             if (!hits.length) return;
 
-            // Grab the parent with attribute 'movable'
+            // Find the parent entity with the 'movable' attribute
             let grabbedEl = hits[0].object.el;
             while (grabbedEl && !grabbedEl.hasAttribute('movable')) {
                 grabbedEl = grabbedEl.parentEl;
@@ -60,13 +60,13 @@ AFRAME.registerComponent('drag-controls', {
     }
 });
 
-// Wait for the scene content to load completely
+// Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
 	let activeSubcharts = {};
 	const HUD = document.getElementById('HUD');
 	const HUDText = document.getElementById('HUD-text');
-	const interactiveAframeElements = 'a-box, a-cylinder, a-sphere'
+	const interactiveAframeElements = 'a-box, a-cylinder, a-sphere';
 
 	// Display information about the element
 	function displayInfo(event) {
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Set the element to its original state
 	function returnToOriginal(event) {
 	    event.target.setAttribute('scale', '1 1 1');
-	    HUD.setAttribute('visible', 'false');  // Hide HUD display
+	    HUD.setAttribute('visible', 'false');  // Hide the HUD
 	}
 
 	// Subcharts
@@ -119,18 +119,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	    activeSubcharts[groupName].forEach(chart => {
             chart.setAttribute('visible', 'false');
 
-            // Remove raycastable for every children of the subchart
+            // Remove 'raycastable' from all children of the subchart
             const children = chart.querySelectorAll(interactiveAframeElements);
             children.forEach(child => child.removeAttribute('raycastable'));
         });
 
-        activeSubcharts[groupName] = [];  // Clean actual group subcharts
+        activeSubcharts[groupName] = [];  // Clear the current group's subcharts
 
         const targetCharts = document.querySelectorAll(`[param-name='${paramName}']`);
         targetCharts.forEach(chart => {
             chart.setAttribute('visible', 'true');
 
-            // Add raycastable for every children of the subchart
+            // Add 'raycastable' to all children of the subchart
             const children = chart.querySelectorAll(interactiveAframeElements);
             children.forEach(child => child.setAttribute('raycastable', ''));
 
