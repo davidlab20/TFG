@@ -244,8 +244,8 @@ class Chart(TopLevelMixin):
         else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
             raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
 
-    def __init__(self, data: Data | UrlData | DataFrame = None, depth: float = None,
-                 height: float = None, position: str = None, rotation: str = None, width: float = None):
+    def __init__(self, data: Data | UrlData | DataFrame = None, depth: float = None, height: float = None,
+                 title: str = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__({})  # Initiate specifications
 
         if data is not None: self._define_data(data)
@@ -254,6 +254,7 @@ class Chart(TopLevelMixin):
         if depth is not None: self._specifications['depth'] = depth
         if height is not None: self._specifications['height'] = height
         if width is not None: self._specifications['width'] = width
+        if title is not None: self._specifications['title'] = title
 
     # Parameters
     def add_params(self, *params: Parameter):
@@ -420,14 +421,18 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
-    def properties(self, data: Data | UrlData | DataFrame = None, position: str = None,
-                   rotation: str = None):
+    def properties(self, data: Data | UrlData | DataFrame = None, depth: str = None, height: str = None,
+                   position: str = None, rotation: str = None, title: str = None, width: str = None):
         """Modify general properties of the chart."""
         self_copy = self.copy()
 
         if data is not None: self_copy._define_data(data)
         if position is not None: self_copy._specifications['position'] = position
         if rotation is not None: self_copy._specifications['rotation'] = rotation
+        if depth is not None: self_copy._specifications['depth'] = depth
+        if height is not None: self_copy._specifications['height'] = height
+        if width is not None: self_copy._specifications['width'] = width
+        if title is not None: self._specifications['title'] = title
 
         return self_copy
 
