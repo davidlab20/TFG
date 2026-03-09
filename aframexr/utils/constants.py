@@ -32,8 +32,6 @@ DEFAULT_ELEMENTS_COLOR_IN_CHART = 'blue'  # Default elements color in chart
 
 DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if it is quantitative
 
-PRECISION_DECIMALS = 4  # Number of decimals of the elements' values
-
 # Bar chart
 DEFAULT_BAR_PADDING = 0.2  # Default padding in bar chart
 
