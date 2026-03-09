@@ -36,23 +36,11 @@ bar_platform = aframexr.Box(
     color=_PLATFORMS_CONFIG['color'],
 )
 bar_chart = BASE.mark_bar(color='red').encode(x='model', y='sales').properties(
-    position=f'{_CENTER_X_POS_BAR} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}'
+    position=f'{_CENTER_X_POS_BAR} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
+    title='BAR CHART'
 )
 
-bar_title_box = aframexr.Plane(
-    position=f'{_CENTER_X_POS_BAR} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT + 0.7} {_GROUND_CENTER_POS_Z}',
-    width=_CHART_WIDTH,
-    color='white',
-)
-bar_title_text = aframexr.Text(
-    'BAR CHART',
-    position=f'{_CENTER_X_POS_BAR} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT + 0.7} {_GROUND_CENTER_POS_Z}',
-    align='center',
-    color='black',
-    scale='1.5 1.5 1.5',
-)
-
-charts.append(bar_platform), charts.append(bar_chart), charts.append(bar_title_box), charts.append(bar_title_text)
+charts.append(bar_platform), charts.append(bar_chart)
 
 # Chart 2
 _CHART_2_RADIUS = 2
@@ -66,23 +54,11 @@ pie_platform = aframexr.Box(
     color=_PLATFORMS_CONFIG['color'],
 )
 pie_chart = BASE.mark_arc(radius=_CHART_2_RADIUS).encode(color='model', theta='sales').properties(
-    position=f'{_CENTER_X_POS_PIE} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}'
+    position=f'{_CENTER_X_POS_PIE} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
+    title='PIE CHART'
 )
 
-pie_title_box = aframexr.Plane(
-    position=f'{_CENTER_X_POS_PIE} {_PLATFORMS_CONFIG['height'] + _CHART_2_RADIUS * 2 + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
-    width=_CHART_2_RADIUS * 2,
-    color='white',
-)
-pie_title_text = aframexr.Text(
-    'PIE CHART',
-    position=f'{_CENTER_X_POS_PIE} {_PLATFORMS_CONFIG['height'] + _CHART_2_RADIUS * 2 + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
-    align='center',
-    color='black',
-    scale='1.5 1.5 1.5',
-)
-
-charts.append(pie_platform), charts.append(pie_chart), charts.append(pie_title_box), charts.append(pie_title_text)
+charts.append(pie_platform), charts.append(pie_chart)
 
 # Chart 3
 _CENTER_X_POS_POINT = 10
@@ -95,23 +71,11 @@ point_platform = aframexr.Box(
     color=_PLATFORMS_CONFIG['color'],
 )
 point_chart = BASE.mark_point(color='green').encode(x='model', y='sales').properties(
-    position=f'{_CENTER_X_POS_POINT} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}'
+    position=f'{_CENTER_X_POS_POINT} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_GROUND_CENTER_POS_Z}',
+    title='POINT CHART'
 )
 
-point_title_box = aframexr.Plane(
-    position=f'{_CENTER_X_POS_POINT} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
-    width=_CHART_WIDTH,
-    color='white',
-)
-point_title_text = aframexr.Text(
-    'POINT CHART',
-    position=f'{_CENTER_X_POS_POINT} {_PLATFORMS_CONFIG['height'] + _CHART_HEIGHT + 0.2 + 0.5} {_GROUND_CENTER_POS_Z}',
-    align='center',
-    color='black',
-    scale='1.5 1.5 1.5',
-)
-
-charts.append(point_platform), charts.append(point_chart), charts.append(point_title_box), charts.append(point_title_text)
+charts.append(point_platform), charts.append(point_chart)
 
 # Title
 main_plane = aframexr.Plane(
