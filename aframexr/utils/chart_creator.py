@@ -200,7 +200,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
             if _translate_dtype_into_encoding(axis_data.dtype) == 'quantitative':
                 return default_axis_size  # User did not define bars' size or axis is quantitative
 
-            return elem_size * axis_data.n_unique()
+            return round(elem_size * axis_data.n_unique(), PRECISION_DECIMALS)
 
         # X-axis
         if self._chart_width is None:  # User did not define chart width
