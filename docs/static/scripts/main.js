@@ -71,49 +71,34 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Display information about the element
 	function displayInfo(event) {
 		const targetElement = event.target;
-	    targetElement.setAttribute('scale', '1.1 1.1 1');  // Size the scale up
+        targetElement.setAttribute('scale', '1.1 1.1 1');
+
         const value = targetElement.getAttribute('info');
-        if (!value) return;  // Return if the target element has not attribute 'info' (for movable objects)
+        if (!value) return;
 
         const camera = document.getElementById('camera');
-        targetElement.object3D.updateMatrixWorld();
-        camera.object3D.updateMatrixWorld();
 
-        const position = new THREE.Vector3();
-        targetElement.object3D.getWorldPosition(position);
+        // Punto exacto donde el raycaster toca el objeto
+        const intersection = event.detail.intersection;
+        if (!intersection) return;
 
-		let y_offset = 0;
-        let z_offset = 0;
-        if (targetElement.tagName.toLowerCase() === 'a-box') {  // Bars chart
-            let height = parseFloat(targetElement.getAttribute('height'));
-            let depth = parseFloat(targetElement.getAttribute('depth'));
-            y_offset = height / 2;
-            z_offset = depth / 2;
-        } else if (targetElement.tagName.toLowerCase() === 'a-sphere') {  // Point chart
-            let radius = parseFloat(targetElement.getAttribute('radius'));
-            y_offset = radius;
-            z_offset = radius;
-        } else if (targetElement.tagName.toLowerCase() === 'a-cylinder') {  // Pie chart
-            let radius = parseFloat(targetElement.getAttribute('radius'));
-            let depth = parseFloat(targetElement.getAttribute('height'));  // Using height, slices are rotated cylinders
-            y_offset = radius;
-            z_offset = depth / 2;
-        }
+        const point = intersection.point.clone();
 
-		// Update HUD attributes
-		HUD.setAttribute('position', {
-            x: position.x,
-            y: position.y + y_offset + 1,
-            z: position.z + z_offset + 0.1
+        // Posicionar HUD en el punto del ratón
+        HUD.setAttribute('position', {
+            x: point.x,
+            y: point.y + 0.2,
+            z: point.z + 1
         });
+
         HUD.setAttribute('visible', 'true');
+
         const cameraPos = new THREE.Vector3();
         camera.object3D.getWorldPosition(cameraPos);
         HUD.object3D.lookAt(cameraPos);
 
-	    // Update HUD text attributes
         HUDText.setAttribute('value', value);
-	}
+    }
 
 	// Set the element to its original state
 	function returnToOriginal(event) {
