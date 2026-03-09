@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const camera = document.getElementById('camera');
 
-        // Intersection point
+        // Intersection point in world coordinates
         const intersection = event.detail.intersection;
         if (!intersection) return;
 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	function displaySubchart(event) {
 	    const paramName = event.target.getAttribute('activates-param');
 	    if (!paramName) return;
-	    const groupName = paramName.split('__')[0]  // Format is {groupName}__{values}
+	    const groupName = paramName.split('__')[0];  // Format is {groupName}__{values}
 
 	    // Initialize group if not existing
 	    if (!activeSubcharts[groupName]) {
