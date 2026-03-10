@@ -14,7 +14,7 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body>
   <a-scene cursor="rayOrigin: mouse" raycaster="objects: [raycastable]" drag-controls="mode: cursor"
-           webxr="optionalFeatures: local-floor" environment="preset: {environment}">
+           webxr="optionalFeatures: local-floor">
     <a-entity id="user" movement-controls="speed: 0.1">
 
       <!-- Camera -->
@@ -32,6 +32,9 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
       <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
       <a-text id="HUD-text" align="center"></a-text>
     </a-entity>
+
+    <!-- Environment -->
+    <a-entity environment="preset: {environment}" hide-on-enter-ar></a-entity>
 
     <!-- Elements -->
     {elements}
