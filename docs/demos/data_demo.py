@@ -1,12 +1,12 @@
 import aframexr
 
 # ===== SPACE CONFIGURATION =====
-ROOM_DEPTH = 40
+ROOM_DEPTH = 37
 ROOM_HEIGHT = 8
-ROOM_WIDTH = 30
+ROOM_WIDTH = 32
 
 room = aframexr.Box(
-    position=f'0 {ROOM_HEIGHT / 2 + 0.1} {-ROOM_DEPTH / 4}',
+    position=f'0 {ROOM_HEIGHT / 2 - 0.1} {-ROOM_DEPTH / 4}',
     depth=ROOM_DEPTH, height=ROOM_HEIGHT, width=ROOM_WIDTH,
     color='lightGreen'
 )
@@ -16,8 +16,8 @@ DATA = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG@main/docs/st
 PLATFORMS_CONFIG = {'height': 0.2, 'additional_depth': 4, 'additional_width': 3, 'color': 'darkSlateGray'}
 
 _CHART_DEPTH = 1
-_CHART_HEIGHT = 4
-_CHART_WIDTH = 6
+_CHART_HEIGHT = 3
+_CHART_WIDTH = 5
 
 BASE = aframexr.Chart(DATA, depth=_CHART_DEPTH, height=_CHART_HEIGHT, width=_CHART_WIDTH)
 
@@ -150,6 +150,40 @@ point_chart_size = BASE.mark_point().encode(x='model', y='sales', size='doors').
     title='Size-Coded Point Chart',
 )
 charts.append(point_platform_size), charts.append(point_chart_size)
+
+# Dynamic filtered bar chart
+_CENTER_X_POS_BAR_DYNAMIC_FILTER = -10
+_CENTER_X_POS_PIE_DYNAMIC_FILTER = 0
+_CENTER_Z_POS_DYNAMIC_FILTER = -25
+
+bar_platform_dynamic_filter = aframexr.Box(
+    position=f'{_CENTER_X_POS_BAR_DYNAMIC_FILTER} {PLATFORMS_CONFIG['height'] / 2} {_CENTER_Z_POS_DYNAMIC_FILTER}',
+    depth=_CHART_DEPTH + PLATFORMS_CONFIG['additional_depth'],
+    height=PLATFORMS_CONFIG['height'],
+    width=_CHART_WIDTH + PLATFORMS_CONFIG['additional_width'],
+    color=PLATFORMS_CONFIG['color'],
+)
+chart_dynamic_filter_param = aframexr.selection_point('param', ['motor'])
+bar_chart_dynamic_filter = BASE.mark_bar().encode(x='motor', y='sum(sales)').properties(
+    position=f'{_CENTER_X_POS_BAR_DYNAMIC_FILTER} {PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_CENTER_Z_POS_DYNAMIC_FILTER}',
+    title='Dynamic filter bar chart',
+).add_params(chart_dynamic_filter_param)
+
+_PIE_DYNAMIC_FILTER_RADIUS = 2.5
+pie_platform_dynamic_filter = aframexr.Box(
+    position=f'{_CENTER_X_POS_PIE_DYNAMIC_FILTER} {PLATFORMS_CONFIG['height'] / 2} {_CENTER_Z_POS_DYNAMIC_FILTER}',
+    depth=_CHART_DEPTH + PLATFORMS_CONFIG['additional_depth'],
+    height=PLATFORMS_CONFIG['height'],
+    width=_CHART_WIDTH + PLATFORMS_CONFIG['additional_width'],
+    color=PLATFORMS_CONFIG['color'],
+)
+pie_chart_dynamic_filter = BASE.mark_arc(radius=2.5).encode(color='model', theta='sales').properties(
+    position=f'{_CENTER_X_POS_PIE_DYNAMIC_FILTER} {PLATFORMS_CONFIG['height'] + _PIE_DYNAMIC_FILTER_RADIUS} {_CENTER_Z_POS_DYNAMIC_FILTER}',
+    title='Dynamic filter pie chart'
+).transform_filter(chart_dynamic_filter_param)
+
+charts.append(bar_platform_dynamic_filter), charts.append(bar_chart_dynamic_filter)
+charts.append(pie_platform_dynamic_filter), charts.append(pie_chart_dynamic_filter)
 
 scene = room
 for c in charts:
