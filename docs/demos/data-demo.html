@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>VR Scene</title>
+  <meta charset="utf-8">
+  <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.6.1/dist/aframe-extras.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.5.0/dist/aframe-environment-component.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.5/docs/static/scripts/main.min.js"></script>
+</head>
+<body>
+<a-scene cursor="rayOrigin: mouse" raycaster="objects: [raycastable]" drag-controls="mode: cursor"
+         xr-mode-ui="XRMode: xr" webxr="optionalFeatures: hit-test, local-floor;" ar-hit-test="target: #charts">
+  <a-entity id="user" movement-controls="speed: 0.1">
+
+    <!-- Camera -->
+    <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 15"></a-camera>
+
+    <!-- VR controllers -->
+    <a-entity laser-controls="hand: right" raycaster="objects: [raycastable]" drag-controls="mode: vr"></a-entity>
+    <a-entity laser-controls="hand: left" raycaster="objects: [raycastable]" drag-controls="mode: vr"></a-entity>
+  </a-entity>
+
+  <!-- HUD -->
+  <a-entity id="HUD" visible="false">
+    <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
+    <a-text id="HUD-text" align="center"></a-text>
+  </a-entity>
+
+  <!-- Environment -->
+  <a-entity environment="preset: default" hide-on-enter-ar></a-entity>
+
+  <!-- Elements -->
+  <a-entity id="charts">
+    <a-box color="lightGreen" depth="37" height="8" position="0 3.9 -9.25" width="32" side="double"></a-box>
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="-6 0.1 -15" width="8" side="double"></a-box>
+		<a-entity position="-6.0 1.7 -15.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-box info="diesel : 30" position="0.6666667 1.2162162162162162 -0.5" width="1.3333333333333335" height="2.4324324324324325" depth="1.0" color="blue" raycastable side="double"></a-box>
+				<a-box info="gasoline : 35" position="2.5 1.418918918918919 -0.5" width="1.3333333333333335" height="2.837837837837838" depth="1.0" color="blue" raycastable side="double"></a-box>
+				<a-box info="electric : 37" position="4.3333335 1.5 -0.5" width="1.3333333333333335" height="3.0" depth="1.0" color="blue" raycastable side="double"></a-box>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="diesel" position="0.6666667 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="gasoline" position="2.5 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="electric" position="4.3333335 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="9.25" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="18.5" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="27.75" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="37.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Vertical bar chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="6 0.1 -15" width="8" side="double"></a-box>
+		<a-entity position="6.0 1.7 -15.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-box info="37 : electric" position="2.5 0.4 -0.5" width="5.0" height="0.8" depth="1.0" color="blue" raycastable side="double"></a-box>
+				<a-box info="30 : diesel" position="2.027027027027027 1.5 -0.5" width="4.054054054054054" height="0.8" depth="1.0" color="blue" raycastable side="double"></a-box>
+				<a-box info="35 : gasoline" position="2.364864864864865 2.6 -0.5" width="4.72972972972973" height="0.8" depth="1.0" color="blue" raycastable side="double"></a-box>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="0.0" position="0.25 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="9.25" position="1.4375 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="18.5" position="2.625 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="27.75" position="3.8125 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="37.0" position="5.0 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="electric" position="-0.5 0.4 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="diesel" position="-0.5 1.5 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="gasoline" position="-0.5 2.6 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Horizontal bar chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="-6 0.1 -3" width="8" side="double"></a-box>
+		<a-entity position="-6.0 1.7 -3.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-box info="leon : 10" position="0.2 0.75 -0.5" width="0.4" height="1.5" depth="1.0" color="red" raycastable side="double"></a-box>
+				<a-box info="ibiza : 15" position="0.7111111 1.125 -0.5" width="0.4" height="2.25" depth="1.0" color="red" raycastable side="double"></a-box>
+				<a-box info="cordoba : 3" position="1.2222222 0.22499999999999998 -0.5" width="0.4" height="0.44999999999999996" depth="1.0" color="green" raycastable side="double"></a-box>
+				<a-box info="toledo : 18" position="1.7333333 1.3499999999999999 -0.5" width="0.4" height="2.6999999999999997" depth="1.0" color="green" raycastable side="double"></a-box>
+				<a-box info="altea : 4" position="2.2444444 0.3 -0.5" width="0.4" height="0.6" depth="1.0" color="green" raycastable side="double"></a-box>
+				<a-box info="arosa : 12" position="2.7555556 0.8999999999999999 -0.5" width="0.4" height="1.7999999999999998" depth="1.0" color="red" raycastable side="double"></a-box>
+				<a-box info="alhambra : 5" position="3.2666667 0.375 -0.5" width="0.4" height="0.75" depth="1.0" color="green" raycastable side="double"></a-box>
+				<a-box info="600 : 20" position="3.7777777 1.5 -0.5" width="0.4" height="3.0" depth="1.0" color="magenta" raycastable side="double"></a-box>
+				<a-box info="127 : 2" position="4.288889 0.15 -0.5" width="0.4" height="0.3" depth="1.0" color="magenta" raycastable side="double"></a-box>
+				<a-box info="panda : 13" position="4.8 0.975 -0.5" width="0.4" height="1.95" depth="1.0" color="magenta" raycastable side="double"></a-box>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="leon" position="0.2 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="ibiza" position="0.7111111 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="cordoba" position="1.2222222 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="toledo" position="1.7333333 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="altea" position="2.2444444 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="arosa" position="2.7555556 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="alhambra" position="3.2666667 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="600" position="3.7777777 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="127" position="4.288889 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="panda" position="4.8 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="5.0" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="10.0" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="15.0" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="20.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Color-Coded Bar Chart" color="black" align="center" scale="2 2 2"></a-text>
+
+			<!-- Legend -->
+			<a-plane side="double" position="7 1.5 0" height="1.7999999999999998" width="3"></a-plane>
+			<a-text position="7 0.9000000000000001 0" value="Electric" color="red" align="center" scale="1.5 1.5 1.5"></a-text>
+			<a-text position="7 1.5 0" value="Diesel" color="green" align="center" scale="1.5 1.5 1.5"></a-text>
+			<a-text position="7 2.1 0" value="Gasoline" color="magenta" align="center" scale="1.5 1.5 1.5"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="6" height="0.2" position="6 0.1 -3" width="8" side="double"></a-box>
+		<a-entity position="6.0 1.7 -3.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 1.0">
+				<a-box info="leon : 10 : red" position="0.2 0.75 -0.2" width="0.4" height="1.5" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="ibiza : 15 : white" position="0.7111111 1.125 -0.73333335" width="0.4" height="2.25" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="cordoba : 3 : black" position="1.2222222 0.22499999999999998 -1.2666667" width="0.4" height="0.44999999999999996" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="toledo : 18 : white" position="1.7333333 1.3499999999999999 -0.73333335" width="0.4" height="2.6999999999999997" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="altea : 4 : red" position="2.2444444 0.3 -0.2" width="0.4" height="0.6" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="arosa : 12 : red" position="2.7555556 0.8999999999999999 -0.2" width="0.4" height="1.7999999999999998" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="alhambra : 5 : white" position="3.2666667 0.375 -0.73333335" width="0.4" height="0.75" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="600 : 20 : yellow" position="3.7777777 1.5 -1.8" width="0.4" height="3.0" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="127 : 2 : white" position="4.288889 0.15 -0.73333335" width="0.4" height="0.3" depth="0.4" color="blue" raycastable side="double"></a-box>
+				<a-box info="panda : 13 : black" position="4.8 0.975 -1.2666667" width="0.4" height="1.95" depth="0.4" color="blue" raycastable side="double"></a-box>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="leon" position="0.2 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="ibiza" position="0.7111111 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="cordoba" position="1.2222222 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="toledo" position="1.7333333 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="altea" position="2.2444444 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="arosa" position="2.7555556 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="alhambra" position="3.2666667 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="600" position="3.7777777 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="127" position="4.288889 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="panda" position="4.8 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="5.0" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="10.0" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="15.0" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="20.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Z-axis -->
+				<a-entity line="start: 0 0 0; end: 0 0 -2; color: black"></a-entity>
+				<a-text value="red" position="-0.5 0.01 -0.2" rotation="-90 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="white" position="-0.5 0.01 -0.73333335" rotation="-90 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="black" position="-0.5 0.01 -1.2666667" rotation="-90 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="yellow" position="-0.5 0.01 -1.8" rotation="-90 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="3-Axes Bar Chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="6 0.1 3" width="8" side="double"></a-box>
+		<a-entity position="6.0 1.7 3.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-sphere info="leon : 10" position="0.33 1.5 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="ibiza : 15" position="0.81222224 2.085 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="cordoba : 3" position="1.2944444 0.681 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="toledo : 18" position="1.7766666 2.436 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="altea : 4" position="2.258889 0.798 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="arosa : 12" position="2.741111 1.734 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="alhambra : 5" position="3.2233334 0.915 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="600 : 20" position="3.7055554 2.67 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="127 : 2" position="4.187778 0.5640000000000001 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="panda : 13" position="4.67 1.851 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="leon" position="0.33 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="ibiza" position="0.81222224 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="cordoba" position="1.2944444 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="toledo" position="1.7766666 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="altea" position="2.258889 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="arosa" position="2.741111 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="alhambra" position="3.2233334 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="600" position="3.7055554 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="127" position="4.187778 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="panda" position="4.67 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="5.0" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="10.0" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="15.0" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="20.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Simple point chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="-6 0.1 3" width="8" side="double"></a-box>
+		<a-entity position="-6.0 1.7 3.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-sphere info="leon : 10" position="0.33 1.5 -0.5" radius="0.33" color="red" raycastable></a-sphere>
+				<a-sphere info="ibiza : 15" position="0.81222224 2.085 -0.5" radius="0.33" color="red" raycastable></a-sphere>
+				<a-sphere info="cordoba : 3" position="1.2944444 0.681 -0.5" radius="0.33" color="green" raycastable></a-sphere>
+				<a-sphere info="toledo : 18" position="1.7766666 2.436 -0.5" radius="0.33" color="green" raycastable></a-sphere>
+				<a-sphere info="altea : 4" position="2.258889 0.798 -0.5" radius="0.33" color="green" raycastable></a-sphere>
+				<a-sphere info="arosa : 12" position="2.741111 1.734 -0.5" radius="0.33" color="red" raycastable></a-sphere>
+				<a-sphere info="alhambra : 5" position="3.2233334 0.915 -0.5" radius="0.33" color="green" raycastable></a-sphere>
+				<a-sphere info="600 : 20" position="3.7055554 2.67 -0.5" radius="0.33" color="magenta" raycastable></a-sphere>
+				<a-sphere info="127 : 2" position="4.187778 0.5640000000000001 -0.5" radius="0.33" color="magenta" raycastable></a-sphere>
+				<a-sphere info="panda : 13" position="4.67 1.851 -0.5" radius="0.33" color="magenta" raycastable></a-sphere>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="leon" position="0.33 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="ibiza" position="0.81222224 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="cordoba" position="1.2944444 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="toledo" position="1.7766666 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="altea" position="2.258889 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="arosa" position="2.741111 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="alhambra" position="3.2233334 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="600" position="3.7055554 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="127" position="4.187778 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="panda" position="4.67 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="5.0" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="10.0" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="15.0" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="20.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Color-Coded Point Chart" color="black" align="center" scale="2 2 2"></a-text>
+
+			<!-- Legend -->
+			<a-plane side="double" position="7 1.5 0" height="1.7999999999999998" width="3"></a-plane>
+			<a-text position="7 0.9000000000000001 0" value="Electric" color="red" align="center" scale="1.5 1.5 1.5"></a-text>
+			<a-text position="7 1.5 0" value="Diesel" color="green" align="center" scale="1.5 1.5 1.5"></a-text>
+			<a-text position="7 2.1 0" value="Gasoline" color="magenta" align="center" scale="1.5 1.5 1.5"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="-6 0.1 -9" width="8" side="double"></a-box>
+		<a-entity position="-6.0 1.7 -9.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-sphere info="leon : 10" position="0.33 1.5 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="ibiza : 15" position="0.81222224 2.085 -0.5" radius="0.19800000000000004" color="blue" raycastable></a-sphere>
+				<a-sphere info="cordoba : 3" position="1.2944444 0.681 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="toledo : 18" position="1.7766666 2.436 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="altea : 4" position="2.258889 0.798 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="arosa : 12" position="2.741111 1.734 -0.5" radius="0.19800000000000004" color="blue" raycastable></a-sphere>
+				<a-sphere info="alhambra : 5" position="3.2233334 0.915 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="600 : 20" position="3.7055554 2.67 -0.5" radius="0.19800000000000004" color="blue" raycastable></a-sphere>
+				<a-sphere info="127 : 2" position="4.187778 0.5640000000000001 -0.5" radius="0.33" color="blue" raycastable></a-sphere>
+				<a-sphere info="panda : 13" position="4.67 1.851 -0.5" radius="0.19800000000000004" color="blue" raycastable></a-sphere>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="leon" position="0.33 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="ibiza" position="0.81222224 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="cordoba" position="1.2944444 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="toledo" position="1.7766666 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="altea" position="2.258889 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="arosa" position="2.741111 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="alhambra" position="3.2233334 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="600" position="3.7055554 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="127" position="4.187778 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="panda" position="4.67 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="5.0" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="10.0" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="15.0" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="20.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Size-Coded Point Chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="-10 0.1 -25" width="8" side="double"></a-box>
+		<a-entity position="-10.0 1.7 -25.0" rotation="0.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="-2.5 -1.5 0.5">
+				<a-box info="gasoline : 35" position="0.6666667 1.418918918918919 -0.5" width="1.3333333333333335" height="2.837837837837838" depth="1.0" color="blue" activates-param="param__gasoline" raycastable side="double"></a-box>
+				<a-box info="electric : 37" position="2.5 1.5 -0.5" width="1.3333333333333335" height="3.0" depth="1.0" color="blue" activates-param="param__electric" raycastable side="double"></a-box>
+				<a-box info="diesel : 30" position="4.3333335 1.2162162162162162 -0.5" width="1.3333333333333335" height="2.4324324324324325" depth="1.0" color="blue" activates-param="param__diesel" raycastable side="double"></a-box>
+
+				<!-- X-axis -->
+				<a-entity line="start: 0 0 0; end: 5 0 0; color: black"></a-entity>
+				<a-text value="gasoline" position="0.6666667 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="electric" position="2.5 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="diesel" position="4.3333335 0.01 0.5" rotation="-90 0 -90" align="left" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Y-axis -->
+				<a-entity line="start: 0 0 0; end: 0 3 0; color: black"></a-entity>
+				<a-text value="0.0" position="-0.5 0.25 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="9.25" position="-0.5 0.9375 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="18.5" position="-0.5 1.625 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="27.75" position="-0.5 2.3125 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+				<a-text value="37.0" position="-0.5 3.0 0" rotation="0 0 0" align="right" scale="1.5 1.5 1.5"></a-text>
+
+				<!-- Title -->
+				<a-plane side="double" position="2.5 4.0 0" rotation="0 0 0" height="1" width="5"></a-plane>
+				<a-text position="2.5 4.0 0" rotation="0 0 0" value="Dynamic filter bar chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+		<a-box color="darkSlateGray" depth="5" height="0.2" position="0 0.1 -25" width="8" side="double"></a-box>
+		<a-entity position="0.0 2.7 -25.0" rotation="-90.0 0.0 0.0">  <!-- Chart's box (modify this values if you want to change position or rotation) -->
+			<a-entity position="0 0 0" param-name="param__gasoline" visible="false">
+				<a-cylinder side="double" info="600 : 20" height="1" position="0 0 0" radius="2.5" theta-start="0.0" theta-length="205.71428571428572" color="red"></a-cylinder>
+				<a-cylinder side="double" info="127 : 2" height="1" position="0 0 0" radius="2.5" theta-start="205.71428571428572" theta-length="20.571428571428573" color="green"></a-cylinder>
+				<a-cylinder side="double" info="panda : 13" height="1" position="0 0 0" radius="2.5" theta-start="226.2857142857143" theta-length="133.71428571428572" color="magenta"></a-cylinder>
+
+				<!-- Title -->
+				<a-plane side="double" position="0 0 3.5" rotation="90 0 0" height="1" width="5.0"></a-plane>
+				<a-text position="0 0 3.5" rotation="90 0 0" value="Dynamic filter pie chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+
+			<a-entity position="0 0 0" param-name="param__electric" visible="false">
+				<a-cylinder side="double" info="leon : 10" height="1" position="0 0 0" radius="2.5" theta-start="0.0" theta-length="97.29729729729729" color="red"></a-cylinder>
+				<a-cylinder side="double" info="ibiza : 15" height="1" position="0 0 0" radius="2.5" theta-start="97.29729729729729" theta-length="145.94594594594594" color="green"></a-cylinder>
+				<a-cylinder side="double" info="arosa : 12" height="1" position="0 0 0" radius="2.5" theta-start="243.24324324324323" theta-length="116.75675675675676" color="magenta"></a-cylinder>
+
+				<!-- Title -->
+				<a-plane side="double" position="0 0 3.5" rotation="90 0 0" height="1" width="5.0"></a-plane>
+				<a-text position="0 0 3.5" rotation="90 0 0" value="Dynamic filter pie chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+
+			<a-entity position="0 0 0" param-name="param__diesel" visible="false">
+				<a-cylinder side="double" info="cordoba : 3" height="1" position="0 0 0" radius="2.5" theta-start="0.0" theta-length="36.0" color="red"></a-cylinder>
+				<a-cylinder side="double" info="toledo : 18" height="1" position="0 0 0" radius="2.5" theta-start="36.0" theta-length="216.0" color="green"></a-cylinder>
+				<a-cylinder side="double" info="altea : 4" height="1" position="0 0 0" radius="2.5" theta-start="252.0" theta-length="48.0" color="magenta"></a-cylinder>
+				<a-cylinder side="double" info="alhambra : 5" height="1" position="0 0 0" radius="2.5" theta-start="300.0" theta-length="60.0" color="cyan"></a-cylinder>
+
+				<!-- Title -->
+				<a-plane side="double" position="0 0 3.5" rotation="90 0 0" height="1" width="5.0"></a-plane>
+				<a-text position="0 0 3.5" rotation="90 0 0" value="Dynamic filter pie chart" color="black" align="center" scale="2 2 2"></a-text>
+			</a-entity>
+		</a-entity>
+	
+  </a-entity>
+</a-scene>
+</body>
+</html>
