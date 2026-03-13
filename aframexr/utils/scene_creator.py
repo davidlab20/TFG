@@ -13,32 +13,33 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
   <script src="https://cdn.jsdelivr.net/gh/davidlab20/TFG@v0.7.5/docs/static/scripts/main.min.js"></script>
 </head>
 <body>
-  <a-scene cursor="rayOrigin: mouse" raycaster="objects: [raycastable]" drag-controls="mode: cursor"
-           webxr="optionalFeatures: local-floor">
-    <a-entity id="user" movement-controls="speed: 0.1">
+<a-scene cursor="rayOrigin: mouse" raycaster="objects: [raycastable]" drag-controls="mode: cursor"
+         xr-mode-ui="XRMode: xr" webxr="optionalFeatures: hit-test, local-floor;" ar-hit-test="target: #charts">
+  <a-entity id="user" movement-controls="speed: 0.1">
 
-      <!-- Camera -->
-      <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 15"></a-camera>
+    <!-- Camera -->
+    <a-camera id="camera" position="0 1.6 0" active="true" wasd-controls="acceleration: 15"></a-camera>
 
-      <!-- VR controllers -->
-      <a-entity laser-controls="hand: right" raycaster="objects: [raycastable]" drag-controls="mode: vr">
-      </a-entity>
-      <a-entity laser-controls="hand: left" raycaster="objects: [raycastable]" drag-controls="mode: vr">
-      </a-entity>
-    </a-entity>
+    <!-- VR controllers -->
+    <a-entity laser-controls="hand: right" raycaster="objects: [raycastable]" drag-controls="mode: vr"></a-entity>
+    <a-entity laser-controls="hand: left" raycaster="objects: [raycastable]" drag-controls="mode: vr"></a-entity>
+  </a-entity>
 
-    <!-- HUD -->
-    <a-entity id="HUD" visible="false">
-      <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
-      <a-text id="HUD-text" align="center"></a-text>
-    </a-entity>
+  <!-- HUD -->
+  <a-entity id="HUD" visible="false" scale-on-enter-ar>
+    <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
+    <a-text id="HUD-text" align="center"></a-text>
+  </a-entity>
 
-    <!-- Environment -->
-    <a-entity environment="preset: {environment}" hide-on-enter-ar></a-entity>
+  <!-- Environment -->
+  <a-entity environment="preset: {environment}" hide-on-enter-ar></a-entity>
+  <a-light type="ambient" show-on-enter-ar></a-light>
 
-    <!-- Elements -->
+  <!-- Elements -->
+  <a-entity id="charts" scale-on-enter-ar look-at-camera-on-ar>
     {elements}
-  </a-scene>
+  </a-entity>
+</a-scene>
 </body>
 </html>"""
 

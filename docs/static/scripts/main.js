@@ -60,6 +60,64 @@ AFRAME.registerComponent('drag-controls', {
     }
 });
 
+AFRAME.registerComponent('look-at-camera-on-ar', {
+  tick: function () {
+    if (!this.el.sceneEl.is('ar-mode')) return;
+
+    const cameraEl = this.el.sceneEl.camera.el;
+    if (!cameraEl) return;
+
+    const objectPos = new THREE.Vector3();
+    const cameraPos = new THREE.Vector3();
+
+    this.el.object3D.getWorldPosition(objectPos);
+    cameraEl.object3D.getWorldPosition(cameraPos);
+
+    // Only Y-axis rotation
+    const target = new THREE.Vector3(cameraPos.x, objectPos.y, cameraPos.z);
+    this.el.object3D.lookAt(target);
+  }
+});
+
+AFRAME.registerComponent('scale-on-enter-ar', {
+    schema: {
+        scale: { type: 'string', default: '0.1 0.1 0.1' }
+    },
+    init: function () {
+        const el = this.el;
+        const scene = el.sceneEl;
+
+        scene.addEventListener('enter-vr', () => {
+            if (scene.is('ar-mode')) {
+                el.setAttribute('scale', this.data.scale);
+
+                // Update ar-hit-test mesh's scale
+                const hitTest = scene.components['ar-hit-test'];
+                if (hitTest) hitTest.bboxNeedsUpdate = true;
+            }
+        });
+
+        scene.addEventListener('exit-vr', () => {
+            el.setAttribute('scale', '1 1 1');
+        });
+    }
+});
+
+AFRAME.registerComponent('show-on-enter-ar', {
+  init: function () {
+    const scene = this.el.sceneEl;
+
+    const update = () => {
+      this.el.object3D.visible = scene.is('ar-mode');
+    };
+
+    scene.addEventListener('enter-vr', update);
+    scene.addEventListener('exit-vr', update);
+
+    update();
+  }
+});
+
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
@@ -67,6 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	const HUD = document.getElementById('HUD');
 	const HUDText = document.getElementById('HUD-text');
 	const interactiveAframeElements = 'a-box, a-cylinder, a-sphere';
+	const scene = document.querySelector("a-scene");
+	const sceneChartsContainer = document.getElementById("charts");
 
 	// Display information about the element
 	function displayInfo(event) {
@@ -77,25 +137,33 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!value) return;
 
         const camera = document.getElementById('camera');
-
-        // Intersection point in world coordinates
-        const intersection = event.detail.intersection;
-        if (!intersection) return;
-
-        const point = intersection.point.clone();
-
-        HUD.setAttribute('position', {
-            x: point.x,
-            y: point.y + 0.2,
-            z: point.z + 1
-        });
-
-        HUD.setAttribute('visible', 'true');
-
         const cameraPos = new THREE.Vector3();
         camera.object3D.getWorldPosition(cameraPos);
-        HUD.object3D.lookAt(cameraPos);
 
+        // Object's bounding box
+        const bbox = new THREE.Box3().setFromObject(targetElement.object3D);
+        const objectCenter = new THREE.Vector3();
+        bbox.getCenter(objectCenter);
+
+        const objectSize = new THREE.Vector3();
+        bbox.getSize(objectSize);
+
+        // HUD's bounding box
+        const hudBBox = new THREE.Box3().setFromObject(HUD.object3D);
+        const hudSize = new THREE.Vector3();
+        hudBBox.getSize(hudSize);
+
+        const dirToCamera = new THREE.Vector3().subVectors(cameraPos, objectCenter).normalize();
+
+        const distance = (objectSize.z / 2) + (hudSize.z / 2);
+
+        // Final HUD's position
+        const hudPos = objectCenter.clone().add(dirToCamera.multiplyScalar(distance));
+        hudPos.y = bbox.max.y + (hudSize.y / 2);
+
+        HUD.object3D.position.copy(hudPos);
+        HUD.object3D.lookAt(cameraPos);
+        HUD.setAttribute('visible', 'true');
         HUDText.setAttribute('value', value);
     }
 
@@ -143,5 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
         element.addEventListener('mouseenter', displayInfo);
         element.addEventListener('mouseleave', returnToOriginal);
         element.addEventListener('click', displaySubchart);
+    });
+
+    scene.addEventListener("exit-vr", () => {
+        sceneChartsContainer.object3D.position.set(0,0,0);
+        sceneChartsContainer.object3D.rotation.set(0,0,0);
+    });
+
+    scene.addEventListener("ar-hit-test-select", () => {
+        const hitTest = scene.components["ar-hit-test"];
+        if (hitTest) {
+            hitTest.data.enabled = false;  // Deactivates ar-hit-test
+            hitTest.hitTest = null;
+
+            if (hitTest.bboxMesh) hitTest.bboxMesh.visible = false;  // Hides the reticle
+        }
     });
 });
