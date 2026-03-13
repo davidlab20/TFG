@@ -141,7 +141,6 @@ class ChartCreator:
         # Only XYZAxisChannelChartCreator objects has that attribute, if not return '0 0 0'
         return getattr(self, '_relative_bottom_left_corner_position', '0 0 0')
 
-
     def get_group_specs(self) -> dict:
         """Returns a dictionary with the base specifications for the group of elements."""
         group_specs = {
@@ -174,7 +173,7 @@ class ChartCreator:
         plane = PlaneCreator(
             {
                 'position': title_position, 'rotation': rotation, 'height': PLANE_TITLE_HEIGHT, 'width': chart_width
-             },
+            },
             filtered_by_params=filtered_by_params
         )
         text = TextCreator(
@@ -228,6 +227,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
         Corrects the axes' position for inner the calculations and processing.
         Must be called by child classes when initiating.
         """
+
         def _calculate_axis_size(axis_data: Series, default_axis_size: float) -> float:
             if elem_size is None or axis_data is None:  # User did not define bars' size, or there is no data
                 return default_axis_size  # Set default value
@@ -529,7 +529,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                 )
                 bars_axis_size = 2 * coordinates.abs()
             elif encoding_type == 'nominal':
-                if self._bar_size_if_nominal_axis is not None:   # User defined bars' size
+                if self._bar_size_if_nominal_axis is not None:  # User defined bars' size
                     if self._bar_size_if_nominal_axis * axis_data.n_unique() > axis_size:  # Bars would overlap
                         bar_size = axis_size / axis_data.n_unique()  # Adjust bars' axis size automatically
                         warnings.warn(
