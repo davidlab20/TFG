@@ -148,26 +148,16 @@ class ChartsHTMLCreator:
     """Charts HTML creator class."""
 
     @staticmethod
-    def _create_chart_html(chart_specs: dict, param_name: str = None, param_values: dict = None,
-                           is_movable: bool = ENTITY_IS_MOVABLE) -> str:
-        chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
-
-        # Chart HTML
-        chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
-        group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
-
+    def _create_chart_html(chart_object: ChartCreator, param_name: str = None, param_values: dict = None) -> str:
         filtered_by_params = False
-        attributes = ''.join(f' {key.replace("_", "-")}="{value}"' for key, value in group_specs.items())
-        if is_movable:
-            attributes += ' movable'  # For drag-controls
+        attributes = ''
         if param_name is not None and param_values is not None:
             filtered_by_params = True
             param_values_str = '__'.join(f'{value}' for value in param_values.values())
             attributes += f' param-name="{param_name}__{param_values_str}" visible="false"'
-        chart_html = ('<a-entity{attributes}>'.format(attributes=attributes) +
-                      "  <!-- Chart's box (modify this values if you want to change position or rotation) -->\n")
 
-        chart_html += f'\t\t\t<a-entity position="{chart_object.get_relative_bottom_left_corner_position()}">\n'
+        chart_html = (f'\t\t\t<a-entity position="{chart_object.get_relative_bottom_left_corner_position()}"'
+                      f'{attributes}>\n')
         elements = chart_object.get_elements(filtered_by_params=filtered_by_params)  # Specifications for each element
         for element in elements:
             chart_html += '\t\t\t\t' + element.get_element_html() + '\n'  # Tabulate the lines (better visualization)
@@ -194,13 +184,12 @@ class ChartsHTMLCreator:
         # Legend
         legend_elements = chart_object.get_legend_elements(filtered_by_params=filtered_by_params)
         if legend_elements:
-            chart_html += f'\n\t\t\t\t<!-- Legend -->\n'  # Added HTML comment for better visualization
+            chart_html += f'\n\t\t\t<!-- Legend -->\n'  # Added HTML comment for better visualization
             for element in legend_elements:
-                chart_html += '\t\t\t\t' + element.get_element_html() + '\n'
+                chart_html += '\t\t\t' + element.get_element_html() + '\n'
 
         # Close the groups
         chart_html += '\t\t\t</a-entity>\n'
-        chart_html += '\t\t</a-entity>\n\t\t'
         return chart_html
 
     @staticmethod
@@ -230,10 +219,21 @@ class ChartsHTMLCreator:
         is_movable = chart_specs.get('movable', ENTITY_IS_MOVABLE)
 
         if 'mark' in chart_specs:  # Chart
+            chart_type = chart_specs['mark']['type'] if isinstance(chart_specs['mark'], dict) else chart_specs['mark']
             raw_data, chart_params_names = _get_raw_data_and_params(chart_specs)
+            chart_specs['data'] = {'values': raw_data.to_dicts()}
+            chart_object = ChartCreator.create_object(chart_type, chart_specs)  # Create the chart object
+            group_specs = chart_object.get_group_specs()  # Get the base specifications of the group of elements
 
+            attributes = ''.join(f' {key.replace("_", "-")}="{value}"' for key, value in group_specs.items())
+            if is_movable:
+                attributes += ' movable'  # For drag-controls
+
+            html = ('<a-entity{attributes}>'.format(attributes=attributes) +
+                          "  <!-- Chart's box (modify this values if you want to change position or rotation) -->\n")
+
+            # =================
             if chart_params_names:  # Chart is filtered using params
-                html = ''
                 for param_name in chart_params_names:
                     param_specs = scene_params_map.get(param_name)
 
@@ -244,29 +244,36 @@ class ChartsHTMLCreator:
                         )
 
                     # Create one chart per combination
-                    charts_html = []
+                    charts_html_list = []
                     param_combinations = _get_param_combinations(raw_data, param_specs)
                     if not param_combinations:
-                        chart_specs['data'] = {'values': raw_data.to_dicts()}
-                        charts_html.append(ChartsHTMLCreator._create_chart_html(chart_specs, is_movable=is_movable))
+                        new_chart_specs = {**chart_specs, 'data': {'values': raw_data.to_dicts()}}
+                        new_chart_object = ChartCreator.create_object(chart_type, new_chart_specs)
+                        charts_html_list.append(ChartsHTMLCreator._create_chart_html(new_chart_object))
                     else:
                         for combination in param_combinations:
                             new_data = raw_data
                             for key, value in combination.items():
                                 new_data = new_data.filter(pl.col(key) == value)
 
-                            charts_html.append(
+                            new_chart_specs = {**chart_specs, 'data': {'values': new_data.to_dicts()}}
+                            new_chart_object = ChartCreator.create_object(chart_type, new_chart_specs)
+
+                            charts_html_list.append(
                                 ChartsHTMLCreator._create_chart_html(
-                                    {**chart_specs, 'data': {'values': new_data.to_dicts()}},
-                                    param_name=param_name, param_values=combination, is_movable=is_movable
+                                    new_chart_object,
+                                    param_name=param_name, param_values=combination
                                 )
                             )
 
-                    html = '\n\t\t'.join(charts_html)
+                    html += '\n'.join(charts_html_list)
 
             else:
                 chart_specs['data'] = {'values': raw_data.to_dicts()}
-                html = ChartsHTMLCreator._create_chart_html(chart_specs, is_movable=is_movable)
+                html += ChartsHTMLCreator._create_chart_html(chart_object)
+
+            # Close the entity
+            html += '\t\t</a-entity>\n\t'
 
         elif 'element' in chart_specs:  # Single element
             html = ChartsHTMLCreator._create_element_html(chart_specs, is_movable=is_movable)
@@ -304,4 +311,3 @@ class ChartsHTMLCreator:
             )
 
         return ChartsHTMLCreator._create_entity_html(specs, scene_params_map)
-
