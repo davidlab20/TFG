@@ -21,6 +21,10 @@ jobs:
           - name: Install dependencies
             run: pip install marimo jinja2 aframexr
 
+          - name: Build Jinja2 pages
+            working-directory: docs
+            run: python3 build_jinja2_pages.py
+
           - name: 📄 Export notebooks
             working-directory: docs/notebooks
             run: |
@@ -46,10 +50,6 @@ jobs:
               done
 
               cp *-demo.html ../${OUTPUT_DIR}/demos
-
-          - name: Build Jinja2 pages
-            working-directory: docs
-            run: python3 build_jinja2_pages.py
 
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
