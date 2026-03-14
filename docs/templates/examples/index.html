@@ -26,4 +26,22 @@
   {% endfor %}
 </div>
 
+<h2>DEMOS</h2>
+<div class="row g-5">
+  {% for d in demos %}
+  <div class="col-lg-3 col-sm-6">
+    <div class="card h-100 shadow-sm border rounded-3">
+      <div class="card-body d-flex flex-column p-4">
+        <h5 class="card-title mb-3">{{ d.name }}</h5>
+        <div class="mt-auto d-grid gap-2">
+          <a href="{{ base_url }}demos/{{ d.url }}" class="btn btn-primary btn-sm" target="_blank">
+            GO
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
 {% endblock %}

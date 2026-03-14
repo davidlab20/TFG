@@ -7,6 +7,7 @@ from pathlib import Path
 # ===== CONFIG =====
 BASE_DIR = Path(__file__).parent.resolve()
 API_DIR = BASE_DIR / '..' / 'aframexr' / 'api'
+DEMOS_DIR = BASE_DIR / 'demos'
 NOTEBOOKS_DIR = BASE_DIR / 'notebooks'
 OUTPUT_DIR = BASE_DIR / os.getenv('OUTPUT_DIR', 'github_pages')
 OUTPUT_STATIC_DIR = OUTPUT_DIR / 'static'
@@ -39,6 +40,16 @@ for py_file in API_DIR.rglob('*.py'):
                 'name': node.name,
                 'docstring': ast.get_docstring(node),
             })
+
+# ===== DEMOS =====
+DEMOS = [
+    {
+        'name': file_name.replace('_', ' ').title(),
+        'url': file_name + '.html',
+    }
+    for d in DEMOS_DIR.rglob('*_demo.py')
+    for file_name in [d.stem]
+]
 
 # ===== NOTEBOOKS =====
 NOTEBOOKS = [

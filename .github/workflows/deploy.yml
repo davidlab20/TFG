@@ -40,6 +40,17 @@ jobs:
               marimo export html-wasm aggregated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/aggregated-chart-notebook.html --mode edit
               marimo export html-wasm simple_element_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple-element-notebook.html --mode edit
 
+          - name: Generate demos
+            working-directory: docs/demos
+            run: |
+              mkdir -p ../${OUTPUT_DIR}/demos
+
+              for demo in *_demo.py; do
+                [ -f "$demo" ] && python3 "$demo"
+              done
+
+              cp *-demo.html ../${OUTPUT_DIR}/demos
+
           - name: 📦 Upload Pages Artifact
             uses: actions/upload-pages-artifact@v3
             with:
