@@ -72,7 +72,7 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):
     output_path = OUTPUT_DIR / rel_path
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Profundidad relativa para los assets
+    # Relative assets' depth
     depth = len(html_file.relative_to(TEMPLATES_DIR).parents) - 1
     current_base_url = '../' * depth if depth > 0 else './'
 
