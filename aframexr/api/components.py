@@ -175,7 +175,7 @@ class TopLevelMixin:
         """Show the scene in the notebook."""
         with warnings.catch_warnings():
             # Do not show the warning --> UserWarning: Consider using IPython.display.IFrame instead
-            warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
+            warnings.filterwarnings('ignore', message='Consider using IPython.display.IFrame instead')
 
             self_copy = self.copy()
             return HTML(self_copy._generate_iframe_html(ar_scale=ar_scale, environment=environment))
