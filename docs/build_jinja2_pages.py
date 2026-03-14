@@ -91,6 +91,7 @@ for html_file in TEMPLATES_DIR.rglob('*.html'):
     context = {
         'base_url': current_base_url,
         'title': TITLES.get(rel_path, html_file.stem.replace('-', ' ').title()),
+        'demos': DEMOS,
         'notebooks': NOTEBOOKS,
         'api_items': api_items,
     }
