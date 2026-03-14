@@ -45,7 +45,7 @@ for py_file in API_DIR.rglob('*.py'):
 DEMOS = [
     {
         'name': file_name.replace('_', ' ').title(),
-        'url': file_name + '.html',
+        'url': file_name.replace('_', '-') + '.html',
     }
     for d in DEMOS_DIR.rglob('*_demo.py')
     for file_name in [d.stem]
