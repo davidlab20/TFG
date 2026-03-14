@@ -31,12 +31,12 @@ class TopLevelMixin:
     def __init__(self, specs: dict):
         self._specifications = specs
 
-    def _generate_iframe_html(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest',
-    'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
-    'osiris'] = 'default'):
+    def _generate_iframe_html(self, ar_scale: str = None, environment: Literal['default', 'contact', 'egypt',
+    'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan',
+    'dream', 'volcano', 'starry', 'osiris'] = 'default'):
         return (
             '<iframe '
-            f'srcdoc="{html.escape(self.to_html(environment), quote=True)}" '  # Raw HTML escaped
+            f'srcdoc="{html.escape(self.to_html(ar_scale=ar_scale, environment=environment), quote=True)}" '  # Raw HTML
             'width="100%" '  # Adjust to maximum width
             'height="400" '  # Height of the iframe
             'style="border:none;" '
@@ -169,8 +169,8 @@ class TopLevelMixin:
             raise ValueError('Invalid file format')
 
     # Showing the scene
-    def show(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai',
-    'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
+    def show(self, ar_scale: str = None, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest',
+    'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
     'osiris'] = 'default'):
         """Show the scene in the notebook."""
         with warnings.catch_warnings():
@@ -178,7 +178,7 @@ class TopLevelMixin:
             warnings.filterwarnings("ignore", message="Consider using IPython.display.IFrame instead")
 
             self_copy = self.copy()
-            return HTML(self_copy._generate_iframe_html(environment=environment))
+            return HTML(self_copy._generate_iframe_html(ar_scale=ar_scale, environment=environment))
 
     # Chart formats
     def to_dict(self) -> dict:
@@ -186,11 +186,12 @@ class TopLevelMixin:
         AframeXRValidator.validate_chart_specs(self._specifications)
         return copy.deepcopy(self._specifications)
 
-    def to_html(self, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland',
-    'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry',
-    'osiris'] = 'default') -> str:
+    def to_html(self, ar_scale: str = None, environment: Literal['default', 'contact', 'egypt', 'checkerboard',
+    'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano',
+    'starry', 'osiris'] = 'default') -> str:
         """Returns the HTML representation of the scene."""
         self_copy = self.copy()
+        if ar_scale is not None: self_copy._specifications['ar_scale'] = ar_scale
         self_copy._specifications['environment'] = environment
         AframeXRValidator.validate_chart_specs(self_copy._specifications)
         return SceneCreator.create_scene(self_copy._specifications)
