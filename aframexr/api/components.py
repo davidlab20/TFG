@@ -349,7 +349,7 @@ class Chart(TopLevelMixin):
 
         if size is not None:
             AframeXRValidator.validate_positive_number('size', size)
-            self_copy._specifications['mark']['max_radius'] = size
+            self_copy._specifications['mark']['size'] = size
 
         return self_copy
 
