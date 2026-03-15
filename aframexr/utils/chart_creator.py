@@ -639,8 +639,9 @@ class PointChartCreator(XYZAxisChannelChartCreator):
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
-        self._max_radius: float = chart_specs['mark'].get('max_radius', DEFAULT_POINT_RADIUS) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_RADIUS
+        max_sphere_volume: float = chart_specs['mark'].get('size', DEFAULT_POINT_VOLUME) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_VOLUME
+        self._max_radius = (3 * max_sphere_volume / (4 * 3.1416)) ** (1 / 3)
         self._correct_axes_position(elem_size=self._max_radius * 2)
 
         self._size_data: Series | None = None
@@ -666,12 +667,12 @@ class PointChartCreator(XYZAxisChannelChartCreator):
                 coordinates = self.set_elems_coordinates_for_quantitative_axis(
                     axis_data=axis_data,
                     axis_size=axis_size,
-                    extremes_offset=self._max_radius  # Points do not exceed the dimensions of the axis
+                    extremes_offset=self._max_radius + EPSILON  # Points do not exceed the dimensions of the axis
                 )
             elif encoding_type == 'nominal':
                 coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=axis_data, axis_size=axis_size,
-                    extremes_offset=self._max_radius  # Points do not exceed the dimensions of the axis
+                    extremes_offset=self._max_radius + EPSILON  # Points do not exceed the dimensions of the axis
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')

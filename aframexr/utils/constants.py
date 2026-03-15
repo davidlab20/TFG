@@ -6,9 +6,11 @@ AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 AVAILABLE_ENVIRONMENTS = {'default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine',
                           'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry', 'osiris'}
-AVAILABLE_MARKS = {'arc', 'bar', 'point'}
+AVAILABLE_MARKS = {'arc', 'bar', 'line', 'point'}
 
 ENTITY_IS_MOVABLE = False
+
+EPSILON = 1e-5  # To avoid floating problems
 
 START_LABEL_OFFSET = 0.25  # Offset for the start label of the axis
 X_LABELS_Z_DELTA = 0.5  # Variation in the y-axis between the labels and the axis (add to x-axis pos for label pos)
@@ -45,7 +47,7 @@ DEFAULT_PIE_RADIUS = 1  # Default radius of the pie chart
 DEFAULT_PIE_ROTATION = '-90 0 0'  # Default pie chart rotation
 
 # Point chart
-DEFAULT_POINT_RADIUS = 0.33  # Default point radius
+DEFAULT_POINT_VOLUME = 0.7  # Default point's volume
 
 # ========== ERROR MESSAGES ==========
 ERROR_MESSAGES = {
