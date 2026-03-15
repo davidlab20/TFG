@@ -17,6 +17,10 @@ from .element_creator import (
 CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, classes are added at the end of this file
 
 
+def _calculate_point_radius(point_volume: float) -> float:
+    return (3 * point_volume / (4 * 3.1416)) ** (1 / 3)
+
+
 def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
     """Translates and returns the encoding for a given data type."""
 
@@ -629,6 +633,10 @@ class LineChartCreator(XYZAxisChannelChartCreator):
         self._correct_axes_position(elem_size=DEFAULT_VERTICES_SPACING)
         self._line_color = chart_specs['mark'].get('color', DEFAULT_ELEMENTS_COLOR_IN_CHART) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_ELEMENTS_COLOR_IN_CHART
+        self._display_points_in_vertices = chart_specs['mark'].get('point', DEFAULT_VERTICES_POINT_DISPLAY) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_VERTICES_POINT_DISPLAY
+        self._marker_bbox_size_half = _calculate_point_radius(DEFAULT_VERTICES_POINT_VOLUME) \
+            if self._display_points_in_vertices else 0  # Half of the markers bounding box's axes size
 
     def _set_extremes_coords_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                                      encoding_type: str) -> Series:
@@ -641,7 +649,7 @@ class LineChartCreator(XYZAxisChannelChartCreator):
 
         if axis_data is None:
             coordinates = pl.repeat(
-                value=0,
+                value=self._marker_bbox_size_half,
                 n=self._raw_data.height,  # Number of rows in data
                 eager=True  # Returns a Series
             )
@@ -650,12 +658,12 @@ class LineChartCreator(XYZAxisChannelChartCreator):
                 coordinates = self.set_elems_coordinates_for_quantitative_axis(
                     axis_data=axis_data,
                     axis_size=axis_size,
-                    extremes_offset=0
+                    extremes_offset=self._marker_bbox_size_half
                 )
             elif encoding_type == 'nominal':
                 coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=axis_data, axis_size=axis_size,
-                    extremes_offset=0
+                    extremes_offset=self._marker_bbox_size_half
                 )
             else:
                 raise ValueError(f'Invalid encoding type: {encoding_type}.')
@@ -676,28 +684,45 @@ class LineChartCreator(XYZAxisChannelChartCreator):
         self._apply_axis_offset(z_coordinates, 'z', invert=True)  # Invert sign (to go deep)
 
         # Colors
-        n = max(self._raw_data.height - 1, 0)
-        colors = pl.repeat(self._line_color, n=n, eager=True)
+        colors = self._set_elements_colors()
+        if colors.n_unique() == 1:
+            pass
 
         # Return values
         positions = pl.select(pl.concat_str(
-                [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
-                separator=' '
-            ).alias('position')).to_series()
+            [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
+            separator=' '
+        ).alias('position')).to_series()
+
         temp_dict_lines = {
             'start': positions[:-1],  # Except the last
             'end': positions[1:],  # Except the first
+            'color': colors[1:],
+        }
+        temp_dict_points = {
+            'position': positions,
             'color': colors,
+            'radius': pl.repeat(
+                _calculate_point_radius(DEFAULT_VERTICES_POINT_VOLUME),
+                n=self._raw_data.height,
+                eager=True
+            ),
         }
 
         # Selection
         self._add_selection_to_specs(temp_dict_lines)
+        self._add_selection_to_specs(temp_dict_points)
 
         elements_specs_lines = pl.from_dict(temp_dict_lines).to_dicts()  # Transform into a list of dictionaries
+        elements_specs_points = pl.from_dict(temp_dict_points).to_dicts()
+
         return [
-            LineCreator(specifications, filtered_by_params=filtered_by_params)
-            for specifications in elements_specs_lines
-        ]
+            LineCreator(spec, filtered_by_params=filtered_by_params)
+            for spec in elements_specs_lines
+        ] + ([
+            SphereCreator(spec, filtered_by_params=filtered_by_params)
+            for spec in elements_specs_points
+        ] if self._display_points_in_vertices else [])
 
 
 class PointChartCreator(XYZAxisChannelChartCreator):
@@ -707,7 +732,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         super().__init__(chart_specs)
         max_sphere_volume: float = chart_specs['mark'].get('size', DEFAULT_POINT_VOLUME) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_POINT_VOLUME
-        self._max_radius = (3 * max_sphere_volume / (4 * 3.1416)) ** (1 / 3)
+        self._max_radius = _calculate_point_radius(max_sphere_volume)
         self._correct_axes_position(elem_size=self._max_radius * 2)
 
         self._size_data: Series | None = None

@@ -323,7 +323,7 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
-    def mark_line(self, color: str = None):
+    def mark_line(self, color: str = None, point: bool = None):
         """
         Line chart.
 
@@ -331,6 +331,8 @@ class Chart(TopLevelMixin):
         ----------
         color: str (optional)
             Color of the line. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
+        point : bool (optional)
+            Either if add points in vertices or not. If not defined, using
         """
         self_copy = self.copy()
 
@@ -339,6 +341,10 @@ class Chart(TopLevelMixin):
         if color is not None:
             AframeXRValidator.validate_type('color', color, str)
             self_copy._specifications['mark']['color'] = color
+
+        if point is not None:
+            AframeXRValidator.validate_type('point', point, bool)
+            self_copy._specifications['mark']['point'] = point
 
         return self_copy
 

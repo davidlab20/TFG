@@ -43,6 +43,8 @@ DEFAULT_NUM_OF_TICKS_IF_QUANTITATIVE_AXIS = 5  # Number of ticks in the axis if 
 DEFAULT_BAR_PADDING = 0.2  # Default padding in bar chart
 
 # Line chart
+DEFAULT_VERTICES_POINT_DISPLAY = False  # Default points' display in line's vertices
+DEFAULT_VERTICES_POINT_VOLUME = 0.002  # Default points' volume in vertices (if displayed)
 DEFAULT_VERTICES_SPACING = 0.5  # Default spacing between vertices of the line
 
 # Pie chart
