@@ -5,11 +5,14 @@ import warnings
 
 from itertools import cycle, islice
 from polars import DataFrame, Series
+from polars.datatypes.group import NUMERIC_DTYPES
 from typing import Literal
 
 from .axis_creator import AxisCreator
 from .constants import *
-from .element_creator import BoxCreator, CylinderCreator, ElementCreator, PlaneCreator, SphereCreator, TextCreator
+from .element_creator import (
+    BoxCreator, CylinderCreator, ElementCreator, PlaneCreator, SphereCreator, TextCreator, LineCreator
+)
 
 CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, classes are added at the end of this file
 
@@ -17,7 +20,7 @@ CREATOR_MAP: dict[str, type['ChartCreator']] = {}  # Creator map of charts, clas
 def _translate_dtype_into_encoding(dtype: pl.DataType) -> str:
     """Translates and returns the encoding for a given data type."""
 
-    if dtype.is_numeric():
+    if dtype in NUMERIC_DTYPES:
         encoding_type = 'quantitative'
     elif dtype in (pl.String, pl.Categorical):
         encoding_type = 'nominal'
@@ -118,23 +121,22 @@ class ChartCreator:
             )
         else:
             unique_categories = self._color_data.unique(maintain_order=True).to_list()
-            mapping_dict = dict(zip(
-                unique_categories,  # Dict keys
-                list(islice(  # Dict values
-                    cycle(AVAILABLE_COLORS),  # Color cycle
-                    len(unique_categories)  # Moduled to category codes
-                ))
+            color_map = dict(zip(
+                unique_categories,
+                islice(cycle(AVAILABLE_COLORS), len(unique_categories))
             ))
-            points_colors = self._color_data.replace(list(mapping_dict.keys()), list(mapping_dict.values()))
+
+            points_colors = self._color_data.replace(color_map)
         return points_colors.alias('color')
 
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
         """Returns a ChartCreator instance of the specific chart type."""
-        if chart_type not in CREATOR_MAP:  # pragma: no cover (creator classes should be added at the end of this file)
+        try:
+            creator = CREATOR_MAP[chart_type]
+        except KeyError:  # pragma: no cover (creator classes should be added at the end of this file)
             raise RuntimeError(f'Class for {chart_type} was not added to CREATOR_MAP')
-
-        return CREATOR_MAP[chart_type](chart_specs)
+        return creator(chart_specs)
 
     def get_relative_bottom_left_corner_position(self) -> str:
         """Returns the relative position for the bottom left corner of the chart."""
@@ -205,8 +207,7 @@ class XYZAxisChannelChartCreator(ChartCreator):
     XYZ-axes are processed instantly when creating this class or derivatives.
     """
 
-    _AXIS_SIZE_MAP = {'x': '_chart_width', 'y': '_chart_height', 'z': '_chart_depth'}
-    _AXIS_BAR_SIZE_ALIAS_MAP = {'x': 'width', 'y': 'height', 'z': 'depth'}
+    _AXIS_SIZE_MAP = {'x': 'width', 'y': 'height', 'z': 'depth'}
 
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
@@ -229,6 +230,21 @@ class XYZAxisChannelChartCreator(ChartCreator):
         self._z_offset: float = 0
 
         self._process_channels('color', 'x', 'y', 'z')  # Process and set self._{axis} attributes
+
+    def _apply_axis_offset(self, coordinates: Series, axis: str, invert: bool = False,
+                           extra_offset: float = 0) -> Series:
+        min_val = coordinates.min()
+        offset = abs(min_val) + extra_offset if min_val < 0 else 0
+
+        if invert:
+            result = -(offset + coordinates)
+            setattr(self, f'_{axis}_offset', -offset)
+        else:
+            result = offset + coordinates
+            setattr(self, f'_{axis}_offset', offset)
+
+        setattr(self, f'_{axis}_elements_coordinates', result)
+        return result
 
     def _correct_axes_position(self, elem_size: float | None) -> None:
         """
@@ -270,38 +286,24 @@ class XYZAxisChannelChartCreator(ChartCreator):
 
         axis_specs = {}
 
-        # ---- X-axis ----
-        # Axis line
-        display_axis = self._encoding['x'].get('axis', True) if self._encoding.get('x') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            x_axis_specs = AxisCreator.create_axis_specs(
-                axis='x', axis_data=self._x_data, axis_encoding=self._x_encoding, axis_size=self._chart_width,
-                elements_coords=self._x_elements_coordinates,
-                x_offset=0, y_offset=self._y_offset, z_offset=self._z_offset,  # No offset for x-axis
-            )
-            axis_specs.update({'x': x_axis_specs})
+        for axis in ('x', 'y', 'z'):  # type: Literal['x', 'y', 'z']
+            encoding = self._encoding.get(axis)
+            if not encoding:
+                continue
 
-        # ---- Y-axis ----
-        # Axis line
-        display_axis = self._encoding['y'].get('axis', True) if self._encoding.get('y') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            y_axis_specs = AxisCreator.create_axis_specs(
-                axis='y', axis_data=self._y_data, axis_encoding=self._y_encoding, axis_size=self._chart_height,
-                elements_coords=self._y_elements_coordinates,
-                x_offset=self._x_offset, y_offset=0, z_offset=self._z_offset,  # No offset for y-axis
-            )
-            axis_specs.update({'y': y_axis_specs})
+            if not encoding.get('axis', True):
+                continue  # Display axis if key 'axis' not found (default display axis) or True
 
-        # ---- Z-axis ----
-        # Axis line
-        display_axis = self._encoding['z'].get('axis', True) if self._encoding.get('z') else False
-        if display_axis:  # Display axis if key 'axis' not found (default display axis) or True
-            z_axis_specs = AxisCreator.create_axis_specs(
-                axis='z', axis_data=self._z_data, axis_encoding=self._z_encoding, axis_size=self._chart_depth,
-                elements_coords=self._z_elements_coordinates,
-                x_offset=self._x_offset, y_offset=self._y_offset, z_offset=0,  # No offset for z-axis
+            axis_specs[axis] = AxisCreator.create_axis_specs(
+                axis=axis,
+                axis_data=getattr(self, f'_{axis}_data'),
+                axis_encoding=getattr(self, f'_{axis}_encoding'),
+                axis_size=getattr(self, f'_chart_{self._AXIS_SIZE_MAP[axis]}'),
+                elements_coords=getattr(self, f'_{axis}_elements_coordinates'),
+                x_offset=0 if axis == 'x' else self._x_offset,
+                y_offset=0 if axis == 'y' else self._y_offset,
+                z_offset=0 if axis == 'z' else self._z_offset,
             )
-            axis_specs.update({'z': z_axis_specs})
 
         return axis_specs
 
@@ -418,6 +420,8 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         self._theta_data: Series | None = None
         self._theta_encoding: str = ''
 
+        self._process_channels('color', 'theta')
+
     def _set_rotation(self):
         """Sets the rotation of the pie chart."""
         pie_rotation = DEFAULT_PIE_ROTATION.split()  # Default rotation for the pie chart to look at the camera
@@ -441,13 +445,10 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         data_length = self._raw_data.height  # Number of rows in data
 
         # Axis
-        x_coordinates = pl.repeat(value=0, n=data_length).alias('x_coordinates')
-        y_coordinates = pl.repeat(value=0, n=data_length).alias('y_coordinates')
-        z_coordinates = pl.repeat(value=0, n=data_length).alias('z_coordinates')
+        zeros = pl.repeat(0, data_length, eager=True)
+        x_coordinates = y_coordinates = z_coordinates = zeros
 
         # Color and theta
-        self._process_channels('color', 'theta')
-
         if self._theta_encoding != 'quantitative':
             raise ValueError(f'Theta-channel data must be quantitative.')
 
@@ -491,8 +492,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         # Selection
         self._add_selection_to_specs(temp_dict)
 
-        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
-
+        elements_specs = pl.from_dict(temp_dict).to_dicts()  # Transform into a list of dictionaries
         return [
             CylinderCreator(specification, filtered_by_params=filtered_by_params)
             for specification in elements_specs
@@ -516,8 +516,8 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         The second contains the dimensions of each bar for the given axis.
         """
         try:
-            axis_size = getattr(self, self._AXIS_SIZE_MAP[axis_name])  # Get axis dimension depending on the axis name
-            bars_size_alias = self._AXIS_BAR_SIZE_ALIAS_MAP[axis_name]  # Get alias of bar size Series depending on axis
+            axis_size = getattr(self, f'_chart_{self._AXIS_SIZE_MAP[axis_name]}')  # Get axis dimension
+            bars_size_alias = self._AXIS_SIZE_MAP[axis_name]  # Get alias of bar size Series depending on axis
         except KeyError:  # pragma: no cover (should never enter here, except code errors)
             raise RuntimeError('Unreachable code. Axis must be x or y or z')
 
@@ -537,9 +537,10 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                 )
                 bars_axis_size = 2 * coordinates.abs()
             elif encoding_type == 'nominal':
+                unique_values = axis_data.n_unique()
                 if self._bar_size_if_nominal_axis is not None:  # User defined bars' size
-                    if self._bar_size_if_nominal_axis * axis_data.n_unique() > axis_size:  # Bars would overlap
-                        bar_size = axis_size / axis_data.n_unique()  # Adjust bars' axis size automatically
+                    if self._bar_size_if_nominal_axis * unique_values > axis_size:  # Bars would overlap
+                        bar_size = axis_size / unique_values  # Adjust bars' axis size automatically
                         warnings.warn(
                             f'Defined bar size will make bars overlap on the {axis_name}-axis, adjusting automatically '
                             f'for this axis. Consider changing {bars_size_alias}.'
@@ -548,7 +549,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
                     else:  # Bars do not overlap with user's defined size
                         bar_size = self._bar_size_if_nominal_axis  # Use user's defined size
                 else:  # User did not define bars' size
-                    bar_size = axis_size / axis_data.n_unique() * (1 - DEFAULT_BAR_PADDING)  # Adjust bars' axis size
+                    bar_size = axis_size / unique_values * (1 - DEFAULT_BAR_PADDING)  # Adjust bars' axis size
 
                 coordinates = self.set_elems_coordinates_for_nominal_axis(
                     axis_data=axis_data, axis_size=axis_size,
@@ -572,36 +573,27 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         x_coordinates, bar_widths = self._set_bars_coords_size_in_axis(
             axis_data=self._x_data, axis_name='x', encoding_type=self._x_encoding
         )
-        x_min = x_coordinates.min()
-        self._x_offset = 2 * abs(x_min) if x_min < 0 else 0  # Offset if negative data
-        self._x_elements_coordinates = self._x_offset + x_coordinates
+        self._apply_axis_offset(x_coordinates, 'x')
 
         y_coordinates, bar_heights = self._set_bars_coords_size_in_axis(
             axis_data=self._y_data, axis_name='y', encoding_type=self._y_encoding
         )
-        y_min = y_coordinates.min()
-        self._y_offset = 2 * abs(y_min) if y_min < 0 else 0  # Offset if negative data
-        self._y_elements_coordinates = self._y_offset + y_coordinates
+        self._apply_axis_offset(y_coordinates, 'y')
 
         z_coordinates, bar_depths = self._set_bars_coords_size_in_axis(
             axis_data=self._z_data, axis_name='z', encoding_type=self._z_encoding
         )
-        z_min = z_coordinates.min()
-        self._z_offset = 2 * abs(z_min) if z_min < 0 else 0  # Offset if negative data
-        self._z_elements_coordinates = -(self._z_offset + z_coordinates)  # Negative to go deep
-        self._z_offset *= -1  # Negative offset (to go deep)
+        self._apply_axis_offset(z_coordinates, 'z', invert=True)  # Invert sign (to go deep)
 
         # Color
         colors = self._set_elements_colors()
 
         # Information display
-        info_series = []
-        if self._x_data is not None:
-            info_series.append(self._x_data.cast(pl.String))
-        if self._y_data is not None:
-            info_series.append(self._y_data.cast(pl.String))
-        if self._z_data is not None:
-            info_series.append(self._z_data.cast(pl.String))
+        info_series = [
+            s.cast(pl.String)
+            for s in (self._x_data, self._y_data, self._z_data)
+            if s is not None
+        ]
 
         info = pl.select(pl.concat_str(
             info_series,
@@ -624,14 +616,88 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         # Selection
         self._add_selection_to_specs(temp_dict)
 
-        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
-
+        elements_specs = pl.from_dict(temp_dict).to_dicts()  # Transform into a list of dictionaries
         return [
             BoxCreator(specification, filtered_by_params=filtered_by_params)
             for specification in elements_specs
         ]
 
-    # Using get_axis_specs() from parent class
+
+class LineChartCreator(XYZAxisChannelChartCreator):
+    def __init__(self, chart_specs: dict):
+        super().__init__(chart_specs)
+        self._correct_axes_position(elem_size=DEFAULT_VERTICES_SPACING)
+        self._line_color = chart_specs['mark'].get('color', DEFAULT_ELEMENTS_COLOR_IN_CHART) \
+            if isinstance(chart_specs['mark'], dict) else DEFAULT_ELEMENTS_COLOR_IN_CHART
+
+    def _set_extremes_coords_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
+                                     encoding_type: str) -> Series:
+        """Returns a Series containing the coordinates for each extreme of the line, for the given axis."""
+        attr_name = self._AXIS_SIZE_MAP.get(axis_name)
+        if not attr_name:  # pragma: no cover (this method is internally called)
+            raise RuntimeError('Unreachable code. Parameter axis_name is not correct')
+
+        axis_size = getattr(self, f'_chart_{attr_name}')  # Get axis dimensions depending on the given axis
+
+        if axis_data is None:
+            coordinates = pl.repeat(
+                value=0,
+                n=self._raw_data.height,  # Number of rows in data
+                eager=True  # Returns a Series
+            )
+        else:
+            if encoding_type == 'quantitative':
+                coordinates = self.set_elems_coordinates_for_quantitative_axis(
+                    axis_data=axis_data,
+                    axis_size=axis_size,
+                    extremes_offset=0
+                )
+            elif encoding_type == 'nominal':
+                coordinates = self.set_elems_coordinates_for_nominal_axis(
+                    axis_data=axis_data, axis_size=axis_size,
+                    extremes_offset=0
+                )
+            else:
+                raise ValueError(f'Invalid encoding type: {encoding_type}.')
+        return coordinates.alias(f'{axis_name}_coordinates')
+
+    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
+        """Returns a list of each element composing the chart."""
+        if self._raw_data.is_empty():  # There is no data to display
+            return []
+
+        x_coordinates = self._set_extremes_coords_in_axis(self._x_data, axis_name='x', encoding_type=self._x_encoding)
+        self._apply_axis_offset(x_coordinates, 'x')
+
+        y_coordinates = self._set_extremes_coords_in_axis(self._y_data, axis_name='y', encoding_type=self._y_encoding)
+        self._apply_axis_offset(y_coordinates, 'y')
+
+        z_coordinates = self._set_extremes_coords_in_axis(self._z_data, axis_name='z', encoding_type=self._z_encoding)
+        self._apply_axis_offset(z_coordinates, 'z', invert=True)  # Invert sign (to go deep)
+
+        # Colors
+        n = max(self._raw_data.height - 1, 0)
+        colors = pl.repeat(self._line_color, n=n, eager=True)
+
+        # Return values
+        positions = pl.select(pl.concat_str(
+                [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
+                separator=' '
+            ).alias('position')).to_series()
+        temp_dict_lines = {
+            'start': positions[:-1],  # Except the last
+            'end': positions[1:],  # Except the first
+            'color': colors,
+        }
+
+        # Selection
+        self._add_selection_to_specs(temp_dict_lines)
+
+        elements_specs_lines = pl.from_dict(temp_dict_lines).to_dicts()  # Transform into a list of dictionaries
+        return [
+            LineCreator(specifications, filtered_by_params=filtered_by_params)
+            for specifications in elements_specs_lines
+        ]
 
 
 class PointChartCreator(XYZAxisChannelChartCreator):
@@ -647,6 +713,8 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._size_data: Series | None = None
         self._size_encoding: str = ''
 
+        self._process_channels('color', 'size')  # Process and set self._{ch} attributes
+
     def _set_points_coords_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                                    encoding_type: str) -> Series:
         """Returns a Series containing the coordinates for each point of the chart, for the given axis."""
@@ -654,7 +722,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         if not attr_name:  # pragma: no cover (this method is internally called)
             raise RuntimeError('Unreachable code. Parameter axis_name is not correct')
 
-        axis_size = getattr(self, attr_name)  # Get axis dimensions depending on the given axis
+        axis_size = getattr(self, f'_chart_{attr_name}')  # Get axis dimensions depending on the given axis
 
         if axis_data is None:
             coordinates = pl.repeat(
@@ -700,40 +768,30 @@ class PointChartCreator(XYZAxisChannelChartCreator):
             return []
 
         # Channels
-        self._process_channels('color', 'size')  # Process and set self._{ch} attributes
         colors = self._set_elements_colors()
         radius = self._set_points_radius()
 
         x_coordinates = self._set_points_coords_in_axis(
             axis_data=self._x_data, axis_name='x', encoding_type=self._x_encoding
         )
-        x_min = x_coordinates.min()
-        self._x_offset = abs(x_min) + self._max_radius if x_min < 0 else 0  # Offset if negative data
-        self._x_elements_coordinates = self._x_offset + x_coordinates
+        self._apply_axis_offset(x_coordinates, 'x', extra_offset=self._max_radius)
 
         y_coordinates = self._set_points_coords_in_axis(
             axis_data=self._y_data, axis_name='y', encoding_type=self._y_encoding
         )
-        y_min = y_coordinates.min()
-        self._y_offset = abs(y_min) + self._max_radius if y_min < 0 else 0  # Offset if negative data
-        self._y_elements_coordinates = self._y_offset + y_coordinates
+        self._apply_axis_offset(y_coordinates, 'y', extra_offset=self._max_radius)
 
         z_coordinates = self._set_points_coords_in_axis(
             axis_data=self._z_data, axis_name='z', encoding_type=self._z_encoding
         )
-        z_min = z_coordinates.min()
-        self._z_offset = abs(z_min) + self._max_radius if z_min < 0 else 0  # Offset if negative data
-        self._z_elements_coordinates = -(self._z_offset + z_coordinates)  # Negative to go deep
-        self._z_offset *= -1  # Negative offset (to go deep)
+        self._apply_axis_offset(z_coordinates, 'z', invert=True, extra_offset=self._max_radius)  # Invert (go deep)
 
         # Information display
-        info_series = []
-        if self._x_data is not None:
-            info_series.append(self._x_data.cast(pl.String))
-        if self._y_data is not None:
-            info_series.append(self._y_data.cast(pl.String))
-        if self._z_data is not None:
-            info_series.append(self._z_data.cast(pl.String))
+        info_series = [
+            s.cast(pl.String)
+            for s in (self._x_data, self._y_data, self._z_data)
+            if s is not None
+        ]
 
         info = pl.select(pl.concat_str(
             info_series,
@@ -754,19 +812,17 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         # Selection
         self._add_selection_to_specs(temp_dict)
 
-        elements_specs = pl.DataFrame(temp_dict).to_dicts()  # Transform into a list of dictionaries
-
+        elements_specs = pl.from_dict(temp_dict).to_dicts()  # Transform into a list of dictionaries
         return [
             SphereCreator(specifications, filtered_by_params=filtered_by_params)
             for specifications in elements_specs
         ]
-
-    # Using get_axis_specs() from parent class
 
 
 # Add classes to CREATOR_MAP
 CREATOR_MAP.update({
     'arc': ArcChartCreator,
     'bar': BarChartCreator,
+    'line': LineChartCreator,
     'point': PointChartCreator,
 })

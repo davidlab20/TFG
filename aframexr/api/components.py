@@ -323,6 +323,25 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
+    def mark_line(self, color: str = None):
+        """
+        Line chart.
+
+        Parameters
+        ----------
+        color: str (optional)
+            Color of the line. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
+        """
+        self_copy = self.copy()
+
+        self_copy._specifications['mark'] = {'type': 'line'}
+
+        if color is not None:
+            AframeXRValidator.validate_type('color', color, str)
+            self_copy._specifications['mark']['color'] = color
+
+        return self_copy
+
     def mark_point(self, color: str = None, size: float = None):
         """
         Scatter plot and bubble chart.
@@ -582,6 +601,11 @@ class Icosahedron(Element):
 class Image(Element):
     def __init__(self, src: str, height: float = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__(src=src, height=height, position=position, rotation=rotation, width=width)
+
+
+class Line(Element):
+    def __init__(self, start: str, end: str, color: str = None):
+        super().__init__(start=start, end=end, color=color)
 
 
 class Octahedron(Element):

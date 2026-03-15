@@ -43,6 +43,7 @@ class ElementCreator:
 
         attributes = ''.join(
             f' {key.replace("_", "-")}="{value}"'  # Add space at the beginning (using HTML format)
+            if type(self) is not LineCreator else f'{key}: {value}; '  # Lines are created different
             for key, value in self._attributes.items()
         )
 
@@ -85,6 +86,9 @@ class ImageCreator(ElementCreator):
 class OctahedronCreator(ElementCreator):
     _ELEMENT_HTML = '<a-octahedron{attributes}></a-octahedron>'
 
+class LineCreator(ElementCreator):
+    _ELEMENT_HTML = '<a-entity line="{attributes}"></a-entity>'
+
 
 class PlaneCreator(ElementCreator):
     _ELEMENT_HTML = '<a-plane side="double"{attributes}></a-plane>'
@@ -116,6 +120,7 @@ CREATOR_MAP.update({
     'icosahedron': IcosahedronCreator,
     'image': ImageCreator,
     'octahedron': OctahedronCreator,
+    'line': LineCreator,
     'plane': PlaneCreator,
     'sphere': SphereCreator,
     'tetrahedron': TetrahedronCreator,
