@@ -1,0 +1,59 @@
+[
+  {"model": "ibiza", "year": 2010, "sales": 22},
+  {"model": "leon", "year": 2010, "sales": 14},
+  {"model": "toledo", "year": 2010, "sales": 10},
+  {"model": "cordoba", "year": 2010, "sales": 6},
+
+  {"model": "ibiza", "year": 2011, "sales": 23},
+  {"model": "leon", "year": 2011, "sales": 16},
+  {"model": "toledo", "year": 2011, "sales": 11},
+  {"model": "cordoba", "year": 2011, "sales": 7},
+
+  {"model": "ibiza", "year": 2012, "sales": 21},
+  {"model": "leon", "year": 2012, "sales": 17},
+  {"model": "toledo", "year": 2012, "sales": 12},
+  {"model": "cordoba", "year": 2012, "sales": 6},
+
+  {"model": "ibiza", "year": 2013, "sales": 25},
+  {"model": "leon", "year": 2013, "sales": 18},
+  {"model": "toledo", "year": 2013, "sales": 13},
+  {"model": "cordoba", "year": 2013, "sales": 7},
+
+  {"model": "ibiza", "year": 2014, "sales": 24},
+  {"model": "leon", "year": 2014, "sales": 20},
+  {"model": "toledo", "year": 2014, "sales": 15},
+  {"model": "cordoba", "year": 2014, "sales": 6},
+
+  {"model": "ibiza", "year": 2015, "sales": 26},
+  {"model": "leon", "year": 2015, "sales": 23},
+  {"model": "toledo", "year": 2015, "sales": 14},
+  {"model": "cordoba", "year": 2015, "sales": 6},
+  {"model": "arona", "year": 2015, "sales": 5},
+
+  {"model": "ibiza", "year": 2016, "sales": 27},
+  {"model": "leon", "year": 2016, "sales": 26},
+  {"model": "toledo", "year": 2016, "sales": 16},
+  {"model": "cordoba", "year": 2016, "sales": 6},
+  {"model": "arona", "year": 2016, "sales": 8},
+
+  {"model": "ibiza", "year": 2017, "sales": 25},
+  {"model": "leon", "year": 2017, "sales": 28},
+  {"model": "toledo", "year": 2017, "sales": 15},
+  {"model": "cordoba", "year": 2017, "sales": 7},
+  {"model": "arona", "year": 2017, "sales": 9},
+
+  {"model": "ibiza", "year": 2018, "sales": 29},
+  {"model": "leon", "year": 2018, "sales": 30},
+  {"model": "toledo", "year": 2018, "sales": 14},
+  {"model": "arona", "year": 2018, "sales": 12},
+
+  {"model": "ibiza", "year": 2019, "sales": 27},
+  {"model": "leon", "year": 2019, "sales": 29},
+  {"model": "toledo", "year": 2019, "sales": 12},
+  {"model": "arona", "year": 2019, "sales": 14},
+
+  {"model": "ibiza", "year": 2020, "sales": 28},
+  {"model": "leon", "year": 2020, "sales": 27},
+  {"model": "toledo", "year": 2020, "sales": 11},
+  {"model": "arona", "year": 2020, "sales": 15}
+]
