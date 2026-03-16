@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.20.4"
 app = marimo.App(width="medium", app_title="Simple charts notebook")
 
 
@@ -53,7 +53,7 @@ def _():
         "doors": 3, "sales": 13}]
     """
     data = aframexr.Data.from_json(data_str)  # Raw data
-    url_data = aframexr.UrlData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
+    url_data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/data.json')
     return aframexr, data, json, url_data, urllib
 
 
@@ -92,11 +92,27 @@ def _(aframexr, url_data):
 @app.cell
 def _(aframexr, json, urllib):
     # Import a chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/simple_chart.json') as json_chart:
+    with urllib.request.urlopen('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/simple_chart.json') as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = aframexr.Chart.from_dict(json_specs)
     imported_chart.show()
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ### Line chart
+    """)
+    return
+
+
+@app.cell
+def _(aframexr):
+    line_data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/model_year_sales.json')
+    line_chart = aframexr.Chart(line_data, position='0 2 -5').mark_line().encode(x='year:N', y='sales', color='model')
+    line_chart
     return
 
 
