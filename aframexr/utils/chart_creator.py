@@ -90,12 +90,6 @@ class ChartCreator:
                     user_encoding = channel_encoding.get('type', detected_encoding)
                     setattr(self, f'_{ch}_encoding', user_encoding)
 
-                    if user_encoding != detected_encoding:  # Compare user encoding and detected encoding
-                        warnings.warn(
-                            f'{ch}-channel data appears to be "{detected_encoding}", but "{user_encoding}" was '
-                            f'specified when using encode(). The chart may not display correctly.'
-                        )
-
                     # Set value for self._{ch}_data
                     if user_encoding == 'nominal' and detected_encoding == 'quantitative':
                         setattr(self, f'_{ch}_data', data.cast(pl.String))
