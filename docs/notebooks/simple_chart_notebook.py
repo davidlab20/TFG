@@ -110,9 +110,18 @@ def _(mo):
 
 @app.cell
 def _(aframexr):
+    # Line chart with no point markers
     line_data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/model_year_sales.json')
     line_chart = aframexr.Chart(line_data, position='0 2 -5').mark_line().encode(x='year:N', y='sales', color='model')
     line_chart
+    return (line_data,)
+
+
+@app.cell
+def _(aframexr, line_data):
+    # Line chart with point markers
+    line_chart_markers = aframexr.Chart(line_data, position='0 2 -5').mark_line(point=True).encode(x='year:N', y='sales', color='model')
+    line_chart_markers
     return
 
 
