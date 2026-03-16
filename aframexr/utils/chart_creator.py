@@ -679,8 +679,6 @@ class LineChartCreator(XYZAxisChannelChartCreator):
 
         # Colors
         colors = self._set_elements_colors()
-        if colors.n_unique() == 1:
-            pass
 
         # Return values
         positions = pl.select(pl.concat_str(
