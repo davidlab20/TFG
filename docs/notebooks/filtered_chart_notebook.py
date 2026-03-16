@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.20.4"
 app = marimo.App(width="medium", app_title="Filtered charts notebook")
 
 
@@ -59,7 +59,7 @@ def _():
 @app.cell
 def _(aframexr, json, urllib):
     # Import a filtered chart from a JSON file storing the specifications of the chart
-    with urllib.request.urlopen('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/filt_chart.json') as json_chart:
+    with urllib.request.urlopen('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/filt_chart.json') as json_chart:
         json_specs = json.load(json_chart)
 
     imported_chart = aframexr.Chart.from_dict(json_specs)
@@ -79,7 +79,7 @@ def _(aframexr, data):
 
 @app.cell
 def _(aframexr, json, urllib):
-    with urllib.request.urlopen('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json') as file_data:
+    with urllib.request.urlopen('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/data.json') as file_data:
         data_json = json.load(file_data)
         data2 = aframexr.Data(data_json)
 
@@ -109,7 +109,7 @@ def _(aframexr, data):
     param = aframexr.selection_point('param1', fields=['motor'])
 
     # Create both charts
-    chart = aframexr.Chart(data, position='0 2 -4').mark_bar().encode(x='motor', y='sum(sales)').add_params(param)
+    chart = aframexr.Chart(data, position='0 1.5 -4', height=3).mark_bar().encode(x='motor', y='sum(sales)').add_params(param)
     dynamic_chart = aframexr.Chart(data, position='5 2 -4').mark_arc().encode(color='model', theta='sales').transform_filter(param)
 
     # Concatenate and show charts

@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.20.4"
 app = marimo.App(width="medium", app_title="Rotated charts notebook")
 
 
@@ -27,13 +27,13 @@ async def _():
 def _():
     import aframexr
 
-    data = aframexr.UrlData('https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json')
+    data = aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/data.json')
     return aframexr, data
 
 
 @app.cell
 def _(aframexr, data):
-    non_rotated_chart = aframexr.Chart(data, position='0 2 -5', depth=1).mark_point(size=0.4).encode(x='model', y='sales')
+    non_rotated_chart = aframexr.Chart(data, position='0 2 -5', depth=1).mark_point().encode(x='model', y='sales')
     non_rotated_chart.show()
     return
 
@@ -41,7 +41,7 @@ def _(aframexr, data):
 @app.cell
 def _(aframexr, data):
     # Rotation format is 'x y z' in degrees
-    rotated_chart = aframexr.Chart(data, position='0 2 -6', rotation='10 -20 10', depth=1).mark_point(size=0.4).encode(x='model', y='sales')
+    rotated_chart = aframexr.Chart(data, position='0 3 -5', rotation='10 -20 10', depth=1).mark_point().encode(x='model', y='sales')
     rotated_chart.show()
     return
 

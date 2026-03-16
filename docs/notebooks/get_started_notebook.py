@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.19.11"
+__generated_with = "0.20.4"
 app = marimo.App(app_title="Get started")
 
 
@@ -34,7 +34,7 @@ def _():
 @app.cell
 def _(aframexr):
     # Load the data having the URL of the JSON file
-    url = "https://raw.githack.com/davidlab20/TFG/main/docs/static/data/data.json"
+    url = "https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/data.json"
     data = aframexr.UrlData(url)  # Create an UrlData object
 
     # Create the chart
