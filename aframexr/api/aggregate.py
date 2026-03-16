@@ -52,7 +52,7 @@ class AggregatedFieldDef:
                     pl.col(self.field),  # Take the column (field)
                     self.op  # Aggregate operation
                 )().alias(self.as_field)  # Execute the operation and rename the column
-            return data.group_by(groupby).agg(expression)
+            return data.group_by(groupby, maintain_order=True).agg(expression)
 
         except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{self.field}".')
