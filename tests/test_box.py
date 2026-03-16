@@ -7,7 +7,6 @@ from .constants import *
 
 class TestBoxOK(unittest.TestCase):
     """Tests for simple box creation."""
-
     def test_simple(self):
         """Simple box creation."""
         box = aframexr.Box()
