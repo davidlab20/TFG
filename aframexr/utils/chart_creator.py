@@ -680,42 +680,51 @@ class LineChartCreator(XYZAxisChannelChartCreator):
         # Colors
         colors = self._set_elements_colors()
 
-        # Return values
+        # Positions
         positions = pl.select(pl.concat_str(
             [self._x_elements_coordinates, self._y_elements_coordinates, self._z_elements_coordinates],
             separator=' '
         ).alias('position')).to_series()
 
-        temp_dict_lines = {
-            'start': positions[:-1],  # Except the last
-            'end': positions[1:],  # Except the first
-            'color': colors[1:],
-        }
-        temp_dict_points = {
+        # Lines
+        lines_df = (
+            pl.DataFrame({'start': positions, 'color': colors})
+            .with_columns(pl.col('start').shift(-1).over('color').alias('end'))  # Shift one position up (of same color)
+            .drop_nulls('end')  # Remove last row (NULL value)
+        )
+
+        # Points
+        info_series = [
+            s.cast(pl.String)
+            for s in (self._x_data, self._y_data, self._z_data)
+            if s is not None
+        ]
+        info = pl.select(pl.concat_str(info_series, separator=' : ').fill_null('?').alias('id')).to_series()
+
+        points_df = pl.DataFrame({
             'position': positions,
+            'info': info,
             'color': colors,
             'radius': pl.repeat(
                 _calculate_point_radius(DEFAULT_VERTICES_POINT_VOLUME),
                 n=self._raw_data.height,
                 eager=True
-            ),
-        }
+            )
+        })
 
         # Selection
-        self._add_selection_to_specs(temp_dict_lines)
-        self._add_selection_to_specs(temp_dict_points)
+        for df in (lines_df, points_df):
+            self._add_selection_to_specs(df.to_dict(as_series=False))
 
-        elements_specs_lines = pl.from_dict(temp_dict_lines).to_dicts()  # Transform into a list of dictionaries
-        elements_specs_points = pl.from_dict(temp_dict_points).to_dicts()
+        # Return elements
+        elements_lines = [LineCreator(spec, filtered_by_params=filtered_by_params) for spec in lines_df.to_dicts()]
+        elements_points = (
+            [SphereCreator(spec, filtered_by_params=filtered_by_params) for spec in points_df.to_dicts()]
+            if self._display_points_in_vertices
+            else []
+        )
 
-        return [
-            LineCreator(spec, filtered_by_params=filtered_by_params)
-            for spec in elements_specs_lines
-        ] + ([
-            SphereCreator(spec, filtered_by_params=filtered_by_params)
-            for spec in elements_specs_points
-        ] if self._display_points_in_vertices else [])
-
+        return elements_lines + elements_points
 
 class PointChartCreator(XYZAxisChannelChartCreator):
     """Point chart creator class."""
