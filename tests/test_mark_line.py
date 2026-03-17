@@ -231,6 +231,15 @@ class TestMarkLineError(unittest.TestCase):
             from pathlib import Path
             Path(EMPTY_FILE.url).unlink()  # Remove the temporal file
 
+    def test_color_encoding_not_nominal_error(self):
+        """Line chart error when color encoding is not nominal."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart(DATA).mark_line().encode(x='model', y='sales', color='doors').to_html()  # Doors quantitative
+        self.assertEqual(
+            str(error.exception),
+            ERROR_MESSAGES['COLOR_ENCODING_NOT_NOMINAL'].format(color_encoding='quantitative')
+        )
+
     def test_position_error(self):
         """Line chart position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:

@@ -244,14 +244,14 @@ class TestMarkArcError(unittest.TestCase):
         self.assertEqual(str(error.exception), f"Could not load data from URL: {NON_EXISTING_URL_DATA.url}.")
 
     def test_local_file_does_not_exist(self):
-        """Pie chart error when local file does not exist."""
+        """Pie chart error when the local file does not exist."""
         with self.assertRaises(IOError) as error:
             aframexr.Chart(NON_EXISTING_LOCAL_PATH).mark_arc().encode(color='model', theta='sales').to_html()
 
         self.assertRegex(str(error.exception), r'Local file .* was not found')
 
     def test_bad_file_format(self):
-        """Pie chart error when file format is incorrect."""
+        """Pie chart error when the file format is incorrect."""
         with open(BAD_FILE_FORMAT.url, 'w'):
             pass  # Create a bad format temporal file
 
@@ -266,7 +266,7 @@ class TestMarkArcError(unittest.TestCase):
             Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
 
     def test_file_is_empty(self):
-        """Pie chart error when file is empty."""
+        """Pie chart error when the file is empty."""
         with open(EMPTY_FILE.url, 'w'):
             pass  # Create an empty temporal file
 
@@ -279,6 +279,15 @@ class TestMarkArcError(unittest.TestCase):
         finally:
             from pathlib import Path
             Path(EMPTY_FILE.url).unlink()  # Remove the temporal file
+
+    def test_color_encoding_not_nominal_error(self):
+        """Pie chart error when color encoding is not nominal."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart(DATA).mark_arc().encode(color='doors', theta='sales').to_html()  # Column doors, quantitative
+        self.assertEqual(
+            str(error.exception),
+            ERROR_MESSAGES['COLOR_ENCODING_NOT_NOMINAL'].format(color_encoding='quantitative')
+        )
 
     def test_depth_error(self):
         """Pie chart error when depth is incorrect."""
