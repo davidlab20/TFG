@@ -2,7 +2,7 @@
 
 # ----- CONSTANTS -----
 AVAILABLE_AGGREGATES = {'count', 'max', 'median', 'mean', 'min', 'std', 'sum', 'var'}
-AVAILABLE_COLORS = {'red', 'green', 'blue', 'yellow', 'magenta', 'cyan'}
+AVAILABLE_COLORS = ['red', 'green', 'blue', 'yellow', 'magenta', 'cyan']  # Using list to maintain order
 AVAILABLE_ENCODING_TYPES = {'Q': 'quantitative', 'N': 'nominal'}
 AVAILABLE_ENVIRONMENTS = {'default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine',
                           'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry', 'osiris'}
