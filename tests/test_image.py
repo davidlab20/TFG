@@ -5,7 +5,7 @@ from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS
 
 from tests.constants import *
 
-URL = 'https://davidlab20.github.io/TFG/imgs/logo.png'
+URL = 'https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/imgs/logo.png'
 
 
 class TestMarkImageOK(unittest.TestCase):
