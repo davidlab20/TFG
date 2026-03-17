@@ -121,6 +121,13 @@ class TestMarkArcOK(unittest.TestCase):
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_html))
             self.assertTrue(_slices_are_well_placed(pie_chart_html))
 
+    def test_title(self):
+        """Pie chart with title creation."""
+        pie_chart = aframexr.Chart(DATA, title='Title').mark_arc().encode(color='model', theta='sales')
+        pie_chart_html = pie_chart.to_html()
+        self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_html))
+        self.assertTrue(_slices_are_well_placed(pie_chart_html))
+
     def test_radius(self):
         """Pie chart changing radius creation."""
         for r in RADIUS:

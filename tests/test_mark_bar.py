@@ -159,6 +159,13 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
+    def test_title(self):
+        """Bar chart with title creation."""
+        bars_chart = aframexr.Chart(DATA, title='Title').mark_bar().encode(x='model', y='sales')
+        bars_chart_html = bars_chart.to_html()
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
+
     def test_color(self):
         """Bars chart changing color creation."""
         for c in SIMPLE_ELEMENTS_COLORS:
