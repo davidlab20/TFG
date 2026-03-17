@@ -773,7 +773,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
     def _set_points_radius(self) -> Series:
         """Returns a Series of the radius for each point composing the bubble chart."""
         if self._size_encoding and self._size_encoding != 'quantitative':
-            raise ValueError(f'Size encoding type must be quantitative, got "{self._size_encoding}".')
+            raise ValueError(ERROR_MESSAGES['SIZE_ENCODING_NOT_QUANTITATIVE'].format(size_encoding=self._size_encoding))
 
         if self._size_data is None:  # Scatter plot (same radius for all points)
             points_radius = pl.repeat(

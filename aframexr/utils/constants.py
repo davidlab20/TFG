@@ -67,6 +67,7 @@ ERROR_MESSAGES = {
     'ENCODING_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "encoding"',
     'ENCODING_TYPE': 'Invalid encoding type: {encoding_type}',
     'ENVIRONMENT': 'Invalid environment: {environment}',
+    'LESS_THAN_2_XYZ_ENCODING': 'At least 2 of (x, y, z) must be specified when encoding "mark_bar" or "mark_point"',
     'MARK_AND_ELEMENT_IN_SPECS': 'Specifications cannot contain both "mark" and "element"; they are mutually exclusive',
     'MARK_AND_ELEMENT_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "mark" or "element"',
     'MARK_TYPE': 'Invalid mark type: {mark_type}',
@@ -76,7 +77,7 @@ ERROR_MESSAGES = {
     'NOT_ALL_ENCODINGS_ARE_DICT': 'Encoding channels must be dictionaries',
     'PARAM_NOT_SPECIFIED_IN_MARK_ARC': 'Parameter "{param}" must be specified in arc chart',
     'POSITIVE_NUMBER': 'The "{param_name}" must be greater than 0.',
-    'LESS_THAN_2_XYZ_ENCODING': 'At least 2 of (x, y, z) must be specified when encoding "mark_bar" or "mark_point"',
+    'SIZE_ENCODING_NOT_QUANTITATIVE': 'Size encoding type must be quantitative, got "{size_encoding}"',
     'TRANSFORM_TYPE': 'Invalid transform type: {transform_type}',
     'TYPE': 'Expected "{param_name}" to be {expected_type}, got {current_type} instead',
 }
