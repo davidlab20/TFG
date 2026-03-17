@@ -109,7 +109,7 @@ class ChartCreator:
     def _set_elements_colors(self) -> Series:
         """Returns a Series of the color for each element composing the chart."""
         if self._color_encoding and self._color_encoding != 'nominal':
-            raise ValueError(f'Color encoding type must be nominal, got "{self._color_encoding}".')
+            raise ValueError(ERROR_MESSAGES['COLOR_ENCODING_NOT_NOMINAL'].format(color_encoding=self._color_encoding))
 
         if self._color_data is None:
             points_colors = pl.repeat(

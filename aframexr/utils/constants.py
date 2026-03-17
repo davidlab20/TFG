@@ -59,6 +59,7 @@ ERROR_MESSAGES = {
     'ALIGN': "Invalid align property: {align}. Must be one of ['center', 'left', 'right']",
     'AGGREGATE_OPERATION': 'Invalid aggregate operation: {operation}',
     'AGGREGATE_OPERATION_NOT_IN_AGGREGATE': 'Aggregate must contain key "op"',
+    'COLOR_ENCODING_NOT_NOMINAL': 'Color encoding type must be nominal, got "{color_encoding}"',
     'DATA_WITH_VALUES_AND_URL_IN_SPECS': 'Data cannot contain both "values" and "url"; they are mutually exclusive',
     'DATA_WITH_NOT_VALUES_NEITHER_URL_IN_SPECS': 'Data must contain key "values" or "url"',
     'DATA_NOT_IN_SPECS': 'Invalid chart specifications. Must contain key "data"',
