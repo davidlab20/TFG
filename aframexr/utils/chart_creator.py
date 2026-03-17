@@ -141,12 +141,10 @@ class ChartCreator:
         # Only XYZAxisChannelChartCreator objects has that attribute, if not return '0 0 0'
         return getattr(self, '_relative_bottom_left_corner_position', '0 0 0')
 
-    def get_axes_specs(self):
-        # pragma: no cover (get_axes_specs() must be implemented by child classes)
+    def get_axes_specs(self):  # pragma: no cover (get_axes_specs() must be implemented by child classes)
         raise RuntimeError('Unreachable code. Method get_axes_specs() must be implemented by child classes')
 
-    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:
-        # pragma: no cover (get_elements() must be implemented by child classes)
+    def get_elements(self, filtered_by_params: bool) -> list[ElementCreator]:  # pragma: no cover
         raise RuntimeError('Unreachable code. Method get_elements() must be implemented by child classes')
 
     def get_group_specs(self) -> dict:
