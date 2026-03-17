@@ -79,6 +79,12 @@ class TestAframexrError(unittest.TestCase):
             aframexr.ElementCreator({})
         self.assertEqual(str(error.exception), 'ElementCreator is abstract')
 
+    def test_moving_concat_chart_error(self):
+        """Verify that the error is raised when moving one concatenated chart to another thing."""
+        with self.assertRaises(ValueError) as error:
+            (aframexr.Box() + aframexr.Box()).movable()
+        self.assertEqual(str(error.exception), 'Concatenated charts cannot be movable.')
+
     def test_invalid_chart_specifications_not_data_having_mark(self):
         """Verify that the error is raised when chart specifications do not have field "data" having "mark"."""
         with self.assertRaises(ValueError) as error:
