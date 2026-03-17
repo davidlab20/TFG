@@ -83,6 +83,12 @@ class TestMarkLineOK(unittest.TestCase):
             line_chart = aframexr.Chart(DATA, width=w).mark_line().encode(x='model', y='sales')
             line_chart.to_html()
 
+    def test_color(self):
+        """Line chart changing color creation."""
+        for c in SIMPLE_ELEMENTS_COLORS:
+            line_chart = aframexr.Chart(DATA).mark_line(color=c).encode(x='model', y='sales')
+            line_chart.to_html()
+
     def test_point_markers(self):
         """Line chart using point markers creation."""
         line_chart = aframexr.Chart(DATA).mark_line(point=True).encode(x='model', y='sales')
