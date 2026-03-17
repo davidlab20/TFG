@@ -159,6 +159,14 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
+    def test_color(self):
+        """Bars chart changing color creation."""
+        for c in SIMPLE_ELEMENTS_COLORS:
+            bars_chart = aframexr.Chart(DATA).mark_bar(color=c).encode(x='model', y='sales')
+            bars_chart_html = bars_chart.to_html()
+            self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+            self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
+
     def test_size(self):
         """Bars chart changing size creation."""
         for s in MARK_BAR_POINT_SIZES:

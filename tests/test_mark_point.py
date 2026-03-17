@@ -175,6 +175,14 @@ class TestMarkPointOK(unittest.TestCase):
             self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
             self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
 
+    def test_color(self):
+        """Mark point changing color creation."""
+        for c in SIMPLE_ELEMENTS_COLORS:
+            point_chart = aframexr.Chart(DATA).mark_point(color=c).encode(x='model', y='sales')
+            point_chart_html = point_chart.to_html()
+            self.assertTrue(_every_radius_does_not_exceed_max_radius(point_chart_html, point_chart))
+            self.assertTrue(_points_are_inside_chart_volume(point_chart_html))
+
     def test_size(self):
         """Mark point changing size creation."""
         for s in MARK_BAR_POINT_SIZES:
