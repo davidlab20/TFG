@@ -59,6 +59,11 @@ class TestTetrahedronOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Tetrahedron().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable tetrahedron creation."""
+        html = aframexr.Tetrahedron().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestTetrahedronERROR(unittest.TestCase):
     """Tests for tetrahedron creation error."""

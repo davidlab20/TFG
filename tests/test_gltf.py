@@ -101,3 +101,8 @@ class TestMarkGLTFOK(unittest.TestCase):
 
             assert temp_html_file_path.exists()
             assert temp_json_file_path.exists()
+
+    def test_movable(self):
+        """Movable GLTF creation."""
+        html = aframexr.GLTF(URL).movable().to_html()
+        self.assertIn('movable', html)

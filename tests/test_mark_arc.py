@@ -226,6 +226,13 @@ class TestMarkArcOK(unittest.TestCase):
             self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_2_html))
             self.assertTrue(_slices_are_well_placed(pie_chart_2_html))
 
+    def test_movable(self):
+        """Movable pie chart creation."""
+        pie_chart_html = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales').movable().to_html()
+        self.assertIn('movable', pie_chart_html)
+        self.assertTrue(_all_theta_sum_is_360_degrees(pie_chart_html))
+        self.assertTrue(_slices_are_well_placed(pie_chart_html))
+
 
 class TestMarkArcError(unittest.TestCase):
     """Pie chart error tests."""

@@ -72,6 +72,11 @@ class TestPlaneOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Plane().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable plane creation."""
+        html = aframexr.Plane().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestPlaneERROR(unittest.TestCase):
     """Tests for plane creation error."""

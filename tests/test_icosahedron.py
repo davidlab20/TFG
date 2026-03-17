@@ -59,6 +59,11 @@ class TestIcosahedronOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Icosahedron().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable icosahedron creation."""
+        html = aframexr.Icosahedron().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestIcosahedronERROR(unittest.TestCase):
     """Tests for icosahedron creation error."""

@@ -76,6 +76,11 @@ class TestTextOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Text(value=TEXT_CONTENT).to_html(environment=e)
 
+    def test_movable(self):
+        """Movable text creation."""
+        html = aframexr.Text(value=TEXT_CONTENT).movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestTextERROR(unittest.TestCase):
     """Tests for text creation error."""

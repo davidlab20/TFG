@@ -59,6 +59,11 @@ class TestOctahedronOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Octahedron().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable octahedron creation."""
+        html = aframexr.Octahedron().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestOctahedronERROR(unittest.TestCase):
     """Tests for octahedron creation error."""

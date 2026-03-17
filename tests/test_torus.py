@@ -71,6 +71,11 @@ class TestTorusOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Torus().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable torus creation."""
+        html = aframexr.Torus().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestTorusERROR(unittest.TestCase):
     """Tests for torus creation error."""

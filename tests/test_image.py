@@ -104,3 +104,8 @@ class TestMarkImageOK(unittest.TestCase):
 
             assert temp_html_file_path.exists()
             assert temp_json_file_path.exists()
+
+    def test_movable(self):
+        """Movable image creation."""
+        html = aframexr.Image(URL).movable().to_html()
+        self.assertIn('movable', html)

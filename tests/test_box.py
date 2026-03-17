@@ -79,6 +79,11 @@ class TestBoxOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Box().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable box creation."""
+        html = aframexr.Box().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestBoxERROR(unittest.TestCase):
     """Tests for box creation errors."""

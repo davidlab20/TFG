@@ -176,7 +176,7 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
 
     def test_encoding_with_no_Y_axis_displayed(self):
-        """Bars chart creation with no Y-axis displayed."""
+        """Bar chart creation with no Y-axis displayed."""
         bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y=aframexr.Y('sales', axis=None))
         bars_chart_html = bars_chart.to_html()
         self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
@@ -280,6 +280,14 @@ class TestMarkBarOK(unittest.TestCase):
             self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_2_html))
             self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_2_html, bars_chart_2))
 
+    def test_movable(self):
+        """Movable bar chart creation."""
+        bars_chart = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').movable()
+        bars_chart_html = bars_chart.to_html()
+        self.assertIn('movable', bars_chart_html)
+        self.assertTrue(_bars_bases_are_on_x_axis(bars_chart_html))
+        self.assertTrue(_bars_height_does_not_exceed_max_height(bars_chart_html, bars_chart))
+
 
 class TestMarkBarError(unittest.TestCase):
     """Bars chart error tests."""
@@ -292,14 +300,14 @@ class TestMarkBarError(unittest.TestCase):
         self.assertEqual(str(error.exception), f"Could not load data from URL: {NON_EXISTING_URL_DATA.url}.")
 
     def test_local_file_does_not_exist(self):
-        """Bars chart error when local file does not exist."""
+        """Bars chart error when the local file does not exist."""
         with self.assertRaises(IOError) as error:
             aframexr.Chart(NON_EXISTING_LOCAL_PATH).mark_bar().encode(x='model', y='sales').to_html()
 
         self.assertRegex(str(error.exception), r'Local file .* was not found')
 
     def test_bad_file_format(self):
-        """Bars chart error when file format is incorrect."""
+        """Bars chart error when the file format is incorrect."""
         with open(BAD_FILE_FORMAT.url, 'w'):
             pass  # Create a bad format temporal file
 
@@ -314,7 +322,7 @@ class TestMarkBarError(unittest.TestCase):
             Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
 
     def test_file_is_empty(self):
-        """Bars chart error when file is empty."""
+        """Bars chart error when the file is empty."""
         with open(EMPTY_FILE.url, 'w'):
             pass  # Create an empty temporal file
 

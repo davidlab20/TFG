@@ -72,6 +72,11 @@ class TestCylinderOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Cylinder().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable cylinder creation."""
+        html = aframexr.Cylinder().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestCylinderERROR(unittest.TestCase):
     """Tests for cylinder creation error."""

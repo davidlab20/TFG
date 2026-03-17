@@ -172,6 +172,11 @@ class TestMarkLineOK(unittest.TestCase):
             line_chart_2 = line_chart.properties(data=DATA, position=p, rotation=r)
             line_chart_2.to_html()
 
+    def test_movable(self):
+        """Movable line chart creation."""
+        line_chart_html = aframexr.Chart(DATA).mark_bar().encode(x='model', y='sales').movable().to_html()
+        self.assertIn('movable', line_chart_html)
+
 
 class TestMarkLineError(unittest.TestCase):
     """Line chart error tests."""
@@ -184,14 +189,14 @@ class TestMarkLineError(unittest.TestCase):
         self.assertEqual(str(error.exception), f"Could not load data from URL: {NON_EXISTING_URL_DATA.url}.")
 
     def test_local_file_does_not_exist(self):
-        """Line chart error when local file does not exist."""
+        """Line chart error when a local file does not exist."""
         with self.assertRaises(IOError) as error:
             aframexr.Chart(NON_EXISTING_LOCAL_PATH).mark_line().encode(x='model', y='sales').to_html()
 
         self.assertRegex(str(error.exception), r'Local file .* was not found')
 
     def test_bad_file_format(self):
-        """Line chart error when file format is incorrect."""
+        """Line chart error when the file format is incorrect."""
         with open(BAD_FILE_FORMAT.url, 'w'):
             pass  # Create a bad format temporal file
 
@@ -206,7 +211,7 @@ class TestMarkLineError(unittest.TestCase):
             Path(BAD_FILE_FORMAT.url).unlink()  # Remove the temporal file
 
     def test_file_is_empty(self):
-        """Line chart error when file is empty."""
+        """Line chart error when the file is empty."""
         with open(EMPTY_FILE.url, 'w'):
             pass  # Create an empty temporal file
 

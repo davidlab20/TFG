@@ -41,6 +41,11 @@ class TestLineOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Line(**START_END).to_html(environment=e)
 
+    def test_movable(self):
+        """Movable line creation."""
+        html = aframexr.Line(**START_END).movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestLineERROR(unittest.TestCase):
     """Tests for line creation errors."""

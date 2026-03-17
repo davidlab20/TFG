@@ -72,6 +72,11 @@ class TestConeOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Cone().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable cone creation."""
+        html = aframexr.Cone().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestConeERROR(unittest.TestCase):
     """Tests for cone creation errors."""

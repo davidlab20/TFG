@@ -59,6 +59,11 @@ class TestSphereOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Sphere().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable sphere creation."""
+        html = aframexr.Sphere().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestSphereERROR(unittest.TestCase):
     """Tests for sphere creation error."""

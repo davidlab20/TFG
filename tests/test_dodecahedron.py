@@ -59,6 +59,11 @@ class TestDodecahedronOK(unittest.TestCase):
         for e in AVAILABLE_ENVIRONMENTS:
             aframexr.Dodecahedron().to_html(environment=e)
 
+    def test_movable(self):
+        """Movable dodecahedron creation."""
+        html = aframexr.Dodecahedron().movable().to_html()
+        self.assertIn('movable', html)
+
 
 class TestDodecahedronERROR(unittest.TestCase):
     """Tests for dodecahedron creation error."""
