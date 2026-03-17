@@ -296,6 +296,12 @@ class TestMarkArcError(unittest.TestCase):
             ERROR_MESSAGES['COLOR_ENCODING_NOT_NOMINAL'].format(color_encoding='quantitative')
         )
 
+    def test_theta_encoding_not_quantitative_error(self):
+        """Pie chart error when theta encoding is not quantitative."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart(DATA).mark_arc().encode(color='model', theta='color').to_html()  # Column color, nominal
+        self.assertEqual(str(error.exception), 'Theta-channel data must be quantitative')
+
     def test_depth_error(self):
         """Pie chart error when depth is incorrect."""
         for d in NOT_GREATER_THAN_0_NUMBERS:
