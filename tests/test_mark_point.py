@@ -370,6 +370,15 @@ class TestMarkPointError(unittest.TestCase):
             ERROR_MESSAGES['COLOR_ENCODING_NOT_NOMINAL'].format(color_encoding='quantitative')
         )
 
+    def test_size_encoding_not_quantitative_error(self):
+        """Mark point error when size encoding is not quantitative."""
+        with self.assertRaises(ValueError) as error:
+            aframexr.Chart(DATA).mark_point().encode(x='model', y='sales', size='color').to_html()  # Nominal
+        self.assertEqual(
+            str(error.exception),
+            ERROR_MESSAGES['SIZE_ENCODING_NOT_QUANTITATIVE'].format(size_encoding='nominal')
+        )
+
     def test_position_error(self):
         """Mark point position error."""
         for p in NOT_3AXIS_POSITIONS_ROTATIONS:
