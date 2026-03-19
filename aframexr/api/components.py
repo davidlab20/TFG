@@ -45,6 +45,28 @@ class TopLevelMixin:
             '></iframe>'
         )
 
+    def _resolve_data(self):
+        """Resolves the data reference of the specifications."""
+        def materialize_data(data):
+            AframeXRValidator.validate_type(
+                'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> because of DataFrame
+            )
+
+            if isinstance(data, Data):
+                return {'values': data.values}
+            elif isinstance(data, UrlData):
+                return {'url': data.url}
+            elif pd is not None and isinstance(data, pd.DataFrame):
+                arr = data.to_numpy()
+                cols = data.columns.tolist()
+                return {'values': [dict(zip(cols, row)) for row in arr]}
+            else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
+                raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
+
+        for specs in self._specifications.get('concat', [self._specifications]):
+            if 'data_ref' in specs:
+                specs['data'] = materialize_data(specs.pop('data_ref'))
+
     def _repr_html_(self):  # pragma: no cover (as this method is called in notebooks)
         """Returns the iframe HTML for showing the scene in the notebook."""
         return self._generate_iframe_html()
@@ -182,6 +204,8 @@ class TopLevelMixin:
             warnings.filterwarnings('ignore', message='Consider using IPython.display.IFrame instead')
 
             self_copy = self.copy()
+            self_copy._resolve_data()
+
             html_obj = HTML(self_copy._generate_iframe_html(
                 ar_scale=ar_scale,
                 environment=environment
@@ -193,14 +217,19 @@ class TopLevelMixin:
     # Chart formats
     def to_dict(self) -> dict:
         """Returns the scene specifications as a dictionary."""
-        AframeXRValidator.validate_chart_specs(self._specifications)
-        return copy.deepcopy(self._specifications)
+        self_copy = self.copy()
+        self_copy._resolve_data()
+
+        AframeXRValidator.validate_chart_specs(self_copy._specifications)
+        return self_copy._specifications
 
     def to_html(self, ar_scale: str = None, environment: Literal['default', 'contact', 'egypt', 'checkerboard',
     'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano',
     'starry', 'osiris'] = 'default') -> str:
         """Returns the HTML representation of the scene."""
         self_copy = self.copy()
+        self_copy._resolve_data()
+
         if ar_scale is not None: self_copy._specifications['ar_scale'] = ar_scale
         self_copy._specifications['environment'] = environment
         AframeXRValidator.validate_chart_specs(self_copy._specifications)
@@ -208,8 +237,7 @@ class TopLevelMixin:
 
     def to_json(self) -> str:
         """Returns the JSON string of the scene."""
-        AframeXRValidator.validate_chart_specs(self._specifications)
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict())  # Method to_dict() validates chart specifications
 
 
 class Chart(TopLevelMixin):
@@ -240,29 +268,11 @@ class Chart(TopLevelMixin):
     ValueError
         If depth, height, position, rotation or width is invalid.
     """
-
-    def _define_data(self, data: Data | UrlData | DataFrame):
-        """Defines the data field in the specifications."""
-        AframeXRValidator.validate_type(
-            'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> because of DataFrame
-        )
-        if isinstance(data, Data):
-            self._specifications['data'] = {'values': data.values}
-        elif isinstance(data, UrlData):
-            self._specifications['data'] = {'url': data.url}
-        elif pd is not None and isinstance(data, pd.DataFrame):
-            # More efficient than using data.to_dict(orient='records')
-            arr = data.to_numpy()
-            cols = data.columns.tolist()
-            self._specifications['data'] = {'values': [dict(zip(cols, row)) for row in arr]}
-        else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
-            raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
-
     def __init__(self, data: Data | UrlData | DataFrame = None, depth: float = None, height: float = None,
                  title: str = None, position: str = None, rotation: str = None, width: float = None):
         super().__init__({})  # Initiate specifications
 
-        if data is not None: self._define_data(data)
+        if data is not None: self._specifications['data_ref'] = data
         if position is not None: self._specifications['position'] = position
         if rotation is not None: self._specifications['rotation'] = rotation
         if depth is not None: self._specifications['depth'] = depth
@@ -465,7 +475,7 @@ class Chart(TopLevelMixin):
         """Modify general properties of the chart."""
         self_copy = self.copy()
 
-        if data is not None: self_copy._define_data(data)
+        if data is not None: self_copy._specifications['data_ref'] = data
         if position is not None: self_copy._specifications['position'] = position
         if rotation is not None: self_copy._specifications['rotation'] = rotation
         if depth is not None: self_copy._specifications['depth'] = depth
