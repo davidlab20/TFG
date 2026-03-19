@@ -123,7 +123,11 @@ class TopLevelMixin:
 
     # Movable
     def movable(self):
-        """Make the entity movable."""
+        """
+        Make the entity movable.
+
+        Concatenated charts cannot be movable, each chart must be defined as movable before concatenating.
+        """
         self_copy = self.copy()
         if 'concat' in self_copy._specifications:
             raise ValueError('Concatenated charts cannot be movable.')
