@@ -523,8 +523,6 @@ class Chart(TopLevelMixin):
         Can be concatenated with the rest of functions of the Chart, without needing an asignation. It can also be
         concatenated several times (the result will be an addition of the filters, in order of assignation).
 
-        If the result of the filters is empty data, a warning is raised.
-
         Examples
         --------
         *Using transform_filter() giving the equation string:*
