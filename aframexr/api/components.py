@@ -13,7 +13,7 @@ except ImportError:
     DataFrame = object
     pd = None
 
-from IPython.display import HTML
+from IPython.display import display, HTML
 from typing import Literal
 
 from .aggregate import AggregatedFieldDef
@@ -178,7 +178,13 @@ class TopLevelMixin:
             warnings.filterwarnings('ignore', message='Consider using IPython.display.IFrame instead')
 
             self_copy = self.copy()
-            return HTML(self_copy._generate_iframe_html(ar_scale=ar_scale, environment=environment))
+            html_obj = HTML(self_copy._generate_iframe_html(
+                ar_scale=ar_scale,
+                environment=environment
+            ))
+
+            display(html_obj)
+            return html_obj
 
     # Chart formats
     def to_dict(self) -> dict:
