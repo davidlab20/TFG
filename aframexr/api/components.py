@@ -166,7 +166,7 @@ class TopLevelMixin:
                 AframeXRValidator.validate_chart_specs(specs)
                 json.dump(specs, file, indent=4)
         else:
-            raise ValueError('Invalid file format')
+            raise ValueError('Invalid file format. Must be "json" or "html"')
 
     # Showing the scene
     def show(self, ar_scale: str = None, environment: Literal['default', 'contact', 'egypt', 'checkerboard', 'forest',
