@@ -37,7 +37,7 @@ class TestAframexrError(unittest.TestCase):
         """Verify that the error is raised when data has invalid type."""
         err_data = 'invalid data type'
         with self.assertRaises(TypeError) as error:
-            aframexr.Chart(err_data)
+            aframexr.Chart(err_data).to_html()
         self.assertEqual(
             str(error.exception),
             ERROR_MESSAGES['TYPE'].format(
