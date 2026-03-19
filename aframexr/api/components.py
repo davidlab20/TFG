@@ -49,7 +49,7 @@ class TopLevelMixin:
         """Resolves the data reference of the specifications."""
         def materialize_data(data):
             AframeXRValidator.validate_type(
-                'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> because of DataFrame
+                'data', data, (Data, UrlData, DataFrame)  # type: ignore[arg-type] --> DataFrame
             )
 
             if isinstance(data, Data):
@@ -57,8 +57,8 @@ class TopLevelMixin:
             elif isinstance(data, UrlData):
                 return {'url': data.url}
             elif pd is not None and isinstance(data, pd.DataFrame):
-                arr = data.to_numpy()
-                cols = data.columns.tolist()
+                arr = data.to_numpy()  # type: ignore --> because of DataFrame
+                cols = data.columns.tolist()  # type: ignore --> because of DataFrame
                 return {'values': [dict(zip(cols, row)) for row in arr]}
             else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
                 raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
