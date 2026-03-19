@@ -247,6 +247,7 @@ class Chart(TopLevelMixin):
         elif isinstance(data, UrlData):
             self._specifications['data'] = {'url': data.url}
         elif pd is not None and isinstance(data, pd.DataFrame):
+            # More efficient than using pd.to_dict(orient='records')
             self._specifications['data'] = {col: data[col].tolist() for col in data.columns}
         else:  # pragma: no cover (AframeXRValidator.validate_type() should have validate data type)
             raise RuntimeError('Unreachable code: AframeXRValidator.validate_type() should have validate data type')
