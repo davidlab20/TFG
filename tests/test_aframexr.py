@@ -116,4 +116,4 @@ class TestAframexrError(unittest.TestCase):
         bad_file_format = 'good_file.bad_format'
         with self.assertRaises(ValueError) as error:
             aframexr.Chart().save(bad_file_format)
-        self.assertEqual(str(error.exception), 'Invalid file format')
+        self.assertEqual(str(error.exception), 'Invalid file format. Must be "json" or "html"')
