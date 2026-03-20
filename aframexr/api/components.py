@@ -89,14 +89,28 @@ class TopLevelMixin:
 
     # Copy of the chart
     def __deepcopy__(self, memo):
-        """Optimized deepcopy method."""
+        """Optimized deepcopy avoiding copying large data values."""
+        if id(self) in memo:  # Avoid copying several times the same object
+            return memo[id(self)]
+
         new_instance = self.__class__.__new__(self.__class__)
         memo[id(self)] = new_instance
-        new_instance._specifications = copy.deepcopy(self._specifications, memo)
+
+        # Separate data reference from the rest of the specifications
+        specs_copy = self._specifications.copy()  # Shallow copy
+        data_ref = specs_copy.pop('data_ref', None)
+
+        # Deep copy of the rest
+        new_instance._specifications = copy.deepcopy(specs_copy, memo)
+
+        # Restore data reference
+        if data_ref is not None:
+            new_instance._specifications['data_ref'] = data_ref
+
         return new_instance
 
     def copy(self):
-        """Returns a deep copy of the chart."""
+        """Return a deep copy of the chart while keeping large data as reference."""
         return copy.deepcopy(self)
 
     # Importing charts
