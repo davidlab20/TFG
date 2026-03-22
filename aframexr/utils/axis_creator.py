@@ -82,6 +82,7 @@ class AxisCreator:
 
         if axis_encoding == 'quantitative':
             coords = _get_labels_coords_for_quantitative_axis(axis_data, axis_size)
+            if axis == 'z': coords *= -1  # Negative (to go deep)
             labels_values = _get_labels_values_for_quantitative_axis(axis_data)
         elif axis_encoding == 'nominal':
             coords = elements_coords.unique(maintain_order=True)  # Align labels with elements
