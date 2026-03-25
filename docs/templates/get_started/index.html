@@ -13,7 +13,7 @@
 
   <!-- Iframe -->
   <iframe id="notebookIframe" src="{{ base_url }}notebooks/get-started-notebook.html"
-          class="w-100 rounded shadow-sm d-none" style="height:80vh; border:0;">
+          class="w-100 rounded shadow-sm" style="height:80vh; border:0;">
   </iframe>
 </div>
 
@@ -23,8 +23,8 @@
   const loader = document.getElementById('loader');
 
   iframe.addEventListener('load', () => {
-    loader.style.display = 'none';
-    iframe.classList.remove('d-none');
+    loader.remove();
+    iframe.style.display = 'block';
   });
 </script>
 {% endblock %}
