@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="AframeXR Python: library for declarative 3D visualization in Python with interactive charts and VR support.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ title }} | AframeXR Python</title>
   <link rel="icon" href="{{ base_url }}static/imgs/logo.png" type="image/png">
 
@@ -13,7 +15,7 @@
 <body>
 
 <!-- Heading -->
-<div class="bg-gradient d-flex align-items-center justify-content-between px-4" style="background-color: darkOrange;">
+<header class="bg-gradient d-flex align-items-center justify-content-between px-4" style="background-color: darkOrange;">
 
   <!-- Logo -->
   <a href="{{ base_url }}index.html" class="d-flex align-items-center">
@@ -41,7 +43,7 @@
     </a>
   </div>
 
-</div>
+</header>
 
 <main class="container-fluid">
   {% block content %}{% endblock %}
