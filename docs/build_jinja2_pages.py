@@ -1,6 +1,7 @@
 import ast
 import os
 import shutil
+import textwrap
 from jinja2 import Environment, FileSystemLoader
 from pathlib import Path
 
@@ -32,13 +33,13 @@ for py_file in API_DIR.rglob('*.py'):
         if isinstance(node, ast.ClassDef) and not node.name.startswith('_'):
             api_items.append({
                 'name': node.name,
-                'docstring': ast.get_docstring(node),
+                'docstring': textwrap.dedent(ast.get_docstring(node) or ""),
             })
 
         elif isinstance(node, ast.FunctionDef) and not node.name.startswith('_'):
             api_items.append({
                 'name': node.name,
-                'docstring': ast.get_docstring(node),
+                'docstring': textwrap.dedent(ast.get_docstring(node) or ""),
             })
 
 # ===== DEMOS =====

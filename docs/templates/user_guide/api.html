@@ -9,7 +9,7 @@
     <div class="card h-100 shadow-sm rounded-3 border-2 p-3">
       <h5 class="fw-bold">{{ item.name }}</h5>
       {% if item.signature %}<pre class="text-muted">{{ item.signature }}</pre>{% endif %}
-      <p class="text-secondary">{{ item.docstring | replace('\n', '<br>') | safe }}</p>
+      <pre class="text-secondary">{{ item.docstring }}</pre>
       {% if item.args %}
       <p>ARGS: {% for arg in item.args %}{{ arg }} {% endfor %}</p>
       {% endif %}
