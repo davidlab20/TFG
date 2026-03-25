@@ -8,11 +8,13 @@
   <!-- Loader -->
   <div id="loader" class="d-flex flex-column justify-content-center align-items-center my-5">
     <div class="spinner-border text-warning mb-3" role="status"></div>
-    <p class="fw-semibold mb-0">Starting Python environment...</p>
+    <p class="fw-semibold mb-0 text-muted">Loading interactive environment...</p>
   </div>
 
   <!-- Iframe -->
-  <iframe id="notebookIframe" src="{{ base_url }}notebooks/get-started-notebook.html" style="width:100%; height:80vh; border:0;"></iframe>
+  <iframe id="notebookIframe" src="{{ base_url }}notebooks/get-started-notebook.html"
+          class="w-100 rounded shadow-sm d-none" style="height:80vh; border:0;">
+  </iframe>
 </div>
 
 <!-- Script to show iframe when loaded -->
@@ -21,8 +23,8 @@
   const loader = document.getElementById('loader');
 
   iframe.addEventListener('load', () => {
-    loader.remove();
-    iframe.style.display = 'block';
+    loader.style.display = 'none';
+    iframe.classList.remove('d-none');
   });
 </script>
 {% endblock %}
