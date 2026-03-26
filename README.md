@@ -8,6 +8,13 @@
 easily create and display interactive 3D graphics, offering a simple and intuitive way to visualize your data in three
 dimensions.
 
+## Features
+
+- **XR Visualization** - Explore charts in immersive XR environments
+- **Notebooks** - Seamlessly integrates with Jupyter and Marimo Notebooks for interactive visualization.
+- **3D Browser Visualization** - Visualize 3D charts directly in your web browser.
+- **Chart interaction** - Interact with charts for deeper insights and dynamic exploration.
+
 ## Installation
 
 ```bash
