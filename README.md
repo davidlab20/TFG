@@ -27,7 +27,7 @@ from aframexr.datasets import data
 cars = data.cars()
 
 # Create the chart
-chart = aframexr.Chart(
+aframexr.Chart(
     cars,
     position="0 2 -5"
 ).mark_bar().encode(
