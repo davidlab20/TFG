@@ -1,4 +1,4 @@
-# AFrameXR <img align="right" src="docs/static/imgs/logo.png" height="50">
+# AFrameXR <a href="https://davidlab20.github.io/TFG/"><img align="right" src="docs/static/imgs/logo.png" height="50"></a>
 
 ![Release](https://img.shields.io/github/v/release/davidlab20/TFG)
 
