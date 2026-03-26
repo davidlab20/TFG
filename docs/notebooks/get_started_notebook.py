@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.20.4"
+__generated_with = "0.21.1"
 app = marimo.App(app_title="Get started")
 
 
@@ -27,18 +27,18 @@ async def _():
 def _():
     # Import the library in a separate cell
     import aframexr
+    from aframexr.datasets import data
 
-    return (aframexr,)
+    return aframexr, data
 
 
 @app.cell
-def _(aframexr):
-    # Load the data having the URL of the JSON file
-    url = "https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/data.json"
-    data = aframexr.UrlData(url)  # Create an UrlData object
+def _(aframexr, data):
+    # Load the data
+    chart_data = data.cars()
 
     # Create the chart
-    chart = aframexr.Chart(data, position="0 2 -5").mark_bar().encode(x="model", y="sales")
+    chart = aframexr.Chart(chart_data, position="0 2 -5").mark_bar().encode(x="model", y="sales")
 
     # Display the chart in the notebook
     chart  # Can also use chart.show()
