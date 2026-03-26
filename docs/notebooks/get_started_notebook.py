@@ -38,7 +38,14 @@ def _(aframexr, data):
     chart_data = data.cars()
 
     # Create the chart
-    chart = aframexr.Chart(chart_data, position="0 2 -5").mark_bar().encode(x="model", y="sales")
+    chart = aframexr.Chart(
+        chart_data,
+        position="0 2 -5"
+    ).mark_bar().encode(
+        x="model",
+        y="sales",
+        color="motor"
+    )
 
     # Display the chart in the notebook
     chart  # Can also use chart.show()
