@@ -1,6 +1,7 @@
 # AFrameXR <a href="https://davidlab20.github.io/TFG/"><img align="right" src="docs/static/imgs/logo.png" height="50"></a>
 
 ![PyPI](https://img.shields.io/pypi/v/aframexr)
+![License](https://img.shields.io/github/license/davidlab20/TFG)
 
 **AFrameXR** is a declarative 3D visualization library for Python. With a syntax inspired by
 [Vega-Altair](https://github.com/vega/altair) and [Vega-Lite](https://github.com/vega/vega-lite), it enables you to
