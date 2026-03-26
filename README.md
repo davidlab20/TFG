@@ -8,27 +8,27 @@
 easily create and display interactive 3D graphics, offering a simple and intuitive way to visualize your data in three
 dimensions.
 
-## Documentation
-You can find the full documentation [here](https://davidlab20.github.io/TFG/).
-
 ## Installation
 
 ```bash
 pip install aframexr
 ```
 
+## Documentation
+You can find the full documentation [here](https://davidlab20.github.io/TFG/).
+
 ## Simple example
 
 ```python
 import aframexr
+from aframexr.datasets import data
 
 # Load a simple dataset
-from aframexr.datasets import data
-chart_data = data.cars()
+cars = data.cars()
 
 # Create the chart
 chart = aframexr.Chart(
-    chart_data,
+    cars,
     position="0 2 -5"
 ).mark_bar().encode(
     x="model",
