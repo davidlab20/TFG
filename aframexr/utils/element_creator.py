@@ -1,5 +1,3 @@
-"""AframeXR elements creator"""
-
 from .constants import ENTITY_IS_MOVABLE
 
 CREATOR_MAP: dict[str, type['ElementCreator']] = {}  # Creator map of elements, classes are added at the end of the file

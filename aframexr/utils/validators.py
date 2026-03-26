@@ -1,5 +1,3 @@
-"""AframeXR validators"""
-
 from typing import Literal
 
 from .constants import (

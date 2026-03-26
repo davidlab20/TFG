@@ -1,4 +1,4 @@
-"""AframeXR API"""
+"""AFrameXR API"""
 
 from .aggregate import *
 from .components import *

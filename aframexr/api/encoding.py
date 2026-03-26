@@ -1,5 +1,3 @@
-"""AframeXR encoding classes"""
-
 from abc import ABC, abstractmethod
 from ..utils.constants import AVAILABLE_ENCODING_TYPES
 from ..utils.validators import AframeXRValidator

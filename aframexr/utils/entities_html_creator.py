@@ -1,5 +1,3 @@
-"""AframeXR entities HTML creator"""
-
 import io
 import json
 import os

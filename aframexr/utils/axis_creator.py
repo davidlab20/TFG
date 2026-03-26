@@ -1,5 +1,3 @@
-"""AframeXR axis creator"""
-
 import polars as pl
 
 from polars import Series

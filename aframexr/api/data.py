@@ -1,5 +1,3 @@
-"""AframeXR data types"""
-
 import json
 
 from ..utils.validators import AframeXRValidator

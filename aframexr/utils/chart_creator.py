@@ -1,5 +1,3 @@
-"""AframeXR charts creator"""
-
 import polars as pl
 import warnings
 

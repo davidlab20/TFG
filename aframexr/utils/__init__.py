@@ -1,4 +1,4 @@
-"""AframeXR utils"""
+"""AFrameXR utils"""
 
 from .axis_creator import *
 from .chart_creator import *

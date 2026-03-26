@@ -1,5 +1,3 @@
-"""AframeXR components"""
-
 from abc import ABC, abstractmethod
 import copy
 import html

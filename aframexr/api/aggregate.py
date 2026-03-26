@@ -1,5 +1,3 @@
-"""AframeXR aggregate."""
-
 import polars as pl
 from polars import DataFrame
 

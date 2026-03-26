@@ -1,5 +1,3 @@
-"""AframeXR filters"""
-
 import polars as pl
 from abc import ABC, abstractmethod
 from polars import DataFrame

@@ -1,5 +1,3 @@
-"""AframeXR parameters."""
-
 from ..utils.validators import AframeXRValidator
 
 # Selections
