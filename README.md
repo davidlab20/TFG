@@ -1,4 +1,4 @@
-# AFrameXR <a href="https://davidlab20.github.io/TFG/"><img align="right" src="docs/static/imgs/logo.png" height="50"></a>
+# AFrameXR <a href="https://davidlab20.github.io/TFG/"><img align="right" src="https://davidlab20.github.io/TFG/static/imgs/logo.png" height="50"></a>
 
 ![PyPI](https://img.shields.io/pypi/v/aframexr)
 ![License](https://img.shields.io/github/license/davidlab20/TFG)
