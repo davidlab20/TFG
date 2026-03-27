@@ -130,6 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Display information about the element
 	function displayInfo(event) {
+	    if (!event.detail || !event.detail.intersection) {
+            return;
+        }
+
 		const targetElement = event.target;
         targetElement.setAttribute('scale', '1.1 1.1 1');
 
