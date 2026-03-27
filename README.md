@@ -3,17 +3,32 @@
 ![PyPI](https://img.shields.io/pypi/v/aframexr)
 ![License](https://img.shields.io/github/license/davidlab20/TFG)
 
-**AFrameXR** is a declarative 3D visualization library for Python. With a syntax inspired by
-[Vega-Altair](https://github.com/vega/altair) and [Vega-Lite](https://github.com/vega/vega-lite), it enables you to
-easily create and display interactive 3D graphics, offering a simple and intuitive way to visualize your data in three
-dimensions.
+**AFrameXR** is a declarative Python library for building immersive 3D and XR data visualizations — directly in your
+browser, with no 3D experience required.
+
+Inspired by [Vega-Altair](https://github.com/vega/altair) and [Vega-Lite](https://github.com/vega/vega-lite), AFrameXR
+lets you define interactive 3D charts using a simple grammar, and render them directly in the browsers and XR devices — 
+without low-level 3D programming.
+
+## Live Demo
+> https://davidlab20.github.io/TFG/examples/index.html
 
 ## Features
 
-- **XR Visualization** - Explore charts in immersive XR environments
-- **Notebooks** - Seamlessly integrates with Jupyter and Marimo Notebooks for interactive visualization.
-- **3D Browser Visualization** - Visualize 3D charts directly in your web browser.
-- **Chart interaction** - Interact with charts for deeper insights and dynamic exploration.
+- **Declarative API** — Define charts using a high-level grammar
+- **XR Visualization** — Explore charts in immersive environments
+- **Notebook Integration** — Works with Jupyter and Marimo
+- **Browser Rendering** — Visualize charts directly in the browser
+- **Interactive Exploration** — Navigate and interact with your data
+
+## Why AFrameXR?
+
+AFrameXR brings the declarative visualization paradigm to 3D and XR environments.
+
+- No need to learn complex 3D engines
+- Inspired by proven visualization tools like Vega-Lite
+- Built for the web and XR from the ground up
+- Clean and concise API for rapid prototyping
 
 ## Installation
 
@@ -21,25 +36,33 @@ dimensions.
 pip install aframexr
 ```
 
-## Documentation
-You can find the full documentation [here](https://davidlab20.github.io/TFG/).
-
 ## Simple example
 
 ```python
 import aframexr
 from aframexr.datasets import data
 
-# Load a simple dataset
+# Load dataset
 cars = data.cars()
 
-# Create the chart
+# Create a 3D chart
 aframexr.Chart(
     cars,
     position="0 2 -5"
 ).mark_bar().encode(
     x="model",
     y="sales",
+    z="doors:N",  # :N indicates a categorical (nominal) field
     color="motor"
 )
 ```
+
+## Supported Environments
+
+- Jupyter Notebook
+- Marimo Notebooks
+- Modern web browsers (Chrome, Firefox)
+- XR devices
+
+## Documentation
+Full documentation: https://davidlab20.github.io/TFG/
