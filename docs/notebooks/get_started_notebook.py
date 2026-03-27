@@ -34,16 +34,17 @@ def _():
 
 @app.cell
 def _(aframexr, data):
-    # Load the data
-    chart_data = data.cars()
+    # Load dataset
+    cars = data.cars()
 
-    # Create the chart
+    # Create a 3D chart
     chart = aframexr.Chart(
-        chart_data,
+        cars,
         position="0 2 -5"
     ).mark_bar().encode(
         x="model",
         y="sales",
+        z="doors:N",  # :N indicates a categorical (nominal) field
         color="motor"
     )
 
