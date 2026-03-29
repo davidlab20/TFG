@@ -122,11 +122,12 @@ AFRAME.registerComponent('show-on-enter-ar', {
 document.addEventListener('DOMContentLoaded', () => {
 	// Frequently accessed elements
 	let activeSubcharts = {};
-	const HUD = document.getElementById('HUD');
-	const HUDText = document.getElementById('HUD-text');
+	const HUD = document.querySelector('#HUD');
+	const HUDPlane = document.querySelector('#HUD-plane')
+	const HUDTextsEntity = document.querySelector('#HUD-texts');
 	const interactiveAframeElements = 'a-box, a-cylinder, a-sphere';
 	const scene = document.querySelector("a-scene");
-	const sceneChartsContainer = document.getElementById("charts");
+	const sceneChartsContainer = document.querySelector('#charts');
 
 	// Display information about the element
 	function displayInfo(event) {
@@ -137,10 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		const targetElement = event.target;
         targetElement.setAttribute('scale', '1.1 1.1 1');
 
-        const value = targetElement.getAttribute('info');
-        if (!value) return;
+        const HUDInfo = targetElement.getAttribute('info');
+        if (!HUDInfo) return;
+        const HUDTexts = HUDInfo.split(';');
 
-        const camera = document.getElementById('camera');
+        const camera = document.querySelector('#camera');
         const cameraPos = new THREE.Vector3();
         camera.object3D.getWorldPosition(cameraPos);
 
@@ -153,6 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         bbox.getSize(objectSize);
 
         // HUD's bounding box
+        const HUDHeightPerElement = 0.4;
+        const HUDHeight = HUDHeightPerElement * HUDTexts.length;
+        HUDPlane.setAttribute('height', HUDHeight);
+
         const hudBBox = new THREE.Box3().setFromObject(HUD.object3D);
         const hudSize = new THREE.Vector3();
         hudBBox.getSize(hudSize);
@@ -168,7 +174,23 @@ document.addEventListener('DOMContentLoaded', () => {
         HUD.object3D.position.copy(hudPos);
         HUD.object3D.lookAt(cameraPos);
         HUD.setAttribute('visible', 'true');
-        HUDText.setAttribute('value', value);
+
+        // Clean the previous HUD content
+        while (HUDTextsEntity.firstChild) {
+			HUDTextsEntity.removeChild(HUDTextsEntity.firstChild);
+		}
+
+		// Add the new HUD content
+		let yOffset = HUDHeight / 2 - HUDHeightPerElement / 2;
+        HUDTexts.forEach(text => {
+        	const textEntity = document.createElement('a-text');
+        	textEntity.setAttribute('value', text);
+        	textEntity.setAttribute('position', `0 ${yOffset} 0`);
+        	textEntity.setAttribute('align', 'center');
+        	HUDTextsEntity.appendChild(textEntity);
+
+        	yOffset -= HUDHeightPerElement;
+        });
     }
 
 	// Set the element to its original state

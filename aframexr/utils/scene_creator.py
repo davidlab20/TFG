@@ -25,8 +25,8 @@ HTML_SCENE_TEMPLATE = """<!DOCTYPE html>
 
   <!-- HUD -->
   <a-entity id="HUD" visible="false" scale-on-enter-ar>
-    <a-plane height="1" width="2" shader="flat" color="grey"></a-plane>
-    <a-text id="HUD-text" align="center"></a-text>
+    <a-plane id="HUD-plane" width="2" shader="flat" color="grey"></a-plane>
+    <a-entity id="HUD-texts"></a-entity>
   </a-entity>
 
   <!-- Environment -->
