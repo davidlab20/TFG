@@ -19,7 +19,7 @@ def _bars_bases_are_on_x_axis(bars_chart_html: str) -> bool:
         bar_height = float(b['height'])  # Total height of the bar
         y_axis_midpoint = float(b['position'].split()[1])  # Y-axis coordinate
 
-        y_id = float(b['info'].split(' : ')[1])
+        y_id = float(b['info'].split(';')[1].split(':')[1])
         if y_id >= 0:  # Bar represents positive value (above x-axis)
             if not math.isclose(x_axis_y_pos, y_axis_midpoint - 0.5 * bar_height):
                 print(f'\nDEBUG: Positive bar\'s base is not on x-axis line.'
