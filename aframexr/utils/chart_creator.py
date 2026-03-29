@@ -125,6 +125,21 @@ class ChartCreator:
             points_colors = self._color_data.replace(color_map)
         return points_colors.alias('color')
 
+    def _set_info(self, *hud_elements: Series) -> Series:
+        info_exprs = []
+        for i, e in enumerate(hud_elements):
+            if e is not None:
+                col_name = e.name
+                info_exprs.append(
+                    pl.concat_str([pl.lit(f'{col_name}: '), pl.col(col_name).cast(pl.String)])
+                )
+
+        info = self._raw_data.select(
+            pl.concat_str(info_exprs, separator='; ').fill_null('?').alias('info')
+        ).to_series()
+
+        return info
+
     @staticmethod
     def create_object(chart_type: str, chart_specs: dict):
         """Returns a ChartCreator instance of the specific chart type."""
@@ -464,10 +479,7 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         ).alias('radius')
 
         # Information display
-        info = pl.select(pl.concat_str(
-            [self._color_data.cast(pl.String), self._theta_data.cast(pl.String)],
-            separator=' : ',
-        ).fill_null('?').alias('id')).to_series()
+        info = self._set_info(self._color_data, self._theta_data)
 
         # Return values
         temp_dict = {
@@ -583,16 +595,7 @@ class BarChartCreator(XYZAxisChannelChartCreator):
         colors = self._set_elements_colors()
 
         # Information display
-        info_series = [
-            s.cast(pl.String)
-            for s in (self._x_data, self._y_data, self._z_data)
-            if s is not None
-        ]
-
-        info = pl.select(pl.concat_str(
-            info_series,
-            separator=' : '
-        ).fill_null('?').alias('id')).to_series()
+        info = self._set_info(self._x_data, self._y_data, self._z_data)
 
         # Return values
         temp_dict = {
@@ -690,12 +693,7 @@ class LineChartCreator(XYZAxisChannelChartCreator):
         )
 
         # Points
-        info_series = [
-            s.cast(pl.String)
-            for s in (self._x_data, self._y_data, self._z_data)
-            if s is not None
-        ]
-        info = pl.select(pl.concat_str(info_series, separator=' : ').fill_null('?').alias('id')).to_series()
+        info = self._set_info(self._x_data, self._y_data, self._z_data)
 
         points_df = pl.DataFrame({
             'position': positions,
@@ -809,16 +807,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._apply_axis_offset(z_coordinates, 'z', invert=True, extra_offset=self._max_radius)  # Invert (go deep)
 
         # Information display
-        info_series = [
-            s.cast(pl.String)
-            for s in (self._x_data, self._y_data, self._z_data)
-            if s is not None
-        ]
-
-        info = pl.select(pl.concat_str(
-            info_series,
-            separator=' : ',
-        ).fill_null('?').alias('id')).to_series()
+        info = self._set_info(self._x_data, self._y_data, self._z_data)
 
         # Return values
         temp_dict = {
