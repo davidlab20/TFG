@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bbox.getSize(objectSize);
 
         // HUD's bounding box
-        const HUDHeightPerElement = 0.4;
+        const HUDHeightPerElement = 0.3;
         const HUDHeight = HUDHeightPerElement * HUDTexts.length;
         HUDPlane.setAttribute('height', HUDHeight);
 
@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         	const textEntity = document.createElement('a-text');
         	textEntity.setAttribute('value', text);
         	textEntity.setAttribute('position', `0 ${yOffset} 0`);
+        	textEntity.setAttribute('scale', '0.7 0.7 0.7');
         	textEntity.setAttribute('align', 'center');
         	HUDTextsEntity.appendChild(textEntity);
 
