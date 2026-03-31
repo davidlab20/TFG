@@ -67,3 +67,16 @@ aframexr.Chart(
 
 ## Documentation
 Full documentation: https://davidlab20.github.io/TFG/
+
+## User Study
+
+Try AFrameXR in a short usability study (~10-15 min).
+
+If you'd like to participate: [Go to experiment instructions](experiment/README.md)
+
+### What you'll do
+
+- Complete a few small visualization tasks
+- No prior 3D experience required
+
+Your feedback is extremely valuable!
