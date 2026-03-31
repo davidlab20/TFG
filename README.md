@@ -70,7 +70,7 @@ Full documentation: https://davidlab20.github.io/TFG/
 
 ## User Study
 
-Try AFrameXR in a short usability study (~10-15 min).
+Try AFrameXR in a short usability study (~10 min).
 
 If you'd like to participate: [Go to experiment instructions](experiment/README.md)
 
