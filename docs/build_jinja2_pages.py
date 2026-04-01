@@ -61,7 +61,7 @@ NOTEBOOKS = [
     }
     for nb in NOTEBOOKS_DIR.rglob('*_notebook.py')
     for file_name in [nb.stem]
-    if file_name not in {'get_started_notebook'}
+    if file_name != 'get_started_notebook'
 ]
 
 # ===== PAGES' TITLES =====
