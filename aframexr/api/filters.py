@@ -9,14 +9,23 @@ from ..utils.validators import AframeXRValidator
 OPERATOR_MAP: dict[str, type['FilterTransform']] = {}  # Operator map, classes are added at the end of this file
 
 
-def _coerce_value(value: str, raw_value: str) -> str | float:
+def _coerce_value(field: str, operator: str, value: str, raw_value: str) -> str | float:
     raw_value = raw_value.strip()
 
     if (raw_value.startswith('"') and raw_value.endswith('"')) or \
             (raw_value.startswith("'") and raw_value.endswith("'")):
         return raw_value[1:-1]  # Remove quotes
 
-    return value
+    try:
+        return float(value)
+    except ValueError:
+        pass
+
+    # If it is not number and does not have quotes is error
+    raise ValueError(f'Invalid filter value "{raw_value}" for field "{field}" with operator "{operator}".\n'
+                     '  - Strings must be quoted (single or double quotes).\n'
+                     '  - Numbers do not require quotes.\n'
+                     f'Correct example: datum.{field} {operator} 123 or datum.{field} {operator} "text"')
 
 
 class FilterTransform(ABC):
@@ -46,7 +55,7 @@ class FilterTransform(ABC):
         field, op, value = parts
 
         raw_value = equation.split(op, 1)[1].strip()
-        value = _coerce_value(value, raw_value)
+        value = _coerce_value(field.removeprefix('datum.'), op, value, raw_value)
 
         if op in OPERATOR_MAP:
             if not field.startswith('datum.'):
