@@ -16,12 +16,6 @@ def _coerce_value(value: str, raw_value: str) -> str | float:
             (raw_value.startswith("'") and raw_value.endswith("'")):
         return raw_value[1:-1]
 
-    try:
-        return float(value)
-    except ValueError:
-        pass
-
-    # Fallback
     return value
 
 
