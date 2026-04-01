@@ -252,6 +252,20 @@ def _(sol_task4):
 
 
 @app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ### <u>Task 5 — 3D Filtered bar chart</u>
+
+    Create a 3D filtered Bar Chart:
+
+    - x: model
+    - y: sales
+    - filter: datum.motor == "diesel"
+    """)
+    return
+
+
+@app.cell(hide_code=True)
 def _(aframexr, df_pd):
     # ===== Solutions =====
 
