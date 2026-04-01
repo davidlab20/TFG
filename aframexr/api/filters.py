@@ -14,7 +14,7 @@ def _coerce_value(value: str, raw_value: str) -> str | float:
 
     if (raw_value.startswith('"') and raw_value.endswith('"')) or \
             (raw_value.startswith("'") and raw_value.endswith("'")):
-        return raw_value[1:-1]
+        return raw_value[1:-1]  # Remove quotes
 
     return value
 
