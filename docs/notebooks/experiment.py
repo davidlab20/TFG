@@ -32,7 +32,7 @@ def _(mo):
 
     ## <u>Duration</u>
 
-    This experiment will take approximately 10 minutes.
+    This experiment will take approximately 10-15 minutes.
 
     ## <u>Important</u>
 
