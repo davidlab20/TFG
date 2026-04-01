@@ -1,4 +1,5 @@
 import polars as pl
+import shlex
 from abc import ABC, abstractmethod
 from polars import DataFrame
 
@@ -6,6 +7,22 @@ from ..utils.validators import AframeXRValidator
 
 
 OPERATOR_MAP: dict[str, type['FilterTransform']] = {}  # Operator map, classes are added at the end of this file
+
+
+def _coerce_value(value: str, raw_value: str) -> str | float:
+    raw_value = raw_value.strip()
+
+    if (raw_value.startswith('"') and raw_value.endswith('"')) or \
+            (raw_value.startswith("'") and raw_value.endswith("'")):
+        return raw_value[1:-1]
+
+    try:
+        return float(value)
+    except ValueError:
+        pass
+
+    # Fallback
+    return value
 
 
 class FilterTransform(ABC):
@@ -28,16 +45,14 @@ class FilterTransform(ABC):
     def from_equation(equation: str):
         AframeXRValidator.validate_type('equation', equation, str)
 
-        parts = equation.split()
+        parts = shlex.split(equation)
         if len(parts) != 3:
             raise SyntaxError('Incorrect syntax, must be datum.{field} {operator} {value}')
 
         field, op, value = parts
 
-        try:
-            value = float(value)
-        except ValueError:
-            pass
+        raw_value = equation.split(op, 1)[1].strip()
+        value = _coerce_value(value, raw_value)
 
         if op in OPERATOR_MAP:
             if not field.startswith('datum.'):
@@ -85,6 +100,9 @@ class FilterTransform(ABC):
             filtered_data = data.filter(condition)
         except pl.exceptions.ColumnNotFoundError:
             raise KeyError(f'Data has no field "{self.field}".')
+        except pl.exceptions.ComputeError as e:
+            raise TypeError(f'Type mismatch: column "{self.field}" has type {data[self.field].dtype} '
+                            f'but value is of type {type(self.value).__name__}') from e
         return filtered_data
 
 
