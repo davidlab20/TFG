@@ -122,7 +122,6 @@ def _(mo):
 def _():
     # Write your code here
 
-
     return
 
 
@@ -156,7 +155,6 @@ def _(mo):
 @app.cell
 def _():
     # Write your code here
-
 
     return
 
@@ -200,7 +198,6 @@ def _(mo):
 def _():
     # Write your code here
 
-
     return
 
 
@@ -237,7 +234,6 @@ def _(mo):
 def _():
     # Write your code here
 
-
     return
 
 
@@ -255,7 +251,7 @@ def _(sol_task4):
     return
 
 
-@app.cell
+@app.cell(hide_code=True)
 def _(aframexr, df_pd):
     # ===== Solutions =====
 
