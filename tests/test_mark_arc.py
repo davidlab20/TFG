@@ -35,6 +35,7 @@ def _slices_are_well_placed(pie_chart_html: str) -> bool:
 
 class TestMarkArcOK(unittest.TestCase):
     """Pie chart OK tests."""
+    
     def test_simple(self):
         """Simple pie chart creation."""
         pie_chart = aframexr.Chart(DATA).mark_arc().encode(color='model', theta='sales')
