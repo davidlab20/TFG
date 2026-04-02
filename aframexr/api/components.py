@@ -258,8 +258,8 @@ class Chart(TopLevelMixin):
 
     Parameters
     ----------
-    data : Data | UrlData
-        Data or UrlData object of the data.
+    data : Data | UrlData | DataFrame
+        Data, UrlData object or pandas DataFrame of the data.
     depth : float (optional)
         Depth of the chart. If not defined, using DEFAULT_CHART_DEPTH.
     height : float (optional)
