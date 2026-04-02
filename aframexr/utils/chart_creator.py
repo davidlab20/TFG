@@ -807,7 +807,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._apply_axis_offset(z_coordinates, 'z', invert=True, extra_offset=self._max_radius)  # Invert (go deep)
 
         # Information display
-        info = self._set_info(self._x_data, self._y_data, self._z_data)
+        info = self._set_info(self._x_data, self._y_data, self._z_data, self._size_data)
 
         # Return values
         temp_dict = {
