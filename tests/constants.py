@@ -51,14 +51,14 @@ NOT_NUMERIC_POSITIONS_ROTATIONS = ('1 1 a', '1 a 1', '1 a a', 'a 1 1', 'a 1 a', 
 
 # Filters OK
 DYNAMIC_FILTER = selection_point('param_name', fields=['motor'])
-FILTER_EQUATIONS = ('datum.motor == diesel', 'datum.doors == 3', 'datum.doors > 4', 'datum.doors < 4')
-SEVERAL_FILTER_EQUATIONS = ('datum.motor == electric', 'datum.color == red', 'datum.sales > 10')
+FILTER_EQUATIONS = ('datum.motor == "diesel"', 'datum.doors == 3', 'datum.doors > 4', 'datum.doors < 4')
+SEVERAL_FILTER_EQUATIONS = ('datum.motor == "electric"', 'datum.color == "red"', 'datum.sales > 10')
 
 # Filters WARNING
-WARNING_FILTER_EQUATIONS = ('datum.motor == bad_value', 'datum.doors == 0', 'datum.doors > 100', 'datum.doors < 0')
+WARNING_FILTER_EQUATIONS = ('datum.motor == "bad_value"', 'datum.doors == 0', 'datum.doors > 100', 'datum.doors < 0')
 
 # Filters ERROR
-SYNTAX_ERROR_FILTER_EQUATIONS = ('motor == diesel', 'doors == 0', 'doors > 100', 'doors < 0')
+SYNTAX_ERROR_FILTER_EQUATIONS = ('motor == "diesel"', 'doors == 0', 'doors > 100', 'doors < 0')
 
 # Concatenation OK
 CONCATENATION_POSITIONS = ('-5 2 -5', '5 2 -5')
