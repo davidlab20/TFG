@@ -1,6 +1,6 @@
 from ..api.data import Data
 
-def cars():
+def cars():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"model": "leon", "motor": "electric", "color": "red", "doors": 5, "sales": 10},
         {"model": "ibiza", "motor": "electric", "color": "white", "doors": 3, "sales": 15},
@@ -14,7 +14,7 @@ def cars():
         {"model": "panda", "motor": "gasoline", "color": "black", "doors": 3, "sales": 13}
     ])
 
-def energy():
+def energy():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"source": "wind", "region": "north", "month": "jan", "production": 700, "cost": 60},
         {"source": "hydro", "region": "west", "month": "jan", "production": 800, "cost": 55},
@@ -33,7 +33,7 @@ def energy():
         {"source": "hydro", "region": "east", "month": "apr", "production": 900, "cost": 60}
     ])
 
-def hotels():
+def hotels():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"city": "valencia", "type": "hotel", "rooms": 100, "occupancy": 0.82, "price": 130},
         {"city": "madrid", "type": "hotel", "rooms": 120, "occupancy": 0.80, "price": 140},
@@ -48,7 +48,7 @@ def hotels():
         {"city": "sevilla", "type": "hostel", "rooms": 35, "occupancy": 0.70, "price": 50}
     ])
 
-def orders():
+def orders():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"customer": "c2", "country": "fr", "status": "cancelled", "total": 60},
         {"customer": "c1", "country": "es", "status": "delivered", "total": 140},
@@ -61,7 +61,7 @@ def orders():
         {"customer": "c1", "country": "es", "status": "delivered", "total": 120}
     ])
 
-def retail():
+def retail():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"store": "s4", "product": "shirt", "category": "clothing", "units": 15, "revenue": 450},
         {"store": "s1", "product": "phone", "category": "tech", "units": 8, "revenue": 6400},
@@ -74,7 +74,7 @@ def retail():
         {"store": "s1", "product": "laptop", "category": "tech", "units": 5, "revenue": 5000}
     ])
 
-def usage():
+def usage():  # pragma: no cover (as this data is like any other data)
     return Data([
         {"user": "u3", "platform": "ios", "country": "es", "minutes": 20},
         {"user": "u2", "platform": "android", "country": "fr", "minutes": 40},
