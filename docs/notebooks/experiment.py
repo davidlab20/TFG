@@ -5,9 +5,15 @@ app = marimo.App(width="medium")
 
 
 @app.cell(hide_code=True)
-def _():
+async def _():
     import marimo as mo
 
+    # Install the necessary packages only when running in WASM (browser) mode.
+    import sys
+
+    if sys.platform == 'emscripten':  # WASM mode
+        import micropip
+        await micropip.install(['aframexr', 'wcwidth'])
     return (mo,)
 
 
