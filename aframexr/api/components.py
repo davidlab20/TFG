@@ -430,7 +430,7 @@ class Chart(TopLevelMixin):
         x : str | X (optional)
             Field of the data that will determine the x-axis of the chart.
         y : str | Y (optional)
-            Field of the data what will determine the y-axis of the chart (must be quantitative).
+            Field of the data what will determine the y-axis of the chart.
         z : str | Z (optional)
             Field of the data what will determine the z-axis of the chart.
 
