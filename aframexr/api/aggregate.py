@@ -61,8 +61,13 @@ class AggregatedFieldDef:
         field, aggregate_op = aggregate_formula, None
 
         if '(' in aggregate_formula and ')' in aggregate_formula:
-            aggregate_op = aggregate_formula.split('(')[0].strip()  # Value before parentheses (aggregate operation)
-            AframeXRValidator.validate_aggregate_operation(aggregate_op)  # Validate that the aggregate is correct
+            aggregate_op_temp = aggregate_formula.split('(')[0]  # Value before parentheses (operation)
 
-            field = aggregate_formula.split('(')[1].split(')')[0].strip()  # Value between parentheses (field)
+            if aggregate_op_temp.endswith(' '):
+                pass  # If there is space before parentheses, it is counted as column's name
+            else:
+                AframeXRValidator.validate_aggregate_operation(aggregate_op_temp)  # Validate the aggregate
+                field = aggregate_formula.split('(')[1].split(')')[0].strip()  # Value between parentheses (field)
+                aggregate_op = aggregate_op_temp
+
         return field, aggregate_op
