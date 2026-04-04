@@ -422,7 +422,7 @@ class Chart(TopLevelMixin):
         Parameters
         ----------
         color : str (optional)
-            Field of the data that will determine the color of the sphere in the scatter plot.
+            Field of the data that will determine the color of the elements in the chart.
         size : str (optional)
             Field of the data that will determine the size of the sphere in the bubble chart (must be quantitative).
         theta : str (optional)
