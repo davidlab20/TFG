@@ -426,7 +426,7 @@ class Chart(TopLevelMixin):
         size : str (optional)
             Field of the data that will determine the size of the sphere in the bubble chart (must be quantitative).
         theta : str (optional)
-            Field of the data that will determine the arcs of the pie and doughnut chart (must be quantitative).
+            Field of the data that will determine the arcs of the pie  chart (must be quantitative).
         x : str | X (optional)
             Field of the data that will determine the x-axis of the chart.
         y : str | Y (optional)
