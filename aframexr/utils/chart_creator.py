@@ -733,7 +733,7 @@ class PointChartCreator(XYZAxisChannelChartCreator):
         self._size_data: Series | None = None
         self._size_encoding: str = ''
 
-        self._process_channels('color', 'size')  # Process and set self._{ch} attributes
+        self._process_channels('size')  # Process and set self._{ch} attributes
 
     def _set_points_coords_in_axis(self, axis_data: Series, axis_name: Literal['x', 'y', 'z'],
                                    encoding_type: str) -> Series:
