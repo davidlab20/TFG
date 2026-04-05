@@ -392,7 +392,7 @@ class Chart(TopLevelMixin):
         color: str (optional)
             Color of the spheres. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
         size : float (optional)
-            Maximum radius of the point. If not specified, using DEFAULT_POINT_RADIUS. Must be greater than 0.
+            Maximum volume of the point. If not specified, using DEFAULT_POINT_VOLUME. Must be greater than 0.
 
         Raises
         ------
