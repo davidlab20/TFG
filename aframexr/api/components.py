@@ -358,6 +358,31 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
+    def mark_cylinder(self, color: str = None, size: float = None):
+        """
+        Cylinders chart.
+
+        Parameters
+        ----------
+        color : str (optional)
+            Color of the cylinders. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
+        size : float (optional)
+            Maximum diameter of the cylinders. If not specified, adjusted automatically. Must be greater than 0.
+        """
+        self_copy = self.copy()
+
+        self_copy._specifications['mark'] = {'type': 'cylinder'}
+
+        if color is not None:
+            AframeXRValidator.validate_type('color', color, str)
+            self_copy._specifications['mark']['color'] = color
+
+        if size is not None:
+            AframeXRValidator.validate_positive_number('size', size)
+            self_copy._specifications['mark']['size'] = size
+
+        return self_copy
+
     def mark_line(self, color: str = None, point: bool = None):
         """
         Line chart.
