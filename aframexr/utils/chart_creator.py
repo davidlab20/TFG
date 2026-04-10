@@ -624,8 +624,6 @@ class LineChartCreator(XYZAxisChannelChartCreator):
     def __init__(self, chart_specs: dict):
         super().__init__(chart_specs)
         self._correct_axes_position(elem_size=DEFAULT_VERTICES_SPACING)
-        self._line_color = chart_specs['mark'].get('color', DEFAULT_ELEMENTS_COLOR_IN_CHART) \
-            if isinstance(chart_specs['mark'], dict) else DEFAULT_ELEMENTS_COLOR_IN_CHART
         self._display_points_in_vertices = chart_specs['mark'].get('point', DEFAULT_VERTICES_POINT_DISPLAY) \
             if isinstance(chart_specs['mark'], dict) else DEFAULT_VERTICES_POINT_DISPLAY
         self._marker_bbox_size_half = _calculate_point_radius(DEFAULT_VERTICES_POINT_VOLUME) \
