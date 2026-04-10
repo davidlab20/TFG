@@ -367,7 +367,7 @@ class Chart(TopLevelMixin):
         color: str (optional)
             Color of the line. If not defined, using DEFAULT_ELEMENTS_COLOR_IN_CHART.
         point : bool (optional)
-            Either if add points in vertices or not. If not defined, using
+            Either if add points in vertices or not. If not defined, markers will not be added.
         """
         self_copy = self.copy()
 
