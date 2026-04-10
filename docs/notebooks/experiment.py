@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.22.0"
+__generated_with = "0.21.1"
 app = marimo.App(width="medium")
 
 
@@ -22,7 +22,7 @@ def _(mo):
     mo.md("""
     # **Usability Evaluation of AFrameXR**
 
-    Welcome
+    Welcome to this usability study of AFrameXR.
 
     In this experiment, you will use AFrameXR to create 3D data visualizations.
 
@@ -42,7 +42,7 @@ def _(mo):
 
     ## <u>Important</u>
 
-    - This is not a test
+    - This is not an assessment
     - You are allowed to make mistakes
     - We are interested in your experience, not correctness
     """)
@@ -86,7 +86,7 @@ def _(mo):
     - color: motor
 
     You can see how the chart is created and the syntax of AFrameXR.
-    Try to understand how the code works; the next tasks will not show the solution.
+    Review the code to understand how the chart is constructed, as subsequent tasks will not include the solution.
     """)
     return
 
@@ -133,7 +133,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -166,7 +166,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -207,7 +207,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -242,7 +242,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -276,7 +276,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -321,7 +321,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -382,7 +382,7 @@ def _():
 @app.cell(hide_code=True)
 def _(mo):
     mo.md("""
-    You should see something like this:
+    Expected output:
     """)
     return
 
@@ -390,6 +390,23 @@ def _(mo):
 @app.cell(hide_code=True)
 def _(sol_task7):
     sol_task7
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md("""
+    ## **Feedback**
+
+    Thank you for participating.
+
+    This form aims to collect feedback on the usability and clarity of AFrameXR.
+
+    Estimated completion time: 1–2 minutes.
+
+    👉 Please complete the following form:
+    https://forms.gle/4Wn3v2vwYoz8DZB86
+    """)
     return
 
 
