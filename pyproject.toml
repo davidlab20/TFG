@@ -22,3 +22,6 @@ Source = "https://github.com/davidlab20/TFG/"
 pandas = [
     "pandas>=2.3.0",
 ]
+
+[tool.setuptools]
+packages = ["aframexr"]
