@@ -23,5 +23,5 @@ pandas = [
     "pandas>=2.3.0",
 ]
 
-[tool.setuptools]
-packages = ["aframexr*"]
+[tool.setuptools.packages.find]
+include = ["aframexr*"]
