@@ -15,4 +15,4 @@ charts = (
 )
 
 # Save scene
-charts.save('ar-demo.html')
+charts.save('ar-demo.html', ar_scale='0.075 0.075 0.075')
