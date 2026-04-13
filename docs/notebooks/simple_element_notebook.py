@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.22.0"
+__generated_with = "0.23.1"
 app = marimo.App(width="medium", app_title="Simple elements notebook")
 
 
@@ -14,13 +14,15 @@ def _(mo):
 
 @app.cell(hide_code=True)
 async def _():
+    import marimo as mo
+
     # Install the necessary packages only when running in WASM (browser) mode.
     import sys
 
     if sys.platform == 'emscripten':  # WASM mode
         import micropip
         await micropip.install(['aframexr', 'wcwidth'])
-    return
+    return (mo,)
 
 
 @app.cell
@@ -423,13 +425,6 @@ def _(mo):
     All this elements can be concatenated with other elements or charts, using concatenation with '+'.
     """)
     return
-
-
-@app.cell
-def _():
-    import marimo as mo
-
-    return (mo,)
 
 
 if __name__ == "__main__":
