@@ -170,7 +170,7 @@ class TopLevelMixin:
         return self_copy
 
     # Exporting charts
-    def save(self, fp: str, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
+    def save(self, fp: str, ar_scale: str = None, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
     'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron',
     'japan', 'dream', 'volcano', 'starry', 'osiris'] = 'default'):
         """
@@ -180,6 +180,9 @@ class TopLevelMixin:
         ----------
         fp : str
             File path.
+        ar_scale : str (optional)
+            The scale of the scene in AR mode.
+            If not specified, the scene will use the default scale of the JavaScript's component.
         file_format : str (optional)
             Format of the file could be ['html', 'json'].
             If no format is specified, the chart will be saved depending on the file extension.
@@ -196,7 +199,7 @@ class TopLevelMixin:
 
         if file_format == 'html' or fp.endswith('.html'):
             with open(fp, 'w') as file:
-                file.write(self_copy.to_html(environment=environment))
+                file.write(self_copy.to_html(ar_scale=ar_scale, environment=environment))
         elif file_format == 'json' or fp.endswith('.json'):
             with open(fp, 'w') as file:
                 specs = self_copy.to_dict()
