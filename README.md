@@ -10,9 +10,11 @@ Inspired by [Vega-Altair](https://github.com/vega/altair) and [Vega-Lite](https:
 lets you define interactive 3D charts using a simple grammar, and render them directly in the browsers and XR devices — 
 without low-level 3D programming.
 
-## Live Demo
+## Live Demos
 
 > https://davidlab20.github.io/TFG/examples/index.html
+
+![AR Demo GIF](docs/static/videos/AR_demo.gif)
 
 ## Features
 
