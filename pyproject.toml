@@ -24,4 +24,4 @@ pandas = [
 ]
 
 [tool.setuptools]
-packages = ["aframexr"]
+packages = ["aframexr*"]
