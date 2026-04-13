@@ -170,9 +170,9 @@ class TopLevelMixin:
         return self_copy
 
     # Exporting charts
-    def save(self, fp: str, ar_scale: str = None, file_format: Literal['json', 'html'] = None, environment: Literal['default', 'contact',
-    'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches', 'threetowers', 'poison', 'tron',
-    'japan', 'dream', 'volcano', 'starry', 'osiris'] = 'default'):
+    def save(self, fp: str, ar_scale: str = None, file_format: Literal['json', 'html'] = None, environment:
+    Literal['default', 'contact', 'egypt', 'checkerboard', 'forest', 'goaland', 'yavapai', 'goldmine', 'arches',
+    'threetowers', 'poison', 'tron', 'japan', 'dream', 'volcano', 'starry', 'osiris'] = 'default'):
         """
         Saves the chart into a file, supported formats are JSON and HTML.
 
