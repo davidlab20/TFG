@@ -60,6 +60,8 @@ aframexr.Chart(
 )
 ```
 
+![Simple Example Chart](docs/static/imgs/simple_example.png)
+
 ## Supported Environments
 
 - Jupyter Notebook
