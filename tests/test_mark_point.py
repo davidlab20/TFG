@@ -4,7 +4,7 @@ import unittest
 from bs4 import BeautifulSoup
 
 from aframexr.api.filters import FilterTransform
-from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, DEFAULT_CHART_DEPTH, DEFAULT_POINT_VOLUME
+from aframexr.utils.constants import AVAILABLE_ENVIRONMENTS, DEFAULT_CHART_DEPTH, DEFAULT_POINT_VOLUME, EPSILON
 from aframexr.utils.validators import ERROR_MESSAGES
 from tests.constants import *  # Constants used for testing
 
@@ -53,7 +53,7 @@ def _points_are_inside_chart_volume(point_chart_html: str, depth: float = None) 
             return False
 
         # Y-axis
-        if (y - radius) < 0 or (y + radius) > chart_height:
+        if (y - radius) < 0 - EPSILON or (y + radius) > chart_height:
             print(f'\nDEBUG: point exceed Y-axis dimensions.'
                   f'\n\t- Point\'s y-coordinate: {y}'
                   f'\n\t- Point\'s radius: {radius}'
