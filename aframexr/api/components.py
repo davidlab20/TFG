@@ -314,7 +314,7 @@ class Chart(TopLevelMixin):
     # Types of charts
     def mark_arc(self, radius: float = None):
         """
-        Pie chart and doughnut chart.
+        Pie chart.
 
         Parameters
         ----------
