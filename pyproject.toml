@@ -10,7 +10,7 @@ description = "Python library to visualize data in Virtual and Extended Reality 
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "IPython>=9.8.0",
+    "IPython>=9.8.0,<9.13.0",  # Version 9.13.0 pulls psutil>=7 (breaks Pyodide)
     "polars>=1.20.0",  # For Pyodide compatibility
 ]
 
