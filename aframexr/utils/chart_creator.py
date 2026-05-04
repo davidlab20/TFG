@@ -442,7 +442,14 @@ class ArcChartCreator(NonAxisChannelChartCreator):
         """Returns a tuple with a Series storing the theta start of each element, and another storing theta length."""
         abs_theta_data = self._theta_data.abs()
         sum_data = abs_theta_data.sum()  # Sum all the values
-        theta_length = (360 / sum_data) * abs_theta_data  # Series of theta lengths (in degrees)
+
+        if sum_data == 0:
+            n = abs_theta_data.len()
+            theta_length = pl.repeat(360 / n, n, eager=True)  # Divide equally the pie chart
+
+        else:
+            theta_length = (360 / sum_data) * abs_theta_data  # Series of theta lengths (in degrees)
+
         theta_start = theta_length.cum_sum().shift(1).fill_null(0)  # Accumulative sum (first value is 0)
         return theta_start.alias('theta_start'), theta_length.alias('theta_length')
 
