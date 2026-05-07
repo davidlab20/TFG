@@ -614,9 +614,9 @@ class Box(Element):
 
 class Cone(Element):
     def __init__(self, color: str = None, height: float = None, position: str = None, radius_bottom: float = None,
-                 radius_top: float = None):
+                 radius_top: float = None, rotation: str = None):
         super().__init__(color=color, height=height, position=position, radius_bottom=radius_bottom,
-                         radius_top=radius_top)
+                         radius_top=radius_top, rotation=rotation)
 
 
 class Cylinder(Element):
