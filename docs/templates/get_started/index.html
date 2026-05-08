@@ -19,8 +19,8 @@
 
 <!-- Script to show iframe when loaded -->
 <script>
-  const iframe = document.getElementById('notebookIframe');
-  const loader = document.getElementById('loader');
+  const iframe = document.getElementBy('#notebookIframe');
+  const loader = document.getElementBy('#loader');
 
   iframe.addEventListener('load', () => {
     loader.remove();
