@@ -14,7 +14,7 @@ without low-level 3D programming.
 
 > https://davidlab20.github.io/TFG/examples/index.html
 
-![AR Demo GIF](docs/static/videos/AR_demo.gif)
+![AR Demo GIF](https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/videos/AR_demo.gif)
 
 ## Features
 
@@ -60,7 +60,7 @@ aframexr.Chart(
 )
 ```
 
-![Simple Example Chart](docs/static/imgs/simple_example.png)
+![Simple Example Chart](https://raw.githubusercontent.com/davidlab20/TFG/main/docs/static/imgs/simple_example.png)
 
 ## Supported Environments
 
