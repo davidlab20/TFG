@@ -20,6 +20,16 @@ def _():
 
 
 @app.cell(hide_code=True)
+async def _():
+    import micropip
+
+    micropip.uninstall(packages='altair')  # Remove Altair's fixed version
+    micropip.uninstall(packages='typing-extensions')  # Remove typing-extensions's fixed version
+    await micropip.install('altair==6.1.0')
+    return
+
+
+@app.cell(hide_code=True)
 def _(mo):
     mo.md("""
     This notebook compares the performance of Altair and AFrameXR.
