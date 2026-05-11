@@ -40,7 +40,8 @@ jobs:
               marimo export html-wasm aggregated_chart_notebook.py -o ../${OUTPUT_DIR}/notebooks/aggregated-chart-notebook.html --mode edit
               marimo export html-wasm simple_element_notebook.py -o ../${OUTPUT_DIR}/notebooks/simple-element-notebook.html --mode edit
               
-              marimo export html-wasm experiment.py -o ../${OUTPUT_DIR}/notebooks/experiment.html --mode edit
+              marimo export html-wasm desktop_experiment.py -o ../${OUTPUT_DIR}/notebooks/desktop_experiment.html --mode edit
+              marimo export html-wasm vr_ar_experiment.py -o ../${OUTPUT_DIR}/notebooks/vr_ar_experiment.html --mode edit
               marimo export html-wasm performance.py -o ../${OUTPUT_DIR}/notebooks/performance.html --mode edit
 
           - name: Generate demos
