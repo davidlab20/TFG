@@ -168,7 +168,7 @@ def _(mo):
 
     Bar chart (position="0 2 -5"):
 
-    - x: model
+    - x: motor
     - y: count()
     """)
     return
