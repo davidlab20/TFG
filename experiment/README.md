@@ -9,10 +9,10 @@ visualizations.
 
 The experiment is divided into two notebooks:
 
-1. **Desktop Notebook** — creating 3D visualizations in the browser.  
+1. **Ease of use Notebook** — creating 3D visualizations in the browser.  
    **Estimated duration:** ~10 minutes
 
-2. **VR / AR Notebook** — immersive interaction in Virtual Reality (VR) and Augmented Reality (AR).  
+2. **Usability Notebook** — immersive interaction in Desktop, Virtual Reality (VR) and Augmented Reality (AR).  
    **Estimated duration:** ~5 minutes
 
 **Total estimated duration:** ~15 minutes
@@ -32,5 +32,5 @@ a couple of minutes, depending on the computer).
 
 Open the experiment notebooks:
 
-- [Desktop Notebook](https://davidlab20.github.io/TFG/notebooks/desktop_experiment.html)
-- [VR/AR Notebook](https://davidlab20.github.io/TFG/notebooks/vr_ar_experiment.html)
+- [Ease of use Notebook (Desktop)](https://davidlab20.github.io/TFG/notebooks/desktop_experiment.html)
+- [Usability Notebook (Desktop / VR / AR)](https://davidlab20.github.io/TFG/notebooks/vr_ar_experiment.html)
