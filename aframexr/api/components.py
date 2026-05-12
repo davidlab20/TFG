@@ -485,8 +485,8 @@ class Chart(TopLevelMixin):
 
         return self_copy
 
-    def properties(self, data: Data | UrlData | DataFrame = None, depth: str = None, height: str = None,
-                   position: str = None, rotation: str = None, title: str = None, width: str = None):
+    def properties(self, data: Data | UrlData | DataFrame = None, depth: float = None, height: float = None,
+                   position: str = None, rotation: str = None, title: str = None, width: float = None):
         """Modify general properties of the chart."""
         self_copy = self.copy()
 
