@@ -7,7 +7,7 @@ Thank you for participating!
 The goal of this experiment is to evaluate the usability and ease of use of AFrameXR for creating interactive 3D/XR
 visualizations.
 
-> **Before Starting**
+> [!NOTE]
 > 
 > - The notebooks may ask you to install dependencies the first time you run them; please accept and proceed with the
 > installation if prompted. These dependencies are downloaded only to run the experiment inside the browser-based (WASM)
