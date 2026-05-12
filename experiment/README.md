@@ -32,5 +32,5 @@ The experiment is divided into two notebooks:
 
 Open the experiment notebooks:
 
-- [Ease of use Notebook (Desktop)](https://davidlab20.github.io/TFG/notebooks/desktop_experiment.html)
-- [Usability Notebook (Desktop / VR / AR)](https://davidlab20.github.io/TFG/notebooks/vr_ar_experiment.html)
+- [Ease of use Notebook (Desktop)](https://davidlab20.github.io/TFG/notebooks/ease_of_use_experiment.html)
+- [Usability Notebook (Desktop / VR / AR)](https://davidlab20.github.io/TFG/notebooks/usability_experiment.html)
