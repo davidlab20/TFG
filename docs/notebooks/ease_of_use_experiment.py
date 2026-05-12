@@ -26,7 +26,7 @@ def _(mo):
 
     In this experiment, you will use AFrameXR to create 3D data visualizations.
 
-    Please run all cells and install the necessary dependencies.
+    Please run all cells using the "Run All" button located in the bottom-right corner (it might last a couple of minutes, depending on the computer) and install the necessary dependencies.
 
     ## <u>Objective</u>
 

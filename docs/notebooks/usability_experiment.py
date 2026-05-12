@@ -26,7 +26,7 @@ def _(mo):
 
     You will need a device compatible with VR and AR (if you are on desktop you can also do the experiment, but the experience will not be the same).
 
-    Please run all cells and install the necessary dependencies.
+    Please run all cells using the "Run All" button located in the bottom-right corner (it might last a couple of minutes, depending on the computer) and install the necessary dependencies.
 
     ## <u>What will you do?</u>
 
