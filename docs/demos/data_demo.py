@@ -151,6 +151,24 @@ point_chart_size = BASE.mark_point().encode(x='model', y='sales', size='doors').
 )
 charts.append(point_platform_size), charts.append(point_chart_size)
 
+# === LINE CHART ===
+_CENTER_X_POS_LINE = 6
+_CENTER_Z_POS_LINE = -9
+
+line_platform = aframexr.Box(
+    position=f'{_CENTER_X_POS_LINE} {PLATFORMS_CONFIG['height'] / 2} {_CENTER_Z_POS_LINE}',
+    depth=_CHART_DEPTH + PLATFORMS_CONFIG['additional_depth'],
+    height=PLATFORMS_CONFIG['height'],
+    width=_CHART_WIDTH + PLATFORMS_CONFIG['additional_width'],
+    color=PLATFORMS_CONFIG['color'],
+)
+line_chart = BASE.mark_line(point=True).encode(x='year:N', y='sales', color='model').properties(
+    position=f'{_CENTER_X_POS_LINE} {PLATFORMS_CONFIG['height'] + _CHART_HEIGHT / 2} {_CENTER_Z_POS_LINE}',
+    title='Line chart',
+    data=aframexr.UrlData('https://cdn.jsdelivr.net/gh/davidlab20/TFG/docs/static/data/model_year_sales.json')
+)
+charts.append(line_platform), charts.append(line_chart)
+
 # Dynamic filtered bar chart
 _CENTER_X_POS_BAR_DYNAMIC_FILTER = -10
 _CENTER_X_POS_PIE_DYNAMIC_FILTER = 0
